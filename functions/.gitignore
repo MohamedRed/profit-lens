@@ -2,6 +2,7 @@ node_modules/
 lib/
 .txt
 .firebase/
+.env
 
 # logs
 npm-debug.log*
