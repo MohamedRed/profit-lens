@@ -143,4 +143,189 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get okButton => 'OK';
+
+  @override
+  String get signInTitle => 'Sign in';
+
+  @override
+  String get registerTitle => 'Create account';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get confirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get signInButton => 'Sign in';
+
+  @override
+  String get createAccountButton => 'Create an account';
+
+  @override
+  String get registerButton => 'Register';
+
+  @override
+  String get loadingLabel => 'Loading...';
+
+  @override
+  String get requiredFieldError => 'This field is required.';
+
+  @override
+  String get passwordLengthError => 'Password must be at least 8 characters.';
+
+  @override
+  String get passwordMismatchError => 'Passwords do not match.';
+
+  @override
+  String get offerTabLabel => 'Offer';
+
+  @override
+  String get historyTabLabel => 'History';
+
+  @override
+  String get settingsTabLabel => 'Settings';
+
+  @override
+  String get noVehiclesMessage => 'Add a vehicle to start analyzing offers.';
+
+  @override
+  String get extractionFailedMessage =>
+      'Unable to extract offer details from the screenshot.';
+
+  @override
+  String get captureScreenshotButton => 'Capture screenshot';
+
+  @override
+  String get extractionSummaryTitle => 'Extraction summary';
+
+  @override
+  String get confidenceLabel => 'Confidence';
+
+  @override
+  String get vehicleSelectLabel => 'Select vehicle';
+
+  @override
+  String get durationMinutesLabel => 'Estimated time (minutes)';
+
+  @override
+  String get pickupNameLabel => 'Pickup name';
+
+  @override
+  String get pickupAddressLabel => 'Pickup address';
+
+  @override
+  String get saveOfferButton => 'Save offer';
+
+  @override
+  String get offerSavedMessage => 'Offer saved.';
+
+  @override
+  String get offerSaveFailedMessage => 'Unable to save offer.';
+
+  @override
+  String get historyDetailTitle => 'Offer details';
+
+  @override
+  String get incomeTaxLabel => 'Income tax';
+
+  @override
+  String get fixedCostsLabel => 'Fixed costs allocation';
+
+  @override
+  String get profileSectionTitle => 'Business profile';
+
+  @override
+  String get vehiclesSectionTitle => 'Vehicles';
+
+  @override
+  String get signOutButton => 'Sign out';
+
+  @override
+  String get profileSetupTitle => 'Complete your profile';
+
+  @override
+  String get activityLabel => 'Business activity';
+
+  @override
+  String get activityDelivery => 'Delivery services';
+
+  @override
+  String get activityServices => 'Services';
+
+  @override
+  String get activitySales => 'Sales';
+
+  @override
+  String get incomeTaxRateLabel => 'Income tax rate';
+
+  @override
+  String get monthlyFixedCostsLabel => 'Monthly fixed costs';
+
+  @override
+  String get fixedCostAllocationLabel => 'Allocate fixed costs by';
+
+  @override
+  String get monthlyHoursLabel => 'Monthly working hours';
+
+  @override
+  String get monthlyDistanceLabel => 'Monthly distance (km)';
+
+  @override
+  String get monthlyDeliveriesLabel => 'Monthly deliveries';
+
+  @override
+  String get fixedCostPerHourLabel => 'Per hour';
+
+  @override
+  String get fixedCostPerKmLabel => 'Per km';
+
+  @override
+  String get fixedCostPerDeliveryLabel => 'Per delivery';
+
+  @override
+  String get monthlyHoursRequiredError =>
+      'Monthly hours are required for hourly allocation.';
+
+  @override
+  String get monthlyDistanceRequiredError =>
+      'Monthly distance is required for per-km allocation.';
+
+  @override
+  String get monthlyDeliveriesRequiredError =>
+      'Monthly deliveries are required for per-delivery allocation.';
+
+  @override
+  String get saveProfileButton => 'Save profile';
+
+  @override
+  String get profileSaveFailedMessage => 'Unable to save profile.';
+
+  @override
+  String get profileEditTitle => 'Edit profile';
+
+  @override
+  String get addVehicleTitle => 'Add vehicle';
+
+  @override
+  String get editVehicleTitle => 'Edit vehicle';
+
+  @override
+  String get saveVehicleButton => 'Save vehicle';
+
+  @override
+  String get vehicleSaveFailedMessage => 'Unable to save vehicle.';
+
+  @override
+  String get vehicleNameLabel => 'Vehicle name';
+
+  @override
+  String get noHistoryMessage => 'No offers saved yet.';
+
+  @override
+  String get profitabilityFailedMessage =>
+      'Unable to compute profitability. Check your profile settings.';
 }

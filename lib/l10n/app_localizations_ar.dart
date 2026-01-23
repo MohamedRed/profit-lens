@@ -143,4 +143,189 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get okButton => 'حسنًا';
+
+  @override
+  String get signInTitle => 'تسجيل الدخول';
+
+  @override
+  String get registerTitle => 'إنشاء حساب';
+
+  @override
+  String get emailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get passwordLabel => 'كلمة المرور';
+
+  @override
+  String get confirmPasswordLabel => 'تأكيد كلمة المرور';
+
+  @override
+  String get signInButton => 'تسجيل الدخول';
+
+  @override
+  String get createAccountButton => 'إنشاء حساب';
+
+  @override
+  String get registerButton => 'تسجيل';
+
+  @override
+  String get loadingLabel => 'جارٍ التحميل...';
+
+  @override
+  String get requiredFieldError => 'هذا الحقل مطلوب.';
+
+  @override
+  String get passwordLengthError =>
+      'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.';
+
+  @override
+  String get passwordMismatchError => 'كلمتا المرور غير متطابقتين.';
+
+  @override
+  String get offerTabLabel => 'العرض';
+
+  @override
+  String get historyTabLabel => 'السجل';
+
+  @override
+  String get settingsTabLabel => 'الإعدادات';
+
+  @override
+  String get noVehiclesMessage => 'أضف مركبة للبدء في التحليل.';
+
+  @override
+  String get extractionFailedMessage => 'تعذر استخراج تفاصيل العرض.';
+
+  @override
+  String get captureScreenshotButton => 'التقاط صورة';
+
+  @override
+  String get extractionSummaryTitle => 'ملخص الاستخراج';
+
+  @override
+  String get confidenceLabel => 'الثقة';
+
+  @override
+  String get vehicleSelectLabel => 'اختر مركبة';
+
+  @override
+  String get durationMinutesLabel => 'المدة المتوقعة (دقائق)';
+
+  @override
+  String get pickupNameLabel => 'اسم الاستلام';
+
+  @override
+  String get pickupAddressLabel => 'عنوان الاستلام';
+
+  @override
+  String get saveOfferButton => 'حفظ العرض';
+
+  @override
+  String get offerSavedMessage => 'تم حفظ العرض.';
+
+  @override
+  String get offerSaveFailedMessage => 'تعذر حفظ العرض.';
+
+  @override
+  String get historyDetailTitle => 'تفاصيل العرض';
+
+  @override
+  String get incomeTaxLabel => 'ضريبة الدخل';
+
+  @override
+  String get fixedCostsLabel => 'تخصيص التكاليف الثابتة';
+
+  @override
+  String get profileSectionTitle => 'ملف النشاط';
+
+  @override
+  String get vehiclesSectionTitle => 'المركبات';
+
+  @override
+  String get signOutButton => 'تسجيل الخروج';
+
+  @override
+  String get profileSetupTitle => 'أكمل ملفك';
+
+  @override
+  String get activityLabel => 'النشاط';
+
+  @override
+  String get activityDelivery => 'خدمات التوصيل';
+
+  @override
+  String get activityServices => 'خدمات';
+
+  @override
+  String get activitySales => 'مبيعات';
+
+  @override
+  String get incomeTaxRateLabel => 'نسبة ضريبة الدخل';
+
+  @override
+  String get monthlyFixedCostsLabel => 'تكاليف ثابتة شهرية';
+
+  @override
+  String get fixedCostAllocationLabel => 'توزيع التكاليف الثابتة حسب';
+
+  @override
+  String get monthlyHoursLabel => 'ساعات العمل الشهرية';
+
+  @override
+  String get monthlyDistanceLabel => 'المسافة الشهرية (كم)';
+
+  @override
+  String get monthlyDeliveriesLabel => 'عدد التوصيلات الشهرية';
+
+  @override
+  String get fixedCostPerHourLabel => 'لكل ساعة';
+
+  @override
+  String get fixedCostPerKmLabel => 'لكل كم';
+
+  @override
+  String get fixedCostPerDeliveryLabel => 'لكل توصيل';
+
+  @override
+  String get monthlyHoursRequiredError =>
+      'ساعات العمل الشهرية مطلوبة لهذا الخيار.';
+
+  @override
+  String get monthlyDistanceRequiredError =>
+      'المسافة الشهرية مطلوبة لهذا الخيار.';
+
+  @override
+  String get monthlyDeliveriesRequiredError =>
+      'عدد التوصيلات الشهرية مطلوب لهذا الخيار.';
+
+  @override
+  String get saveProfileButton => 'حفظ الملف';
+
+  @override
+  String get profileSaveFailedMessage => 'تعذر حفظ الملف.';
+
+  @override
+  String get profileEditTitle => 'تعديل الملف';
+
+  @override
+  String get addVehicleTitle => 'إضافة مركبة';
+
+  @override
+  String get editVehicleTitle => 'تعديل المركبة';
+
+  @override
+  String get saveVehicleButton => 'حفظ المركبة';
+
+  @override
+  String get vehicleSaveFailedMessage => 'تعذر حفظ المركبة.';
+
+  @override
+  String get vehicleNameLabel => 'اسم المركبة';
+
+  @override
+  String get noHistoryMessage => 'لا توجد عروض محفوظة.';
+
+  @override
+  String get profitabilityFailedMessage =>
+      'تعذر حساب الربحية. تحقق من إعدادات ملفك.';
 }

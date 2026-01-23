@@ -1,79 +1,60 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/utils/currency_format.dart';
-import '../../../features/offers/domain/offer.dart';
-import '../../../features/profitability/domain/cost_breakdown.dart';
+import '../../../app/app_scope.dart';
+import '../../../core/widgets/primary_button.dart';
+import '../../../features/auth/domain/auth_user.dart';
 import '../../../l10n/app_localizations.dart';
+import '../domain/offer_record.dart';
+import 'widgets/offer_breakdown_card.dart';
 
 class OfferResultScreen extends StatelessWidget {
-  final Offer offer;
-  final CostBreakdown breakdown;
+  final AuthUser user;
+  final OfferRecord record;
 
   const OfferResultScreen({
     super.key,
-    required this.offer,
-    required this.breakdown,
+    required this.user,
+    required this.record,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final localeTag = Localizations.localeOf(context).toString();
-    final netColor = breakdown.netProfit >= 0
-        ? Theme.of(context).colorScheme.primary
-        : Theme.of(context).colorScheme.error;
-
     return Scaffold(
       appBar: AppBar(title: Text(l10n.resultTitle)),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  CurrencyFormat.euro(breakdown.netProfit, localeTag),
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineMedium
-                      ?.copyWith(color: netColor),
-                ),
-                const SizedBox(height: 4),
-                Text(l10n.netProfitLabel),
-                const SizedBox(height: 16),
-                _row(l10n.grossRevenueLabel,
-                    CurrencyFormat.euro(offer.payoutEuro, localeTag)),
-                _row(l10n.energyCostLabel,
-                    CurrencyFormat.euro(breakdown.energyCost, localeTag)),
-                _row(l10n.maintenanceCostLabel,
-                    CurrencyFormat.euro(breakdown.maintenanceCost, localeTag)),
-                _row(l10n.depreciationCostLabel,
-                    CurrencyFormat.euro(breakdown.depreciationCost, localeTag)),
-                _row(l10n.socialContributionLabel,
-                    CurrencyFormat.euro(breakdown.socialContributions, localeTag)),
-                const Divider(height: 24),
-                _row(l10n.totalCostsLabel,
-                    CurrencyFormat.euro(breakdown.totalCosts, localeTag)),
-              ],
+        child: ListView(
+          children: [
+            OfferBreakdownCard(record: record),
+            const SizedBox(height: 16),
+            PrimaryButton(
+              label: l10n.saveOfferButton,
+              onPressed: () => _saveOffer(context),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _row(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label),
-          Text(value),
-        ],
-      ),
-    );
+  Future<void> _saveOffer(BuildContext context) async {
+    final services = AppScope.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await services.offerRepository.saveOffer(user.uid, record);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.offerSavedMessage)),
+        );
+        Navigator.of(context).pop();
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.offerSaveFailedMessage)),
+        );
+      }
+    }
   }
 }

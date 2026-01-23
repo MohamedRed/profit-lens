@@ -1,17 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../core/config/app_config.dart';
-import '../domain/offer.dart';
+import '../domain/offer_record.dart';
+import 'mappers/offer_record_mapper.dart';
 import 'offer_repository.dart';
 
 class FirestoreOfferRepository implements OfferRepository {
   final FirebaseFirestore _firestore;
+  final OfferRecordMapper _mapper;
 
-  FirestoreOfferRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+  FirestoreOfferRepository({
+    FirebaseFirestore? firestore,
+    OfferRecordMapper? mapper,
+  })  : _firestore = firestore ?? FirebaseFirestore.instance,
+        _mapper = mapper ?? OfferRecordMapper();
 
-  CollectionReference<Map<String, dynamic>> get _collection =>
-      _firestore.collection('offers');
+  CollectionReference<Map<String, dynamic>> _collection(String uid) =>
+      _firestore.collection('users').doc(uid).collection('offers');
 
   void _ensureConfigured() {
     if (!AppConfig.firebaseConfigured) {
@@ -20,33 +25,40 @@ class FirestoreOfferRepository implements OfferRepository {
   }
 
   @override
-  Future<void> saveOffer(Offer offer) async {
+  Future<void> saveOffer(String uid, OfferRecord offer) async {
     _ensureConfigured();
-    await _collection.add({
-      'payoutEuro': offer.payoutEuro,
-      'distanceKm': offer.distanceKm,
-      'pickupName': offer.pickupName,
-      'pickupAddress': offer.pickupAddress,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+    final doc = offer.id.isEmpty
+        ? _collection(uid).doc()
+        : _collection(uid).doc(offer.id);
+    await doc.set(
+      _mapper.toDocument(offer),
+      SetOptions(merge: true),
+    );
   }
 
   @override
-  Stream<List<Offer>> watchOffers() {
+  Stream<List<OfferRecord>> watchOffers(String uid) {
     _ensureConfigured();
-    return _collection.orderBy('createdAt', descending: true).snapshots().map(
+    return _collection(uid)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
           (snapshot) => snapshot.docs
-              .map((doc) => _fromDocument(doc.data()))
+              .map((doc) => _mapper.fromDocument(doc.id, doc.data()))
+              .whereType<OfferRecord>()
               .toList(),
         );
   }
 
-  Offer _fromDocument(Map<String, dynamic> data) {
-    return Offer(
-      payoutEuro: (data['payoutEuro'] as num?)?.toDouble() ?? 0,
-      distanceKm: (data['distanceKm'] as num?)?.toDouble() ?? 0,
-      pickupName: data['pickupName'] as String?,
-      pickupAddress: data['pickupAddress'] as String?,
-    );
+  @override
+  Future<List<OfferRecord>> fetchOffers(String uid) async {
+    _ensureConfigured();
+    final snapshot = await _collection(uid)
+        .orderBy('createdAt', descending: true)
+        .get();
+    return snapshot.docs
+        .map((doc) => _mapper.fromDocument(doc.id, doc.data()))
+        .whereType<OfferRecord>()
+        .toList();
   }
 }

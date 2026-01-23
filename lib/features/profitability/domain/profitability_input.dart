@@ -1,15 +1,6 @@
 import '../../offers/domain/offer.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
-
-class CostSettings {
-  final double energyPricePerUnit;
-  final double socialContributionRate;
-
-  const CostSettings({
-    required this.energyPricePerUnit,
-    required this.socialContributionRate,
-  });
-}
+import 'cost_settings.dart';
 
 class ProfitabilityInput {
   final Offer offer;

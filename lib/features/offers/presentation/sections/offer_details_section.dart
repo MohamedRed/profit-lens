@@ -6,11 +6,17 @@ import '../../../../l10n/app_localizations.dart';
 class OfferDetailsSection extends StatelessWidget {
   final TextEditingController payoutController;
   final TextEditingController distanceController;
+  final TextEditingController durationController;
+  final TextEditingController pickupNameController;
+  final TextEditingController pickupAddressController;
 
   const OfferDetailsSection({
     super.key,
     required this.payoutController,
     required this.distanceController,
+    required this.durationController,
+    required this.pickupNameController,
+    required this.pickupAddressController,
   });
 
   @override
@@ -41,6 +47,22 @@ class OfferDetailsSection extends StatelessWidget {
             }
             return null;
           },
+        ),
+        const SizedBox(height: 12),
+        TextFormField(
+          controller: durationController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: InputDecoration(labelText: l10n.durationMinutesLabel),
+        ),
+        const SizedBox(height: 12),
+        TextFormField(
+          controller: pickupNameController,
+          decoration: InputDecoration(labelText: l10n.pickupNameLabel),
+        ),
+        const SizedBox(height: 12),
+        TextFormField(
+          controller: pickupAddressController,
+          decoration: InputDecoration(labelText: l10n.pickupAddressLabel),
         ),
       ],
     );

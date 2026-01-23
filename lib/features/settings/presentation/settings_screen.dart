@@ -1,0 +1,53 @@
+import 'package:flutter/material.dart';
+
+import '../../../app/app_scope.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../auth/domain/auth_user.dart';
+import '../../profile/domain/user_profile.dart';
+import '../../vehicles/domain/vehicle_profile.dart';
+import 'widgets/settings_profile_card.dart';
+import 'widgets/settings_signout_card.dart';
+import 'widgets/settings_vehicle_card.dart';
+
+class SettingsScreen extends StatelessWidget {
+  final AuthUser user;
+  final UserProfile profile;
+
+  const SettingsScreen({
+    super.key,
+    required this.user,
+    required this.profile,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final services = AppScope.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return StreamBuilder<List<VehicleProfile>>(
+      stream: services.vehicleRepository.watchVehicles(user.uid),
+      builder: (context, snapshot) {
+        final vehicles = snapshot.data ?? [];
+        return Scaffold(
+          appBar: AppBar(title: Text(l10n.settingsTabLabel)),
+          body: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              SettingsProfileCard(user: user, profile: profile),
+              const SizedBox(height: 12),
+              SettingsVehicleCard(
+                user: user,
+                profile: profile,
+                vehicles: vehicles,
+              ),
+              const SizedBox(height: 12),
+              SettingsSignOutCard(
+                onSignOut: () => services.authRepository.signOut(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

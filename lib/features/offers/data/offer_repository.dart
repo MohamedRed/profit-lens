@@ -1,6 +1,7 @@
-import '../domain/offer.dart';
+import '../domain/offer_record.dart';
 
 abstract class OfferRepository {
-  Future<void> saveOffer(Offer offer);
-  Stream<List<Offer>> watchOffers();
+  Future<void> saveOffer(String uid, OfferRecord offer);
+  Stream<List<OfferRecord>> watchOffers(String uid);
+  Future<List<OfferRecord>> fetchOffers(String uid);
 }

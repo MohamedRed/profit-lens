@@ -9,3 +9,4 @@
 - everytime you finish a task, git commit and push the changes.
 - codify changes in Terraform when needed
 - check if changes need to be included in the web-integhration-smoke.yml
+- no shallow solving of issues, always fix the root cause.

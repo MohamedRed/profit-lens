@@ -3,6 +3,8 @@ class CostBreakdown {
   final double maintenanceCost;
   final double depreciationCost;
   final double socialContributions;
+  final double incomeTax;
+  final double fixedCostAllocation;
   final double totalCosts;
   final double netProfit;
 
@@ -11,6 +13,8 @@ class CostBreakdown {
     required this.maintenanceCost,
     required this.depreciationCost,
     required this.socialContributions,
+    required this.incomeTax,
+    required this.fixedCostAllocation,
     required this.totalCosts,
     required this.netProfit,
   });

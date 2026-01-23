@@ -369,6 +369,366 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get okButton;
+
+  /// No description provided for @signInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signInTitle;
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get registerTitle;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @passwordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get passwordLabel;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @signInButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signInButton;
+
+  /// No description provided for @createAccountButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an account'**
+  String get createAccountButton;
+
+  /// No description provided for @registerButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get registerButton;
+
+  /// No description provided for @loadingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loadingLabel;
+
+  /// No description provided for @requiredFieldError.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get requiredFieldError;
+
+  /// No description provided for @passwordLengthError.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters.'**
+  String get passwordLengthError;
+
+  /// No description provided for @passwordMismatchError.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match.'**
+  String get passwordMismatchError;
+
+  /// No description provided for @offerTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer'**
+  String get offerTabLabel;
+
+  /// No description provided for @historyTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get historyTabLabel;
+
+  /// No description provided for @settingsTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTabLabel;
+
+  /// No description provided for @noVehiclesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a vehicle to start analyzing offers.'**
+  String get noVehiclesMessage;
+
+  /// No description provided for @extractionFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to extract offer details from the screenshot.'**
+  String get extractionFailedMessage;
+
+  /// No description provided for @captureScreenshotButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture screenshot'**
+  String get captureScreenshotButton;
+
+  /// No description provided for @extractionSummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Extraction summary'**
+  String get extractionSummaryTitle;
+
+  /// No description provided for @confidenceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confidence'**
+  String get confidenceLabel;
+
+  /// No description provided for @vehicleSelectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select vehicle'**
+  String get vehicleSelectLabel;
+
+  /// No description provided for @durationMinutesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated time (minutes)'**
+  String get durationMinutesLabel;
+
+  /// No description provided for @pickupNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup name'**
+  String get pickupNameLabel;
+
+  /// No description provided for @pickupAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup address'**
+  String get pickupAddressLabel;
+
+  /// No description provided for @saveOfferButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save offer'**
+  String get saveOfferButton;
+
+  /// No description provided for @offerSavedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer saved.'**
+  String get offerSavedMessage;
+
+  /// No description provided for @offerSaveFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to save offer.'**
+  String get offerSaveFailedMessage;
+
+  /// No description provided for @historyDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer details'**
+  String get historyDetailTitle;
+
+  /// No description provided for @incomeTaxLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Income tax'**
+  String get incomeTaxLabel;
+
+  /// No description provided for @fixedCostsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed costs allocation'**
+  String get fixedCostsLabel;
+
+  /// No description provided for @profileSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Business profile'**
+  String get profileSectionTitle;
+
+  /// No description provided for @vehiclesSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicles'**
+  String get vehiclesSectionTitle;
+
+  /// No description provided for @signOutButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get signOutButton;
+
+  /// No description provided for @profileSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete your profile'**
+  String get profileSetupTitle;
+
+  /// No description provided for @activityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Business activity'**
+  String get activityLabel;
+
+  /// No description provided for @activityDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery services'**
+  String get activityDelivery;
+
+  /// No description provided for @activityServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get activityServices;
+
+  /// No description provided for @activitySales.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales'**
+  String get activitySales;
+
+  /// No description provided for @incomeTaxRateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Income tax rate'**
+  String get incomeTaxRateLabel;
+
+  /// No description provided for @monthlyFixedCostsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly fixed costs'**
+  String get monthlyFixedCostsLabel;
+
+  /// No description provided for @fixedCostAllocationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Allocate fixed costs by'**
+  String get fixedCostAllocationLabel;
+
+  /// No description provided for @monthlyHoursLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly working hours'**
+  String get monthlyHoursLabel;
+
+  /// No description provided for @monthlyDistanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly distance (km)'**
+  String get monthlyDistanceLabel;
+
+  /// No description provided for @monthlyDeliveriesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly deliveries'**
+  String get monthlyDeliveriesLabel;
+
+  /// No description provided for @fixedCostPerHourLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Per hour'**
+  String get fixedCostPerHourLabel;
+
+  /// No description provided for @fixedCostPerKmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Per km'**
+  String get fixedCostPerKmLabel;
+
+  /// No description provided for @fixedCostPerDeliveryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Per delivery'**
+  String get fixedCostPerDeliveryLabel;
+
+  /// No description provided for @monthlyHoursRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly hours are required for hourly allocation.'**
+  String get monthlyHoursRequiredError;
+
+  /// No description provided for @monthlyDistanceRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly distance is required for per-km allocation.'**
+  String get monthlyDistanceRequiredError;
+
+  /// No description provided for @monthlyDeliveriesRequiredError.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly deliveries are required for per-delivery allocation.'**
+  String get monthlyDeliveriesRequiredError;
+
+  /// No description provided for @saveProfileButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save profile'**
+  String get saveProfileButton;
+
+  /// No description provided for @profileSaveFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to save profile.'**
+  String get profileSaveFailedMessage;
+
+  /// No description provided for @profileEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get profileEditTitle;
+
+  /// No description provided for @addVehicleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add vehicle'**
+  String get addVehicleTitle;
+
+  /// No description provided for @editVehicleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit vehicle'**
+  String get editVehicleTitle;
+
+  /// No description provided for @saveVehicleButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save vehicle'**
+  String get saveVehicleButton;
+
+  /// No description provided for @vehicleSaveFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to save vehicle.'**
+  String get vehicleSaveFailedMessage;
+
+  /// No description provided for @vehicleNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle name'**
+  String get vehicleNameLabel;
+
+  /// No description provided for @noHistoryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No offers saved yet.'**
+  String get noHistoryMessage;
+
+  /// No description provided for @profitabilityFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to compute profitability. Check your profile settings.'**
+  String get profitabilityFailedMessage;
 }
 
 class _AppLocalizationsDelegate

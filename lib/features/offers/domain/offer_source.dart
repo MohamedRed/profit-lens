@@ -1,0 +1,4 @@
+enum OfferSource {
+  manual,
+  screenshot,
+}
