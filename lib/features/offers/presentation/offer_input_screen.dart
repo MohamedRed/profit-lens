@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../core/utils/number_parsing.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../../features/defaults/data/france_defaults.dart';
+import '../../../features/defaults/presentation/preset_sources_section.dart';
 import '../../../features/offers/data/gemini_offer_ingestion_service.dart';
 import '../../../features/offers/domain/offer.dart';
 import '../../../features/profitability/domain/profitability_engine.dart';
@@ -262,6 +263,8 @@ class _OfferInputScreenState extends State<OfferInputScreen> {
                   });
                 },
               ),
+              const SizedBox(height: 12),
+              PresetSourcesSection(sources: FranceDefaults.sources),
               const SizedBox(height: 16),
               PrimaryButton(
                 label: l10n.importScreenshotButton,

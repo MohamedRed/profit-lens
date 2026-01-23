@@ -28,6 +28,10 @@
   "costsSection": "الضرائب والاشتراكات",
   "socialRateLabel": "نسبة اشتراكات رائد الأعمال",
   "useFranceDefaultsLabel": "استخدام القيم الافتراضية لفرنسا",
+  "sourcesSection": "مصادر القيم",
+  "sourceLastCheckedLabel": "آخر تحقق",
+  "sourceOpenButton": "فتح المصدر",
+  "sourceOpenError": "تعذر فتح الرابط.",
   "importScreenshotButton": "استيراد لقطة شاشة",
   "analyzeButton": "تحليل الربحية",
   "resultTitle": "الربحية",
@@ -39,6 +43,6 @@
   "depreciationCostLabel": "الإهلاك",
   "socialContributionLabel": "الاشتراكات الاجتماعية",
   "missingConfigTitle": "يلزم الإعداد",
-  "missingGeminiConfigMessage": "لتفعيل استخراج لقطة الشاشة، عيّن GEMINI_API_KEY و GEMINI_MODEL في إعدادات البناء.",
+  "missingGeminiConfigMessage": "لتفعيل استخراج لقطة الشاشة، قم بإعداد Firebase ونشر دالة extractOfferFromImage مع السر GEMINI_API_KEY.",
   "okButton": "حسنًا"
 }

@@ -28,6 +28,10 @@
   "costsSection": "Taxes et cotisations",
   "socialRateLabel": "Taux de cotisations auto‑entrepreneur",
   "useFranceDefaultsLabel": "Utiliser les valeurs France",
+  "sourcesSection": "Sources des valeurs",
+  "sourceLastCheckedLabel": "Dernière vérification",
+  "sourceOpenButton": "Ouvrir la source",
+  "sourceOpenError": "Impossible d'ouvrir le lien.",
   "importScreenshotButton": "Importer une capture",
   "analyzeButton": "Analyser la rentabilité",
   "resultTitle": "Rentabilité",
@@ -39,6 +43,6 @@
   "depreciationCostLabel": "Dépréciation",
   "socialContributionLabel": "Cotisations sociales",
   "missingConfigTitle": "Configuration requise",
-  "missingGeminiConfigMessage": "Pour activer l'extraction depuis une capture, définissez GEMINI_API_KEY et GEMINI_MODEL dans la configuration de build.",
+  "missingGeminiConfigMessage": "Pour activer l'extraction depuis une capture, configurez Firebase et déployez la fonction Cloud extractOfferFromImage avec le secret GEMINI_API_KEY.",
   "okButton": "OK"
 }

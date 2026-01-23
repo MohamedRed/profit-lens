@@ -93,6 +93,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get useFranceDefaultsLabel => 'Utiliser les valeurs France';
 
   @override
+  String get sourcesSection => 'Sources des valeurs';
+
+  @override
+  String get sourceLastCheckedLabel => 'Dernière vérification';
+
+  @override
+  String get sourceOpenButton => 'Ouvrir la source';
+
+  @override
+  String get sourceOpenError => 'Impossible d\'ouvrir le lien.';
+
+  @override
   String get importScreenshotButton => 'Importer une capture';
 
   @override
@@ -127,7 +139,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get missingGeminiConfigMessage =>
-      'Pour activer l\'extraction depuis une capture, définissez GEMINI_API_KEY et GEMINI_MODEL dans la configuration de build.';
+      'Pour activer l\'extraction depuis une capture, configurez Firebase et déployez la fonction Cloud extractOfferFromImage avec le secret GEMINI_API_KEY.';
 
   @override
   String get okButton => 'OK';

@@ -5,8 +5,8 @@ ProfitLens is a Flutter app to analyze delivery offers (e.g., Uber Eats) and com
 ## Features (MVP)
 - Manual offer entry (payout + distance) and vehicle cost profile
 - Profitability breakdown (energy, maintenance, depreciation, social contributions)
-- France presets for rates (editable)
-- Screenshot ingestion stub (Gemini multimodal extraction hook)
+- France presets with sources visible in-app (editable)
+- Gemini-only screenshot extraction via Cloud Functions
 
 ## Local setup
 ```bash
@@ -15,9 +15,10 @@ flutter gen-l10n
 flutter run
 ```
 
-## Firebase setup (Auth + Firestore)
+## Firebase setup (Auth + Firestore + Functions)
 1. Install FlutterFire CLI and run:
    ```bash
+   dart pub global activate flutterfire_cli
    flutterfire configure
    ```
 2. Replace `lib/firebase_options.dart` with the generated file.
@@ -26,19 +27,19 @@ flutter run
    flutter run --dart-define=FIREBASE_CONFIGURED=true
    ```
 
-## Gemini multimodal extraction
-This app is wired for a Cloud Function that accepts an image and returns a structured offer. Configure:
-```bash
-flutter run \
-  --dart-define=GEMINI_API_KEY=YOUR_KEY \
-  --dart-define=GEMINI_MODEL=gemini-1.5-pro
-```
+## Gemini-only extraction (Cloud Function)
+The app calls a Firebase callable function named `extractOfferFromImage`.
+1. Deploy functions:
+   ```bash
+   firebase deploy --only functions
+   ```
+2. Set the Gemini API key as a secret:
+   ```bash
+   firebase functions:secrets:set GEMINI_API_KEY
+   ```
 
 ## France presets
-The defaults live in `lib/features/defaults/data/france_defaults.dart` and can be overridden by the user.
-- Social contribution rate: 21.2% (services commerciales ou artisanales)
-- Electricity price: 0.1940 EUR/kWh (Tarif Bleu, base, 6 kVA)
-- Fuel prices: daily national average (dataset)
+Defaults live in `lib/features/defaults/data/france_defaults.dart` and can be overridden by the user. Sources are shown in the app under "Preset sources".
 
 Update cadence: add a scheduled backend task later if you want live updates.
 

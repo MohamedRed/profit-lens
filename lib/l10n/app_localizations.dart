@@ -268,6 +268,30 @@ abstract class AppLocalizations {
   /// **'Use France presets'**
   String get useFranceDefaultsLabel;
 
+  /// No description provided for @sourcesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset sources'**
+  String get sourcesSection;
+
+  /// No description provided for @sourceLastCheckedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last checked'**
+  String get sourceLastCheckedLabel;
+
+  /// No description provided for @sourceOpenButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Open source'**
+  String get sourceOpenButton;
+
+  /// No description provided for @sourceOpenError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open link.'**
+  String get sourceOpenError;
+
   /// No description provided for @importScreenshotButton.
   ///
   /// In en, this message translates to:
@@ -337,7 +361,7 @@ abstract class AppLocalizations {
   /// No description provided for @missingGeminiConfigMessage.
   ///
   /// In en, this message translates to:
-  /// **'To enable screenshot extraction, set GEMINI_API_KEY and GEMINI_MODEL in your build configuration.'**
+  /// **'To enable screenshot extraction, configure Firebase and deploy the extractOfferFromImage Cloud Function with the GEMINI_API_KEY secret.'**
   String get missingGeminiConfigMessage;
 
   /// No description provided for @okButton.

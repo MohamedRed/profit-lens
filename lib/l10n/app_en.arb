@@ -28,6 +28,10 @@
   "costsSection": "Taxes & contributions",
   "socialRateLabel": "Auto-entrepreneur contribution rate",
   "useFranceDefaultsLabel": "Use France presets",
+  "sourcesSection": "Preset sources",
+  "sourceLastCheckedLabel": "Last checked",
+  "sourceOpenButton": "Open source",
+  "sourceOpenError": "Unable to open link.",
   "importScreenshotButton": "Import screenshot",
   "analyzeButton": "Analyze profitability",
   "resultTitle": "Profitability",
@@ -39,6 +43,6 @@
   "depreciationCostLabel": "Depreciation",
   "socialContributionLabel": "Social contributions",
   "missingConfigTitle": "Configuration needed",
-  "missingGeminiConfigMessage": "To enable screenshot extraction, set GEMINI_API_KEY and GEMINI_MODEL in your build configuration.",
+  "missingGeminiConfigMessage": "To enable screenshot extraction, configure Firebase and deploy the extractOfferFromImage Cloud Function with the GEMINI_API_KEY secret.",
   "okButton": "OK"
 }

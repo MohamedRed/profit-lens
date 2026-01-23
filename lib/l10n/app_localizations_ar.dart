@@ -93,6 +93,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get useFranceDefaultsLabel => 'استخدام القيم الافتراضية لفرنسا';
 
   @override
+  String get sourcesSection => 'مصادر القيم';
+
+  @override
+  String get sourceLastCheckedLabel => 'آخر تحقق';
+
+  @override
+  String get sourceOpenButton => 'فتح المصدر';
+
+  @override
+  String get sourceOpenError => 'تعذر فتح الرابط.';
+
+  @override
   String get importScreenshotButton => 'استيراد لقطة شاشة';
 
   @override
@@ -127,7 +139,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get missingGeminiConfigMessage =>
-      'لتفعيل استخراج لقطة الشاشة، عيّن GEMINI_API_KEY و GEMINI_MODEL في إعدادات البناء.';
+      'لتفعيل استخراج لقطة الشاشة، قم بإعداد Firebase ونشر دالة extractOfferFromImage مع السر GEMINI_API_KEY.';
 
   @override
   String get okButton => 'حسنًا';

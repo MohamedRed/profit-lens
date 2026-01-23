@@ -1,17 +1,63 @@
+import 'dart:convert';
+
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/config/app_config.dart';
+import '../domain/offer.dart';
 import '../domain/offer_extraction_result.dart';
 import 'offer_ingestion_service.dart';
 
 class GeminiOfferIngestionService implements OfferIngestionService {
+  final FirebaseFunctions? _functions;
+
+  GeminiOfferIngestionService({FirebaseFunctions? functions})
+      : _functions = functions;
+
   @override
-  Future<OfferExtractionResult> extractFromImage(XFile image) {
-    if (AppConfig.geminiApiKey.isEmpty) {
-      throw StateError('Missing GEMINI_API_KEY.');
+  Future<OfferExtractionResult> extractFromImage(XFile image) async {
+    if (!AppConfig.firebaseConfigured) {
+      throw StateError('Firebase is not configured.');
     }
-    throw UnimplementedError(
-      'Wire the Gemini extraction to your Cloud Function endpoint.',
+    final mimeType = image.mimeType;
+    if (mimeType == null || mimeType.isEmpty) {
+      throw StateError('Missing image mime type.');
+    }
+
+    final bytes = await image.readAsBytes();
+    final base64Image = base64Encode(bytes);
+    final callable =
+        (_functions ?? FirebaseFunctions.instance).httpsCallable(
+      'extractOfferFromImage',
+    );
+    final response = await callable.call(<String, dynamic>{
+      'imageBase64': base64Image,
+      'mimeType': mimeType,
+    });
+
+    final data = Map<String, dynamic>.from(response.data as Map);
+    final offerData = data['offer'] as Map<String, dynamic>?;
+    final confidence = (data['confidence'] as num?)?.toDouble() ?? 0;
+    final rawText = data['rawText'] as String?;
+
+    Offer? offer;
+    if (offerData != null) {
+      final payout = (offerData['payoutEuro'] as num?)?.toDouble();
+      final distance = (offerData['distanceKm'] as num?)?.toDouble();
+      if (payout != null && distance != null) {
+        offer = Offer(
+          payoutEuro: payout,
+          distanceKm: distance,
+          pickupName: offerData['pickupName'] as String?,
+          pickupAddress: offerData['pickupAddress'] as String?,
+        );
+      }
+    }
+
+    return OfferExtractionResult(
+      offer: offer,
+      confidence: confidence,
+      rawText: rawText,
     );
   }
 }
