@@ -16,26 +16,25 @@ flutter run
 ```
 
 ## Firebase setup (Auth + Firestore + Functions)
-1. Install FlutterFire CLI and run:
-   ```bash
-   dart pub global activate flutterfire_cli
-   flutterfire configure
-   ```
-2. Replace `lib/firebase_options.dart` with the generated file.
-3. Enable Firebase initialization by setting:
-   ```bash
-   flutter run --dart-define=FIREBASE_CONFIGURED=true
-   ```
+Firebase app configs are already added for:
+- Android: `android/app/google-services.json`
+- iOS: `ios/Runner/GoogleService-Info.plist`
+- Web: `lib/firebase_options.dart`
+
+Enable Firebase initialization by setting:
+```bash
+flutter run --dart-define=FIREBASE_CONFIGURED=true
+```
 
 ## Gemini-only extraction (Cloud Function)
 The app calls a Firebase callable function named `extractOfferFromImage`.
-1. Deploy functions:
-   ```bash
-   firebase deploy --only functions
-   ```
-2. Set the Gemini API key as a secret:
+1. Set the Gemini API key as a secret:
    ```bash
    firebase functions:secrets:set GEMINI_API_KEY
+   ```
+2. Deploy functions:
+   ```bash
+   firebase deploy --only functions
    ```
 
 ## France presets
