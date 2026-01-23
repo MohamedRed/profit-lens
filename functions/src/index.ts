@@ -3,7 +3,7 @@ import { defineSecret, defineString } from "firebase-functions/params";
 
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const geminiModel = defineString("GEMINI_MODEL", {
-  default: "gemini-1.5-pro",
+  default: "gemini-2.5-flash",
 });
 
 export const extractOfferFromImage = onCall(
