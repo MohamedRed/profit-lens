@@ -14,6 +14,7 @@ class PlaceAutocompleteWebController {
   Element? _detailsElement;
   EventListener? _selectListener;
   EventListener? _detailsLoadListener;
+  String? _lastDisplayValue;
   PlaceAutocompleteWebController({
     required this.container,
     required this.countryCode,
@@ -90,6 +91,10 @@ class PlaceAutocompleteWebController {
           longitude: lng,
         ),
       );
+      final displayValue = formattedAddress ?? name;
+      if (displayValue != null && displayValue.isNotEmpty) {
+        _setAutocompleteValue(autocomplete, displayValue);
+      }
     };
     autocomplete.addEventListener('gmp-select', _selectListener);
     detailsElement.addEventListener('gmp-load', _detailsLoadListener);
@@ -99,5 +104,24 @@ class PlaceAutocompleteWebController {
       ..add(detailsElement);
     _autocompleteElement = autocomplete;
     _detailsElement = detailsElement;
+  }
+
+  void _setAutocompleteValue(Element element, String value) {
+    if (value == _lastDisplayValue) {
+      return;
+    }
+    _lastDisplayValue = value;
+    try {
+      js_util.setProperty(element, 'value', value);
+    } catch (_) {}
+    try {
+      js_util.setProperty(element, 'inputValue', value);
+    } catch (_) {}
+    try {
+      js_util.setProperty(element, 'query', value);
+    } catch (_) {}
+    try {
+      js_util.callMethod(element, 'setAttribute', ['value', value]);
+    } catch (_) {}
   }
 }

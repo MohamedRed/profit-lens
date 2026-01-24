@@ -5,8 +5,12 @@ void stylePlacesAutocomplete(HtmlElement element) {
   element.style
     ..width = '100%'
     ..height = '48px'
+    ..display = 'block'
     ..border = '1px solid rgba(0, 0, 0, 0.38)'
     ..borderRadius = '8px'
     ..padding = '0 12px'
-    ..boxSizing = 'border-box';
+    ..boxSizing = 'border-box'
+    ..backgroundColor = 'white'
+    ..color = 'inherit'
+    ..fontFamily = 'inherit';
 }
