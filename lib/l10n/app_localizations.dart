@@ -322,6 +322,18 @@ abstract class AppLocalizations {
   /// **'Analyze profitability'**
   String get analyzeButton;
 
+  /// No description provided for @profitabilityOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profitability overview'**
+  String get profitabilityOverviewTitle;
+
+  /// No description provided for @viewProfitabilityDetailsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'View details'**
+  String get viewProfitabilityDetailsButton;
+
   /// No description provided for @resultTitle.
   ///
   /// In en, this message translates to:

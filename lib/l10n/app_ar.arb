@@ -37,6 +37,8 @@
   "sourceOpenError": "تعذر فتح الرابط.",
   "importScreenshotButton": "استيراد لقطة شاشة",
   "analyzeButton": "تحليل الربحية",
+  "profitabilityOverviewTitle": "نظرة عامة على الربحية",
+  "viewProfitabilityDetailsButton": "عرض التفاصيل",
   "resultTitle": "الربحية",
   "grossRevenueLabel": "الإيراد الإجمالي",
   "totalCostsLabel": "إجمالي التكاليف",

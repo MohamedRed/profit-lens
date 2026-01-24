@@ -120,6 +120,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analyzeButton => 'Analyze profitability';
 
   @override
+  String get profitabilityOverviewTitle => 'Profitability overview';
+
+  @override
+  String get viewProfitabilityDetailsButton => 'View details';
+
+  @override
   String get resultTitle => 'Profitability';
 
   @override

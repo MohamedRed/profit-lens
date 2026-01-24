@@ -120,6 +120,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get analyzeButton => 'تحليل الربحية';
 
   @override
+  String get profitabilityOverviewTitle => 'نظرة عامة على الربحية';
+
+  @override
+  String get viewProfitabilityDetailsButton => 'عرض التفاصيل';
+
+  @override
   String get resultTitle => 'الربحية';
 
   @override

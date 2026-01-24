@@ -37,6 +37,8 @@
   "sourceOpenError": "Impossible d'ouvrir le lien.",
   "importScreenshotButton": "Importer une capture",
   "analyzeButton": "Analyser la rentabilité",
+  "profitabilityOverviewTitle": "Aperçu de la rentabilité",
+  "viewProfitabilityDetailsButton": "Voir les détails",
   "resultTitle": "Rentabilité",
   "grossRevenueLabel": "Revenu brut",
   "totalCostsLabel": "Coûts totaux",

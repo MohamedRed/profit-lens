@@ -37,6 +37,8 @@
   "sourceOpenError": "Unable to open link.",
   "importScreenshotButton": "Import screenshot",
   "analyzeButton": "Analyze profitability",
+  "profitabilityOverviewTitle": "Profitability overview",
+  "viewProfitabilityDetailsButton": "View details",
   "resultTitle": "Profitability",
   "grossRevenueLabel": "Gross revenue",
   "totalCostsLabel": "Total costs",

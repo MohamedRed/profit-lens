@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/section_card.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/offer_extraction_metadata.dart';
 import '../controllers/offer_flow_controller.dart';
+import 'offer_extraction_summary.dart';
 import 'offer_details_form_fields.dart';
 import 'offer_details_summary.dart';
 
@@ -10,12 +12,14 @@ class OfferDetailsSection extends StatefulWidget {
   final OfferFlowController controller;
   final bool requiresDuration;
   final bool hasExtraction;
+  final OfferExtractionMetadata? extraction;
 
   const OfferDetailsSection({
     super.key,
     required this.controller,
     required this.requiresDuration,
     required this.hasExtraction,
+    required this.extraction,
   });
 
   @override
@@ -40,6 +44,7 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
       return OfferDetailsSummary(
         controller: widget.controller,
         onEdit: () => setState(() => _showOptional = true),
+        extraction: widget.extraction,
       );
     }
     return SectionCard(
@@ -55,6 +60,8 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
           showPickupFields: _showOptional,
           requiresDuration: widget.requiresDuration,
         ),
+        if (widget.extraction != null)
+          OfferExtractionSummary(metadata: widget.extraction!),
         const SizedBox(height: 8),
         TextButton(
           onPressed: () => setState(() => _showOptional = !_showOptional),

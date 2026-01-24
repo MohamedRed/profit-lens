@@ -4,10 +4,11 @@ import '../../../core/widgets/primary_button.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
 import '../domain/offer_extraction_metadata.dart';
+import '../domain/offer_record.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'sections/offer_details_section.dart';
 import 'sections/vehicle_picker_section.dart';
-import 'widgets/extraction_summary_card.dart';
+import 'widgets/profitability_overview_card.dart';
 
 class OfferFlowForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -18,9 +19,10 @@ class OfferFlowForm extends StatelessWidget {
   final ValueChanged<String?> onVehicleChanged;
   final VoidCallback onImportScreenshot;
   final VoidCallback onCaptureScreenshot;
-  final VoidCallback onAnalyze;
+  final VoidCallback onViewDetails;
   final bool isLoading;
   final OfferExtractionMetadata? extraction;
+  final OfferRecord? previewRecord;
 
   const OfferFlowForm({
     super.key,
@@ -32,9 +34,10 @@ class OfferFlowForm extends StatelessWidget {
     required this.onVehicleChanged,
     required this.onImportScreenshot,
     required this.onCaptureScreenshot,
-    required this.onAnalyze,
+    required this.onViewDetails,
     required this.isLoading,
     required this.extraction,
+    required this.previewRecord,
   });
 
   @override
@@ -45,20 +48,24 @@ class OfferFlowForm extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          OfferDetailsSection(
-            controller: controller,
-            requiresDuration: requiresDuration,
-            hasExtraction: extraction != null,
-          ),
-          const SizedBox(height: 12),
           VehiclePickerSection(
             vehicles: vehicles,
             selectedVehicleId: selectedVehicleId,
             onChanged: onVehicleChanged,
           ),
-          if (extraction != null) ...[
+          const SizedBox(height: 12),
+          OfferDetailsSection(
+            controller: controller,
+            requiresDuration: requiresDuration,
+            hasExtraction: extraction != null,
+            extraction: extraction,
+          ),
+          if (previewRecord != null) ...[
             const SizedBox(height: 12),
-            ExtractionSummaryCard(metadata: extraction!),
+            ProfitabilityOverviewCard(
+              record: previewRecord!,
+              onViewDetails: onViewDetails,
+            ),
           ],
           const SizedBox(height: 16),
           PrimaryButton(
@@ -69,11 +76,6 @@ class OfferFlowForm extends StatelessWidget {
           PrimaryButton(
             label: isLoading ? l10n.loadingLabel : l10n.captureScreenshotButton,
             onPressed: isLoading ? null : onCaptureScreenshot,
-          ),
-          const SizedBox(height: 12),
-          PrimaryButton(
-            label: l10n.analyzeButton,
-            onPressed: vehicles.isEmpty ? null : onAnalyze,
           ),
         ],
       ),

@@ -16,6 +16,45 @@ OfferRecord? analyzeOffer({
   required UserProfile profile,
   required VehicleProfile vehicle,
 }) {
+  try {
+    return buildOfferRecord(
+      context: context,
+      controller: controller,
+      profile: profile,
+      vehicle: vehicle,
+      showErrors: true,
+    );
+  } catch (_) {
+    return null;
+  }
+}
+
+OfferRecord? previewOffer({
+  required BuildContext context,
+  required OfferFlowController controller,
+  required UserProfile profile,
+  required VehicleProfile vehicle,
+}) {
+  try {
+    return buildOfferRecord(
+      context: context,
+      controller: controller,
+      profile: profile,
+      vehicle: vehicle,
+      showErrors: false,
+    );
+  } catch (_) {
+    return null;
+  }
+}
+
+OfferRecord? buildOfferRecord({
+  required BuildContext context,
+  required OfferFlowController controller,
+  required UserProfile profile,
+  required VehicleProfile vehicle,
+  required bool showErrors,
+}) {
   final offer = controller.buildOffer();
   if (offer == null) {
     return null;
@@ -38,10 +77,12 @@ OfferRecord? analyzeOffer({
   try {
     breakdown = AppScope.of(context).profitabilityEngine.evaluate(input);
   } catch (_) {
-    final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.profitabilityFailedMessage)),
-    );
+    if (showErrors) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.profitabilityFailedMessage)),
+      );
+    }
     return null;
   }
   return OfferRecord(

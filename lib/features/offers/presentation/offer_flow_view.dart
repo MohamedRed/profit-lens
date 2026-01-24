@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
+import '../domain/offer_record.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_form.dart';
@@ -16,9 +17,10 @@ class OfferFlowView extends StatelessWidget {
   final ValueChanged<String?> onVehicleChanged;
   final VoidCallback onImportScreenshot;
   final VoidCallback onCaptureScreenshot;
-  final VoidCallback onAnalyze;
+  final VoidCallback onViewDetails;
   final VoidCallback onSignOut;
   final bool isLoading;
+  final OfferRecord? previewRecord;
 
   const OfferFlowView({
     super.key,
@@ -31,9 +33,10 @@ class OfferFlowView extends StatelessWidget {
     required this.onVehicleChanged,
     required this.onImportScreenshot,
     required this.onCaptureScreenshot,
-    required this.onAnalyze,
+    required this.onViewDetails,
     required this.onSignOut,
     required this.isLoading,
+    required this.previewRecord,
   });
 
   @override
@@ -61,9 +64,10 @@ class OfferFlowView extends StatelessWidget {
                 onVehicleChanged: onVehicleChanged,
                 onImportScreenshot: onImportScreenshot,
                 onCaptureScreenshot: onCaptureScreenshot,
-                onAnalyze: onAnalyze,
+                onViewDetails: onViewDetails,
                 isLoading: isLoading,
                 extraction: controller.extraction,
+                previewRecord: previewRecord,
               ),
       ),
     );

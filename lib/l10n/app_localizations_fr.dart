@@ -120,6 +120,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get analyzeButton => 'Analyser la rentabilité';
 
   @override
+  String get profitabilityOverviewTitle => 'Aperçu de la rentabilité';
+
+  @override
+  String get viewProfitabilityDetailsButton => 'Voir les détails';
+
+  @override
   String get resultTitle => 'Rentabilité';
 
   @override
