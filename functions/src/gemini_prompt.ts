@@ -1,0 +1,15 @@
+export const offerExtractionPrompt = [
+  "You are extracting delivery offer data from a screenshot.",
+  "Return ONLY valid JSON with this schema:",
+  "{",
+  "  \"offer\": {",
+  "    \"payoutEuro\": number,",
+  "    \"distanceKm\": number,",
+  "    \"pickupName\": string | null,",
+  "    \"pickupAddress\": string | null",
+  "  },",
+  "  \"confidence\": number,",
+  "  \"rawText\": string",
+  "}",
+  "Use dot as decimal separator. If a field is unknown, set it to null.",
+].join("\n");

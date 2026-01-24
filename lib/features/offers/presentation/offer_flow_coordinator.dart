@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../app/app_scope.dart';
 import '../../auth/domain/auth_user.dart';
+import '../../profile/domain/fixed_cost_allocation.dart';
 import '../../profile/domain/user_profile.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
 import 'controllers/offer_flow_controller.dart';
-import 'offer_flow_analysis.dart';
+import 'offer_flow_actions.dart';
 import 'offer_flow_import.dart';
 import 'offer_flow_view.dart';
 class OfferFlowCoordinator extends StatefulWidget {
@@ -34,21 +35,20 @@ class _OfferFlowCoordinatorState extends State<OfferFlowCoordinator> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<VehicleProfile>>(
-      stream: AppScope.of(context)
-          .vehicleRepository
-          .watchVehicles(widget.user.uid),
+      stream: AppScope.of(context).vehicleRepository.watchVehicles(widget.user.uid),
       builder: (context, snapshot) {
         final vehicles = snapshot.data ?? [];
         if (vehicles.isNotEmpty &&
             (_selectedVehicleId == null ||
                 !vehicles.any((vehicle) => vehicle.id == _selectedVehicleId))) {
-          _selectedVehicleId =
-              widget.profile.defaultVehicleId ?? vehicles.first.id;
+          _selectedVehicleId = widget.profile.defaultVehicleId ?? vehicles.first.id;
         }
         return OfferFlowView(
           user: widget.user,
           formKey: _formKey,
           controller: _controller,
+          requiresDuration:
+              widget.profile.fixedCostAllocation == FixedCostAllocation.perHour,
           vehicles: vehicles,
           selectedVehicleId: _selectedVehicleId,
           onVehicleChanged: (value) {
@@ -80,7 +80,7 @@ class _OfferFlowCoordinatorState extends State<OfferFlowCoordinator> {
             },
             onUpdated: () => setState(() {}),
           ),
-          onAnalyze: () => handleOfferAnalysis(
+          onAnalyze: () async => handleOfferAnalysis(
             context: context,
             formKey: _formKey,
             controller: _controller,

@@ -2,67 +2,67 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/section_card.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../controllers/offer_flow_controller.dart';
+import 'offer_details_form_fields.dart';
+import 'offer_details_summary.dart';
 
-class OfferDetailsSection extends StatelessWidget {
-  final TextEditingController payoutController;
-  final TextEditingController distanceController;
-  final TextEditingController durationController;
-  final TextEditingController pickupNameController;
-  final TextEditingController pickupAddressController;
+class OfferDetailsSection extends StatefulWidget {
+  final OfferFlowController controller;
+  final bool requiresDuration;
+  final bool hasExtraction;
 
   const OfferDetailsSection({
     super.key,
-    required this.payoutController,
-    required this.distanceController,
-    required this.durationController,
-    required this.pickupNameController,
-    required this.pickupAddressController,
+    required this.controller,
+    required this.requiresDuration,
+    required this.hasExtraction,
   });
+
+  @override
+  State<OfferDetailsSection> createState() => _OfferDetailsSectionState();
+}
+
+class _OfferDetailsSectionState extends State<OfferDetailsSection> {
+  bool _showOptional = false;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final hasPayout = widget.controller.payoutController.text.trim().isNotEmpty;
+    final hasDistance =
+        widget.controller.distanceController.text.trim().isNotEmpty;
+    final hasDuration =
+        widget.controller.durationController.text.trim().isNotEmpty;
+    final hasRequired = hasPayout &&
+        hasDistance &&
+        (!widget.requiresDuration || hasDuration);
+    if (widget.hasExtraction && hasRequired && !_showOptional) {
+      return OfferDetailsSummary(
+        controller: widget.controller,
+        onEdit: () => setState(() => _showOptional = true),
+      );
+    }
     return SectionCard(
       title: l10n.offerDetailsSection,
       children: [
-        TextFormField(
-          controller: payoutController,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: InputDecoration(labelText: l10n.offerAmountLabel),
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return l10n.offerAmountLabel;
-            }
-            return null;
-          },
+        OfferDetailsFormFields(
+          payoutController: widget.controller.payoutController,
+          distanceController: widget.controller.distanceController,
+          durationController: widget.controller.durationController,
+          pickupNameController: widget.controller.pickupNameController,
+          pickupAddressController: widget.controller.pickupAddressController,
+          showDuration: widget.requiresDuration || _showOptional,
+          showPickupFields: _showOptional,
+          requiresDuration: widget.requiresDuration,
         ),
-        const SizedBox(height: 12),
-        TextFormField(
-          controller: distanceController,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: InputDecoration(labelText: l10n.distanceKmLabel),
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return l10n.distanceKmLabel;
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 12),
-        TextFormField(
-          controller: durationController,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: InputDecoration(labelText: l10n.durationMinutesLabel),
-        ),
-        const SizedBox(height: 12),
-        TextFormField(
-          controller: pickupNameController,
-          decoration: InputDecoration(labelText: l10n.pickupNameLabel),
-        ),
-        const SizedBox(height: 12),
-        TextFormField(
-          controller: pickupAddressController,
-          decoration: InputDecoration(labelText: l10n.pickupAddressLabel),
+        const SizedBox(height: 8),
+        TextButton(
+          onPressed: () => setState(() => _showOptional = !_showOptional),
+          child: Text(
+            _showOptional
+                ? l10n.hideOptionalDetailsButton
+                : l10n.addOptionalDetailsButton,
+          ),
         ),
       ],
     );

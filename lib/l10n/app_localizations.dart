@@ -112,6 +112,24 @@ abstract class AppLocalizations {
   /// **'Offer details'**
   String get offerDetailsSection;
 
+  /// No description provided for @editOfferDetailsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit details'**
+  String get editOfferDetailsButton;
+
+  /// No description provided for @addOptionalDetailsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add optional details'**
+  String get addOptionalDetailsButton;
+
+  /// No description provided for @hideOptionalDetailsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide optional details'**
+  String get hideOptionalDetailsButton;
+
   /// No description provided for @offerAmountLabel.
   ///
   /// In en, this message translates to:
@@ -363,6 +381,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'To enable screenshot extraction, configure Firebase and deploy the extractOfferFromImage Cloud Function with the GEMINI_API_KEY secret.'**
   String get missingGeminiConfigMessage;
+
+  /// No description provided for @missingDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing information'**
+  String get missingDataTitle;
+
+  /// No description provided for @missingDataDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'To compute profitability, please complete:'**
+  String get missingDataDescription;
 
   /// No description provided for @okButton.
   ///
@@ -688,6 +718,12 @@ abstract class AppLocalizations {
   /// **'Edit profile'**
   String get profileEditTitle;
 
+  /// No description provided for @editProfileButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get editProfileButton;
+
   /// No description provided for @addVehicleTitle.
   ///
   /// In en, this message translates to:
@@ -699,6 +735,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit vehicle'**
   String get editVehicleTitle;
+
+  /// No description provided for @editVehicleButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit vehicle'**
+  String get editVehicleButton;
 
   /// No description provided for @saveVehicleButton.
   ///

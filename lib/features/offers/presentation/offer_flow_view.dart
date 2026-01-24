@@ -10,6 +10,7 @@ class OfferFlowView extends StatelessWidget {
   final AuthUser user;
   final GlobalKey<FormState> formKey;
   final OfferFlowController controller;
+  final bool requiresDuration;
   final List<VehicleProfile> vehicles;
   final String? selectedVehicleId;
   final ValueChanged<String?> onVehicleChanged;
@@ -24,6 +25,7 @@ class OfferFlowView extends StatelessWidget {
     required this.user,
     required this.formKey,
     required this.controller,
+    required this.requiresDuration,
     required this.vehicles,
     required this.selectedVehicleId,
     required this.onVehicleChanged,
@@ -53,6 +55,7 @@ class OfferFlowView extends StatelessWidget {
             : OfferFlowForm(
                 formKey: formKey,
                 controller: controller,
+                requiresDuration: requiresDuration,
                 vehicles: vehicles,
                 selectedVehicleId: selectedVehicleId,
                 onVehicleChanged: onVehicleChanged,

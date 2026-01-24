@@ -12,6 +12,7 @@ import 'widgets/extraction_summary_card.dart';
 class OfferFlowForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final OfferFlowController controller;
+  final bool requiresDuration;
   final List<VehicleProfile> vehicles;
   final String? selectedVehicleId;
   final ValueChanged<String?> onVehicleChanged;
@@ -25,6 +26,7 @@ class OfferFlowForm extends StatelessWidget {
     super.key,
     required this.formKey,
     required this.controller,
+    required this.requiresDuration,
     required this.vehicles,
     required this.selectedVehicleId,
     required this.onVehicleChanged,
@@ -44,11 +46,9 @@ class OfferFlowForm extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           OfferDetailsSection(
-            payoutController: controller.payoutController,
-            distanceController: controller.distanceController,
-            durationController: controller.durationController,
-            pickupNameController: controller.pickupNameController,
-            pickupAddressController: controller.pickupAddressController,
+            controller: controller,
+            requiresDuration: requiresDuration,
+            hasExtraction: extraction != null,
           ),
           const SizedBox(height: 12),
           VehiclePickerSection(

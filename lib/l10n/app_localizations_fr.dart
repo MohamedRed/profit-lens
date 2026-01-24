@@ -15,6 +15,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get offerDetailsSection => 'Détails de l\'offre';
 
   @override
+  String get editOfferDetailsButton => 'Modifier les détails';
+
+  @override
+  String get addOptionalDetailsButton => 'Ajouter des détails optionnels';
+
+  @override
+  String get hideOptionalDetailsButton => 'Masquer les détails optionnels';
+
+  @override
   String get offerAmountLabel => 'Gain (EUR)';
 
   @override
@@ -140,6 +149,13 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get missingGeminiConfigMessage =>
       'Pour activer l\'extraction depuis une capture, configurez Firebase et déployez la fonction Cloud extractOfferFromImage avec le secret GEMINI_API_KEY.';
+
+  @override
+  String get missingDataTitle => 'Informations manquantes';
+
+  @override
+  String get missingDataDescription =>
+      'Pour calculer la rentabilité, complétez :';
 
   @override
   String get okButton => 'OK';
@@ -310,10 +326,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profileEditTitle => 'Modifier le profil';
 
   @override
+  String get editProfileButton => 'Modifier le profil';
+
+  @override
   String get addVehicleTitle => 'Ajouter un véhicule';
 
   @override
   String get editVehicleTitle => 'Modifier le véhicule';
+
+  @override
+  String get editVehicleButton => 'Modifier le véhicule';
 
   @override
   String get saveVehicleButton => 'Enregistrer le véhicule';

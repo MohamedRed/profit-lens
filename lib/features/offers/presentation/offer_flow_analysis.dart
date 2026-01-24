@@ -5,11 +5,9 @@ import '../../../features/profitability/domain/cost_breakdown.dart';
 import '../../../features/profitability/domain/cost_settings.dart';
 import '../../../features/profitability/domain/profitability_input.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../auth/domain/auth_user.dart';
 import '../../profile/domain/user_profile.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
 import '../domain/offer_record.dart';
-import '../presentation/offer_result_screen.dart';
 import 'controllers/offer_flow_controller.dart';
 
 OfferRecord? analyzeOffer({
@@ -55,40 +53,5 @@ OfferRecord? analyzeOffer({
     costSnapshot: costs,
     breakdown: breakdown,
     extraction: controller.extraction,
-  );
-}
-
-void handleOfferAnalysis({
-  required BuildContext context,
-  required GlobalKey<FormState> formKey,
-  required OfferFlowController controller,
-  required UserProfile profile,
-  required AuthUser user,
-  required List<VehicleProfile> vehicles,
-  required String? selectedVehicleId,
-}) {
-  if (!(formKey.currentState?.validate() ?? false)) {
-    return;
-  }
-  final vehicle = vehicles.firstWhere(
-    (item) => item.id == selectedVehicleId,
-    orElse: () => vehicles.first,
-  );
-  final record = analyzeOffer(
-    context: context,
-    controller: controller,
-    profile: profile,
-    vehicle: vehicle,
-  );
-  if (record == null) {
-    return;
-  }
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (context) => OfferResultScreen(
-        user: user,
-        record: record,
-      ),
-    ),
   );
 }

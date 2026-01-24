@@ -15,6 +15,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get offerDetailsSection => 'تفاصيل العرض';
 
   @override
+  String get editOfferDetailsButton => 'تعديل التفاصيل';
+
+  @override
+  String get addOptionalDetailsButton => 'إضافة تفاصيل اختيارية';
+
+  @override
+  String get hideOptionalDetailsButton => 'إخفاء التفاصيل الاختيارية';
+
+  @override
   String get offerAmountLabel => 'العائد (يورو)';
 
   @override
@@ -140,6 +149,12 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get missingGeminiConfigMessage =>
       'لتفعيل استخراج لقطة الشاشة، قم بإعداد Firebase ونشر دالة extractOfferFromImage مع السر GEMINI_API_KEY.';
+
+  @override
+  String get missingDataTitle => 'معلومات ناقصة';
+
+  @override
+  String get missingDataDescription => 'لحساب الربحية، يرجى إكمال:';
 
   @override
   String get okButton => 'حسنًا';
@@ -308,10 +323,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileEditTitle => 'تعديل الملف';
 
   @override
+  String get editProfileButton => 'تعديل الملف الشخصي';
+
+  @override
   String get addVehicleTitle => 'إضافة مركبة';
 
   @override
   String get editVehicleTitle => 'تعديل المركبة';
+
+  @override
+  String get editVehicleButton => 'تعديل المركبة';
 
   @override
   String get saveVehicleButton => 'حفظ المركبة';
