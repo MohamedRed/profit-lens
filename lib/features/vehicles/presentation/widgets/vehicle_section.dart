@@ -54,6 +54,7 @@ class VehicleSection extends StatelessWidget {
         VehiclePresetToggle(value: useVehiclePresets, onChanged: onPresetsChanged),
         const SizedBox(height: 12),
         VehicleIdentityFields(
+          vehicleType: vehicleType,
           nameController: nameController,
           brandController: brandController,
           modelController: modelController,

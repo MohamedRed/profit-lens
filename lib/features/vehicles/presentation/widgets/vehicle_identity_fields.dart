@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/vehicle_type.dart';
 import 'vehicle_name_field.dart';
+import 'vehicle_brand_autocomplete_field.dart';
+import 'vehicle_model_autocomplete_field.dart';
 
 class VehicleIdentityFields extends StatelessWidget {
+  final VehicleType vehicleType;
   final TextEditingController nameController;
   final TextEditingController brandController;
   final TextEditingController modelController;
@@ -13,6 +17,7 @@ class VehicleIdentityFields extends StatelessWidget {
 
   const VehicleIdentityFields({
     super.key,
+    required this.vehicleType,
     required this.nameController,
     required this.brandController,
     required this.modelController,
@@ -28,15 +33,15 @@ class VehicleIdentityFields extends StatelessWidget {
       children: [
         VehicleNameField(controller: nameController),
         const SizedBox(height: 12),
-        TextFormField(
+        VehicleBrandAutocompleteField(
+          vehicleType: vehicleType,
           controller: brandController,
-          decoration: InputDecoration(labelText: l10n.vehicleBrandLabel),
         ),
         const SizedBox(height: 12),
-        TextFormField(
+        VehicleModelAutocompleteField(
+          vehicleType: vehicleType,
+          brandController: brandController,
           controller: modelController,
-          decoration: InputDecoration(labelText: l10n.vehicleModelLabel),
-          textInputAction: TextInputAction.done,
           onEditingComplete: onLookupModel,
         ),
         if (showLookup) ...[
