@@ -78,8 +78,6 @@
   "pickupNameLabel": "اسم الاستلام",
   "pickupAddressLabel": "عنوان الاستلام",
   "dropoffAddressLabel": "عنوان التسليم",
-  "saveOfferButton": "حفظ العرض",
-  "offerSavedMessage": "تم حفظ العرض.",
   "offerSaveFailedMessage": "تعذر حفظ العرض.",
   "historyDetailTitle": "تفاصيل العرض",
   "incomeTaxLabel": "ضريبة الدخل",

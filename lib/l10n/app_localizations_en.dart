@@ -247,12 +247,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dropoffAddressLabel => 'Drop-off address';
 
   @override
-  String get saveOfferButton => 'Save offer';
-
-  @override
-  String get offerSavedMessage => 'Offer saved.';
-
-  @override
   String get offerSaveFailedMessage => 'Unable to save offer.';
 
   @override

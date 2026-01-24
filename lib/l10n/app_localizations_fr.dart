@@ -249,12 +249,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dropoffAddressLabel => 'Adresse de livraison';
 
   @override
-  String get saveOfferButton => 'Enregistrer l’offre';
-
-  @override
-  String get offerSavedMessage => 'Offre enregistrée.';
-
-  @override
   String get offerSaveFailedMessage => 'Impossible d’enregistrer l’offre.';
 
   @override

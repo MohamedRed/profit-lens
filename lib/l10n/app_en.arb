@@ -78,8 +78,6 @@
   "pickupNameLabel": "Pickup name",
   "pickupAddressLabel": "Pickup address",
   "dropoffAddressLabel": "Drop-off address",
-  "saveOfferButton": "Save offer",
-  "offerSavedMessage": "Offer saved.",
   "offerSaveFailedMessage": "Unable to save offer.",
   "historyDetailTitle": "Offer details",
   "incomeTaxLabel": "Income tax",

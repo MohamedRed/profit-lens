@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/app_scope.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../../profile/domain/user_profile.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
@@ -43,6 +45,19 @@ Future<void> handleOfferAnalysis({
     vehicle: vehicle,
   );
   if (record == null) {
+    return;
+  }
+  try {
+    await AppScope.of(context).offerRepository.saveOffer(user.uid, record);
+  } catch (_) {
+    if (context.mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.offerSaveFailedMessage)),
+      );
+    }
+  }
+  if (!context.mounted) {
     return;
   }
   Navigator.of(context).push(

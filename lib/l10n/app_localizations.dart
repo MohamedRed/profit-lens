@@ -568,18 +568,6 @@ abstract class AppLocalizations {
   /// **'Drop-off address'**
   String get dropoffAddressLabel;
 
-  /// No description provided for @saveOfferButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Save offer'**
-  String get saveOfferButton;
-
-  /// No description provided for @offerSavedMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Offer saved.'**
-  String get offerSavedMessage;
-
   /// No description provided for @offerSaveFailedMessage.
   ///
   /// In en, this message translates to:

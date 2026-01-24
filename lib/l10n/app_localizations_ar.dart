@@ -246,12 +246,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dropoffAddressLabel => 'عنوان التسليم';
 
   @override
-  String get saveOfferButton => 'حفظ العرض';
-
-  @override
-  String get offerSavedMessage => 'تم حفظ العرض.';
-
-  @override
   String get offerSaveFailedMessage => 'تعذر حفظ العرض.';
 
   @override

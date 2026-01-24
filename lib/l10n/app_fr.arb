@@ -78,8 +78,6 @@
   "pickupNameLabel": "Nom du retrait",
   "pickupAddressLabel": "Adresse de retrait",
   "dropoffAddressLabel": "Adresse de livraison",
-  "saveOfferButton": "Enregistrer l’offre",
-  "offerSavedMessage": "Offre enregistrée.",
   "offerSaveFailedMessage": "Impossible d’enregistrer l’offre.",
   "historyDetailTitle": "Détails de l’offre",
   "incomeTaxLabel": "Impôt sur le revenu",
