@@ -24,6 +24,10 @@ class PlaceAutocompleteWebController {
       throw StateError('Missing GOOGLE_MAPS_API_KEY.');
     }
     await GoogleMapsLoader.load(apiKey: googleMapsApiKey);
+    final authFailure = GoogleMapsLoader.authFailureMessage;
+    if (authFailure != null) {
+      throw StateError(authFailure);
+    }
     final maps = js_util.getProperty(js_util.getProperty(window, 'google'), 'maps');
     final placesLibrary = await js_util.promiseToFuture(
       js_util.callMethod(maps, 'importLibrary', ['places']),

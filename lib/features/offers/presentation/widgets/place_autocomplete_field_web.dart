@@ -54,11 +54,11 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
     }
     try {
       await _webController.boot();
-    } catch (_) {
+    } catch (error) {
       if (mounted) {
         setState(() {
           _loadFailed = true;
-          _errorDetails = 'Failed to load Google Maps JS / Places UI Kit.';
+          _errorDetails = error.toString();
         });
       }
     }

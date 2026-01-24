@@ -6,12 +6,15 @@ import 'dart:js_util' as js_util;
 
 class GoogleMapsLoader {
   static Completer<void>? _loader;
+  static bool _authHooked = false;
+  static String? _authFailure;
 
   static Future<void> load({required String apiKey}) {
     if (_loader != null) {
       return _loader!.future;
     }
     _loader = Completer<void>();
+    _hookAuthFailure();
     if (apiKey.isEmpty) {
       _loader!.completeError(StateError('Missing GOOGLE_MAPS_API_KEY.'));
       return _loader!.future;
@@ -26,13 +29,35 @@ class GoogleMapsLoader {
       ..src =
           'https://maps.googleapis.com/maps/api/js?key=$apiKey&v=weekly&loading=async&libraries=places';
     script.onError.listen((_) {
-      _loader!.completeError(StateError('Failed to load Google Maps JS.'));
+      _failLoader('Failed to load Google Maps JS.');
     });
     script.onLoad.listen((_) {
-      _loader!.complete();
+      if (_isLoaded()) {
+        _loader!.complete();
+      } else {
+        _failLoader('Google Maps JS loaded but API is unavailable.');
+      }
     });
     document.head!.append(script);
     return _loader!.future;
+  }
+
+  static String? get authFailureMessage => _authFailure;
+
+  static void _hookAuthFailure() {
+    if (_authHooked) return;
+    _authHooked = true;
+    js_util.setProperty(window, 'gm_authFailure', () {
+      _authFailure =
+          'Google Maps auth failure (check API key, referrer, or billing).';
+      _failLoader(_authFailure!);
+    });
+  }
+
+  static void _failLoader(String message) {
+    if (_loader != null && !_loader!.isCompleted) {
+      _loader!.completeError(StateError(message));
+    }
   }
 
   static bool _isLoaded() {
