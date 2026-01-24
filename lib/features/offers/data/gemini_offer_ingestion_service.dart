@@ -4,6 +4,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/config/app_config.dart';
+import '../../../core/config/firebase_regions.dart';
 import '../domain/offer.dart';
 import '../domain/offer_extraction_result.dart';
 import 'offer_ingestion_service.dart';
@@ -26,8 +27,9 @@ class GeminiOfferIngestionService implements OfferIngestionService {
 
     final bytes = await image.readAsBytes();
     final base64Image = base64Encode(bytes);
-    final callable =
-        (_functions ?? FirebaseFunctions.instance).httpsCallable(
+    final callable = (_functions ??
+            FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion))
+        .httpsCallable(
       'extractOfferFromImage',
     );
     final response = await callable.call(<String, dynamic>{

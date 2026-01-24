@@ -1,6 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
 
 import '../../../core/config/app_config.dart';
+import '../../../core/config/firebase_regions.dart';
 import '../domain/energy_type.dart';
 import 'vehicle_model_lookup_service.dart';
 
@@ -22,8 +23,9 @@ class FirebaseVehicleModelLookupService implements VehicleModelLookupService {
     if (energyType == EnergyType.none) {
       return null;
     }
-    final callable =
-        (_functions ?? FirebaseFunctions.instance).httpsCallable(
+    final callable = (_functions ??
+            FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion))
+        .httpsCallable(
       'lookupVehicleModel',
     );
     final response = await callable.call(<String, dynamic>{
