@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 typedef VehicleOptionsBuilder = Iterable<String> Function(String query);
 
-class VehicleAutocompleteField extends StatelessWidget {
+class VehicleAutocompleteField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final VehicleOptionsBuilder optionsBuilder;
@@ -19,23 +19,45 @@ class VehicleAutocompleteField extends StatelessWidget {
   });
 
   @override
+  @override
+  State<VehicleAutocompleteField> createState() =>
+      _VehicleAutocompleteFieldState();
+}
+
+class _VehicleAutocompleteFieldState extends State<VehicleAutocompleteField> {
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return RawAutocomplete<String>(
-      textEditingController: controller,
+      textEditingController: widget.controller,
+      focusNode: _focusNode,
       optionsBuilder: (value) {
         final query = value.text.trim();
         if (query.isEmpty) return const Iterable<String>.empty();
-        return optionsBuilder(query);
+        return widget.optionsBuilder(query);
       },
       displayStringForOption: (option) => option,
-      onSelected: (selection) => controller.text = selection,
+      onSelected: (selection) => widget.controller.text = selection,
       fieldViewBuilder: (context, textController, focusNode, onFieldSubmitted) {
         return TextFormField(
           controller: textController,
           focusNode: focusNode,
-          decoration: InputDecoration(labelText: label),
-          textInputAction: textInputAction,
-          onEditingComplete: onEditingComplete ?? onFieldSubmitted,
+          decoration: InputDecoration(labelText: widget.label),
+          textInputAction: widget.textInputAction,
+          onEditingComplete: widget.onEditingComplete ?? onFieldSubmitted,
         );
       },
       optionsViewBuilder: (context, onSelected, options) {
