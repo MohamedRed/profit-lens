@@ -110,6 +110,13 @@
   "saveVehicleButton": "Save vehicle",
   "vehicleSaveFailedMessage": "Unable to save vehicle.",
   "vehicleNameLabel": "Vehicle name",
+  "vehicleBrandLabel": "Brand",
+  "vehicleModelLabel": "Model",
+  "useVehiclePresetsLabel": "Use vehicle presets",
+  "modelLookupButton": "Apply brand/model data",
+  "modelLookupAppliedMessage": "Model consumption applied.",
+  "modelLookupNotFoundMessage": "No match found for this brand/model.",
+  "modelLookupFailedMessage": "Unable to fetch model data.",
   "noHistoryMessage": "No offers saved yet.",
   "profitabilityFailedMessage": "Unable to compute profitability. Check your profile settings."
 }

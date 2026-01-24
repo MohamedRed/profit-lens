@@ -15,6 +15,8 @@ void main() {
     final vehicle = VehicleProfile(
       id: 'test',
       name: 'Test bike',
+      brand: null,
+      model: null,
       type: VehicleType.ebike,
       energyType: EnergyType.electric,
       energyConsumptionPer100Km: 5,

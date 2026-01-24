@@ -110,6 +110,13 @@
   "saveVehicleButton": "حفظ المركبة",
   "vehicleSaveFailedMessage": "تعذر حفظ المركبة.",
   "vehicleNameLabel": "اسم المركبة",
+  "vehicleBrandLabel": "العلامة التجارية",
+  "vehicleModelLabel": "الطراز",
+  "useVehiclePresetsLabel": "استخدام قيم المركبة الافتراضية",
+  "modelLookupButton": "تطبيق بيانات العلامة/الطراز",
+  "modelLookupAppliedMessage": "تم تطبيق الاستهلاك.",
+  "modelLookupNotFoundMessage": "لم يتم العثور على تطابق لهذه العلامة/الطراز.",
+  "modelLookupFailedMessage": "تعذر جلب بيانات الطراز.",
   "noHistoryMessage": "لا توجد عروض محفوظة.",
   "profitabilityFailedMessage": "تعذر حساب الربحية. تحقق من إعدادات ملفك."
 }

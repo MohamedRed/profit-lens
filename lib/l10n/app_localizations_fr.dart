@@ -348,6 +348,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String get vehicleNameLabel => 'Nom du véhicule';
 
   @override
+  String get vehicleBrandLabel => 'Marque';
+
+  @override
+  String get vehicleModelLabel => 'Modèle';
+
+  @override
+  String get useVehiclePresetsLabel => 'Utiliser les valeurs véhicule';
+
+  @override
+  String get modelLookupButton => 'Appliquer la marque/modèle';
+
+  @override
+  String get modelLookupAppliedMessage => 'Consommation appliquée.';
+
+  @override
+  String get modelLookupNotFoundMessage =>
+      'Aucun modèle trouvé pour cette marque/modèle.';
+
+  @override
+  String get modelLookupFailedMessage =>
+      'Impossible de récupérer les données du modèle.';
+
+  @override
   String get noHistoryMessage => 'Aucune offre enregistrée.';
 
   @override

@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/widgets/primary_button.dart';
+import '../../../features/defaults/data/vehicle_presets_fr.dart';
+import '../../../features/defaults/presentation/preset_sources_section.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/energy_type.dart';
 import '../domain/fuel_type.dart';
 import '../domain/vehicle_type.dart';
 import 'controllers/vehicle_form_controller.dart';
+import 'controllers/vehicle_form_controller_actions.dart';
 import 'widgets/vehicle_section.dart';
 
 class VehicleFormBody extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final VehicleFormController controller;
+  final bool useVehiclePresets;
+  final ValueChanged<bool> onPresetsChanged;
+  final VoidCallback onPresetEdited;
+  final VoidCallback? onLookupModel;
+  final bool isLookingUpModel;
+  final bool showModelLookup;
   final bool isSaving;
   final VoidCallback onSave;
   final ValueChanged<VehicleType> onVehicleTypeChanged;
@@ -21,6 +30,12 @@ class VehicleFormBody extends StatelessWidget {
     super.key,
     required this.formKey,
     required this.controller,
+    required this.useVehiclePresets,
+    required this.onPresetsChanged,
+    required this.onPresetEdited,
+    required this.onLookupModel,
+    required this.isLookingUpModel,
+    required this.showModelLookup,
     required this.isSaving,
     required this.onSave,
     required this.onVehicleTypeChanged,
@@ -40,17 +55,27 @@ class VehicleFormBody extends StatelessWidget {
             vehicleType: controller.vehicleType,
             energyType: controller.energyType,
             fuelType: controller.fuelType,
+            useVehiclePresets: useVehiclePresets,
             onVehicleTypeChanged: onVehicleTypeChanged,
             onEnergyTypeChanged: onEnergyTypeChanged,
             onFuelTypeChanged: onFuelTypeChanged,
+            onPresetsChanged: onPresetsChanged,
+            onPresetEdited: onPresetEdited,
             nameController: controller.nameController,
+            brandController: controller.brandController,
+            modelController: controller.modelController,
             consumptionController: controller.consumptionController,
             energyPriceController: controller.energyPriceController,
             maintenanceController: controller.maintenanceController,
             depreciationController: controller.depreciationController,
             consumptionSuffix: controller.consumptionSuffix(),
             energyPriceSuffix: controller.energyPriceSuffix(),
+            onLookupModel: onLookupModel,
+            isLookingUpModel: isLookingUpModel,
+            showModelLookup: showModelLookup,
           ),
+          const SizedBox(height: 12),
+          PresetSourcesSection(sources: VehiclePresetsFr.sources),
           const SizedBox(height: 16),
           PrimaryButton(
             label: isSaving ? l10n.loadingLabel : l10n.saveVehicleButton,

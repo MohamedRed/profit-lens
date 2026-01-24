@@ -1,5 +1,8 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { defineSecret, defineString } from "firebase-functions/params";
+import { loadAdemeRecords } from "./ademe_dataset";
+import { selectConsumption } from "./ademe_consumption";
+import { findAdemeMatch, LookupEnergy } from "./ademe_matcher";
 import { requestGeminiOffer } from "./gemini_client";
 import { parseGeminiJson } from "./gemini_json";
 
@@ -41,3 +44,41 @@ export const extractOfferFromImage = onCall(
     return parseGeminiJson(text);
   }
 );
+
+export const lookupVehicleModel = onCall(
+  {
+    cors: true,
+    timeoutSeconds: 20,
+    memory: "256MiB",
+    region: "europe-west1",
+  },
+  async (request) => {
+    const payload = request.data as {
+      brand?: string;
+      model?: string;
+      energyType?: string;
+    };
+    const brand = payload?.brand?.trim();
+    const model = payload?.model?.trim();
+    const energy = parseEnergy(payload?.energyType);
+    if (!brand || !model || !energy) {
+      throw new HttpsError("invalid-argument", "Missing lookup payload.");
+    }
+    const records = await loadAdemeRecords();
+    const match = findAdemeMatch(records, brand, model, energy);
+    if (!match) {
+      return { match: false };
+    }
+    const consumption = selectConsumption(match, energy);
+    if (consumption == null) {
+      return { match: false };
+    }
+    return { match: true, consumptionPer100Km: consumption };
+  }
+);
+
+function parseEnergy(value?: string): LookupEnergy | null {
+  if (value == "electric") return "electric";
+  if (value == "fuel") return "fuel";
+  return null;
+}

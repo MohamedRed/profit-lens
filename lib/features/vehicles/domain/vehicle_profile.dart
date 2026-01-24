@@ -5,6 +5,8 @@ import 'vehicle_type.dart';
 class VehicleProfile {
   final String id;
   final String name;
+  final String? brand;
+  final String? model;
   final VehicleType type;
   final EnergyType energyType;
   final FuelType? fuelType;
@@ -16,6 +18,8 @@ class VehicleProfile {
   const VehicleProfile({
     required this.id,
     required this.name,
+    required this.brand,
+    required this.model,
     required this.type,
     required this.energyType,
     this.fuelType,
@@ -28,6 +32,8 @@ class VehicleProfile {
   VehicleProfile copyWith({
     String? id,
     String? name,
+    String? brand,
+    String? model,
     VehicleType? type,
     EnergyType? energyType,
     FuelType? fuelType,
@@ -39,6 +45,8 @@ class VehicleProfile {
     return VehicleProfile(
       id: id ?? this.id,
       name: name ?? this.name,
+      brand: brand ?? this.brand,
+      model: model ?? this.model,
       type: type ?? this.type,
       energyType: energyType ?? this.energyType,
       fuelType: fuelType ?? this.fuelType,

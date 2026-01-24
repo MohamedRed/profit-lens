@@ -345,6 +345,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vehicleNameLabel => 'Vehicle name';
 
   @override
+  String get vehicleBrandLabel => 'Brand';
+
+  @override
+  String get vehicleModelLabel => 'Model';
+
+  @override
+  String get useVehiclePresetsLabel => 'Use vehicle presets';
+
+  @override
+  String get modelLookupButton => 'Apply brand/model data';
+
+  @override
+  String get modelLookupAppliedMessage => 'Model consumption applied.';
+
+  @override
+  String get modelLookupNotFoundMessage =>
+      'No match found for this brand/model.';
+
+  @override
+  String get modelLookupFailedMessage => 'Unable to fetch model data.';
+
+  @override
   String get noHistoryMessage => 'No offers saved yet.';
 
   @override

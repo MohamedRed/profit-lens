@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/widgets/primary_button.dart';
-import '../../../features/defaults/data/france_defaults.dart';
-import '../../../features/defaults/presentation/preset_sources_section.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../profile/domain/business_activity.dart';
 import '../../profile/domain/fixed_cost_allocation.dart';
@@ -9,15 +7,22 @@ import '../../vehicles/domain/energy_type.dart';
 import '../../vehicles/domain/fuel_type.dart';
 import '../../vehicles/domain/vehicle_type.dart';
 import '../../vehicles/presentation/controllers/vehicle_form_controller.dart';
-import '../../vehicles/presentation/widgets/vehicle_section.dart';
 import 'controllers/business_profile_controller.dart';
 import 'sections/business_costs_section.dart';
 import 'sections/business_activity_field.dart';
+import 'profile_setup_sources_section.dart';
+import 'profile_setup_vehicle_section.dart';
 class ProfileSetupView extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final BusinessProfileController businessController;
   final VehicleFormController vehicleController;
   final bool isSaving;
+  final bool useVehiclePresets;
+  final ValueChanged<bool> onVehiclePresetsChanged;
+  final VoidCallback onVehiclePresetEdited;
+  final VoidCallback? onLookupModel;
+  final bool isLookingUpModel;
+  final bool showModelLookup;
   final ValueChanged<BusinessActivity> onActivityChanged;
   final ValueChanged<FixedCostAllocation> onAllocationChanged;
   final ValueChanged<bool> onDefaultsChanged;
@@ -25,19 +30,16 @@ class ProfileSetupView extends StatelessWidget {
   final ValueChanged<EnergyType> onEnergyTypeChanged;
   final ValueChanged<FuelType?> onFuelTypeChanged;
   final VoidCallback onSave;
-
   const ProfileSetupView({
     super.key,
-    required this.formKey,
-    required this.businessController,
-    required this.vehicleController,
-    required this.isSaving,
-    required this.onActivityChanged,
-    required this.onAllocationChanged,
-    required this.onDefaultsChanged,
-    required this.onVehicleTypeChanged,
-    required this.onEnergyTypeChanged,
-    required this.onFuelTypeChanged,
+    required this.formKey, required this.businessController,
+    required this.vehicleController, required this.isSaving,
+    required this.useVehiclePresets, required this.onVehiclePresetsChanged,
+    required this.onVehiclePresetEdited, required this.onLookupModel,
+    required this.isLookingUpModel, required this.showModelLookup,
+    required this.onActivityChanged, required this.onAllocationChanged,
+    required this.onDefaultsChanged, required this.onVehicleTypeChanged,
+    required this.onEnergyTypeChanged, required this.onFuelTypeChanged,
     required this.onSave,
   });
   @override
@@ -69,23 +71,20 @@ class ProfileSetupView extends StatelessWidget {
             onDefaultsChanged: onDefaultsChanged,
           ),
           const SizedBox(height: 12),
-          VehicleSection(
-            vehicleType: vehicleController.vehicleType,
-            energyType: vehicleController.energyType,
-            fuelType: vehicleController.fuelType,
+          ProfileSetupVehicleSection(
+            controller: vehicleController,
+            useVehiclePresets: useVehiclePresets,
+            onPresetsChanged: onVehiclePresetsChanged,
+            onPresetEdited: onVehiclePresetEdited,
             onVehicleTypeChanged: onVehicleTypeChanged,
             onEnergyTypeChanged: onEnergyTypeChanged,
             onFuelTypeChanged: onFuelTypeChanged,
-            nameController: vehicleController.nameController,
-            consumptionController: vehicleController.consumptionController,
-            energyPriceController: vehicleController.energyPriceController,
-            maintenanceController: vehicleController.maintenanceController,
-            depreciationController: vehicleController.depreciationController,
-            consumptionSuffix: vehicleController.consumptionSuffix(),
-            energyPriceSuffix: vehicleController.energyPriceSuffix(),
+            onLookupModel: onLookupModel,
+            isLookingUpModel: isLookingUpModel,
+            showModelLookup: showModelLookup,
           ),
           const SizedBox(height: 12),
-          PresetSourcesSection(sources: FranceDefaults.sources),
+          const ProfileSetupSourcesSection(),
           const SizedBox(height: 16),
           PrimaryButton(
             label: isSaving ? l10n.loadingLabel : l10n.saveProfileButton,

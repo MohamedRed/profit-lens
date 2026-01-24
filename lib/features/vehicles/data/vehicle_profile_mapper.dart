@@ -9,6 +9,8 @@ class VehicleProfileMapper {
     final type = _vehicleTypeFromString(data['type'] as String?);
     final energyType = _energyTypeFromString(data['energyType'] as String?);
     final name = data['name'] as String?;
+    final brand = data['brand'] as String?;
+    final model = data['model'] as String?;
     final consumption = (data['energyConsumptionPer100Km'] as num?)?.toDouble();
     final energyPrice = (data['energyPricePerUnit'] as num?)?.toDouble();
     final maintenance = (data['maintenancePerKm'] as num?)?.toDouble();
@@ -25,6 +27,8 @@ class VehicleProfileMapper {
     return VehicleProfile(
       id: id,
       name: name,
+      brand: brand,
+      model: model,
       type: type,
       energyType: energyType,
       fuelType: _fuelTypeFromString(data['fuelType'] as String?),
@@ -38,6 +42,8 @@ class VehicleProfileMapper {
   Map<String, dynamic> toDocument(VehicleProfile vehicle) {
     return {
       'name': vehicle.name,
+      'brand': vehicle.brand,
+      'model': vehicle.model,
       'type': vehicle.type.name,
       'energyType': vehicle.energyType.name,
       'fuelType': vehicle.fuelType?.name,

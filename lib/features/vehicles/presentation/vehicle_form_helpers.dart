@@ -39,6 +39,12 @@ VehicleProfile buildVehicleProfile({
   return VehicleProfile(
     id: id,
     name: controller.nameController.text.trim(),
+    brand: controller.brandController.text.trim().isEmpty
+        ? null
+        : controller.brandController.text.trim(),
+    model: controller.modelController.text.trim().isEmpty
+        ? null
+        : controller.modelController.text.trim(),
     type: controller.vehicleType,
     energyType: controller.energyType,
     fuelType: controller.fuelType,

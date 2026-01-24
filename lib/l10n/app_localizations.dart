@@ -760,6 +760,48 @@ abstract class AppLocalizations {
   /// **'Vehicle name'**
   String get vehicleNameLabel;
 
+  /// No description provided for @vehicleBrandLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Brand'**
+  String get vehicleBrandLabel;
+
+  /// No description provided for @vehicleModelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get vehicleModelLabel;
+
+  /// No description provided for @useVehiclePresetsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Use vehicle presets'**
+  String get useVehiclePresetsLabel;
+
+  /// No description provided for @modelLookupButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply brand/model data'**
+  String get modelLookupButton;
+
+  /// No description provided for @modelLookupAppliedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Model consumption applied.'**
+  String get modelLookupAppliedMessage;
+
+  /// No description provided for @modelLookupNotFoundMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No match found for this brand/model.'**
+  String get modelLookupNotFoundMessage;
+
+  /// No description provided for @modelLookupFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to fetch model data.'**
+  String get modelLookupFailedMessage;
+
   /// No description provided for @noHistoryMessage.
   ///
   /// In en, this message translates to:

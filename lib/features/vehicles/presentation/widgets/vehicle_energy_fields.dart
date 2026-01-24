@@ -7,6 +7,7 @@ class VehicleEnergyFields extends StatelessWidget {
   final TextEditingController energyPriceController;
   final String consumptionSuffix;
   final String energyPriceSuffix;
+  final ValueChanged<String>? onConsumptionChanged;
 
   const VehicleEnergyFields({
     super.key,
@@ -14,6 +15,7 @@ class VehicleEnergyFields extends StatelessWidget {
     required this.energyPriceController,
     required this.consumptionSuffix,
     required this.energyPriceSuffix,
+    this.onConsumptionChanged,
   });
 
   @override
@@ -28,6 +30,7 @@ class VehicleEnergyFields extends StatelessWidget {
             labelText: l10n.consumptionLabel,
             suffixText: consumptionSuffix,
           ),
+          onChanged: onConsumptionChanged,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
               return l10n.consumptionLabel;

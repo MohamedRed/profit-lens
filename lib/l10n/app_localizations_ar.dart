@@ -344,6 +344,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vehicleNameLabel => 'اسم المركبة';
 
   @override
+  String get vehicleBrandLabel => 'العلامة التجارية';
+
+  @override
+  String get vehicleModelLabel => 'الطراز';
+
+  @override
+  String get useVehiclePresetsLabel => 'استخدام قيم المركبة الافتراضية';
+
+  @override
+  String get modelLookupButton => 'تطبيق بيانات العلامة/الطراز';
+
+  @override
+  String get modelLookupAppliedMessage => 'تم تطبيق الاستهلاك.';
+
+  @override
+  String get modelLookupNotFoundMessage =>
+      'لم يتم العثور على تطابق لهذه العلامة/الطراز.';
+
+  @override
+  String get modelLookupFailedMessage => 'تعذر جلب بيانات الطراز.';
+
+  @override
   String get noHistoryMessage => 'لا توجد عروض محفوظة.';
 
   @override

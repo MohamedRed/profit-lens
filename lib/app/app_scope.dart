@@ -9,6 +9,8 @@ import '../features/offers/data/offer_repository.dart';
 import '../features/profile/data/firestore_user_profile_repository.dart';
 import '../features/profile/data/user_profile_repository.dart';
 import '../features/profitability/domain/profitability_engine.dart';
+import '../features/vehicles/data/firebase_vehicle_model_lookup_service.dart';
+import '../features/vehicles/data/vehicle_model_lookup_service.dart';
 import '../features/vehicles/data/firestore_vehicle_repository.dart';
 import '../features/vehicles/data/vehicle_repository.dart';
 
@@ -19,6 +21,7 @@ class AppServices {
   final OfferRepository offerRepository;
   final OfferIngestionService offerIngestionService;
   final ProfitabilityEngine profitabilityEngine;
+  final VehicleModelLookupService vehicleModelLookupService;
 
   AppServices({
     AuthRepository? authRepository,
@@ -27,6 +30,7 @@ class AppServices {
     OfferRepository? offerRepository,
     OfferIngestionService? offerIngestionService,
     ProfitabilityEngine? profitabilityEngine,
+    VehicleModelLookupService? vehicleModelLookupService,
   })  : authRepository = authRepository ?? FirebaseAuthRepository(),
         userProfileRepository =
             userProfileRepository ?? FirestoreUserProfileRepository(),
@@ -34,7 +38,9 @@ class AppServices {
         offerRepository = offerRepository ?? FirestoreOfferRepository(),
         offerIngestionService =
             offerIngestionService ?? GeminiOfferIngestionService(),
-        profitabilityEngine = profitabilityEngine ?? ProfitabilityEngine();
+        profitabilityEngine = profitabilityEngine ?? ProfitabilityEngine(),
+        vehicleModelLookupService = vehicleModelLookupService ??
+            FirebaseVehicleModelLookupService();
 }
 
 class AppScope extends InheritedWidget {
