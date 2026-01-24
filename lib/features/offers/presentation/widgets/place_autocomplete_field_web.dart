@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html';
 import 'dart:ui_web' as ui;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/config/google_maps_config.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -28,6 +29,7 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
   late final PlaceAutocompleteWebController _webController;
   final DivElement _container = DivElement();
   bool _loadFailed = false;
+  String? _errorDetails;
   @override
   void initState() {
     super.initState();
@@ -43,11 +45,22 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
     super.dispose();
   }
   Future<void> _boot() async {
-    if (!hasGoogleMapsApiKey) { setState(() => _loadFailed = true); return; }
+    if (!hasGoogleMapsApiKey) {
+      setState(() {
+        _loadFailed = true;
+        _errorDetails = 'Missing GOOGLE_MAPS_API_KEY.';
+      });
+      return;
+    }
     try {
       await _webController.boot();
     } catch (_) {
-      if (mounted) setState(() => _loadFailed = true);
+      if (mounted) {
+        setState(() {
+          _loadFailed = true;
+          _errorDetails = 'Failed to load Google Maps JS / Places UI Kit.';
+        });
+      }
     }
   }
   void _handleSelection(PlaceSelection selection) {
@@ -62,8 +75,20 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     if (_loadFailed) {
-      return Text(l10n.mapsAutocompleteUnavailableMessage,
-          style: TextStyle(color: Theme.of(context).colorScheme.error));
+      final errorStyle = TextStyle(color: Theme.of(context).colorScheme.error);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.mapsAutocompleteUnavailableMessage, style: errorStyle),
+          if (kDebugMode && _errorDetails != null) ...[
+            const SizedBox(height: 4),
+            Text('Debug: $_errorDetails', style: errorStyle),
+            Text('Host: ${window.location.host}', style: errorStyle),
+            Text('Key present: ${hasGoogleMapsApiKey ? "yes" : "no"}',
+                style: errorStyle),
+          ],
+        ],
+      );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

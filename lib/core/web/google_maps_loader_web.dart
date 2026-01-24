@@ -24,7 +24,7 @@ class GoogleMapsLoader {
       ..async = true
       ..defer = true
       ..src =
-          'https://maps.googleapis.com/maps/api/js?key=$apiKey&v=weekly&loading=async';
+          'https://maps.googleapis.com/maps/api/js?key=$apiKey&v=weekly&loading=async&libraries=places';
     script.onError.listen((_) {
       _loader!.completeError(StateError('Failed to load Google Maps JS.'));
     });
