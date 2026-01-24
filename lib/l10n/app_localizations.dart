@@ -532,6 +532,12 @@ abstract class AppLocalizations {
   /// **'Confidence'**
   String get confidenceLabel;
 
+  /// No description provided for @mapsAutocompleteUnavailableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Address autocomplete is unavailable. Check the Google Maps API key and Places UI Kit setup.'**
+  String get mapsAutocompleteUnavailableMessage;
+
   /// No description provided for @vehicleSelectLabel.
   ///
   /// In en, this message translates to:

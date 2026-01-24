@@ -227,6 +227,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get confidenceLabel => 'الثقة';
 
   @override
+  String get mapsAutocompleteUnavailableMessage =>
+      'الإكمال التلقائي للعناوين غير متاح. تحقق من مفتاح Google Maps API وإعداد Places UI Kit.';
+
+  @override
   String get vehicleSelectLabel => 'اختر مركبة';
 
   @override

@@ -72,6 +72,7 @@
   "captureScreenshotButton": "Capture screenshot",
   "extractionSummaryTitle": "Extraction summary",
   "confidenceLabel": "Confidence",
+  "mapsAutocompleteUnavailableMessage": "Address autocomplete is unavailable. Check the Google Maps API key and Places UI Kit setup.",
   "vehicleSelectLabel": "Select vehicle",
   "durationMinutesLabel": "Estimated time (minutes)",
   "pickupNameLabel": "Pickup name",

@@ -72,6 +72,7 @@
   "captureScreenshotButton": "التقاط صورة",
   "extractionSummaryTitle": "ملخص الاستخراج",
   "confidenceLabel": "الثقة",
+  "mapsAutocompleteUnavailableMessage": "الإكمال التلقائي للعناوين غير متاح. تحقق من مفتاح Google Maps API وإعداد Places UI Kit.",
   "vehicleSelectLabel": "اختر مركبة",
   "durationMinutesLabel": "المدة المتوقعة (دقائق)",
   "pickupNameLabel": "اسم الاستلام",

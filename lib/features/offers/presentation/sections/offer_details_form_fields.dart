@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/place_selection.dart';
+import '../widgets/place_autocomplete_field.dart';
 
 class OfferDetailsFormFields extends StatelessWidget {
   final TextEditingController payoutController;
@@ -8,6 +10,7 @@ class OfferDetailsFormFields extends StatelessWidget {
   final TextEditingController durationController;
   final TextEditingController pickupNameController;
   final TextEditingController pickupAddressController;
+  final ValueChanged<PlaceSelection>? onPickupSelected;
   final bool showDuration;
   final bool showPickupFields;
   final bool requiresDuration;
@@ -19,6 +22,7 @@ class OfferDetailsFormFields extends StatelessWidget {
     required this.durationController,
     required this.pickupNameController,
     required this.pickupAddressController,
+    required this.onPickupSelected,
     required this.showDuration,
     required this.showPickupFields,
     required this.requiresDuration,
@@ -76,9 +80,10 @@ class OfferDetailsFormFields extends StatelessWidget {
             decoration: InputDecoration(labelText: l10n.pickupNameLabel),
           ),
           const SizedBox(height: 12),
-          TextFormField(
+          PlaceAutocompleteField(
             controller: pickupAddressController,
-            decoration: InputDecoration(labelText: l10n.pickupAddressLabel),
+            label: l10n.pickupAddressLabel,
+            onSelected: onPickupSelected,
           ),
         ],
       ],

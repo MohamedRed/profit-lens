@@ -5,6 +5,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
 import '../domain/offer_extraction_metadata.dart';
 import '../domain/offer_record.dart';
+import '../domain/place_selection.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'sections/offer_details_section.dart';
 import 'sections/vehicle_picker_section.dart';
@@ -23,6 +24,7 @@ class OfferFlowForm extends StatelessWidget {
   final bool isLoading;
   final OfferExtractionMetadata? extraction;
   final OfferRecord? previewRecord;
+  final ValueChanged<PlaceSelection>? onPickupSelected;
 
   const OfferFlowForm({
     super.key,
@@ -38,6 +40,7 @@ class OfferFlowForm extends StatelessWidget {
     required this.isLoading,
     required this.extraction,
     required this.previewRecord,
+    required this.onPickupSelected,
   });
 
   @override
@@ -59,6 +62,7 @@ class OfferFlowForm extends StatelessWidget {
             requiresDuration: requiresDuration,
             hasExtraction: extraction != null,
             extraction: extraction,
+            onPickupSelected: onPickupSelected,
           ),
           if (previewRecord != null) ...[
             const SizedBox(height: 12),

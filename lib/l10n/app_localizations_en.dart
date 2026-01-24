@@ -228,6 +228,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confidenceLabel => 'Confidence';
 
   @override
+  String get mapsAutocompleteUnavailableMessage =>
+      'Address autocomplete is unavailable. Check the Google Maps API key and Places UI Kit setup.';
+
+  @override
   String get vehicleSelectLabel => 'Select vehicle';
 
   @override

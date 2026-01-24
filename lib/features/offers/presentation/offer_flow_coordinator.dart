@@ -151,6 +151,7 @@ class _OfferFlowCoordinatorState extends State<OfferFlowCoordinator> {
           onSignOut: () => AppScope.of(context).authRepository.signOut(),
           isLoading: _isLoading,
           previewRecord: previewRecord,
+          onPickupSelected: _controller.applyPickupSelection,
         );
       },
     );

@@ -5,6 +5,7 @@ import '../../domain/offer.dart';
 import '../../domain/offer_extraction_metadata.dart';
 import '../../domain/offer_extraction_result.dart';
 import '../../domain/offer_source.dart';
+import '../../domain/place_selection.dart';
 
 class OfferFlowController {
   final TextEditingController payoutController = TextEditingController();
@@ -15,6 +16,7 @@ class OfferFlowController {
 
   OfferSource source = OfferSource.manual;
   OfferExtractionMetadata? extraction;
+  PlaceSelection? pickupSelection;
 
   void dispose() {
     payoutController.dispose();
@@ -37,6 +39,15 @@ class OfferFlowController {
       confidence: result.confidence,
       rawText: result.rawText,
     );
+    pickupSelection = null;
+  }
+
+  void applyPickupSelection(PlaceSelection selection) {
+    pickupSelection = selection;
+    if (selection.formattedAddress != null &&
+        selection.formattedAddress!.isNotEmpty) {
+      pickupAddressController.text = selection.formattedAddress!;
+    }
   }
 
   Offer? buildOffer() {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/offer_extraction_metadata.dart';
+import '../../domain/place_selection.dart';
 import '../controllers/offer_flow_controller.dart';
 import 'offer_extraction_summary.dart';
 import 'offer_details_form_fields.dart';
@@ -13,6 +14,7 @@ class OfferDetailsSection extends StatefulWidget {
   final bool requiresDuration;
   final bool hasExtraction;
   final OfferExtractionMetadata? extraction;
+  final ValueChanged<PlaceSelection>? onPickupSelected;
 
   const OfferDetailsSection({
     super.key,
@@ -20,6 +22,7 @@ class OfferDetailsSection extends StatefulWidget {
     required this.requiresDuration,
     required this.hasExtraction,
     required this.extraction,
+    required this.onPickupSelected,
   });
 
   @override
@@ -56,6 +59,7 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
           durationController: widget.controller.durationController,
           pickupNameController: widget.controller.pickupNameController,
           pickupAddressController: widget.controller.pickupAddressController,
+          onPickupSelected: widget.onPickupSelected,
           showDuration: widget.requiresDuration || _showOptional,
           showPickupFields: _showOptional,
           requiresDuration: widget.requiresDuration,

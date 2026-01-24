@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../domain/offer_record.dart';
+import '../domain/place_selection.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_form.dart';
@@ -21,6 +22,7 @@ class OfferFlowView extends StatelessWidget {
   final VoidCallback onSignOut;
   final bool isLoading;
   final OfferRecord? previewRecord;
+  final ValueChanged<PlaceSelection>? onPickupSelected;
 
   const OfferFlowView({
     super.key,
@@ -37,6 +39,7 @@ class OfferFlowView extends StatelessWidget {
     required this.onSignOut,
     required this.isLoading,
     required this.previewRecord,
+    required this.onPickupSelected,
   });
 
   @override
@@ -68,6 +71,7 @@ class OfferFlowView extends StatelessWidget {
                 isLoading: isLoading,
                 extraction: controller.extraction,
                 previewRecord: previewRecord,
+                onPickupSelected: onPickupSelected,
               ),
       ),
     );
