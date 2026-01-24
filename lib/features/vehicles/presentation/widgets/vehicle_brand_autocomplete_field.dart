@@ -8,11 +8,15 @@ import 'vehicle_autocomplete_field.dart';
 class VehicleBrandAutocompleteField extends StatelessWidget {
   final VehicleType vehicleType;
   final TextEditingController controller;
+  final VoidCallback? onFocusLost;
+  final FormFieldValidator<String>? validator;
 
   const VehicleBrandAutocompleteField({
     super.key,
     required this.vehicleType,
     required this.controller,
+    this.onFocusLost,
+    this.validator,
   });
 
   @override
@@ -21,9 +25,13 @@ class VehicleBrandAutocompleteField extends StatelessWidget {
     return VehicleAutocompleteField(
       controller: controller,
       label: l10n.vehicleBrandLabel,
+      onFocusLost: onFocusLost,
+      validator: validator,
       optionsBuilder: (query) {
         final normalizedQuery = query.toLowerCase();
-        return VehicleCatalogFr.brandsForType(vehicleType).where(
+        final brands = VehicleCatalogFr.brandsForType(vehicleType);
+        if (normalizedQuery.isEmpty) return brands;
+        return brands.where(
           (brand) => brand.toLowerCase().startsWith(normalizedQuery),
         );
       },

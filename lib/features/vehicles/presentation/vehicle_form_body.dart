@@ -17,9 +17,7 @@ class VehicleFormBody extends StatelessWidget {
   final bool useVehiclePresets;
   final ValueChanged<bool> onPresetsChanged;
   final VoidCallback onPresetEdited;
-  final VoidCallback? onLookupModel;
-  final bool isLookingUpModel;
-  final bool showModelLookup;
+  final VoidCallback? onModelLookup;
   final bool isSaving;
   final VoidCallback onSave;
   final ValueChanged<VehicleType> onVehicleTypeChanged;
@@ -33,9 +31,7 @@ class VehicleFormBody extends StatelessWidget {
     required this.useVehiclePresets,
     required this.onPresetsChanged,
     required this.onPresetEdited,
-    required this.onLookupModel,
-    required this.isLookingUpModel,
-    required this.showModelLookup,
+    required this.onModelLookup,
     required this.isSaving,
     required this.onSave,
     required this.onVehicleTypeChanged,
@@ -61,7 +57,6 @@ class VehicleFormBody extends StatelessWidget {
             onFuelTypeChanged: onFuelTypeChanged,
             onPresetsChanged: onPresetsChanged,
             onPresetEdited: onPresetEdited,
-            nameController: controller.nameController,
             brandController: controller.brandController,
             modelController: controller.modelController,
             consumptionController: controller.consumptionController,
@@ -70,9 +65,7 @@ class VehicleFormBody extends StatelessWidget {
             depreciationController: controller.depreciationController,
             consumptionSuffix: controller.consumptionSuffix(),
             energyPriceSuffix: controller.energyPriceSuffix(),
-            onLookupModel: onLookupModel,
-            isLookingUpModel: isLookingUpModel,
-            showModelLookup: showModelLookup,
+            onModelLookup: onModelLookup,
           ),
           const SizedBox(height: 12),
           PresetSourcesSection(sources: VehiclePresetsFr.sources),

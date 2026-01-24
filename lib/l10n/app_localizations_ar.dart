@@ -342,9 +342,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vehicleSaveFailedMessage => 'تعذر حفظ المركبة.';
 
   @override
-  String get vehicleNameLabel => 'اسم المركبة';
-
-  @override
   String get vehicleBrandLabel => 'العلامة التجارية';
 
   @override
@@ -352,9 +349,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get useVehiclePresetsLabel => 'استخدام قيم المركبة الافتراضية';
-
-  @override
-  String get modelLookupButton => 'تطبيق بيانات العلامة/الطراز';
 
   @override
   String get modelLookupAppliedMessage => 'تم تطبيق الاستهلاك.';

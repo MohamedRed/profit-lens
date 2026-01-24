@@ -754,12 +754,6 @@ abstract class AppLocalizations {
   /// **'Unable to save vehicle.'**
   String get vehicleSaveFailedMessage;
 
-  /// No description provided for @vehicleNameLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Vehicle name'**
-  String get vehicleNameLabel;
-
   /// No description provided for @vehicleBrandLabel.
   ///
   /// In en, this message translates to:
@@ -777,12 +771,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Use vehicle presets'**
   String get useVehiclePresetsLabel;
-
-  /// No description provided for @modelLookupButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Apply brand/model data'**
-  String get modelLookupButton;
 
   /// No description provided for @modelLookupAppliedMessage.
   ///

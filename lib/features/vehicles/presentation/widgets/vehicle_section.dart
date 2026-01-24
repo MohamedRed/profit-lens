@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../../core/widgets/section_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/energy_type.dart';
@@ -6,11 +7,12 @@ import '../../domain/fuel_type.dart';
 import '../../domain/vehicle_type.dart';
 import 'energy_type_field.dart';
 import 'fuel_type_field.dart';
-import 'vehicle_identity_fields.dart';
 import 'vehicle_energy_fields.dart';
+import 'vehicle_identity_fields.dart';
 import 'vehicle_maintenance_fields.dart';
 import 'vehicle_preset_toggle.dart';
 import 'vehicle_type_field.dart';
+
 class VehicleSection extends StatelessWidget {
   final VehicleType vehicleType;
   final EnergyType energyType;
@@ -21,12 +23,12 @@ class VehicleSection extends StatelessWidget {
   final ValueChanged<FuelType?> onFuelTypeChanged;
   final ValueChanged<bool> onPresetsChanged;
   final VoidCallback onPresetEdited;
-  final TextEditingController nameController, brandController, modelController;
+  final TextEditingController brandController, modelController;
   final TextEditingController consumptionController, energyPriceController;
   final TextEditingController maintenanceController, depreciationController;
   final String consumptionSuffix, energyPriceSuffix;
-  final VoidCallback? onLookupModel;
-  final bool isLookingUpModel, showModelLookup;
+  final VoidCallback? onModelLookup;
+
   const VehicleSection({
     super.key,
     required this.vehicleType,
@@ -38,34 +40,38 @@ class VehicleSection extends StatelessWidget {
     required this.onFuelTypeChanged,
     required this.onPresetsChanged,
     required this.onPresetEdited,
-    required this.nameController, required this.brandController,
-    required this.modelController, required this.consumptionController,
-    required this.energyPriceController, required this.maintenanceController,
-    required this.depreciationController, required this.consumptionSuffix,
-    required this.energyPriceSuffix, required this.onLookupModel,
-    required this.isLookingUpModel, required this.showModelLookup,
+    required this.brandController,
+    required this.modelController,
+    required this.consumptionController,
+    required this.energyPriceController,
+    required this.maintenanceController,
+    required this.depreciationController,
+    required this.consumptionSuffix,
+    required this.energyPriceSuffix,
+    required this.onModelLookup,
   });
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return SectionCard(
       title: l10n.vehicleSection,
       children: [
-        VehiclePresetToggle(value: useVehiclePresets, onChanged: onPresetsChanged),
-        const SizedBox(height: 12),
-        VehicleIdentityFields(
-          vehicleType: vehicleType,
-          nameController: nameController,
-          brandController: brandController,
-          modelController: modelController,
-          onLookupModel: onLookupModel,
-          isLookingUp: isLookingUpModel,
-          showLookup: showModelLookup,
+        VehiclePresetToggle(
+          value: useVehiclePresets,
+          onChanged: onPresetsChanged,
         ),
         const SizedBox(height: 12),
         VehicleTypeField(
           value: vehicleType,
           onChanged: onVehicleTypeChanged,
+        ),
+        const SizedBox(height: 12),
+        VehicleIdentityFields(
+          vehicleType: vehicleType,
+          brandController: brandController,
+          modelController: modelController,
+          onModelLookup: onModelLookup,
         ),
         const SizedBox(height: 12),
         EnergyTypeField(

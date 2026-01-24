@@ -81,8 +81,6 @@ extension ProfileSetupStateVehicle on ProfileSetupState {
     if (!useVehiclePresets || vehicleController.vehicleType != VehicleType.car) {
       return;
     }
-    isLookingUpModel = true;
-    refresh();
     await lookupVehicleModel(
       context: context,
       controller: vehicleController,
@@ -91,9 +89,5 @@ extension ProfileSetupStateVehicle on ProfileSetupState {
       onApplyStart: () => isApplyingPresets = true,
       onApplyEnd: () => isApplyingPresets = false,
     );
-    if (context.mounted) {
-      isLookingUpModel = false;
-      refresh();
-    }
   }
 }

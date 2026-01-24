@@ -45,7 +45,8 @@ class _VehicleFormCoordinatorState extends State<VehicleFormCoordinator> {
   }
 
   Future<void> _lookupModel() async {
-    if (!_state.useVehiclePresets ||
+    if (_state.isLookingUpModel ||
+        !_state.useVehiclePresets ||
         _state.controller.vehicleType != VehicleType.car) {
       return;
     }
@@ -79,11 +80,11 @@ class _VehicleFormCoordinatorState extends State<VehicleFormCoordinator> {
         useVehiclePresets: _state.useVehiclePresets,
         onPresetsChanged: _state.togglePresets,
         onPresetEdited: _state.markPresetEdited,
-        onLookupModel: _state.isLookingUpModel ? null : _lookupModel,
-        isLookingUpModel: _state.isLookingUpModel,
-        showModelLookup:
+        onModelLookup:
             _state.controller.vehicleType == VehicleType.car &&
-                _state.useVehiclePresets,
+                    _state.useVehiclePresets
+                ? _lookupModel
+                : null,
         isSaving: _state.isSaving,
         onSave: () => _state.save(
           context: context,

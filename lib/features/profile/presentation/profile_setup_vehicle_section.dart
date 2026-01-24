@@ -15,9 +15,7 @@ class ProfileSetupVehicleSection extends StatelessWidget {
   final ValueChanged<VehicleType> onVehicleTypeChanged;
   final ValueChanged<EnergyType> onEnergyTypeChanged;
   final ValueChanged<FuelType?> onFuelTypeChanged;
-  final VoidCallback? onLookupModel;
-  final bool isLookingUpModel;
-  final bool showModelLookup;
+  final VoidCallback? onModelLookup;
 
   const ProfileSetupVehicleSection({
     super.key,
@@ -28,9 +26,7 @@ class ProfileSetupVehicleSection extends StatelessWidget {
     required this.onVehicleTypeChanged,
     required this.onEnergyTypeChanged,
     required this.onFuelTypeChanged,
-    required this.onLookupModel,
-    required this.isLookingUpModel,
-    required this.showModelLookup,
+    required this.onModelLookup,
   });
 
   @override
@@ -45,7 +41,6 @@ class ProfileSetupVehicleSection extends StatelessWidget {
       onFuelTypeChanged: onFuelTypeChanged,
       onPresetsChanged: onPresetsChanged,
       onPresetEdited: onPresetEdited,
-      nameController: controller.nameController,
       brandController: controller.brandController,
       modelController: controller.modelController,
       consumptionController: controller.consumptionController,
@@ -54,9 +49,7 @@ class ProfileSetupVehicleSection extends StatelessWidget {
       depreciationController: controller.depreciationController,
       consumptionSuffix: controller.consumptionSuffix(),
       energyPriceSuffix: controller.energyPriceSuffix(),
-      onLookupModel: onLookupModel,
-      isLookingUpModel: isLookingUpModel,
-      showModelLookup: showModelLookup,
+      onModelLookup: onModelLookup,
     );
   }
 }

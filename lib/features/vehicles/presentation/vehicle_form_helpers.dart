@@ -22,6 +22,8 @@ VehicleProfile buildVehicleProfile({
   required String id,
   required VehicleFormController controller,
 }) {
+  final brand = controller.brandController.text.trim();
+  final model = controller.modelController.text.trim();
   final consumption =
       NumberParsing.parseDouble(controller.consumptionController.text);
   final energyPrice =
@@ -36,15 +38,14 @@ VehicleProfile buildVehicleProfile({
   if (maintenance == null || depreciation == null) {
     throw StateError('Missing required vehicle costs.');
   }
+  if (brand.isEmpty || model.isEmpty) {
+    throw StateError('Missing required vehicle identity.');
+  }
   return VehicleProfile(
     id: id,
-    name: controller.nameController.text.trim(),
-    brand: controller.brandController.text.trim().isEmpty
-        ? null
-        : controller.brandController.text.trim(),
-    model: controller.modelController.text.trim().isEmpty
-        ? null
-        : controller.modelController.text.trim(),
+    name: '$brand $model',
+    brand: brand,
+    model: model,
     type: controller.vehicleType,
     energyType: controller.energyType,
     fuelType: controller.fuelType,

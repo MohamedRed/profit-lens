@@ -8,6 +8,9 @@ class VehicleAutocompleteField extends StatefulWidget {
   final VehicleOptionsBuilder optionsBuilder;
   final TextInputAction? textInputAction;
   final VoidCallback? onEditingComplete;
+  final FormFieldValidator<String>? validator;
+  final ValueChanged<String>? onSelected;
+  final VoidCallback? onFocusLost;
 
   const VehicleAutocompleteField({
     super.key,
@@ -16,9 +19,11 @@ class VehicleAutocompleteField extends StatefulWidget {
     required this.optionsBuilder,
     this.textInputAction,
     this.onEditingComplete,
+    this.validator,
+    this.onSelected,
+    this.onFocusLost,
   });
 
-  @override
   @override
   State<VehicleAutocompleteField> createState() =>
       _VehicleAutocompleteFieldState();
@@ -26,17 +31,32 @@ class VehicleAutocompleteField extends StatefulWidget {
 
 class _VehicleAutocompleteFieldState extends State<VehicleAutocompleteField> {
   late final FocusNode _focusNode;
+  bool _didPrimeOptions = false;
 
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode();
+    _focusNode = FocusNode()..addListener(_handleFocusChange);
   }
 
   @override
   void dispose() {
+    _focusNode.removeListener(_handleFocusChange);
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void _handleFocusChange() {
+    if (_focusNode.hasFocus) {
+      if (!_didPrimeOptions && widget.controller.selection.baseOffset < 0) {
+        _didPrimeOptions = true;
+        widget.controller.selection = TextSelection.collapsed(
+          offset: widget.controller.text.length,
+        );
+      }
+      return;
+    }
+    widget.onFocusLost?.call();
   }
 
   @override
@@ -46,11 +66,13 @@ class _VehicleAutocompleteFieldState extends State<VehicleAutocompleteField> {
       focusNode: _focusNode,
       optionsBuilder: (value) {
         final query = value.text.trim();
-        if (query.isEmpty) return const Iterable<String>.empty();
         return widget.optionsBuilder(query);
       },
       displayStringForOption: (option) => option,
-      onSelected: (selection) => widget.controller.text = selection,
+      onSelected: (selection) {
+        widget.controller.text = selection;
+        widget.onSelected?.call(selection);
+      },
       fieldViewBuilder: (context, textController, focusNode, onFieldSubmitted) {
         return TextFormField(
           controller: textController,
@@ -58,6 +80,7 @@ class _VehicleAutocompleteFieldState extends State<VehicleAutocompleteField> {
           decoration: InputDecoration(labelText: widget.label),
           textInputAction: widget.textInputAction,
           onEditingComplete: widget.onEditingComplete ?? onFieldSubmitted,
+          validator: widget.validator,
         );
       },
       optionsViewBuilder: (context, onSelected, options) {

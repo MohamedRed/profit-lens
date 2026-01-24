@@ -343,9 +343,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vehicleSaveFailedMessage => 'Unable to save vehicle.';
 
   @override
-  String get vehicleNameLabel => 'Vehicle name';
-
-  @override
   String get vehicleBrandLabel => 'Brand';
 
   @override
@@ -353,9 +350,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get useVehiclePresetsLabel => 'Use vehicle presets';
-
-  @override
-  String get modelLookupButton => 'Apply brand/model data';
 
   @override
   String get modelLookupAppliedMessage => 'Model consumption applied.';

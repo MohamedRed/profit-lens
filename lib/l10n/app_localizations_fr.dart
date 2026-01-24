@@ -346,9 +346,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible d’enregistrer le véhicule.';
 
   @override
-  String get vehicleNameLabel => 'Nom du véhicule';
-
-  @override
   String get vehicleBrandLabel => 'Marque';
 
   @override
@@ -356,9 +353,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get useVehiclePresetsLabel => 'Utiliser les valeurs véhicule';
-
-  @override
-  String get modelLookupButton => 'Appliquer la marque/modèle';
 
   @override
   String get modelLookupAppliedMessage => 'Consommation appliquée.';

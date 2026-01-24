@@ -39,10 +39,19 @@ class _ProfileSetupCoordinatorState extends State<ProfileSetupCoordinator> {
   }
 
   Future<void> _lookupModel() async {
+    if (_state.isLookingUpModel) {
+      return;
+    }
+    _state.isLookingUpModel = true;
+    _state.refresh();
     await _state.lookupModel(
       context: context,
       service: AppScope.of(context).vehicleModelLookupService,
     );
+    if (mounted) {
+      _state.isLookingUpModel = false;
+      _state.refresh();
+    }
   }
 
   @override
@@ -61,11 +70,12 @@ class _ProfileSetupCoordinatorState extends State<ProfileSetupCoordinator> {
             useVehiclePresets: _state.useVehiclePresets,
             onVehiclePresetsChanged: _state.togglePresets,
             onVehiclePresetEdited: _state.markPresetEdited,
-            onLookupModel: _state.isLookingUpModel ? null : _lookupModel,
-            isLookingUpModel: _state.isLookingUpModel,
-            showModelLookup: _state.useVehiclePresets &&
-                _state.vehicleController.vehicleType ==
-                    VehicleType.car,
+            onModelLookup:
+                _state.useVehiclePresets &&
+                        _state.vehicleController.vehicleType ==
+                            VehicleType.car
+                    ? _lookupModel
+                    : null,
             onActivityChanged: (value) {
               _state.businessController.activity = value;
               _state.refresh();

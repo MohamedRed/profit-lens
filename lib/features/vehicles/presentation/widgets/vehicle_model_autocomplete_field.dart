@@ -10,6 +10,9 @@ class VehicleModelAutocompleteField extends StatelessWidget {
   final TextEditingController brandController;
   final TextEditingController controller;
   final VoidCallback? onEditingComplete;
+  final VoidCallback? onFocusLost;
+  final FormFieldValidator<String>? validator;
+  final ValueChanged<String>? onSelected;
 
   const VehicleModelAutocompleteField({
     super.key,
@@ -17,6 +20,9 @@ class VehicleModelAutocompleteField extends StatelessWidget {
     required this.brandController,
     required this.controller,
     this.onEditingComplete,
+    this.onFocusLost,
+    this.validator,
+    this.onSelected,
   });
 
   @override
@@ -27,11 +33,17 @@ class VehicleModelAutocompleteField extends StatelessWidget {
       label: l10n.vehicleModelLabel,
       textInputAction: TextInputAction.done,
       onEditingComplete: onEditingComplete,
+      onFocusLost: onFocusLost,
+      onSelected: onSelected,
+      validator: validator,
       optionsBuilder: (query) {
         final brand = brandController.text;
         if (brand.trim().isEmpty) return const Iterable<String>.empty();
         final normalizedQuery = query.toLowerCase();
-        return VehicleCatalogFr.modelsFor(type: vehicleType, brand: brand).where(
+        final models =
+            VehicleCatalogFr.modelsFor(type: vehicleType, brand: brand);
+        if (normalizedQuery.isEmpty) return models;
+        return models.where(
           (model) => model.toLowerCase().startsWith(normalizedQuery),
         );
       },

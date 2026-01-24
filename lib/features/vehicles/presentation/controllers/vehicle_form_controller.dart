@@ -7,7 +7,6 @@ import '../../domain/vehicle_type.dart';
 import 'vehicle_form_defaults.dart';
 
 class VehicleFormController {
-  final TextEditingController nameController;
   final TextEditingController brandController;
   final TextEditingController modelController;
   final TextEditingController consumptionController;
@@ -20,7 +19,6 @@ class VehicleFormController {
   FuelType? fuelType;
 
   VehicleFormController({
-    required this.nameController,
     required this.brandController,
     required this.modelController,
     required this.consumptionController,
@@ -36,7 +34,6 @@ class VehicleFormController {
     required VehicleProfile? vehicle,
     required bool useFranceDefaults,
   }) {
-    final nameController = TextEditingController(text: vehicle?.name ?? '');
     final brandController = TextEditingController(text: vehicle?.brand ?? '');
     final modelController = TextEditingController(text: vehicle?.model ?? '');
     final consumptionController = TextEditingController(
@@ -57,7 +54,6 @@ class VehicleFormController {
     );
 
     final controller = VehicleFormController(
-      nameController: nameController,
       brandController: brandController,
       modelController: modelController,
       consumptionController: consumptionController,
@@ -84,7 +80,6 @@ class VehicleFormController {
   }
 
   void dispose() {
-    nameController.dispose();
     brandController.dispose();
     modelController.dispose();
     consumptionController.dispose();
