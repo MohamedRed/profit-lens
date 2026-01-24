@@ -60,6 +60,11 @@ class ProfitHistoryChart extends StatelessWidget {
               lineColor: Theme.of(context).colorScheme.primary,
               thresholdColor: Theme.of(context).colorScheme.outline,
               axisColor: Theme.of(context).dividerColor,
+              gridColor: Theme.of(context).colorScheme.outlineVariant,
+              backgroundColor: Theme.of(context)
+                  .colorScheme
+                  .surfaceContainerHighest
+                  .withValues(alpha: 0.4),
             ),
           ),
         ),
@@ -119,6 +124,8 @@ class _ProfitHistoryChartPainter extends CustomPainter {
   final Color lineColor;
   final Color thresholdColor;
   final Color axisColor;
+  final Color gridColor;
+  final Color backgroundColor;
 
   _ProfitHistoryChartPainter({
     required this.values,
@@ -128,6 +135,8 @@ class _ProfitHistoryChartPainter extends CustomPainter {
     required this.lineColor,
     required this.thresholdColor,
     required this.axisColor,
+    required this.gridColor,
+    required this.backgroundColor,
   });
 
   @override
@@ -148,16 +157,38 @@ class _ProfitHistoryChartPainter extends CustomPainter {
     final normalizedMin = maxValue == minValue ? minValue - 1 : minValue;
     final range = normalizedMax - normalizedMin;
 
+    final backgroundPaint = Paint()
+      ..color = backgroundColor
+      ..style = PaintingStyle.fill;
+    final chartRRect = RRect.fromRectAndRadius(
+      chartRect,
+      const Radius.circular(12),
+    );
+    canvas.drawRRect(chartRRect, backgroundPaint);
+
+    final gridPaint = Paint()
+      ..color = gridColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    for (var i = 1; i <= 3; i++) {
+      final y = chartRect.top + (chartRect.height / 4) * i;
+      canvas.drawLine(
+        Offset(chartRect.left, y),
+        Offset(chartRect.right, y),
+        gridPaint,
+      );
+    }
+
     final axisPaint = Paint()
       ..color = axisColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
-    canvas.drawRect(chartRect, axisPaint);
+    canvas.drawRRect(chartRRect, axisPaint);
 
     final thresholdPaint = Paint()
       ..color = thresholdColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
+      ..strokeWidth = 1.5;
     final thresholdY = chartRect.bottom -
         ((threshold - normalizedMin) / range) * chartRect.height;
     canvas.drawLine(
@@ -169,12 +200,16 @@ class _ProfitHistoryChartPainter extends CustomPainter {
     final linePaint = Paint()
       ..color = lineColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
     final pointPaint = Paint()
       ..color = lineColor
       ..style = PaintingStyle.fill;
 
     final path = Path();
+    canvas.save();
+    canvas.clipRRect(chartRRect);
     for (var i = 0; i < values.length; i++) {
       final xRatio = values.length == 1 ? 0.5 : i / (values.length - 1);
       final x = chartRect.left + chartRect.width * xRatio;
@@ -185,9 +220,10 @@ class _ProfitHistoryChartPainter extends CustomPainter {
       } else {
         path.lineTo(x, y);
       }
-      canvas.drawCircle(Offset(x, y), 3, pointPaint);
+      canvas.drawCircle(Offset(x, y), 4, pointPaint);
     }
     canvas.drawPath(path, linePaint);
+    canvas.restore();
   }
 
   @override
@@ -198,6 +234,8 @@ class _ProfitHistoryChartPainter extends CustomPainter {
         oldDelegate.threshold != threshold ||
         oldDelegate.lineColor != lineColor ||
         oldDelegate.thresholdColor != thresholdColor ||
-        oldDelegate.axisColor != axisColor;
+        oldDelegate.axisColor != axisColor ||
+        oldDelegate.gridColor != gridColor ||
+        oldDelegate.backgroundColor != backgroundColor;
   }
 }

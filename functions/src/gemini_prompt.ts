@@ -6,10 +6,11 @@ export const offerExtractionPrompt = [
   "    \"payoutEuro\": number,",
   "    \"distanceKm\": number,",
   "    \"pickupName\": string | null,",
-  "    \"pickupAddress\": string | null",
+  "    \"pickupAddress\": string | null,",
+  "    \"dropoffAddress\": string | null",
   "  },",
   "  \"confidence\": number,",
   "  \"rawText\": string",
   "}",
-  "Use dot as decimal separator. If a field is unknown, set it to null.",
+  "Use dot as decimal separator. If a field is unknown or not visible, set it to null.",
 ].join("\n");
