@@ -80,6 +80,7 @@
   "extractionFailedMessage": "Unable to extract offer details from the screenshot.",
   "captureScreenshotButton": "Capture screenshot",
   "mapsAutocompleteUnavailableMessage": "Address autocomplete is unavailable. Check the Google Maps API key and Places UI Kit setup.",
+  "useSelectedPlaceButton": "Use selected place",
   "vehicleSelectLabel": "Select vehicle",
   "durationMinutesLabel": "Estimated time (minutes)",
   "pickupNameLabel": "Pickup name",

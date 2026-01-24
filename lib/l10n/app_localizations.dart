@@ -580,6 +580,12 @@ abstract class AppLocalizations {
   /// **'Address autocomplete is unavailable. Check the Google Maps API key and Places UI Kit setup.'**
   String get mapsAutocompleteUnavailableMessage;
 
+  /// No description provided for @useSelectedPlaceButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Use selected place'**
+  String get useSelectedPlaceButton;
+
   /// No description provided for @vehicleSelectLabel.
   ///
   /// In en, this message translates to:

@@ -255,6 +255,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Address autocomplete is unavailable. Check the Google Maps API key and Places UI Kit setup.';
 
   @override
+  String get useSelectedPlaceButton => 'Use selected place';
+
+  @override
   String get vehicleSelectLabel => 'Select vehicle';
 
   @override

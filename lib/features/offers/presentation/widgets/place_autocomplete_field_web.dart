@@ -7,7 +7,9 @@ import '../../../../core/config/google_maps_config.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/place_selection.dart';
 import 'place_autocomplete_web_controller.dart';
+
 typedef PlaceSelectionCallback = void Function(PlaceSelection selection);
+
 class PlaceAutocompleteField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
@@ -23,6 +25,7 @@ class PlaceAutocompleteField extends StatefulWidget {
   @override
   State<PlaceAutocompleteField> createState() => _PlaceAutocompleteFieldState();
 }
+
 class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
   static int _instanceId = 0;
   late final String _viewType;
@@ -30,21 +33,33 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
   final DivElement _container = DivElement();
   bool _loadFailed = false;
   String? _errorDetails;
+  bool _isEditing = true;
   @override
   void initState() {
     super.initState();
     _viewType = 'places-autocomplete-${_instanceId++}';
     _container.style.width = '100%';
     _container.style.height = '48px';
-    _webController = PlaceAutocompleteWebController(container: _container, countryCode: widget.countryCode, onSelected: _handleSelection);
-    ui.platformViewRegistry.registerViewFactory(_viewType, (int viewId) => _container);
+    _container.style.display = 'block';
+    _webController = PlaceAutocompleteWebController(
+      container: _container,
+      countryCode: widget.countryCode,
+      onSelected: _handleSelection,
+    );
+    ui.platformViewRegistry.registerViewFactory(
+      _viewType,
+      (int viewId) => _container,
+    );
+    _isEditing = widget.controller.text.trim().isEmpty;
     _boot();
   }
+
   @override
   void dispose() {
     _webController.dispose();
     super.dispose();
   }
+
   Future<void> _boot() async {
     if (!hasGoogleMapsApiKey) {
       setState(() {
@@ -64,14 +79,30 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
       }
     }
   }
+
   void _handleSelection(PlaceSelection selection) {
-    if (selection.formattedAddress != null &&
-        selection.formattedAddress!.isNotEmpty) {
-      widget.controller.text = selection.formattedAddress!;
+    final displayValue = _displayValueFor(selection);
+    if (displayValue != null) {
+      widget.controller.text = displayValue;
     }
     widget.onSelected?.call(selection);
-    if (mounted) setState(() {});
+    if (mounted && displayValue != null) {
+      setState(() => _isEditing = false);
+    }
   }
+
+  String? _displayValueFor(PlaceSelection selection) {
+    final address = selection.formattedAddress?.trim();
+    if (address != null && address.isNotEmpty) {
+      return address;
+    }
+    final name = selection.name?.trim();
+    if (name != null && name.isNotEmpty) {
+      return name;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -85,9 +116,32 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
             const SizedBox(height: 4),
             Text('Debug: $_errorDetails', style: errorStyle),
             Text('Host: ${window.location.host}', style: errorStyle),
-            Text('Key present: ${hasGoogleMapsApiKey ? "yes" : "no"}',
-                style: errorStyle),
+            Text(
+              'Key present: ${hasGoogleMapsApiKey ? "yes" : "no"}',
+              style: errorStyle,
+            ),
           ],
+        ],
+      );
+    }
+    final hasValue = widget.controller.text.trim().isNotEmpty;
+    if (!_isEditing && hasValue) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(widget.label, style: Theme.of(context).textTheme.bodyMedium),
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: widget.controller,
+            readOnly: true,
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () => setState(() => _isEditing = true),
+              ),
+            ),
+            onTap: () => setState(() => _isEditing = true),
+          ),
         ],
       );
     }
@@ -97,21 +151,14 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
         Text(widget.label, style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 8),
         SizedBox(height: 48, child: HtmlElementView(viewType: _viewType)),
-        ValueListenableBuilder<TextEditingValue>(
-          valueListenable: widget.controller,
-          builder: (context, value, _) {
-            if (value.text.trim().isEmpty) {
-              return const SizedBox.shrink();
-            }
-            return Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Text(
-                value.text,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            );
-          },
-        ),
+        if (hasValue)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: TextButton(
+              onPressed: () => setState(() => _isEditing = false),
+              child: Text(l10n.useSelectedPlaceButton),
+            ),
+          ),
       ],
     );
   }

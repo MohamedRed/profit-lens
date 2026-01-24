@@ -80,6 +80,7 @@
   "extractionFailedMessage": "تعذر استخراج تفاصيل العرض.",
   "captureScreenshotButton": "التقاط صورة",
   "mapsAutocompleteUnavailableMessage": "الإكمال التلقائي للعناوين غير متاح. تحقق من مفتاح Google Maps API وإعداد Places UI Kit.",
+  "useSelectedPlaceButton": "استخدام المكان المحدد",
   "vehicleSelectLabel": "اختر مركبة",
   "durationMinutesLabel": "المدة المتوقعة (دقائق)",
   "pickupNameLabel": "اسم الاستلام",

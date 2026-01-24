@@ -254,6 +254,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'الإكمال التلقائي للعناوين غير متاح. تحقق من مفتاح Google Maps API وإعداد Places UI Kit.';
 
   @override
+  String get useSelectedPlaceButton => 'استخدام المكان المحدد';
+
+  @override
   String get vehicleSelectLabel => 'اختر مركبة';
 
   @override

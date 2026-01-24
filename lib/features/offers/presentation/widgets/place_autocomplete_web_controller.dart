@@ -11,9 +11,7 @@ class PlaceAutocompleteWebController {
   final String countryCode;
   final void Function(PlaceSelection selection) onSelected;
   Element? _autocompleteElement;
-  Element? _detailsElement;
   EventListener? _selectListener;
-  EventListener? _detailsLoadListener;
   String? _lastDisplayValue;
   PlaceAutocompleteWebController({
     required this.container,
@@ -35,9 +33,6 @@ class PlaceAutocompleteWebController {
   void dispose() {
     if (_autocompleteElement != null && _selectListener != null) {
       _autocompleteElement!.removeEventListener('gmp-select', _selectListener);
-    }
-    if (_detailsElement != null && _detailsLoadListener != null) {
-      _detailsElement!.removeEventListener('gmp-load', _detailsLoadListener);
     }
   }
   Future<void> _ensureUiKitReady() async {
@@ -67,21 +62,13 @@ class PlaceAutocompleteWebController {
       js_util.setProperty(autocomplete, 'options', options);
     } catch (_) {}
     stylePlacesAutocomplete(autocomplete);
-    final detailsElement = Element.tag('gmp-place-details-compact');
-    final detailsRequest = Element.tag('gmp-place-details-place-request');
-    detailsElement.append(detailsRequest);
-    detailsElement.style.display = 'none';
     _selectListener = (event) {
       final place = js_util.getProperty(event, 'place');
-      final placeId = js_util.getProperty(place, 'id') as String?;
-      if (placeId == null) {
-        return;
-      }
-      js_util.setProperty(detailsRequest, 'place', placeId);
-    };
-    _detailsLoadListener = (event) {
-      final place = js_util.getProperty(detailsElement, 'place');
-      final formattedAddress = js_util.getProperty(place, 'formattedAddress') as String?;
+      final placeId = js_util.getProperty(place, 'id') as String? ??
+          js_util.getProperty(place, 'placeId') as String? ??
+          '';
+      final formattedAddress =
+          js_util.getProperty(place, 'formattedAddress') as String?;
       final displayName = js_util.getProperty(place, 'displayName');
       String? name;
       if (displayName != null) {
@@ -103,7 +90,7 @@ class PlaceAutocompleteWebController {
       }
       onSelected(
         PlaceSelection(
-          placeId: js_util.getProperty(place, 'id') as String? ?? '',
+          placeId: placeId,
           name: name,
           formattedAddress: formattedAddress,
           latitude: lat,
@@ -116,13 +103,11 @@ class PlaceAutocompleteWebController {
       }
     };
     autocomplete.addEventListener('gmp-select', _selectListener);
-    detailsElement.addEventListener('gmp-load', _detailsLoadListener);
     container.children
       ..clear()
       ..add(autocomplete)
-      ..add(detailsElement);
+      ;
     _autocompleteElement = autocomplete;
-    _detailsElement = detailsElement;
   }
 
   void _setAutocompleteValue(Element element, String value) {

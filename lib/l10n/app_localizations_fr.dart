@@ -257,6 +257,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'L’autocomplétion d’adresse est indisponible. Vérifiez la clé Google Maps API et la configuration de Places UI Kit.';
 
   @override
+  String get useSelectedPlaceButton => 'Utiliser le lieu sélectionné';
+
+  @override
   String get vehicleSelectLabel => 'Choisir un véhicule';
 
   @override
