@@ -47,11 +47,15 @@ class GoogleMapsLoader {
   static void _hookAuthFailure() {
     if (_authHooked) return;
     _authHooked = true;
-    js_util.setProperty(window, 'gm_authFailure', () {
-      _authFailure =
-          'Google Maps auth failure (check API key, referrer, or billing).';
-      _failLoader(_authFailure!);
-    });
+    js_util.setProperty(
+      window,
+      'gm_authFailure',
+      js_util.allowInterop(() {
+        _authFailure =
+            'Google Maps auth failure (check API key, referrer, or billing).';
+        _failLoader(_authFailure!);
+      }),
+    );
   }
 
   static void _failLoader(String message) {
