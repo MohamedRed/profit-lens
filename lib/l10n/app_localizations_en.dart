@@ -244,6 +244,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickupAddressLabel => 'Pickup address';
 
   @override
+  String get dropoffAddressLabel => 'Drop-off address';
+
+  @override
   String get saveOfferButton => 'Save offer';
 
   @override

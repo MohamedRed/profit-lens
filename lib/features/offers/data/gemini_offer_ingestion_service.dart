@@ -52,6 +52,7 @@ class GeminiOfferIngestionService implements OfferIngestionService {
           distanceKm: distance,
           pickupName: offerData['pickupName'] as String?,
           pickupAddress: offerData['pickupAddress'] as String?,
+          dropoffAddress: offerData['dropoffAddress'] as String?,
         );
       }
     }

@@ -243,6 +243,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pickupAddressLabel => 'عنوان الاستلام';
 
   @override
+  String get dropoffAddressLabel => 'عنوان التسليم';
+
+  @override
   String get saveOfferButton => 'حفظ العرض';
 
   @override

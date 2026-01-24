@@ -13,10 +13,12 @@ class OfferFlowController {
   final TextEditingController durationController = TextEditingController();
   final TextEditingController pickupNameController = TextEditingController();
   final TextEditingController pickupAddressController = TextEditingController();
+  final TextEditingController dropoffAddressController = TextEditingController();
 
   OfferSource source = OfferSource.manual;
   OfferExtractionMetadata? extraction;
   PlaceSelection? pickupSelection;
+  PlaceSelection? dropoffSelection;
 
   void dispose() {
     payoutController.dispose();
@@ -24,6 +26,7 @@ class OfferFlowController {
     durationController.dispose();
     pickupNameController.dispose();
     pickupAddressController.dispose();
+    dropoffAddressController.dispose();
   }
 
   void applyExtraction(OfferExtractionResult result) {
@@ -34,12 +37,14 @@ class OfferFlowController {
     distanceController.text = result.offer!.distanceKm.toStringAsFixed(1);
     pickupNameController.text = result.offer!.pickupName ?? '';
     pickupAddressController.text = result.offer!.pickupAddress ?? '';
+    dropoffAddressController.text = result.offer!.dropoffAddress ?? '';
     source = OfferSource.screenshot;
     extraction = OfferExtractionMetadata(
       confidence: result.confidence,
       rawText: result.rawText,
     );
     pickupSelection = null;
+    dropoffSelection = null;
   }
 
   void applyPickupSelection(PlaceSelection selection) {
@@ -47,6 +52,17 @@ class OfferFlowController {
     if (selection.formattedAddress != null &&
         selection.formattedAddress!.isNotEmpty) {
       pickupAddressController.text = selection.formattedAddress!;
+    }
+    if (selection.name != null && selection.name!.isNotEmpty) {
+      pickupNameController.text = selection.name!;
+    }
+  }
+
+  void applyDropoffSelection(PlaceSelection selection) {
+    dropoffSelection = selection;
+    if (selection.formattedAddress != null &&
+        selection.formattedAddress!.isNotEmpty) {
+      dropoffAddressController.text = selection.formattedAddress!;
     }
   }
 
@@ -67,6 +83,9 @@ class OfferFlowController {
       pickupAddress: pickupAddressController.text.trim().isEmpty
           ? null
           : pickupAddressController.text.trim(),
+      dropoffAddress: dropoffAddressController.text.trim().isEmpty
+          ? null
+          : dropoffAddressController.text.trim(),
     );
   }
 }

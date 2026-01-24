@@ -26,6 +26,7 @@ class OfferDetailsSummary extends StatelessWidget {
     final duration = controller.durationController.text.trim();
     final pickupName = controller.pickupNameController.text.trim();
     final pickupAddress = controller.pickupAddressController.text.trim();
+    final dropoffAddress = controller.dropoffAddressController.text.trim();
     return SectionCard(
       title: l10n.offerDetailsSection,
       children: [
@@ -39,6 +40,8 @@ class OfferDetailsSummary extends StatelessWidget {
           Text('${l10n.pickupNameLabel}: $pickupName'),
         if (pickupAddress.isNotEmpty)
           Text('${l10n.pickupAddressLabel}: $pickupAddress'),
+        if (dropoffAddress.isNotEmpty)
+          Text('${l10n.dropoffAddressLabel}: $dropoffAddress'),
         if (extraction != null) OfferExtractionSummary(metadata: extraction!),
         const SizedBox(height: 8),
         TextButton(onPressed: onEdit, child: Text(l10n.editOfferDetailsButton)),

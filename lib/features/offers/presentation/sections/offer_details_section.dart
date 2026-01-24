@@ -15,6 +15,7 @@ class OfferDetailsSection extends StatefulWidget {
   final bool hasExtraction;
   final OfferExtractionMetadata? extraction;
   final ValueChanged<PlaceSelection>? onPickupSelected;
+  final ValueChanged<PlaceSelection>? onDropoffSelected;
 
   const OfferDetailsSection({
     super.key,
@@ -23,6 +24,7 @@ class OfferDetailsSection extends StatefulWidget {
     required this.hasExtraction,
     required this.extraction,
     required this.onPickupSelected,
+    required this.onDropoffSelected,
   });
 
   @override
@@ -59,7 +61,9 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
           durationController: widget.controller.durationController,
           pickupNameController: widget.controller.pickupNameController,
           pickupAddressController: widget.controller.pickupAddressController,
+          dropoffAddressController: widget.controller.dropoffAddressController,
           onPickupSelected: widget.onPickupSelected,
+          onDropoffSelected: widget.onDropoffSelected,
           showDuration: widget.requiresDuration || _showOptional,
           showPickupFields: _showOptional,
           requiresDuration: widget.requiresDuration,

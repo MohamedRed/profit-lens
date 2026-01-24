@@ -25,6 +25,7 @@ class OfferFlowForm extends StatelessWidget {
   final OfferExtractionMetadata? extraction;
   final OfferRecord? previewRecord;
   final ValueChanged<PlaceSelection>? onPickupSelected;
+  final ValueChanged<PlaceSelection>? onDropoffSelected;
 
   const OfferFlowForm({
     super.key,
@@ -41,6 +42,7 @@ class OfferFlowForm extends StatelessWidget {
     required this.extraction,
     required this.previewRecord,
     required this.onPickupSelected,
+    required this.onDropoffSelected,
   });
 
   @override
@@ -63,6 +65,7 @@ class OfferFlowForm extends StatelessWidget {
             hasExtraction: extraction != null,
             extraction: extraction,
             onPickupSelected: onPickupSelected,
+            onDropoffSelected: onDropoffSelected,
           ),
           if (previewRecord != null) ...[
             const SizedBox(height: 12),

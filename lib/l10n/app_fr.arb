@@ -77,6 +77,7 @@
   "durationMinutesLabel": "Temps estimé (minutes)",
   "pickupNameLabel": "Nom du retrait",
   "pickupAddressLabel": "Adresse de retrait",
+  "dropoffAddressLabel": "Adresse de livraison",
   "saveOfferButton": "Enregistrer l’offre",
   "offerSavedMessage": "Offre enregistrée.",
   "offerSaveFailedMessage": "Impossible d’enregistrer l’offre.",

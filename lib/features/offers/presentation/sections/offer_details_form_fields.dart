@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/place_selection.dart';
-import '../widgets/place_autocomplete_field.dart';
+import 'offer_address_fields.dart';
 
 class OfferDetailsFormFields extends StatelessWidget {
   final TextEditingController payoutController;
@@ -11,6 +11,8 @@ class OfferDetailsFormFields extends StatelessWidget {
   final TextEditingController pickupNameController;
   final TextEditingController pickupAddressController;
   final ValueChanged<PlaceSelection>? onPickupSelected;
+  final TextEditingController dropoffAddressController;
+  final ValueChanged<PlaceSelection>? onDropoffSelected;
   final bool showDuration;
   final bool showPickupFields;
   final bool requiresDuration;
@@ -23,6 +25,8 @@ class OfferDetailsFormFields extends StatelessWidget {
     required this.pickupNameController,
     required this.pickupAddressController,
     required this.onPickupSelected,
+    required this.dropoffAddressController,
+    required this.onDropoffSelected,
     required this.showDuration,
     required this.showPickupFields,
     required this.requiresDuration,
@@ -75,15 +79,12 @@ class OfferDetailsFormFields extends StatelessWidget {
         ],
         if (showPickupFields) ...[
           const SizedBox(height: 12),
-          TextFormField(
-            controller: pickupNameController,
-            decoration: InputDecoration(labelText: l10n.pickupNameLabel),
-          ),
-          const SizedBox(height: 12),
-          PlaceAutocompleteField(
-            controller: pickupAddressController,
-            label: l10n.pickupAddressLabel,
-            onSelected: onPickupSelected,
+          OfferAddressFields(
+            pickupNameController: pickupNameController,
+            pickupAddressController: pickupAddressController,
+            onPickupSelected: onPickupSelected,
+            dropoffAddressController: dropoffAddressController,
+            onDropoffSelected: onDropoffSelected,
           ),
         ],
       ],

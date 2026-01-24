@@ -4,6 +4,7 @@ class Offer {
   final double? durationMinutes;
   final String? pickupName;
   final String? pickupAddress;
+  final String? dropoffAddress;
 
   const Offer({
     required this.payoutEuro,
@@ -11,5 +12,6 @@ class Offer {
     this.durationMinutes,
     this.pickupName,
     this.pickupAddress,
+    this.dropoffAddress,
   });
 }

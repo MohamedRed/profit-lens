@@ -45,6 +45,7 @@ class _OfferFlowCoordinatorState extends State<OfferFlowCoordinator> {
     _controller.durationController.addListener(_onOfferChanged);
     _controller.pickupNameController.addListener(_onOfferChanged);
     _controller.pickupAddressController.addListener(_onOfferChanged);
+    _controller.dropoffAddressController.addListener(_onOfferChanged);
   }
 
   void _onOfferChanged() {
@@ -152,6 +153,7 @@ class _OfferFlowCoordinatorState extends State<OfferFlowCoordinator> {
           isLoading: _isLoading,
           previewRecord: previewRecord,
           onPickupSelected: _controller.applyPickupSelection,
+          onDropoffSelected: _controller.applyDropoffSelection,
         );
       },
     );

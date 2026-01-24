@@ -562,6 +562,12 @@ abstract class AppLocalizations {
   /// **'Pickup address'**
   String get pickupAddressLabel;
 
+  /// No description provided for @dropoffAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop-off address'**
+  String get dropoffAddressLabel;
+
   /// No description provided for @saveOfferButton.
   ///
   /// In en, this message translates to:

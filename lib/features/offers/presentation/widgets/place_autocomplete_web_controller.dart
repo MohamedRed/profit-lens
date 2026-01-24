@@ -5,6 +5,7 @@ import 'dart:js_util' as js_util;
 import '../../../../core/config/google_maps_config.dart';
 import '../../../../core/web/google_maps_loader_web.dart';
 import '../../domain/place_selection.dart';
+import 'place_autocomplete_web_style.dart';
 class PlaceAutocompleteWebController {
   final DivElement container;
   final String countryCode;
@@ -41,7 +42,7 @@ class PlaceAutocompleteWebController {
     final constructor = js_util.getProperty(placesLibrary, 'BasicPlaceAutocompleteElement');
     final options = js_util.jsify({'includedRegionCodes': [countryCode.toLowerCase()]});
     final autocomplete = js_util.callConstructor(constructor, [options]) as HtmlElement;
-    _styleAutocomplete(autocomplete);
+    stylePlacesAutocomplete(autocomplete);
     final detailsElement = Element.tag('gmp-place-details-compact');
     final detailsRequest = Element.tag('gmp-place-details-place-request');
     detailsElement.append(detailsRequest);
@@ -57,6 +58,15 @@ class PlaceAutocompleteWebController {
     _detailsLoadListener = (event) {
       final place = js_util.getProperty(detailsElement, 'place');
       final formattedAddress = js_util.getProperty(place, 'formattedAddress') as String?;
+      final displayName = js_util.getProperty(place, 'displayName');
+      String? name;
+      if (displayName != null) {
+        final displayText = js_util.getProperty(displayName, 'text');
+        if (displayText is String && displayText.isNotEmpty) {
+          name = displayText;
+        }
+      }
+      name ??= js_util.getProperty(place, 'name') as String?;
       final location = js_util.getProperty(place, 'location');
       double? lat;
       double? lng;
@@ -70,6 +80,7 @@ class PlaceAutocompleteWebController {
       onSelected(
         PlaceSelection(
           placeId: js_util.getProperty(place, 'id') as String? ?? '',
+          name: name,
           formattedAddress: formattedAddress,
           latitude: lat,
           longitude: lng,
@@ -84,14 +95,5 @@ class PlaceAutocompleteWebController {
       ..add(detailsElement);
     _autocompleteElement = autocomplete;
     _detailsElement = detailsElement;
-  }
-  void _styleAutocomplete(HtmlElement autocomplete) {
-    autocomplete.style
-      ..width = '100%'
-      ..height = '48px'
-      ..border = '1px solid rgba(0, 0, 0, 0.38)'
-      ..borderRadius = '8px'
-      ..padding = '0 12px'
-      ..boxSizing = 'border-box';
   }
 }
