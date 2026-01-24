@@ -520,18 +520,6 @@ abstract class AppLocalizations {
   /// **'Capture screenshot'**
   String get captureScreenshotButton;
 
-  /// No description provided for @extractionSummaryTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Extraction summary'**
-  String get extractionSummaryTitle;
-
-  /// No description provided for @confidenceLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Confidence'**
-  String get confidenceLabel;
-
   /// No description provided for @mapsAutocompleteUnavailableMessage.
   ///
   /// In en, this message translates to:

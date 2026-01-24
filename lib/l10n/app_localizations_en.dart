@@ -222,12 +222,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get captureScreenshotButton => 'Capture screenshot';
 
   @override
-  String get extractionSummaryTitle => 'Extraction summary';
-
-  @override
-  String get confidenceLabel => 'Confidence';
-
-  @override
   String get mapsAutocompleteUnavailableMessage =>
       'Address autocomplete is unavailable. Check the Google Maps API key and Places UI Kit setup.';
 

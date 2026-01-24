@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
-import '../domain/offer_extraction_metadata.dart';
 import '../domain/offer_record.dart';
 import '../domain/place_selection.dart';
 import 'controllers/offer_flow_controller.dart';
@@ -15,6 +14,7 @@ class OfferFlowForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final OfferFlowController controller;
   final bool requiresDuration;
+  final bool hasExtraction;
   final List<VehicleProfile> vehicles;
   final String? selectedVehicleId;
   final ValueChanged<String?> onVehicleChanged;
@@ -22,7 +22,6 @@ class OfferFlowForm extends StatelessWidget {
   final VoidCallback onCaptureScreenshot;
   final VoidCallback onViewDetails;
   final bool isLoading;
-  final OfferExtractionMetadata? extraction;
   final OfferRecord? previewRecord;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
@@ -32,6 +31,7 @@ class OfferFlowForm extends StatelessWidget {
     required this.formKey,
     required this.controller,
     required this.requiresDuration,
+    required this.hasExtraction,
     required this.vehicles,
     required this.selectedVehicleId,
     required this.onVehicleChanged,
@@ -39,7 +39,6 @@ class OfferFlowForm extends StatelessWidget {
     required this.onCaptureScreenshot,
     required this.onViewDetails,
     required this.isLoading,
-    required this.extraction,
     required this.previewRecord,
     required this.onPickupSelected,
     required this.onDropoffSelected,
@@ -62,8 +61,7 @@ class OfferFlowForm extends StatelessWidget {
           OfferDetailsSection(
             controller: controller,
             requiresDuration: requiresDuration,
-            hasExtraction: extraction != null,
-            extraction: extraction,
+            hasExtraction: hasExtraction,
             onPickupSelected: onPickupSelected,
             onDropoffSelected: onDropoffSelected,
           ),
