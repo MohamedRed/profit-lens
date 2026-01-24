@@ -29,11 +29,8 @@ class PlaceAutocompleteWebController {
     if (authFailure != null) {
       throw StateError(authFailure);
     }
-    final maps = js_util.getProperty(js_util.getProperty(window, 'google'), 'maps');
-    final placesLibrary = await js_util.promiseToFuture(
-      js_util.callMethod(maps, 'importLibrary', ['places']),
-    );
-    _mountAutocomplete(placesLibrary);
+    await _ensureUiKitReady();
+    _mountAutocomplete();
   }
   void dispose() {
     if (_autocompleteElement != null && _selectListener != null) {
@@ -43,10 +40,32 @@ class PlaceAutocompleteWebController {
       _detailsElement!.removeEventListener('gmp-load', _detailsLoadListener);
     }
   }
-  void _mountAutocomplete(Object placesLibrary) {
-    final constructor = js_util.getProperty(placesLibrary, 'BasicPlaceAutocompleteElement');
-    final options = js_util.jsify({'includedRegionCodes': [countryCode.toLowerCase()]});
-    final autocomplete = js_util.callConstructor(constructor, [options]) as HtmlElement;
+  Future<void> _ensureUiKitReady() async {
+    final customElements = js_util.getProperty(window, 'customElements');
+    if (customElements == null) {
+      throw StateError('Custom elements are unavailable in this browser.');
+    }
+    await js_util.promiseToFuture(
+      js_util.callMethod(customElements, 'whenDefined', ['gmp-basic-place-autocomplete']),
+    );
+    await js_util.promiseToFuture(
+      js_util.callMethod(customElements, 'whenDefined', ['gmp-place-details-compact']),
+    );
+  }
+
+  void _mountAutocomplete() {
+    final autocomplete =
+        Element.tag('gmp-basic-place-autocomplete') as HtmlElement;
+    final regionCodes = [countryCode.toLowerCase()];
+    final options = js_util.jsify({
+      'includedRegionCodes': regionCodes,
+    });
+    try {
+      js_util.setProperty(autocomplete, 'includedRegionCodes', regionCodes);
+    } catch (_) {}
+    try {
+      js_util.setProperty(autocomplete, 'options', options);
+    } catch (_) {}
     stylePlacesAutocomplete(autocomplete);
     final detailsElement = Element.tag('gmp-place-details-compact');
     final detailsRequest = Element.tag('gmp-place-details-place-request');
