@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html';
-import 'dart:ui' as ui;
+import 'dart:ui_web' as ui;
 import 'package:flutter/material.dart';
 import '../../../../core/config/google_maps_config.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -34,7 +34,6 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
     _viewType = 'places-autocomplete-${_instanceId++}';
     _container.style.width = '100%';
     _webController = PlaceAutocompleteWebController(container: _container, countryCode: widget.countryCode, onSelected: _handleSelection);
-    // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(_viewType, (int viewId) => _container);
     _boot();
   }
