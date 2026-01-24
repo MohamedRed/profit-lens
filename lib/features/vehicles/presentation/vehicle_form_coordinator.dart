@@ -4,7 +4,6 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../../profile/domain/user_profile.dart';
 import '../domain/vehicle_profile.dart';
-import '../domain/vehicle_type.dart';
 import 'vehicle_form_model_lookup.dart';
 import 'vehicle_form_state.dart';
 import 'vehicle_form_state_actions.dart';
@@ -46,8 +45,7 @@ class _VehicleFormCoordinatorState extends State<VehicleFormCoordinator> {
 
   Future<void> _lookupModel() async {
     if (_state.isLookingUpModel ||
-        !_state.useVehiclePresets ||
-        _state.controller.vehicleType != VehicleType.car) {
+        !_state.useVehiclePresets) {
       return;
     }
     _state.isLookingUpModel = true;
@@ -80,11 +78,7 @@ class _VehicleFormCoordinatorState extends State<VehicleFormCoordinator> {
         useVehiclePresets: _state.useVehiclePresets,
         onPresetsChanged: _state.togglePresets,
         onPresetEdited: _state.markPresetEdited,
-        onModelLookup:
-            _state.controller.vehicleType == VehicleType.car &&
-                    _state.useVehiclePresets
-                ? _lookupModel
-                : null,
+        onModelLookup: _state.useVehiclePresets ? _lookupModel : null,
         isSaving: _state.isSaving,
         onSave: () => _state.save(
           context: context,

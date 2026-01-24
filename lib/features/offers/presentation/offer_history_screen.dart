@@ -1,64 +1,84 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/app_scope.dart';
-import '../../../core/utils/currency_format.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../domain/offer_record.dart';
 import 'offer_history_detail_screen.dart';
+import 'widgets/offer_history_charts.dart';
+import 'widgets/offer_history_list.dart';
 
-class OfferHistoryScreen extends StatelessWidget {
+enum HistoryViewMode { list, charts }
+
+class OfferHistoryScreen extends StatefulWidget {
   final AuthUser user;
 
   const OfferHistoryScreen({super.key, required this.user});
 
   @override
+  State<OfferHistoryScreen> createState() => _OfferHistoryScreenState();
+}
+
+class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
+  HistoryViewMode _viewMode = HistoryViewMode.list;
+
+  @override
   Widget build(BuildContext context) {
     final services = AppScope.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final localeTag = Localizations.localeOf(context).toString();
 
     return StreamBuilder<List<OfferRecord>>(
-      stream: services.offerRepository.watchOffers(user.uid),
+      stream: services.offerRepository.watchOffers(widget.user.uid),
       builder: (context, snapshot) {
         final offers = snapshot.data ?? [];
         return Scaffold(
           appBar: AppBar(title: Text(l10n.historyTabLabel)),
           body: offers.isEmpty
               ? Center(child: Text(l10n.noHistoryMessage))
-              : ListView.separated(
-                  padding: const EdgeInsets.all(16),
-                  itemBuilder: (context, index) {
-                    final offer = offers[index];
-                    return ListTile(
-                      title: Text(
-                        CurrencyFormat.euro(
-                          offer.breakdown.netProfit,
-                          localeTag,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '${offer.offer.distanceKm.toStringAsFixed(1)} km • ${offer.createdAt.toLocal().toString().split(' ').first}',
-                      ),
-                      trailing: Text(
-                        CurrencyFormat.euro(
-                          offer.offer.payoutEuro,
-                          localeTag,
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => OfferHistoryDetailScreen(
-                              record: offer,
-                            ),
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: SegmentedButton<HistoryViewMode>(
+                        segments: [
+                          ButtonSegment(
+                            value: HistoryViewMode.list,
+                            label: Text(l10n.historyViewListLabel),
+                            icon: const Icon(Icons.list),
                           ),
-                        );
-                      },
-                    );
-                  },
-                  separatorBuilder: (context, index) => const Divider(),
-                  itemCount: offers.length,
+                          ButtonSegment(
+                            value: HistoryViewMode.charts,
+                            label: Text(l10n.historyViewChartsLabel),
+                            icon: const Icon(Icons.show_chart),
+                          ),
+                        ],
+                        selected: {_viewMode},
+                        onSelectionChanged: (selection) {
+                          setState(() => _viewMode = selection.first);
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: _viewMode == HistoryViewMode.list
+                            ? OfferHistoryList(
+                                offers: offers,
+                                onSelected: (offer) {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          OfferHistoryDetailScreen(
+                                        record: offer,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                            : OfferHistoryCharts(offers: offers),
+                      ),
+                    ),
+                  ],
                 ),
         );
       },

@@ -508,6 +508,60 @@ abstract class AppLocalizations {
   /// **'Add a vehicle to start analyzing offers.'**
   String get noVehiclesMessage;
 
+  /// No description provided for @analysisDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis date'**
+  String get analysisDateLabel;
+
+  /// No description provided for @historyViewListLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get historyViewListLabel;
+
+  /// No description provided for @historyViewChartsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Charts'**
+  String get historyViewChartsLabel;
+
+  /// No description provided for @historyChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profit over time'**
+  String get historyChartTitle;
+
+  /// No description provided for @historyChartProfitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Profit'**
+  String get historyChartProfitLabel;
+
+  /// No description provided for @profitThresholdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Profitability threshold'**
+  String get profitThresholdLabel;
+
+  /// No description provided for @historyChartEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least 2 offers to see the chart.'**
+  String get historyChartEmptyMessage;
+
+  /// No description provided for @historyChartHintMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this chart to track profitability trends across offers.'**
+  String get historyChartHintMessage;
+
+  /// No description provided for @latestProfitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest profit'**
+  String get latestProfitLabel;
+
   /// No description provided for @extractionFailedMessage.
   ///
   /// In en, this message translates to:

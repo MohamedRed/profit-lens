@@ -78,7 +78,7 @@ extension ProfileSetupStateVehicle on ProfileSetupState {
     required BuildContext context,
     required VehicleModelLookupService service,
   }) async {
-    if (!useVehiclePresets || vehicleController.vehicleType != VehicleType.car) {
+    if (!useVehiclePresets) {
       return;
     }
     await lookupVehicleModel(

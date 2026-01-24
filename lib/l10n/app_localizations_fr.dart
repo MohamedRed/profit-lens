@@ -217,6 +217,35 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ajoutez un véhicule pour commencer l’analyse.';
 
   @override
+  String get analysisDateLabel => 'Date d’analyse';
+
+  @override
+  String get historyViewListLabel => 'Liste';
+
+  @override
+  String get historyViewChartsLabel => 'Graphiques';
+
+  @override
+  String get historyChartTitle => 'Évolution du profit';
+
+  @override
+  String get historyChartProfitLabel => 'Profit';
+
+  @override
+  String get profitThresholdLabel => 'Seuil de rentabilité';
+
+  @override
+  String get historyChartEmptyMessage =>
+      'Ajoutez au moins 2 offres pour voir le graphique.';
+
+  @override
+  String get historyChartHintMessage =>
+      'Utilisez ce graphique pour suivre l’évolution de la rentabilité.';
+
+  @override
+  String get latestProfitLabel => 'Dernier profit';
+
+  @override
   String get extractionFailedMessage =>
       'Impossible d’extraire les détails de l’offre.';
 

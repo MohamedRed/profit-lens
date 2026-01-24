@@ -215,6 +215,35 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noVehiclesMessage => 'أضف مركبة للبدء في التحليل.';
 
   @override
+  String get analysisDateLabel => 'تاريخ التحليل';
+
+  @override
+  String get historyViewListLabel => 'قائمة';
+
+  @override
+  String get historyViewChartsLabel => 'رسوم بيانية';
+
+  @override
+  String get historyChartTitle => 'تطور الربح مع الوقت';
+
+  @override
+  String get historyChartProfitLabel => 'الربح';
+
+  @override
+  String get profitThresholdLabel => 'حد الربحية';
+
+  @override
+  String get historyChartEmptyMessage =>
+      'أضف عرضين على الأقل لعرض الرسم البياني.';
+
+  @override
+  String get historyChartHintMessage =>
+      'استخدم هذا الرسم لمتابعة تطور الربحية عبر العروض.';
+
+  @override
+  String get latestProfitLabel => 'آخر ربح';
+
+  @override
   String get extractionFailedMessage => 'تعذر استخراج تفاصيل العرض.';
 
   @override

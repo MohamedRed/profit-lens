@@ -16,7 +16,7 @@ Future<void> lookupVehicleModel({
 }) async {
   final brand = controller.brandController.text.trim();
   final model = controller.modelController.text.trim();
-  if (brand.isEmpty || model.isEmpty) {
+  if (brand.isEmpty || model.isEmpty || energyType == EnergyType.none) {
     return;
   }
   final l10n = AppLocalizations.of(context)!;

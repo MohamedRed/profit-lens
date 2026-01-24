@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../app/app_scope.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
-import '../../vehicles/domain/vehicle_type.dart';
 import 'profile_setup_state.dart';
 import 'profile_setup_state_save.dart';
 import 'profile_setup_state_vehicle.dart';
@@ -70,12 +69,7 @@ class _ProfileSetupCoordinatorState extends State<ProfileSetupCoordinator> {
             useVehiclePresets: _state.useVehiclePresets,
             onVehiclePresetsChanged: _state.togglePresets,
             onVehiclePresetEdited: _state.markPresetEdited,
-            onModelLookup:
-                _state.useVehiclePresets &&
-                        _state.vehicleController.vehicleType ==
-                            VehicleType.car
-                    ? _lookupModel
-                    : null,
+            onModelLookup: _state.useVehiclePresets ? _lookupModel : null,
             onActivityChanged: (value) {
               _state.businessController.activity = value;
               _state.refresh();

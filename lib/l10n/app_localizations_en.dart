@@ -215,6 +215,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noVehiclesMessage => 'Add a vehicle to start analyzing offers.';
 
   @override
+  String get analysisDateLabel => 'Analysis date';
+
+  @override
+  String get historyViewListLabel => 'List';
+
+  @override
+  String get historyViewChartsLabel => 'Charts';
+
+  @override
+  String get historyChartTitle => 'Profit over time';
+
+  @override
+  String get historyChartProfitLabel => 'Profit';
+
+  @override
+  String get profitThresholdLabel => 'Profitability threshold';
+
+  @override
+  String get historyChartEmptyMessage =>
+      'Add at least 2 offers to see the chart.';
+
+  @override
+  String get historyChartHintMessage =>
+      'Use this chart to track profitability trends across offers.';
+
+  @override
+  String get latestProfitLabel => 'Latest profit';
+
+  @override
   String get extractionFailedMessage =>
       'Unable to extract offer details from the screenshot.';
 

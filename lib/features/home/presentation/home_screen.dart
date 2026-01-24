@@ -23,18 +23,27 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  late final List<Widget> _pages;
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final pages = [
+  void initState() {
+    super.initState();
+    _pages = [
       OfferFlowScreen(user: widget.user, profile: widget.profile),
       OfferHistoryScreen(user: widget.user),
       SettingsScreen(user: widget.user, profile: widget.profile),
     ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      body: pages[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {

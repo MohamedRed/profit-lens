@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/utils/currency_format.dart';
+import '../../../core/utils/date_time_format.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/offer_record.dart';
 
@@ -36,6 +37,11 @@ class OfferHistoryDetailScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(l10n.netProfitLabel),
+                const SizedBox(height: 12),
+                _row(
+                  l10n.analysisDateLabel,
+                  formatShortDateTime(context, record.createdAt),
+                ),
                 const SizedBox(height: 16),
                 _row(l10n.grossRevenueLabel,
                     CurrencyFormat.euro(record.offer.payoutEuro, localeTag)),
