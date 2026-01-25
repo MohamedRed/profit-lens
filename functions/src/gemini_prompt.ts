@@ -19,4 +19,5 @@ export const offerExtractionPrompt = [
   "  pickupName = restaurant/store name, dropoffAddress = that address, pickupAddress = null.",
   "- If two distinct address lines are visible, use the first as pickupAddress and the second as dropoffAddress.",
   "- If only a business name is visible with no address, set pickupName and keep addresses null.",
+  "Do not include markdown fences or any extra text outside the JSON.",
 ].join("\n");
