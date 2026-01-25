@@ -51,6 +51,7 @@ class ProfitHistoryChart extends StatelessWidget {
         const SizedBox(height: 12),
         SizedBox(
           height: 220,
+          width: double.infinity,
           child: CustomPaint(
             painter: _ProfitHistoryChartPainter(
               values: values,
