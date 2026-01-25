@@ -10,7 +10,7 @@ import { postprocessOfferExtraction } from "./offer_postprocess";
 
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const geminiModel = defineString("GEMINI_MODEL", {
-  default: "gemini-2.5-flash",
+  default: "gemini-3-flash-preview",
 });
 
 export const extractOfferFromImage = onCall(
