@@ -8,6 +8,34 @@ type GeminiRequest = {
   mimeType: string;
 };
 
+const offerExtractionSchema = {
+  type: "object",
+  properties: {
+    offer: {
+      type: "object",
+      properties: {
+        payoutEuro: { type: ["number", "null"] },
+        distanceKm: { type: ["number", "null"] },
+        pickupName: { type: ["string", "null"] },
+        pickupAddress: { type: ["string", "null"] },
+        dropoffAddress: { type: ["string", "null"] },
+      },
+      required: [
+        "payoutEuro",
+        "distanceKm",
+        "pickupName",
+        "pickupAddress",
+        "dropoffAddress",
+      ],
+      additionalProperties: false,
+    },
+    confidence: { type: ["number", "null"] },
+    rawText: { type: "string" },
+  },
+  required: ["offer", "confidence", "rawText"],
+  additionalProperties: false,
+} as const;
+
 export async function requestGeminiOffer(
   request: GeminiRequest
 ): Promise<string> {
@@ -34,6 +62,8 @@ export async function requestGeminiOffer(
         generationConfig: {
           temperature: 0.2,
           maxOutputTokens: 512,
+          responseMimeType: "application/json",
+          responseJsonSchema: offerExtractionSchema,
         },
       }),
     }
