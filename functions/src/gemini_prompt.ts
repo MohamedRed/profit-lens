@@ -12,5 +12,11 @@ export const offerExtractionPrompt = [
   "  \"confidence\": number,",
   "  \"rawText\": string",
   "}",
-  "Use dot as decimal separator. If a field is unknown or not visible, set it to null.",
+  "Use dot as decimal separator.",
+  "If a field is unknown or not visible, set it to null.",
+  "Address heuristics (common Uber Eats/Deliveroo cards):",
+  "- If you see a restaurant/store name followed by a single full address line, treat it as:",
+  "  pickupName = restaurant/store name, dropoffAddress = that address, pickupAddress = null.",
+  "- If two distinct address lines are visible, use the first as pickupAddress and the second as dropoffAddress.",
+  "- If only a business name is visible with no address, set pickupName and keep addresses null.",
 ].join("\n");
