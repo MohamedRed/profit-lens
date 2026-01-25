@@ -1,4 +1,5 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { logger } from "firebase-functions/logger";
 import { defineSecret, defineString } from "firebase-functions/params";
 import { loadAdemeRecords } from "./ademe_dataset";
 import { selectConsumption } from "./ademe_consumption";
@@ -34,14 +35,24 @@ export const extractOfferFromImage = onCall(
       throw new HttpsError("failed-precondition", "GEMINI_API_KEY is not set.");
     }
 
+    const model = geminiModel.value();
     const text = await requestGeminiOffer({
       apiKey,
-      model: geminiModel.value(),
+      model,
       imageBase64: payload.imageBase64,
       mimeType: payload.mimeType,
     });
 
-    return parseGeminiJson(text);
+    try {
+      return parseGeminiJson(text);
+    } catch (error) {
+      logger.error("Gemini JSON parse failed", {
+        ...buildGeminiDiagnostics(text),
+        model,
+        mimeType: payload.mimeType,
+      });
+      throw error;
+    }
   }
 );
 
@@ -81,4 +92,16 @@ function parseEnergy(value?: string): LookupEnergy | null {
   if (value == "electric") return "electric";
   if (value == "fuel") return "fuel";
   return null;
+}
+
+function buildGeminiDiagnostics(text: string) {
+  const trimmed = text.trim();
+  return {
+    textLength: text.length,
+    trimmedLength: trimmed.length,
+    containsFence: text.includes("```"),
+    startsWithBrace: trimmed.startsWith("{"),
+    firstBraceIndex: text.indexOf("{"),
+    lastBraceIndex: text.lastIndexOf("}"),
+  };
 }
