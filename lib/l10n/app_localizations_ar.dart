@@ -272,6 +272,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dropoffAddressLabel => 'عنوان التسليم';
 
   @override
+  String get pickupAddressMissingHint =>
+      'هذه اللقطة تعرض فقط اسم المطعم وعنوان العميل. يمكن ترك عنوان الاستلام فارغًا.';
+
+  @override
   String get offerSaveFailedMessage => 'تعذر حفظ العرض.';
 
   @override

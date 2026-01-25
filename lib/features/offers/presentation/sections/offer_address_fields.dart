@@ -35,6 +35,42 @@ class OfferAddressFields extends StatelessWidget {
           label: l10n.pickupAddressLabel,
           onSelected: onPickupSelected,
         ),
+        AnimatedBuilder(
+          animation: Listenable.merge([
+            pickupAddressController,
+            dropoffAddressController,
+          ]),
+          builder: (context, _) {
+            final pickupEmpty = pickupAddressController.text.trim().isEmpty;
+            final dropoffFilled = dropoffAddressController.text.trim().isNotEmpty;
+            if (!pickupEmpty || !dropoffFilled) {
+              return const SizedBox.shrink();
+            }
+            return Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      l10n.pickupAddressMissingHint,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
         const SizedBox(height: 12),
         PlaceAutocompleteField(
           controller: dropoffAddressController,

@@ -86,6 +86,7 @@
   "pickupNameLabel": "اسم الاستلام",
   "pickupAddressLabel": "عنوان الاستلام",
   "dropoffAddressLabel": "عنوان التسليم",
+  "pickupAddressMissingHint": "هذه اللقطة تعرض فقط اسم المطعم وعنوان العميل. يمكن ترك عنوان الاستلام فارغًا.",
   "offerSaveFailedMessage": "تعذر حفظ العرض.",
   "historyDetailTitle": "تفاصيل العرض",
   "incomeTaxLabel": "ضريبة الدخل",

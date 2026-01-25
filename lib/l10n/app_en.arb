@@ -86,6 +86,7 @@
   "pickupNameLabel": "Pickup name",
   "pickupAddressLabel": "Pickup address",
   "dropoffAddressLabel": "Drop-off address",
+  "pickupAddressMissingHint": "This screenshot provides only the restaurant name and the customer address. The pickup address can be left empty.",
   "offerSaveFailedMessage": "Unable to save offer.",
   "historyDetailTitle": "Offer details",
   "incomeTaxLabel": "Income tax",

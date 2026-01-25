@@ -616,6 +616,12 @@ abstract class AppLocalizations {
   /// **'Drop-off address'**
   String get dropoffAddressLabel;
 
+  /// No description provided for @pickupAddressMissingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This screenshot provides only the restaurant name and the customer address. The pickup address can be left empty.'**
+  String get pickupAddressMissingHint;
+
   /// No description provided for @offerSaveFailedMessage.
   ///
   /// In en, this message translates to:

@@ -86,6 +86,7 @@
   "pickupNameLabel": "Nom du retrait",
   "pickupAddressLabel": "Adresse de retrait",
   "dropoffAddressLabel": "Adresse de livraison",
+  "pickupAddressMissingHint": "Cette capture ne fournit que le nom du restaurant et l’adresse du client. L’adresse de retrait peut rester vide.",
   "offerSaveFailedMessage": "Impossible d’enregistrer l’offre.",
   "historyDetailTitle": "Détails de l’offre",
   "incomeTaxLabel": "Impôt sur le revenu",

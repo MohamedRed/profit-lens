@@ -273,6 +273,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dropoffAddressLabel => 'Drop-off address';
 
   @override
+  String get pickupAddressMissingHint =>
+      'This screenshot provides only the restaurant name and the customer address. The pickup address can be left empty.';
+
+  @override
   String get offerSaveFailedMessage => 'Unable to save offer.';
 
   @override
