@@ -1,4 +1,5 @@
 import { HttpsError } from "firebase-functions/v2/https";
+import { logger } from "firebase-functions/logger";
 import { offerExtractionPrompt } from "./gemini_prompt";
 
 type GeminiRequest = {
@@ -81,6 +82,7 @@ export async function requestGeminiOffer(
     candidates?: Array<{
       content?: { parts?: Array<{ text?: string }> };
     }>;
+    promptFeedback?: { blockReason?: string };
   };
 
   const text =
@@ -89,6 +91,11 @@ export async function requestGeminiOffer(
       .join("") ?? "";
 
   if (!text) {
+    logger.warn("Gemini returned empty text", {
+      candidateCount: body.candidates?.length ?? 0,
+      blockReason: body.promptFeedback?.blockReason ?? null,
+      responseSize: JSON.stringify(body).length,
+    });
     throw new HttpsError("internal", "Empty Gemini response.");
   }
 
