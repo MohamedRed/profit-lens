@@ -6,6 +6,7 @@ import { selectConsumption } from "./ademe_consumption";
 import { findAdemeMatch, LookupEnergy } from "./ademe_matcher";
 import { requestGeminiOffer } from "./gemini_client";
 import { parseGeminiJson } from "./gemini_json";
+import { postprocessOfferExtraction } from "./offer_postprocess";
 
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const geminiModel = defineString("GEMINI_MODEL", {
@@ -44,7 +45,8 @@ export const extractOfferFromImage = onCall(
     });
 
     try {
-      return parseGeminiJson(text);
+      const parsed = parseGeminiJson(text);
+      return postprocessOfferExtraction(parsed);
     } catch (error) {
       logger.error("Gemini JSON parse failed", {
         ...buildGeminiDiagnostics(text),
