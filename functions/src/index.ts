@@ -48,11 +48,13 @@ export const extractOfferFromImage = onCall(
       const parsed = parseGeminiJson(text);
       return postprocessOfferExtraction(parsed);
     } catch (error) {
-      logger.error("Gemini JSON parse failed", {
+      const diagnostics = {
         ...buildGeminiDiagnostics(text),
         model,
         mimeType: payload.mimeType,
-      });
+      };
+      logger.error("Gemini JSON parse failed", diagnostics);
+      console.error("Gemini JSON parse failed", JSON.stringify(diagnostics));
       throw error;
     }
   }

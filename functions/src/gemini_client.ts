@@ -91,11 +91,13 @@ export async function requestGeminiOffer(
       .join("") ?? "";
 
   if (!text) {
-    logger.warn("Gemini returned empty text", {
+    const diagnostics = {
       candidateCount: body.candidates?.length ?? 0,
       blockReason: body.promptFeedback?.blockReason ?? null,
       responseSize: JSON.stringify(body).length,
-    });
+    };
+    logger.warn("Gemini returned empty text", diagnostics);
+    console.error("Gemini returned empty text", JSON.stringify(diagnostics));
     throw new HttpsError("internal", "Empty Gemini response.");
   }
 
