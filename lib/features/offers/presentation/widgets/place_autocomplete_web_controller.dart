@@ -301,7 +301,7 @@ class PlaceAutocompleteWebController {
   void _emitListHeight(HtmlElement autocomplete) {
     final list = _findListElement(autocomplete);
     final height = list?.getBoundingClientRect().height ?? 0;
-    final clampedHeight = height.isNaN ? 0 : height;
+    final clampedHeight = (height.isNaN ? 0 : height).toDouble();
     onDropdownHeightChanged?.call(clampedHeight);
   }
 

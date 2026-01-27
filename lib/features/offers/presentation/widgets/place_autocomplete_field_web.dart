@@ -103,8 +103,10 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
 
   void _handleDropdownHeight(double height) {
     final nextHeight = height < 0 ? 0 : height;
-    final clampedHeight =
-        nextHeight > _listMaxHeight ? _listMaxHeight : nextHeight;
+    final clampedHeight = (nextHeight > _listMaxHeight
+            ? _listMaxHeight
+            : nextHeight)
+        .toDouble();
     if (clampedHeight == _dropdownHeight) {
       return;
     }
