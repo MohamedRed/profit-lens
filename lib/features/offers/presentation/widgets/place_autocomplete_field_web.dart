@@ -92,6 +92,10 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
   }
 
   String? _displayValueFor(PlaceSelection selection) {
+    final provided = selection.displayValue?.trim();
+    if (provided != null && provided.isNotEmpty) {
+      return provided;
+    }
     final address = selection.formattedAddress?.trim();
     if (address != null && address.isNotEmpty) {
       return address;

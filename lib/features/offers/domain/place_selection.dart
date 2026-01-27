@@ -1,5 +1,6 @@
 class PlaceSelection {
   final String placeId;
+  final String? displayValue;
   final String? name;
   final String? formattedAddress;
   final double? latitude;
@@ -7,6 +8,7 @@ class PlaceSelection {
 
   const PlaceSelection({
     required this.placeId,
+    this.displayValue,
     this.name,
     this.formattedAddress,
     this.latitude,

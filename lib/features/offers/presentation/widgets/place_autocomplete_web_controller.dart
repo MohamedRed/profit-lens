@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
+import 'dart:async';
 import 'dart:html';
 // ignore: uri_does_not_exist
 import 'dart:js_util' as js_util;
@@ -63,22 +64,20 @@ class PlaceAutocompleteWebController {
     } catch (_) {}
     stylePlacesAutocomplete(autocomplete);
     _selectListener = (event) {
-      final place = js_util.getProperty(event, 'place');
-      final placeId = js_util.getProperty(place, 'id') as String? ??
-          js_util.getProperty(place, 'placeId') as String? ??
+      final place = _extractPlace(event);
+      final placeId = _readString(_getProperty(place, 'id')) ??
+          _readString(_getProperty(place, 'placeId')) ??
           '';
       final formattedAddress =
-          js_util.getProperty(place, 'formattedAddress') as String?;
-      final displayName = js_util.getProperty(place, 'displayName');
+          _readString(_getProperty(place, 'formattedAddress'));
+      final displayName = _getProperty(place, 'displayName');
       String? name;
       if (displayName != null) {
-        final displayText = js_util.getProperty(displayName, 'text');
-        if (displayText is String && displayText.isNotEmpty) {
-          name = displayText;
-        }
+        name = _readString(displayName) ??
+            _readString(_getProperty(displayName, 'text'));
       }
-      name ??= js_util.getProperty(place, 'name') as String?;
-      final location = js_util.getProperty(place, 'location');
+      name ??= _readString(_getProperty(place, 'name'));
+      final location = _getProperty(place, 'location');
       double? lat;
       double? lng;
       try {
@@ -88,18 +87,22 @@ class PlaceAutocompleteWebController {
         lat = null;
         lng = null;
       }
+      final displayValue =
+          formattedAddress ?? name ?? _readAutocompleteValue(autocomplete);
       onSelected(
         PlaceSelection(
           placeId: placeId,
+          displayValue: displayValue,
           name: name,
           formattedAddress: formattedAddress,
           latitude: lat,
           longitude: lng,
         ),
       );
-      final displayValue = formattedAddress ?? name;
       if (displayValue != null && displayValue.isNotEmpty) {
-        _setAutocompleteValue(autocomplete, displayValue);
+        scheduleMicrotask(() {
+          _setAutocompleteValue(autocomplete, displayValue);
+        });
       }
     };
     autocomplete.addEventListener('gmp-select', _selectListener);
@@ -146,5 +149,71 @@ class PlaceAutocompleteWebController {
         js_util.callMethod(input, 'dispatchEvent', [Event('change')]);
       } catch (_) {}
     } catch (_) {}
+  }
+
+  Object? _extractPlace(Object event) {
+    final detail = _getProperty(event, 'detail');
+    final placeFromDetail = _getProperty(detail, 'place');
+    if (placeFromDetail != null) {
+      return placeFromDetail;
+    }
+    final placeFromEvent = _getProperty(event, 'place');
+    if (placeFromEvent != null) {
+      return placeFromEvent;
+    }
+    return null;
+  }
+
+  Object? _getProperty(Object? object, String name) {
+    if (object == null) {
+      return null;
+    }
+    try {
+      return js_util.getProperty(object, name);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String? _readString(Object? value) {
+    if (value is String) {
+      final trimmed = value.trim();
+      if (trimmed.isNotEmpty) {
+        return trimmed;
+      }
+    }
+    return null;
+  }
+
+  String? _readAutocompleteValue(Element element) {
+    try {
+      final value =
+          _readString(js_util.getProperty(element, 'value')) ??
+              _readString(js_util.getProperty(element, 'inputValue')) ??
+              _readString(js_util.getProperty(element, 'query'));
+      if (value != null) {
+        return value;
+      }
+    } catch (_) {}
+    try {
+      final attr = element.getAttribute('value');
+      final attrValue = _readString(attr);
+      if (attrValue != null) {
+        return attrValue;
+      }
+    } catch (_) {}
+    try {
+      final shadowRoot = js_util.getProperty(element, 'shadowRoot');
+      if (shadowRoot == null) {
+        return null;
+      }
+      final input =
+          js_util.callMethod(shadowRoot, 'querySelector', ['input']);
+      final inputValue = _readString(js_util.getProperty(input, 'value'));
+      if (inputValue != null) {
+        return inputValue;
+      }
+    } catch (_) {}
+    return null;
   }
 }
