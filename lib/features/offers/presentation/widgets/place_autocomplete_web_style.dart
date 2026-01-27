@@ -10,6 +10,9 @@ void stylePlacesAutocomplete(HtmlElement element) {
     ..width = '100%'
     ..height = '48px'
     ..display = 'block'
+    ..position = 'relative'
+    ..zIndex = '1000'
+    ..overflow = 'visible'
     ..border = '1px solid rgba(0, 0, 0, 0.38)'
     ..borderRadius = '8px'
     ..padding = '0 12px'
@@ -44,6 +47,9 @@ void stylePlacesAutocomplete(HtmlElement element) {
       height: auto;
       overflow-y: auto;
       overscroll-behavior: contain;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      z-index: 10000;
     }
     .$_className gmp-place-list {
       max-height: min(240px, 45vh) !important;

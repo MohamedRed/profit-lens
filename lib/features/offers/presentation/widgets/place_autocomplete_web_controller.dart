@@ -80,12 +80,15 @@ class PlaceAutocompleteWebController {
       final location = _getProperty(place, 'location');
       double? lat;
       double? lng;
-      try {
-        lat = (js_util.callMethod(location, 'lat', []) as num).toDouble();
-        lng = (js_util.callMethod(location, 'lng', []) as num).toDouble();
-      } catch (_) {
-        lat = null;
-        lng = null;
+      if (location != null) {
+        try {
+          final loc = location as Object;
+          lat = (js_util.callMethod(loc, 'lat', []) as num).toDouble();
+          lng = (js_util.callMethod(loc, 'lng', []) as num).toDouble();
+        } catch (_) {
+          lat = null;
+          lng = null;
+        }
       }
       final displayValue =
           formattedAddress ?? name ?? _readAutocompleteValue(autocomplete);

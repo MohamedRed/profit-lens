@@ -38,9 +38,13 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
   void initState() {
     super.initState();
     _viewType = 'places-autocomplete-${_instanceId++}';
-    _container.style.width = '100%';
-    _container.style.height = '48px';
-    _container.style.display = 'block';
+    _container.style
+      ..width = '100%'
+      ..height = '48px'
+      ..display = 'block'
+      ..overflow = 'visible'
+      ..position = 'relative'
+      ..zIndex = '1000';
     _webController = PlaceAutocompleteWebController(
       container: _container,
       countryCode: widget.countryCode,
