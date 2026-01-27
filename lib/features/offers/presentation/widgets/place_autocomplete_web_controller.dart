@@ -14,6 +14,7 @@ class PlaceAutocompleteWebController {
   Element? _autocompleteElement;
   EventListener? _selectListener;
   String? _lastDisplayValue;
+  String? _lastTypedValue;
   PlaceAutocompleteWebController({
     required this.container,
     required this.countryCode,
@@ -90,8 +91,11 @@ class PlaceAutocompleteWebController {
           lng = null;
         }
       }
-      final displayValue =
-          formattedAddress ?? name ?? _readAutocompleteValue(autocomplete);
+      final displayValue = formattedAddress ??
+          name ??
+          _readEventDisplayValue(event) ??
+          _readAutocompleteValue(autocomplete) ??
+          _lastTypedValue;
       onSelected(
         PlaceSelection(
           placeId: placeId,
@@ -195,6 +199,7 @@ class PlaceAutocompleteWebController {
               _readString(js_util.getProperty(element, 'inputValue')) ??
               _readString(js_util.getProperty(element, 'query'));
       if (value != null) {
+        _lastTypedValue = value;
         return value;
       }
     } catch (_) {}
@@ -202,6 +207,7 @@ class PlaceAutocompleteWebController {
       final attr = element.getAttribute('value');
       final attrValue = _readString(attr);
       if (attrValue != null) {
+        _lastTypedValue = attrValue;
         return attrValue;
       }
     } catch (_) {}
@@ -214,9 +220,31 @@ class PlaceAutocompleteWebController {
           js_util.callMethod(shadowRoot, 'querySelector', ['input']);
       final inputValue = _readString(js_util.getProperty(input, 'value'));
       if (inputValue != null) {
+        _lastTypedValue = inputValue;
         return inputValue;
       }
     } catch (_) {}
+    return null;
+  }
+
+  String? _readEventDisplayValue(Object event) {
+    final detail = _getProperty(event, 'detail');
+    final displayText = _readString(_getProperty(detail, 'text')) ??
+        _readString(_getProperty(detail, 'value')) ??
+        _readString(_getProperty(detail, 'inputValue')) ??
+        _readString(_getProperty(detail, 'query')) ??
+        _readString(_getProperty(detail, 'description'));
+    if (displayText != null) {
+      _lastTypedValue = displayText;
+      return displayText;
+    }
+    final prediction = _getProperty(detail, 'placePrediction');
+    final predictionText = _readString(_getProperty(prediction, 'text')) ??
+        _readString(_getProperty(prediction, 'description'));
+    if (predictionText != null) {
+      _lastTypedValue = predictionText;
+      return predictionText;
+    }
     return null;
   }
 }

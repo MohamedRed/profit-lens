@@ -28,6 +28,8 @@ class PlaceAutocompleteField extends StatefulWidget {
 
 class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
   static int _instanceId = 0;
+  static const double _inputHeight = 48;
+  static const double _listMaxHeight = 240;
   late final String _viewType;
   late final PlaceAutocompleteWebController _webController;
   final DivElement _container = DivElement();
@@ -40,7 +42,7 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
     _viewType = 'places-autocomplete-${_instanceId++}';
     _container.style
       ..width = '100%'
-      ..height = '48px'
+      ..height = '${_currentHeight}px'
       ..display = 'block'
       ..overflow = 'visible'
       ..position = 'relative'
@@ -113,6 +115,7 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
 
   @override
   Widget build(BuildContext context) {
+    _syncContainerHeight();
     final l10n = AppLocalizations.of(context)!;
     if (_loadFailed) {
       final errorStyle = TextStyle(color: Theme.of(context).colorScheme.error);
@@ -158,7 +161,10 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
       children: [
         Text(widget.label, style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 8),
-        SizedBox(height: 48, child: HtmlElementView(viewType: _viewType)),
+        SizedBox(
+          height: _currentHeight,
+          child: HtmlElementView(viewType: _viewType),
+        ),
         if (hasValue)
           Padding(
             padding: const EdgeInsets.only(top: 6),
@@ -169,5 +175,12 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
           ),
       ],
     );
+  }
+
+  double get _currentHeight =>
+      _isEditing ? _inputHeight + _listMaxHeight : _inputHeight;
+
+  void _syncContainerHeight() {
+    _container.style.height = '${_currentHeight}px';
   }
 }
