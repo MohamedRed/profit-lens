@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:async';
 import 'dart:html';
+import 'package:flutter/foundation.dart';
 // ignore: uri_does_not_exist
 import 'dart:js_util' as js_util;
 import '../../../../core/config/google_maps_config.dart';
