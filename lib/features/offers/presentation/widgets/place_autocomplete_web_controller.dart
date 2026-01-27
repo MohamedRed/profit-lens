@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:async';
 import 'dart:html';
+import 'package:flutter/foundation.dart';
 // ignore: uri_does_not_exist
 import 'dart:js_util' as js_util;
 import '../../../../core/config/google_maps_config.dart';
@@ -11,14 +12,18 @@ class PlaceAutocompleteWebController {
   final DivElement container;
   final String countryCode;
   final void Function(PlaceSelection selection) onSelected;
+  final ValueChanged<double>? onDropdownHeightChanged;
   Element? _autocompleteElement;
   EventListener? _selectListener;
+  EventListener? _inputListener;
   String? _lastDisplayValue;
   String? _lastTypedValue;
+  MutationObserver? _listObserver;
   PlaceAutocompleteWebController({
     required this.container,
     required this.countryCode,
     required this.onSelected,
+    this.onDropdownHeightChanged,
   });
   Future<void> boot() async {
     if (!hasGoogleMapsApiKey) {
@@ -36,6 +41,11 @@ class PlaceAutocompleteWebController {
     if (_autocompleteElement != null && _selectListener != null) {
       _autocompleteElement!.removeEventListener('gmp-select', _selectListener);
     }
+    if (_autocompleteElement != null && _inputListener != null) {
+      _autocompleteElement!.removeEventListener('input', _inputListener);
+      _autocompleteElement!.removeEventListener('gmp-input', _inputListener);
+    }
+    _listObserver?.disconnect();
   }
   Future<void> _ensureUiKitReady() async {
     final customElements = js_util.getProperty(window, 'customElements');
@@ -64,6 +74,12 @@ class PlaceAutocompleteWebController {
       js_util.setProperty(autocomplete, 'options', options);
     } catch (_) {}
     stylePlacesAutocomplete(autocomplete);
+    _inputListener = (_) {
+      _readAutocompleteValue(autocomplete);
+    };
+    autocomplete.addEventListener('input', _inputListener);
+    autocomplete.addEventListener('gmp-input', _inputListener);
+
     _selectListener = (event) {
       final place = _extractPlace(event);
       final placeId = _readString(_getProperty(place, 'id')) ??
@@ -111,8 +127,10 @@ class PlaceAutocompleteWebController {
           _setAutocompleteValue(autocomplete, displayValue);
         });
       }
+      onDropdownHeightChanged?.call(0);
     };
     autocomplete.addEventListener('gmp-select', _selectListener);
+    _attachListObserver(autocomplete);
     container.children
       ..clear()
       ..add(autocomplete)
@@ -247,4 +265,55 @@ class PlaceAutocompleteWebController {
     }
     return null;
   }
+
+  void _attachListObserver(HtmlElement autocomplete) {
+    _listObserver?.disconnect();
+    final shadowRoot = _getShadowRoot(autocomplete);
+    if (shadowRoot == null) {
+      return;
+    }
+    _listObserver = MutationObserver((_, __) {
+      _emitListHeight(autocomplete);
+    });
+    _listObserver!.observe(
+      shadowRoot,
+      attributes: true,
+      childList: true,
+      subtree: true,
+    );
+    _emitListHeight(autocomplete);
+  }
+
+  ShadowRoot? _getShadowRoot(HtmlElement element) {
+    final directRoot = element.shadowRoot;
+    if (directRoot != null) {
+      return directRoot;
+    }
+    try {
+      final root = js_util.getProperty(element, 'shadowRoot');
+      if (root is ShadowRoot) {
+        return root;
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  void _emitListHeight(HtmlElement autocomplete) {
+    final list = _findListElement(autocomplete);
+    final height = list?.getBoundingClientRect().height ?? 0;
+    final clampedHeight = height.isNaN ? 0 : height;
+    onDropdownHeightChanged?.call(clampedHeight);
+  }
+
+  Element? _findListElement(HtmlElement autocomplete) {
+    final shadowRoot = _getShadowRoot(autocomplete);
+    if (shadowRoot == null) {
+      return null;
+    }
+    return shadowRoot.querySelector('[part=\"listbox\"]') ??
+        shadowRoot.querySelector('[part=\"listbox-container\"]') ??
+        shadowRoot.querySelector('gmp-place-list');
+  }
+
+  String? get lastTypedValue => _lastTypedValue;
 }

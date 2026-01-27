@@ -36,13 +36,14 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
   bool _loadFailed = false;
   String? _errorDetails;
   bool _isEditing = true;
+  double _dropdownHeight = 0;
   @override
   void initState() {
     super.initState();
     _viewType = 'places-autocomplete-${_instanceId++}';
     _container.style
       ..width = '100%'
-      ..height = '${_currentHeight}px'
+      ..height = '${_inputHeight}px'
       ..display = 'block'
       ..overflow = 'visible'
       ..position = 'relative'
@@ -51,6 +52,7 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
       container: _container,
       countryCode: widget.countryCode,
       onSelected: _handleSelection,
+      onDropdownHeightChanged: _handleDropdownHeight,
     );
     ui.platformViewRegistry.registerViewFactory(
       _viewType,
@@ -87,13 +89,27 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
   }
 
   void _handleSelection(PlaceSelection selection) {
-    final displayValue = _displayValueFor(selection);
-    if (displayValue != null) {
-      widget.controller.text = displayValue;
+    final displayValue =
+        _displayValueFor(selection) ?? _webController.lastTypedValue;
+    final nextValue = displayValue?.trim() ?? '';
+    if (nextValue.isNotEmpty) {
+      widget.controller.text = nextValue;
     }
     widget.onSelected?.call(selection);
-    if (mounted && displayValue != null) {
+    if (mounted && nextValue.isNotEmpty) {
       setState(() => _isEditing = false);
+    }
+  }
+
+  void _handleDropdownHeight(double height) {
+    final nextHeight = height < 0 ? 0 : height;
+    final clampedHeight =
+        nextHeight > _listMaxHeight ? _listMaxHeight : nextHeight;
+    if (clampedHeight == _dropdownHeight) {
+      return;
+    }
+    if (mounted) {
+      setState(() => _dropdownHeight = clampedHeight);
     }
   }
 
@@ -115,7 +131,6 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
 
   @override
   Widget build(BuildContext context) {
-    _syncContainerHeight();
     final l10n = AppLocalizations.of(context)!;
     if (_loadFailed) {
       final errorStyle = TextStyle(color: Theme.of(context).colorScheme.error);
@@ -162,9 +177,11 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
         Text(widget.label, style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 8),
         SizedBox(
-          height: _currentHeight,
+          height: _inputHeight,
           child: HtmlElementView(viewType: _viewType),
         ),
+        if (_isEditing && _dropdownHeight > 0)
+          SizedBox(height: _dropdownHeight),
         if (hasValue)
           Padding(
             padding: const EdgeInsets.only(top: 6),
@@ -175,12 +192,5 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
           ),
       ],
     );
-  }
-
-  double get _currentHeight =>
-      _isEditing ? _inputHeight + _listMaxHeight : _inputHeight;
-
-  void _syncContainerHeight() {
-    _container.style.height = '${_currentHeight}px';
   }
 }
