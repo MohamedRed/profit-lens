@@ -98,7 +98,20 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
     widget.onSelected?.call(selection);
     if (mounted && nextValue.isNotEmpty) {
       setState(() => _isEditing = false);
+      return;
     }
+    Future.delayed(const Duration(milliseconds: 50), () {
+      if (!mounted) {
+        return;
+      }
+      final retryValue =
+          _webController.readCurrentValue() ?? _webController.lastTypedValue;
+      final retryText = retryValue?.trim() ?? '';
+      if (retryText.isNotEmpty) {
+        widget.controller.text = retryText;
+        setState(() => _isEditing = false);
+      }
+    });
   }
 
   void _handleDropdownHeight(double height) {

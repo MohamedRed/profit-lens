@@ -16,9 +16,12 @@ class PlaceAutocompleteWebController {
   Element? _autocompleteElement;
   EventListener? _selectListener;
   EventListener? _inputListener;
+  EventListener? _blurListener;
   String? _lastDisplayValue;
   String? _lastTypedValue;
   MutationObserver? _listObserver;
+  HtmlInputElement? _inputElement;
+  static const double _fallbackDropdownHeight = 200;
   PlaceAutocompleteWebController({
     required this.container,
     required this.countryCode,
@@ -44,6 +47,14 @@ class PlaceAutocompleteWebController {
     if (_autocompleteElement != null && _inputListener != null) {
       _autocompleteElement!.removeEventListener('input', _inputListener);
       _autocompleteElement!.removeEventListener('gmp-input', _inputListener);
+    }
+    if (_autocompleteElement != null && _blurListener != null) {
+      _autocompleteElement!.removeEventListener('blur', _blurListener);
+      _autocompleteElement!.removeEventListener('focusout', _blurListener);
+    }
+    if (_inputElement != null && _inputListener != null) {
+      _inputElement!.removeEventListener('input', _inputListener);
+      _inputElement!.removeEventListener('change', _inputListener);
     }
     _listObserver?.disconnect();
   }
@@ -76,9 +87,13 @@ class PlaceAutocompleteWebController {
     stylePlacesAutocomplete(autocomplete);
     _inputListener = (_) {
       _readAutocompleteValue(autocomplete);
+      onDropdownHeightChanged?.call(_fallbackDropdownHeight);
     };
     autocomplete.addEventListener('input', _inputListener);
     autocomplete.addEventListener('gmp-input', _inputListener);
+    _blurListener = (_) => onDropdownHeightChanged?.call(0);
+    autocomplete.addEventListener('blur', _blurListener);
+    autocomplete.addEventListener('focusout', _blurListener);
 
     _selectListener = (event) {
       final place = _extractPlace(event);
@@ -136,6 +151,14 @@ class PlaceAutocompleteWebController {
       ..add(autocomplete)
       ;
     _autocompleteElement = autocomplete;
+    scheduleMicrotask(() {
+      _raiseHostZIndex();
+      _syncInputElement(autocomplete);
+    });
+    window.requestAnimationFrame((_) {
+      _raiseHostZIndex();
+      _syncInputElement(autocomplete);
+    });
   }
 
   void _setAutocompleteValue(Element element, String value) {
@@ -274,6 +297,7 @@ class PlaceAutocompleteWebController {
     }
     _listObserver = MutationObserver((_, __) {
       _emitListHeight(autocomplete);
+      _syncInputElement(autocomplete);
     });
     _listObserver!.observe(
       shadowRoot,
@@ -282,6 +306,7 @@ class PlaceAutocompleteWebController {
       subtree: true,
     );
     _emitListHeight(autocomplete);
+    _syncInputElement(autocomplete);
   }
 
   ShadowRoot? _getShadowRoot(HtmlElement element) {
@@ -316,4 +341,51 @@ class PlaceAutocompleteWebController {
   }
 
   String? get lastTypedValue => _lastTypedValue;
+
+  String? readCurrentValue() {
+    final element = _autocompleteElement;
+    if (element == null) {
+      return null;
+    }
+    return _readAutocompleteValue(element);
+  }
+
+  void _syncInputElement(HtmlElement autocomplete) {
+    if (_inputElement != null) {
+      return;
+    }
+    final shadowRoot = _getShadowRoot(autocomplete);
+    if (shadowRoot == null) {
+      return;
+    }
+    final input = shadowRoot.querySelector('input');
+    if (input is HtmlInputElement) {
+      _inputElement = input;
+      if (_inputListener != null) {
+        _inputElement!.addEventListener('input', _inputListener);
+        _inputElement!.addEventListener('change', _inputListener);
+      }
+    }
+  }
+
+  void _raiseHostZIndex() {
+    container.style
+      ..position = 'relative'
+      ..zIndex = '10000'
+      ..overflow = 'visible';
+    final parent = container.parent;
+    if (parent is HtmlElement) {
+      parent.style
+        ..position = 'relative'
+        ..zIndex = '10000'
+        ..overflow = 'visible';
+      final grand = parent.parent;
+      if (grand is HtmlElement) {
+        grand.style
+          ..position = 'relative'
+          ..zIndex = '10000'
+          ..overflow = 'visible';
+      }
+    }
+  }
 }
