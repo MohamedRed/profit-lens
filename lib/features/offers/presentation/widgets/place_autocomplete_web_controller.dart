@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:async';
 import 'dart:html';
-import 'package:flutter/foundation.dart';
 // ignore: uri_does_not_exist
 import 'dart:js_util' as js_util;
 import '../../../../core/config/google_maps_config.dart';
@@ -21,7 +20,7 @@ class PlaceAutocompleteWebController {
   String? _lastTypedValue;
   MutationObserver? _listObserver;
   InputElement? _inputElement;
-  static const double _fallbackDropdownHeight = 200;
+  static const double _fallbackDropdownHeight = 240;
   PlaceAutocompleteWebController({
     required this.container,
     required this.countryCode,
@@ -96,7 +95,7 @@ class PlaceAutocompleteWebController {
     autocomplete.addEventListener('focusout', _blurListener);
 
     _selectListener = (event) {
-      final place = _extractPlace(event);
+      final place = _extractPlace(event) ?? _getProperty(autocomplete, 'place');
       final placeId = _readString(_getProperty(place, 'id')) ??
           _readString(_getProperty(place, 'placeId')) ??
           '';
@@ -145,6 +144,10 @@ class PlaceAutocompleteWebController {
       onDropdownHeightChanged?.call(0);
     };
     autocomplete.addEventListener('gmp-select', _selectListener);
+    autocomplete.addEventListener('gmp-placeselect', _selectListener);
+    autocomplete.addEventListener('gmp-placechange', _selectListener);
+    autocomplete.addEventListener('gmp-placechanged', _selectListener);
+    autocomplete.addEventListener('place_changed', _selectListener);
     _attachListObserver(autocomplete);
     container.children
       ..clear()
@@ -285,6 +288,13 @@ class PlaceAutocompleteWebController {
     if (predictionText != null) {
       _lastTypedValue = predictionText;
       return predictionText;
+    }
+    final selected = _getProperty(detail, 'selection');
+    final selectionText = _readString(_getProperty(selected, 'text')) ??
+        _readString(_getProperty(selected, 'description'));
+    if (selectionText != null) {
+      _lastTypedValue = selectionText;
+      return selectionText;
     }
     return null;
   }
