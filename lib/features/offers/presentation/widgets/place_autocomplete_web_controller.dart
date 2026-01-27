@@ -20,7 +20,7 @@ class PlaceAutocompleteWebController {
   String? _lastDisplayValue;
   String? _lastTypedValue;
   MutationObserver? _listObserver;
-  HtmlInputElement? _inputElement;
+  InputElement? _inputElement;
   static const double _fallbackDropdownHeight = 200;
   PlaceAutocompleteWebController({
     required this.container,
@@ -359,7 +359,7 @@ class PlaceAutocompleteWebController {
       return;
     }
     final input = shadowRoot.querySelector('input');
-    if (input is HtmlInputElement) {
+    if (input is InputElement) {
       _inputElement = input;
       if (_inputListener != null) {
         _inputElement!.addEventListener('input', _inputListener);
