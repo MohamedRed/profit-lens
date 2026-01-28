@@ -138,6 +138,18 @@ class PlaceAutocompleteWebController {
           _readEventDisplayValue(event) ??
           _readAutocompleteValue(autocomplete) ??
           _lastTypedValue;
+      if (kDebugMode) {
+        // ignore: avoid_print
+        print('PlacesUI select event: ${_getProperty(event, "type")}');
+        // ignore: avoid_print
+        print('PlacesUI detail: ${_getProperty(event, "detail")}');
+        // ignore: avoid_print
+        print('PlacesUI place: $place');
+        // ignore: avoid_print
+        print('PlacesUI displayValue: $displayValue');
+        // ignore: avoid_print
+        print('PlacesUI inputValue: ${_readAutocompleteValue(autocomplete)}');
+      }
       onSelected(
         PlaceSelection(
           placeId: placeId,
@@ -148,6 +160,11 @@ class PlaceAutocompleteWebController {
           longitude: lng,
         ),
       );
+      final fallbackValue =
+          displayValue ?? _readAutocompleteValue(autocomplete);
+      if (fallbackValue != null && fallbackValue.isNotEmpty) {
+        onInputValueChanged?.call(fallbackValue);
+      }
       if (displayValue != null && displayValue.isNotEmpty) {
         scheduleMicrotask(() {
           _setAutocompleteValue(autocomplete, displayValue);
