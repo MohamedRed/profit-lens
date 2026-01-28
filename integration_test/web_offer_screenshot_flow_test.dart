@@ -44,12 +44,39 @@ void main() {
     expect(find.byType(OfferDetailsSummary), findsOneWidget);
     expect(find.textContaining('12.50'), findsOneWidget);
     expect(find.textContaining('6.2'), findsOneWidget);
+    expect(find.text('Pickup name: Bistro Lumiere'), findsOneWidget);
+    expect(
+      find.text('Pickup address: 10 Rue des Fleurs, Paris'),
+      findsOneWidget,
+    );
+    expect(find.text('Drop-off name (optional): Client A'), findsOneWidget);
+    expect(
+      find.text('Drop-off address: 22 Avenue Victor Hugo, Paris'),
+      findsOneWidget,
+    );
 
     await tester.tap(find.byKey(OfferFlowKeys.captureScreenshotButton));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('12.50'), findsNothing);
+    expect(find.text('Pickup name: Bistro Lumiere'), findsNothing);
+    expect(
+      find.text('Pickup address: 10 Rue des Fleurs, Paris'),
+      findsNothing,
+    );
+    expect(find.text('Drop-off name (optional): Client A'), findsNothing);
+    expect(
+      find.text('Drop-off address: 22 Avenue Victor Hugo, Paris'),
+      findsNothing,
+    );
     expect(find.textContaining('18.75'), findsOneWidget);
     expect(find.textContaining('9.8'), findsOneWidget);
+    expect(find.text('Pickup name: Cafe Mono'), findsOneWidget);
+    expect(find.text('Pickup address: 5 Quai Voltaire, Paris'), findsOneWidget);
+    expect(find.text('Drop-off name (optional): Client B'), findsOneWidget);
+    expect(
+      find.text('Drop-off address: 77 Boulevard Saint-Germain, Paris'),
+      findsOneWidget,
+    );
   });
 }
