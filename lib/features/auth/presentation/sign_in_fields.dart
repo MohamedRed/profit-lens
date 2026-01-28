@@ -26,6 +26,7 @@ class SignInFields extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       children: [
         TextFormField(
+          key: const ValueKey('sign_in_email'),
           controller: emailController,
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(labelText: l10n.emailLabel),
@@ -38,6 +39,7 @@ class SignInFields extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         TextFormField(
+          key: const ValueKey('sign_in_password'),
           controller: passwordController,
           obscureText: true,
           decoration: InputDecoration(labelText: l10n.passwordLabel),
@@ -50,11 +52,13 @@ class SignInFields extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         PrimaryButton(
+          key: const ValueKey('sign_in_submit'),
           label: isLoading ? l10n.loadingLabel : l10n.signInButton,
           onPressed: isLoading ? null : onSubmit,
         ),
         const SizedBox(height: 12),
         TextButton(
+          key: const ValueKey('sign_in_create_account'),
           onPressed: onCreateAccount,
           child: Text(l10n.createAccountButton),
         ),

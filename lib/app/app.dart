@@ -7,12 +7,17 @@ import 'app_scope.dart';
 import '../l10n/app_localizations.dart';
 
 class ProfitLensApp extends StatelessWidget {
-  const ProfitLensApp({super.key});
+  final AppServices services;
+
+  const ProfitLensApp({
+    super.key,
+    AppServices? services,
+  }) : services = services ?? AppServices();
 
   @override
   Widget build(BuildContext context) {
     return AppScope(
-      services: AppServices(),
+      services: services,
       child: MaterialApp(
         onGenerateTitle: (context) =>
             AppLocalizations.of(context)?.appTitle ?? 'ProfitLens',
