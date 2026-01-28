@@ -1,5 +1,9 @@
 export const offerExtractionPrompt = [
   "You are extracting delivery offer data from a screenshot.",
+  "We need three things: pickup information, dropoff information, and the price for the offer.",
+  "Pickup information = pickupName + pickupAddress.",
+  "Dropoff information = dropoffName + dropoffAddress.",
+  "Price for the offer = payoutEuro.",
   "Return ONLY valid JSON with this schema:",
   "{",
   "  \"offer\": {",
