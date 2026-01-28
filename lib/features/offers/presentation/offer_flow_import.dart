@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../app/app_scope.dart';
+import '../data/offer_image_picker_service.dart';
 import '../../../l10n/app_localizations.dart';
 import 'controllers/offer_flow_controller.dart';
 
 Future<void> importOfferScreenshot({
   required BuildContext context,
   required ImageSource source,
-  required ImagePicker picker,
+  required OfferImagePickerService picker,
   required OfferFlowController controller,
   required ValueChanged<bool> onLoadingChanged,
   required VoidCallback onUpdated,

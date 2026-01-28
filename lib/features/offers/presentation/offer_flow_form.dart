@@ -9,6 +9,7 @@ import 'controllers/offer_flow_controller.dart';
 import 'sections/offer_details_section.dart';
 import 'sections/vehicle_picker_section.dart';
 import 'widgets/profitability_overview_card.dart';
+import 'offer_flow_keys.dart';
 
 class OfferFlowForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -74,11 +75,13 @@ class OfferFlowForm extends StatelessWidget {
           ],
           const SizedBox(height: 16),
           PrimaryButton(
+            key: OfferFlowKeys.importScreenshotButton,
             label: isLoading ? l10n.loadingLabel : l10n.importScreenshotButton,
             onPressed: isLoading ? null : onImportScreenshot,
           ),
           const SizedBox(height: 12),
           PrimaryButton(
+            key: OfferFlowKeys.captureScreenshotButton,
             label: isLoading ? l10n.loadingLabel : l10n.captureScreenshotButton,
             onPressed: isLoading ? null : onCaptureScreenshot,
           ),

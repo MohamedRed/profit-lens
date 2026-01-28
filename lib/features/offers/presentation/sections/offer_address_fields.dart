@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/place_selection.dart';
 import '../widgets/place_autocomplete_field.dart';
+import '../offer_flow_keys.dart';
 
 class OfferAddressFields extends StatefulWidget {
   final TextEditingController pickupNameController;
@@ -39,11 +40,13 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
       children: [
         if (!hidePickup) ...[
           TextFormField(
+            key: OfferFlowKeys.pickupNameField,
             controller: widget.pickupNameController,
             decoration: InputDecoration(labelText: l10n.pickupNameLabel),
           ),
           const SizedBox(height: 12),
           PlaceAutocompleteField(
+            key: OfferFlowKeys.pickupAddressField,
             controller: widget.pickupAddressController,
             label: l10n.pickupAddressLabel,
             onSelected: widget.onPickupSelected,
@@ -95,11 +98,13 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
         const SizedBox(height: 12),
         if (!hideDropoff) ...[
           TextFormField(
+            key: OfferFlowKeys.dropoffNameField,
             controller: widget.dropoffNameController,
             decoration: InputDecoration(labelText: l10n.dropoffNameLabel),
           ),
           const SizedBox(height: 12),
           PlaceAutocompleteField(
+            key: OfferFlowKeys.dropoffAddressField,
             controller: widget.dropoffAddressController,
             label: l10n.dropoffAddressLabel,
             onSelected: widget.onDropoffSelected,

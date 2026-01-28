@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/place_selection.dart';
 import 'offer_address_fields.dart';
+import '../offer_flow_keys.dart';
 
 class OfferDetailsFormFields extends StatelessWidget {
   final TextEditingController payoutController;
@@ -40,6 +41,7 @@ class OfferDetailsFormFields extends StatelessWidget {
     return Column(
       children: [
         TextFormField(
+          key: OfferFlowKeys.payoutField,
           controller: payoutController,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(labelText: l10n.offerAmountLabel),
@@ -52,6 +54,7 @@ class OfferDetailsFormFields extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         TextFormField(
+          key: OfferFlowKeys.distanceField,
           controller: distanceController,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(labelText: l10n.distanceKmLabel),
@@ -65,6 +68,7 @@ class OfferDetailsFormFields extends StatelessWidget {
         if (showDuration) ...[
           const SizedBox(height: 12),
           TextFormField(
+            key: OfferFlowKeys.durationField,
             controller: durationController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(labelText: l10n.durationMinutesLabel),

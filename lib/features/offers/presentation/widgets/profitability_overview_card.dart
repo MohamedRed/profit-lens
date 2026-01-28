@@ -4,6 +4,7 @@ import '../../../../core/utils/currency_format.dart';
 import '../../../../core/widgets/primary_button.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/offer_record.dart';
+import '../offer_flow_keys.dart';
 
 class ProfitabilityOverviewCard extends StatelessWidget {
   final OfferRecord record;
@@ -54,6 +55,7 @@ class ProfitabilityOverviewCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             PrimaryButton(
+              key: OfferFlowKeys.viewDetailsButton,
               label: l10n.viewProfitabilityDetailsButton,
               onPressed: onViewDetails,
             ),
