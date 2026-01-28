@@ -201,16 +201,15 @@ class PlaceAutocompleteWebController {
         // ignore: avoid_print
         print('PlacesUI inputValue: ${_readAutocompleteValue(autocomplete)}');
       }
-      onSelected(
-        PlaceSelection(
-          placeId: placeId,
-          displayValue: displayValue,
-          name: name,
-          formattedAddress: formattedAddress,
-          latitude: lat,
-          longitude: lng,
-        ),
+      final selection = PlaceSelection(
+        placeId: placeId,
+        displayValue: displayValue,
+        name: name,
+        formattedAddress: formattedAddress,
+        latitude: lat,
+        longitude: lng,
       );
+      onSelected(selection);
       final fallbackValue =
           displayValue ?? _readAutocompleteValue(autocomplete);
       if (fallbackValue != null && fallbackValue.isNotEmpty) {
@@ -219,6 +218,22 @@ class PlaceAutocompleteWebController {
       if (displayValue != null && displayValue.isNotEmpty) {
         scheduleMicrotask(() {
           _setAutocompleteValue(autocomplete, displayValue);
+        });
+      }
+      if ((displayValue == null || displayValue.isEmpty) &&
+          placeId.isNotEmpty) {
+        _fetchPlaceDetails(placeId).then((resolved) {
+          if (resolved == null) {
+            return;
+          }
+          final resolvedValue = resolved.displayValue ??
+              resolved.formattedAddress ??
+              resolved.name;
+          if (resolvedValue != null && resolvedValue.isNotEmpty) {
+            onInputValueChanged?.call(resolvedValue);
+            _setAutocompleteValue(autocomplete, resolvedValue);
+          }
+          onSelected(resolved);
         });
       }
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -395,6 +410,72 @@ class PlaceAutocompleteWebController {
       }
     } catch (_) {}
     return null;
+  }
+
+  Future<PlaceSelection?> _fetchPlaceDetails(String placeId) async {
+    try {
+      final google = js_util.getProperty(window, 'google');
+      if (google == null) {
+        return null;
+      }
+      final maps = js_util.getProperty(google, 'maps');
+      final places = maps == null ? null : js_util.getProperty(maps, 'places');
+      if (places == null) {
+        return null;
+      }
+      final serviceCtor = js_util.getProperty(places, 'PlacesService');
+      if (serviceCtor == null) {
+        return null;
+      }
+      final service = js_util.callConstructor(serviceCtor, [DivElement()]);
+      final fields =
+          js_util.jsify(['formatted_address', 'name', 'geometry']);
+      final request = js_util.jsify({
+        'placeId': placeId,
+        'fields': fields,
+      });
+      final completer = Completer<PlaceSelection?>();
+      final callback = js_util.allowInterop((result, status) {
+        final statusText = status?.toString() ?? '';
+        if (!statusText.contains('OK') || result == null) {
+          completer.complete(null);
+          return;
+        }
+        final formattedAddress =
+            _readString(js_util.getProperty(result, 'formatted_address')) ??
+                _readString(js_util.getProperty(result, 'formattedAddress'));
+        final name = _readString(js_util.getProperty(result, 'name'));
+        final geometry = _getProperty(result, 'geometry');
+        final location = _getProperty(geometry, 'location');
+        double? lat;
+        double? lng;
+        if (location != null) {
+          try {
+            final loc = location as Object;
+            lat = (js_util.callMethod(loc, 'lat', []) as num).toDouble();
+            lng = (js_util.callMethod(loc, 'lng', []) as num).toDouble();
+          } catch (_) {
+            lat = null;
+            lng = null;
+          }
+        }
+        completer.complete(
+          PlaceSelection(
+            placeId: placeId,
+            displayValue: formattedAddress ?? name,
+            name: name,
+            formattedAddress: formattedAddress,
+            latitude: lat,
+            longitude: lng,
+          ),
+        );
+      });
+      js_util.callMethod(service, 'getDetails', [request, callback]);
+      return completer.future
+          .timeout(const Duration(seconds: 2), onTimeout: () => null);
+    } catch (_) {
+      return null;
+    }
   }
 
   void _attachListObserver(HtmlElement autocomplete) {
