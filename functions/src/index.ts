@@ -49,6 +49,13 @@ export const extractOfferFromImage = onCall(
       imageBase64: payload.imageBase64,
       mimeType: payload.mimeType,
     });
+    if (debugAllowed) {
+      logger.info("Gemini raw response", {
+        model,
+        mimeType: payload.mimeType,
+        geminiText: text,
+      });
+    }
 
     try {
       const parsed = parseGeminiJson(text);
