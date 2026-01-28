@@ -19,6 +19,7 @@ class PlaceAutocompleteWebController {
   EventListener? _selectListener;
   EventListener? _inputListener;
   EventListener? _blurListener;
+  EventListener? _focusListener;
   String? _lastDisplayValue;
   String? _lastTypedValue;
   MutationObserver? _listObserver;
@@ -56,9 +57,21 @@ class PlaceAutocompleteWebController {
       _autocompleteElement!.removeEventListener('blur', _blurListener);
       _autocompleteElement!.removeEventListener('focusout', _blurListener);
     }
+    if (_autocompleteElement != null && _focusListener != null) {
+      _autocompleteElement!.removeEventListener('focus', _focusListener);
+      _autocompleteElement!.removeEventListener('focusin', _focusListener);
+    }
     if (_inputElement != null && _inputListener != null) {
       _inputElement!.removeEventListener('input', _inputListener);
       _inputElement!.removeEventListener('change', _inputListener);
+    }
+    if (_inputElement != null && _blurListener != null) {
+      _inputElement!.removeEventListener('blur', _blurListener);
+      _inputElement!.removeEventListener('focusout', _blurListener);
+    }
+    if (_inputElement != null && _focusListener != null) {
+      _inputElement!.removeEventListener('focus', _focusListener);
+      _inputElement!.removeEventListener('focusin', _focusListener);
     }
     _listObserver?.disconnect();
   }
@@ -99,6 +112,12 @@ class PlaceAutocompleteWebController {
     };
     autocomplete.addEventListener('input', _inputListener);
     autocomplete.addEventListener('gmp-input', _inputListener);
+    _focusListener = (_) {
+      onDropdownOpenChanged?.call(true);
+      onDropdownHeightChanged?.call(_fallbackDropdownHeight);
+    };
+    autocomplete.addEventListener('focus', _focusListener);
+    autocomplete.addEventListener('focusin', _focusListener);
     _blurListener = (_) {
       onDropdownHeightChanged?.call(0);
       onDropdownOpenChanged?.call(false);
@@ -457,6 +476,14 @@ class PlaceAutocompleteWebController {
         _inputElement!.addEventListener('input', _inputListener);
         _inputElement!.addEventListener('change', _inputListener);
       }
+      if (_focusListener != null) {
+        _inputElement!.addEventListener('focus', _focusListener);
+        _inputElement!.addEventListener('focusin', _focusListener);
+      }
+      if (_blurListener != null) {
+        _inputElement!.addEventListener('blur', _blurListener);
+        _inputElement!.addEventListener('focusout', _blurListener);
+      }
     }
   }
 
@@ -465,9 +492,18 @@ class PlaceAutocompleteWebController {
     if (list == null) {
       return;
     }
-    list.onClick.listen((_) {
+    list.onClick.listen((event) {
+      final target = event.target;
+      Element? item;
+      if (target is Element) {
+        item = target.closest('[role=\"option\"]') ??
+            target.closest('gmp-place-list-item') ??
+            target;
+      }
       scheduleMicrotask(() {
-        final displayValue = _readAutocompleteValue(autocomplete);
+        final displayValue = _readAutocompleteValue(autocomplete) ??
+            _readString(item?.text) ??
+            _readString(item?.textContent);
         if (displayValue == null || displayValue.isEmpty) {
           return;
         }
@@ -477,6 +513,8 @@ class PlaceAutocompleteWebController {
             displayValue: displayValue,
           ),
         );
+        onInputValueChanged?.call(displayValue);
+        onDropdownOpenChanged?.call(false);
       });
     });
   }
