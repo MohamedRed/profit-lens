@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/config/app_config.dart';
@@ -35,9 +36,17 @@ class GeminiOfferIngestionService implements OfferIngestionService {
     final response = await callable.call(<String, dynamic>{
       'imageBase64': base64Image,
       'mimeType': mimeType,
+      'debug': kDebugMode,
     });
 
     final data = Map<String, dynamic>.from(response.data as Map);
+    if (kDebugMode) {
+      final debug = data['debug'] as Map?;
+      final raw = debug?['geminiText'] as String?;
+      if (raw != null && raw.isNotEmpty) {
+        debugPrint('Gemini raw response: $raw');
+      }
+    }
     final offerData = data['offer'] as Map<String, dynamic>?;
     final confidence = (data['confidence'] as num?)?.toDouble() ?? 0;
     final rawText = data['rawText'] as String?;

@@ -12,6 +12,9 @@ const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const geminiModel = defineString("GEMINI_MODEL", {
   default: "gemini-3-flash-preview",
 });
+const geminiDebug = defineString("GEMINI_DEBUG", {
+  default: "false",
+});
 
 export const extractOfferFromImage = onCall(
   {
@@ -25,7 +28,9 @@ export const extractOfferFromImage = onCall(
     const payload = request.data as {
       imageBase64?: string;
       mimeType?: string;
+      debug?: boolean;
     };
+    const debugRequested = payload?.debug === true;
 
     if (!payload?.imageBase64 || !payload?.mimeType) {
       throw new HttpsError("invalid-argument", "Missing image payload.");
@@ -37,6 +42,7 @@ export const extractOfferFromImage = onCall(
     }
 
     const model = geminiModel.value();
+    const debugAllowed = debugRequested && isDebugEnabled();
     const text = await requestGeminiOffer({
       apiKey,
       model,
@@ -46,15 +52,35 @@ export const extractOfferFromImage = onCall(
 
     try {
       const parsed = parseGeminiJson(text);
-      return postprocessOfferExtraction(parsed);
+      const response = postprocessOfferExtraction(parsed);
+      if (debugAllowed) {
+        return {
+          ...response,
+          debug: {
+            geminiText: text,
+          },
+        };
+      }
+      return response;
     } catch (error) {
       const diagnostics = {
         ...buildGeminiDiagnostics(text),
         model,
         mimeType: payload.mimeType,
       };
+      if (debugAllowed) {
+        diagnostics.rawGeminiText = text;
+      }
       logger.error("Gemini JSON parse failed", diagnostics);
       console.error("Gemini JSON parse failed", JSON.stringify(diagnostics));
+      if (debugAllowed) {
+        const code = error instanceof HttpsError ? error.code : "internal";
+        const message =
+          error instanceof HttpsError
+            ? error.message
+            : "Gemini JSON parse failed.";
+        throw new HttpsError(code, message, { rawGeminiText: text });
+      }
       throw error;
     }
   }
@@ -108,4 +134,11 @@ function buildGeminiDiagnostics(text: string) {
     firstBraceIndex: text.indexOf("{"),
     lastBraceIndex: text.lastIndexOf("}"),
   };
+}
+
+function isDebugEnabled() {
+  if (process.env.FUNCTIONS_EMULATOR === "true") {
+    return true;
+  }
+  return geminiDebug.value().toLowerCase() == "true";
 }
