@@ -7,7 +7,11 @@ import 'dart:js_util' as js_util;
 import '../../../../core/config/google_maps_config.dart';
 import '../../../../core/web/google_maps_loader_web.dart';
 import '../../domain/place_selection.dart';
+import 'place_autocomplete_web_dom_helper.dart';
+import 'place_autocomplete_web_place_details.dart';
 import 'place_autocomplete_web_style.dart';
+import 'place_autocomplete_web_utils.dart';
+
 class PlaceAutocompleteWebController {
   final DivElement container;
   final String countryCode;
@@ -15,6 +19,7 @@ class PlaceAutocompleteWebController {
   final ValueChanged<double>? onDropdownHeightChanged;
   final ValueChanged<String>? onInputValueChanged;
   final ValueChanged<bool>? onDropdownOpenChanged;
+
   Element? _autocompleteElement;
   EventListener? _selectListener;
   EventListener? _inputListener;
@@ -22,9 +27,9 @@ class PlaceAutocompleteWebController {
   EventListener? _focusListener;
   String? _lastDisplayValue;
   String? _lastTypedValue;
-  MutationObserver? _listObserver;
-  InputElement? _inputElement;
+  PlaceAutocompleteDomHelper? _domHelper;
   static const double _fallbackDropdownHeight = 240;
+
   PlaceAutocompleteWebController({
     required this.container,
     required this.countryCode,
@@ -33,6 +38,7 @@ class PlaceAutocompleteWebController {
     this.onInputValueChanged,
     this.onDropdownOpenChanged,
   });
+
   Future<void> boot() async {
     if (!hasGoogleMapsApiKey) {
       throw StateError('Missing GOOGLE_MAPS_API_KEY.');
@@ -45,6 +51,7 @@ class PlaceAutocompleteWebController {
     await _ensureUiKitReady();
     _mountAutocomplete();
   }
+
   void dispose() {
     if (_autocompleteElement != null && _selectListener != null) {
       _autocompleteElement!.removeEventListener('gmp-select', _selectListener);
@@ -61,20 +68,9 @@ class PlaceAutocompleteWebController {
       _autocompleteElement!.removeEventListener('focus', _focusListener);
       _autocompleteElement!.removeEventListener('focusin', _focusListener);
     }
-    if (_inputElement != null && _inputListener != null) {
-      _inputElement!.removeEventListener('input', _inputListener);
-      _inputElement!.removeEventListener('change', _inputListener);
-    }
-    if (_inputElement != null && _blurListener != null) {
-      _inputElement!.removeEventListener('blur', _blurListener);
-      _inputElement!.removeEventListener('focusout', _blurListener);
-    }
-    if (_inputElement != null && _focusListener != null) {
-      _inputElement!.removeEventListener('focus', _focusListener);
-      _inputElement!.removeEventListener('focusin', _focusListener);
-    }
-    _listObserver?.disconnect();
+    _domHelper?.dispose();
   }
+
   Future<void> _ensureUiKitReady() async {
     final customElements = js_util.getProperty(window, 'customElements');
     if (customElements == null) {
@@ -102,9 +98,11 @@ class PlaceAutocompleteWebController {
       js_util.setProperty(autocomplete, 'options', options);
     } catch (_) {}
     stylePlacesAutocomplete(autocomplete);
+
     _inputListener = (_) {
-      final value = _readAutocompleteValue(autocomplete);
+      final value = _domHelper?.readAutocompleteValue();
       if (value != null && value.isNotEmpty) {
+        _lastTypedValue = value;
         onInputValueChanged?.call(value);
       }
       onDropdownHeightChanged?.call(_fallbackDropdownHeight);
@@ -112,12 +110,14 @@ class PlaceAutocompleteWebController {
     };
     autocomplete.addEventListener('input', _inputListener);
     autocomplete.addEventListener('gmp-input', _inputListener);
+
     _focusListener = (_) {
       onDropdownOpenChanged?.call(true);
       onDropdownHeightChanged?.call(_fallbackDropdownHeight);
     };
     autocomplete.addEventListener('focus', _focusListener);
     autocomplete.addEventListener('focusin', _focusListener);
+
     _blurListener = (_) {
       onDropdownHeightChanged?.call(0);
       onDropdownOpenChanged?.call(false);
@@ -126,8 +126,11 @@ class PlaceAutocompleteWebController {
     autocomplete.addEventListener('focusout', _blurListener);
 
     _selectListener = (event) {
-      final place = _extractPlace(event) ?? _getProperty(autocomplete, 'place');
-      final placeJson = place == null ? null : _readPlaceJson(place);
+      final place =
+          extractPlaceFromEvent(event) ?? getJsProperty(autocomplete, 'place');
+      final placeJson = place == null
+          ? null
+          : PlaceAutocompleteWebPlaceDetails.readPlaceJson(place);
       if (kDebugMode && place != null) {
         try {
           final objectCtor = js_util.getProperty(window, 'Object');
@@ -140,25 +143,26 @@ class PlaceAutocompleteWebController {
           print('PlacesUI place json: $placeJson');
         }
       }
-      final placeId = _readString(_getProperty(place, 'id')) ??
-          _readString(_getProperty(place, 'placeId')) ??
-          _readString(placeJson?['id']) ??
-          _readString(placeJson?['placeId']) ??
+      final placeId = readJsString(getJsProperty(place, 'id')) ??
+          readJsString(getJsProperty(place, 'placeId')) ??
+          readJsString(placeJson?['id']) ??
+          readJsString(placeJson?['placeId']) ??
           '';
-      final formattedAddress = _readString(_getProperty(place, 'formattedAddress')) ??
-          _readString(placeJson?['formattedAddress']) ??
-          _readString(placeJson?['formatted_address']);
-      final displayName = _getProperty(place, 'displayName') ??
-          placeJson?['displayName'];
+      final formattedAddress =
+          readJsString(getJsProperty(place, 'formattedAddress')) ??
+              readJsString(placeJson?['formattedAddress']) ??
+              readJsString(placeJson?['formatted_address']);
+      final displayName =
+          getJsProperty(place, 'displayName') ?? placeJson?['displayName'];
       String? name;
       if (displayName != null) {
-        name = _readString(displayName) ??
-            _readString(_getProperty(displayName, 'text'));
+        name = readJsString(displayName) ??
+            readJsString(getJsProperty(displayName, 'text'));
       }
-      name ??= _readString(_getProperty(place, 'name')) ??
-          _readString(placeJson?['name']) ??
-          _readString(placeJson?['displayName']);
-      final location = _getProperty(place, 'location');
+      name ??= readJsString(getJsProperty(place, 'name')) ??
+          readJsString(placeJson?['name']) ??
+          readJsString(placeJson?['displayName']);
+      final location = getJsProperty(place, 'location');
       double? lat;
       double? lng;
       if (location != null) {
@@ -184,22 +188,26 @@ class PlaceAutocompleteWebController {
           }
         }
       }
+      final eventDisplayValue = readEventDisplayValue(event);
+      if (eventDisplayValue != null) {
+        _lastTypedValue = eventDisplayValue;
+      }
       final displayValue = formattedAddress ??
           name ??
-          _readEventDisplayValue(event) ??
-          _readAutocompleteValue(autocomplete) ??
+          eventDisplayValue ??
+          _domHelper?.readAutocompleteValue() ??
           _lastTypedValue;
       if (kDebugMode) {
         // ignore: avoid_print
-        print('PlacesUI select event: ${_getProperty(event, "type")}');
+        print('PlacesUI select event: ${getJsProperty(event, "type")}');
         // ignore: avoid_print
-        print('PlacesUI detail: ${_getProperty(event, "detail")}');
+        print('PlacesUI detail: ${getJsProperty(event, "detail")}');
         // ignore: avoid_print
         print('PlacesUI place: $place');
         // ignore: avoid_print
         print('PlacesUI displayValue: $displayValue');
         // ignore: avoid_print
-        print('PlacesUI inputValue: ${_readAutocompleteValue(autocomplete)}');
+        print('PlacesUI inputValue: ${_domHelper?.readAutocompleteValue()}');
       }
       final selection = PlaceSelection(
         placeId: placeId,
@@ -210,8 +218,7 @@ class PlaceAutocompleteWebController {
         longitude: lng,
       );
       onSelected(selection);
-      final fallbackValue =
-          displayValue ?? _readAutocompleteValue(autocomplete);
+      final fallbackValue = displayValue ?? _domHelper?.readAutocompleteValue();
       if (fallbackValue != null && fallbackValue.isNotEmpty) {
         onInputValueChanged?.call(fallbackValue);
       }
@@ -220,9 +227,8 @@ class PlaceAutocompleteWebController {
           _setAutocompleteValue(autocomplete, displayValue);
         });
       }
-      if ((displayValue == null || displayValue.isEmpty) &&
-          placeId.isNotEmpty) {
-        _fetchPlaceDetails(placeId).then((resolved) {
+      if ((displayValue == null || displayValue.isEmpty) && placeId.isNotEmpty) {
+        PlaceAutocompleteWebPlaceDetails.fetchPlaceDetails(placeId).then((resolved) {
           if (resolved == null) {
             return;
           }
@@ -237,7 +243,7 @@ class PlaceAutocompleteWebController {
         });
       }
       Future.delayed(const Duration(milliseconds: 100), () {
-        final delayedValue = _readAutocompleteValue(autocomplete);
+        final delayedValue = _domHelper?.readAutocompleteValue();
         if (delayedValue != null && delayedValue.isNotEmpty) {
           onInputValueChanged?.call(delayedValue);
         }
@@ -250,19 +256,38 @@ class PlaceAutocompleteWebController {
     autocomplete.addEventListener('gmp-placechange', _selectListener);
     autocomplete.addEventListener('gmp-placechanged', _selectListener);
     autocomplete.addEventListener('place_changed', _selectListener);
-    _attachListObserver(autocomplete);
+
+    _domHelper = PlaceAutocompleteDomHelper(
+      container: container,
+      autocomplete: autocomplete,
+      onDropdownHeightChanged: onDropdownHeightChanged,
+      onDropdownOpenChanged: onDropdownOpenChanged,
+      onListClickValue: (value) {
+        onInputValueChanged?.call(value);
+        onSelected(
+          PlaceSelection(
+            placeId: readJsString(getJsProperty(autocomplete, 'placeId')) ?? '',
+            displayValue: value,
+          ),
+        );
+      },
+    );
+    _domHelper?.attach(
+      inputListener: _inputListener,
+      focusListener: _focusListener,
+      blurListener: _blurListener,
+    );
+
     container.children
       ..clear()
-      ..add(autocomplete)
-      ;
+      ..add(autocomplete);
     _autocompleteElement = autocomplete;
     scheduleMicrotask(() {
-      _raiseHostZIndex();
-      _syncInputElement(autocomplete);
-    });
-    window.requestAnimationFrame((_) {
-      _raiseHostZIndex();
-      _syncInputElement(autocomplete);
+      _domHelper?.attach(
+        inputListener: _inputListener,
+        focusListener: _focusListener,
+        blurListener: _blurListener,
+      );
     });
   }
 
@@ -304,320 +329,7 @@ class PlaceAutocompleteWebController {
     } catch (_) {}
   }
 
-  Object? _extractPlace(Object event) {
-    final detail = _getProperty(event, 'detail');
-    final placeFromDetail = _getProperty(detail, 'place');
-    if (placeFromDetail != null) {
-      return placeFromDetail;
-    }
-    final placeFromEvent = _getProperty(event, 'place');
-    if (placeFromEvent != null) {
-      return placeFromEvent;
-    }
-    return null;
-  }
-
-  Object? _getProperty(Object? object, String name) {
-    if (object == null) {
-      return null;
-    }
-    try {
-      return js_util.getProperty(object, name);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  String? _readString(Object? value) {
-    if (value is String) {
-      final trimmed = value.trim();
-      if (trimmed.isNotEmpty) {
-        return trimmed;
-      }
-    }
-    return null;
-  }
-
-  String? _readAutocompleteValue(Element element) {
-    try {
-      final value =
-          _readString(js_util.getProperty(element, 'value')) ??
-              _readString(js_util.getProperty(element, 'inputValue')) ??
-              _readString(js_util.getProperty(element, 'query'));
-      if (value != null) {
-        _lastTypedValue = value;
-        return value;
-      }
-    } catch (_) {}
-    try {
-      final attr = element.getAttribute('value');
-      final attrValue = _readString(attr);
-      if (attrValue != null) {
-        _lastTypedValue = attrValue;
-        return attrValue;
-      }
-    } catch (_) {}
-    try {
-      final shadowRoot = js_util.getProperty(element, 'shadowRoot');
-      if (shadowRoot == null) {
-        return null;
-      }
-      final input =
-          js_util.callMethod(shadowRoot, 'querySelector', ['input']);
-      final inputValue = _readString(js_util.getProperty(input, 'value'));
-      if (inputValue != null) {
-        _lastTypedValue = inputValue;
-        return inputValue;
-      }
-    } catch (_) {}
-    return null;
-  }
-
-  String? _readEventDisplayValue(Object event) {
-    final detail = _getProperty(event, 'detail');
-    final displayText = _readString(_getProperty(detail, 'text')) ??
-        _readString(_getProperty(detail, 'value')) ??
-        _readString(_getProperty(detail, 'inputValue')) ??
-        _readString(_getProperty(detail, 'query')) ??
-        _readString(_getProperty(detail, 'description'));
-    if (displayText != null) {
-      _lastTypedValue = displayText;
-      return displayText;
-    }
-    final prediction = _getProperty(detail, 'placePrediction');
-    final predictionText = _readString(_getProperty(prediction, 'text')) ??
-        _readString(_getProperty(prediction, 'description'));
-    if (predictionText != null) {
-      _lastTypedValue = predictionText;
-      return predictionText;
-    }
-    final selected = _getProperty(detail, 'selection');
-    final selectionText = _readString(_getProperty(selected, 'text')) ??
-        _readString(_getProperty(selected, 'description'));
-    if (selectionText != null) {
-      _lastTypedValue = selectionText;
-      return selectionText;
-    }
-    return null;
-  }
-
-  Map<String, dynamic>? _readPlaceJson(Object place) {
-    try {
-      final json = js_util.callMethod(place, 'toJSON', []);
-      final dartified = js_util.dartify(json);
-      if (dartified is Map) {
-        return dartified.cast<String, dynamic>();
-      }
-    } catch (_) {}
-    return null;
-  }
-
-  Future<PlaceSelection?> _fetchPlaceDetails(String placeId) async {
-    try {
-      final google = js_util.getProperty(window, 'google');
-      if (google == null) {
-        return null;
-      }
-      final maps = js_util.getProperty(google, 'maps');
-      final places = maps == null ? null : js_util.getProperty(maps, 'places');
-      if (places == null) {
-        return null;
-      }
-      final serviceCtor = js_util.getProperty(places, 'PlacesService');
-      if (serviceCtor == null) {
-        return null;
-      }
-      final service = js_util.callConstructor(serviceCtor, [DivElement()]);
-      final fields =
-          js_util.jsify(['formatted_address', 'name', 'geometry']);
-      final request = js_util.jsify({
-        'placeId': placeId,
-        'fields': fields,
-      });
-      final completer = Completer<PlaceSelection?>();
-      final callback = js_util.allowInterop((result, status) {
-        final statusText = status?.toString() ?? '';
-        if (!statusText.contains('OK') || result == null) {
-          completer.complete(null);
-          return;
-        }
-        final formattedAddress =
-            _readString(js_util.getProperty(result, 'formatted_address')) ??
-                _readString(js_util.getProperty(result, 'formattedAddress'));
-        final name = _readString(js_util.getProperty(result, 'name'));
-        final geometry = _getProperty(result, 'geometry');
-        final location = _getProperty(geometry, 'location');
-        double? lat;
-        double? lng;
-        if (location != null) {
-          try {
-            final loc = location as Object;
-            lat = (js_util.callMethod(loc, 'lat', []) as num).toDouble();
-            lng = (js_util.callMethod(loc, 'lng', []) as num).toDouble();
-          } catch (_) {
-            lat = null;
-            lng = null;
-          }
-        }
-        completer.complete(
-          PlaceSelection(
-            placeId: placeId,
-            displayValue: formattedAddress ?? name,
-            name: name,
-            formattedAddress: formattedAddress,
-            latitude: lat,
-            longitude: lng,
-          ),
-        );
-      });
-      js_util.callMethod(service, 'getDetails', [request, callback]);
-      return completer.future
-          .timeout(const Duration(seconds: 2), onTimeout: () => null);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  void _attachListObserver(HtmlElement autocomplete) {
-    _listObserver?.disconnect();
-    final shadowRoot = _getShadowRoot(autocomplete);
-    if (shadowRoot == null) {
-      return;
-    }
-    _listObserver = MutationObserver((_, __) {
-      _emitListHeight(autocomplete);
-      _syncInputElement(autocomplete);
-      _attachListClickListener(autocomplete);
-    });
-    _listObserver!.observe(
-      shadowRoot,
-      attributes: true,
-      childList: true,
-      subtree: true,
-    );
-    _emitListHeight(autocomplete);
-    _syncInputElement(autocomplete);
-    _attachListClickListener(autocomplete);
-  }
-
-  ShadowRoot? _getShadowRoot(HtmlElement element) {
-    final directRoot = element.shadowRoot;
-    if (directRoot != null) {
-      return directRoot;
-    }
-    try {
-      final root = js_util.getProperty(element, 'shadowRoot');
-      if (root is ShadowRoot) {
-        return root;
-      }
-    } catch (_) {}
-    return null;
-  }
-
-  void _emitListHeight(HtmlElement autocomplete) {
-    final list = _findListElement(autocomplete);
-    final height = list?.getBoundingClientRect().height ?? 0;
-    final clampedHeight = (height.isNaN ? 0 : height).toDouble();
-    onDropdownHeightChanged?.call(clampedHeight);
-    onDropdownOpenChanged?.call(clampedHeight > 0);
-  }
-
-  Element? _findListElement(HtmlElement autocomplete) {
-    final shadowRoot = _getShadowRoot(autocomplete);
-    if (shadowRoot == null) {
-      return null;
-    }
-    return shadowRoot.querySelector('[part=\"listbox\"]') ??
-        shadowRoot.querySelector('[part=\"listbox-container\"]') ??
-        shadowRoot.querySelector('gmp-place-list');
-  }
-
   String? get lastTypedValue => _lastTypedValue;
 
-  String? readCurrentValue() {
-    final element = _autocompleteElement;
-    if (element == null) {
-      return null;
-    }
-    return _readAutocompleteValue(element);
-  }
-
-  void _syncInputElement(HtmlElement autocomplete) {
-    if (_inputElement != null) {
-      return;
-    }
-    final shadowRoot = _getShadowRoot(autocomplete);
-    if (shadowRoot == null) {
-      return;
-    }
-    final input = shadowRoot.querySelector('input');
-    if (input is InputElement) {
-      _inputElement = input;
-      if (_inputListener != null) {
-        _inputElement!.addEventListener('input', _inputListener);
-        _inputElement!.addEventListener('change', _inputListener);
-      }
-      if (_focusListener != null) {
-        _inputElement!.addEventListener('focus', _focusListener);
-        _inputElement!.addEventListener('focusin', _focusListener);
-      }
-      if (_blurListener != null) {
-        _inputElement!.addEventListener('blur', _blurListener);
-        _inputElement!.addEventListener('focusout', _blurListener);
-      }
-    }
-  }
-
-  void _attachListClickListener(HtmlElement autocomplete) {
-    final list = _findListElement(autocomplete);
-    if (list == null) {
-      return;
-    }
-    list.onClick.listen((event) {
-      final target = event.target;
-      Element? item;
-      if (target is Element) {
-        item = target.closest('[role=\"option\"]') ??
-            target.closest('gmp-place-list-item') ??
-            target;
-      }
-      scheduleMicrotask(() {
-        final displayValue = _readAutocompleteValue(autocomplete) ??
-            _readString(item?.text) ??
-            _readString(item?.text);
-        if (displayValue == null || displayValue.isEmpty) {
-          return;
-        }
-        onSelected(
-          PlaceSelection(
-            placeId: _readString(_getProperty(autocomplete, 'placeId')) ?? '',
-            displayValue: displayValue,
-          ),
-        );
-        onInputValueChanged?.call(displayValue);
-        onDropdownOpenChanged?.call(false);
-      });
-    });
-  }
-
-  void _raiseHostZIndex() {
-    container.style
-      ..position = 'relative'
-      ..zIndex = '10000'
-      ..overflow = 'visible';
-    final parent = container.parent;
-    if (parent is HtmlElement) {
-      parent.style
-        ..position = 'relative'
-        ..zIndex = '10000'
-        ..overflow = 'visible';
-      final grand = parent.parent;
-      if (grand is HtmlElement) {
-        grand.style
-          ..position = 'relative'
-          ..zIndex = '10000'
-          ..overflow = 'visible';
-      }
-    }
-  }
+  String? readCurrentValue() => _domHelper?.readAutocompleteValue();
 }
