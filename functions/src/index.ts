@@ -42,14 +42,15 @@ export const extractOfferFromImage = onCall(
     }
 
     const model = geminiModel.value();
-    const debugAllowed = debugRequested && isDebugEnabled();
+    const debugEnabled = isDebugEnabled();
+    const debugAllowed = debugRequested && debugEnabled;
     const text = await requestGeminiOffer({
       apiKey,
       model,
       imageBase64: payload.imageBase64,
       mimeType: payload.mimeType,
     });
-    if (debugAllowed) {
+    if (debugEnabled) {
       logger.info("Gemini raw response", {
         model,
         mimeType: payload.mimeType,
