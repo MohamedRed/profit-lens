@@ -309,6 +309,7 @@ class PlaceAutocompleteWebController {
     _listObserver = MutationObserver((_, __) {
       _emitListHeight(autocomplete);
       _syncInputElement(autocomplete);
+      _attachListClickListener(autocomplete);
     });
     _listObserver!.observe(
       shadowRoot,
@@ -318,6 +319,7 @@ class PlaceAutocompleteWebController {
     );
     _emitListHeight(autocomplete);
     _syncInputElement(autocomplete);
+    _attachListClickListener(autocomplete);
   }
 
   ShadowRoot? _getShadowRoot(HtmlElement element) {
@@ -377,6 +379,27 @@ class PlaceAutocompleteWebController {
         _inputElement!.addEventListener('change', _inputListener);
       }
     }
+  }
+
+  void _attachListClickListener(HtmlElement autocomplete) {
+    final list = _findListElement(autocomplete);
+    if (list == null) {
+      return;
+    }
+    list.onClick.listen((_) {
+      scheduleMicrotask(() {
+        final displayValue = _readAutocompleteValue(autocomplete);
+        if (displayValue == null || displayValue.isEmpty) {
+          return;
+        }
+        onSelected(
+          PlaceSelection(
+            placeId: _readString(_getProperty(autocomplete, 'placeId')) ?? '',
+            displayValue: displayValue,
+          ),
+        );
+      });
+    });
   }
 
   void _raiseHostZIndex() {

@@ -43,6 +43,10 @@ void stylePlacesAutocomplete(HtmlElement element) {
     }
     .$_className::part(listbox),
     .$_className::part(listbox-container) {
+      position: absolute;
+      top: 48px;
+      left: 0;
+      right: 0;
       max-height: min(240px, 45vh);
       height: auto;
       overflow-y: auto;

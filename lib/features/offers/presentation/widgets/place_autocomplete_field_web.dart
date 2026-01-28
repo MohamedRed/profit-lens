@@ -29,14 +29,12 @@ class PlaceAutocompleteField extends StatefulWidget {
 class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
   static int _instanceId = 0;
   static const double _inputHeight = 48;
-  static const double _listMaxHeight = 240;
   late final String _viewType;
   late final PlaceAutocompleteWebController _webController;
   final DivElement _container = DivElement();
   bool _loadFailed = false;
   String? _errorDetails;
   bool _isEditing = true;
-  double _dropdownHeight = 0;
   @override
   void initState() {
     super.initState();
@@ -114,19 +112,7 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
     });
   }
 
-  void _handleDropdownHeight(double height) {
-    final nextHeight = height < 0 ? 0 : height;
-    final clampedHeight = (nextHeight > _listMaxHeight
-            ? _listMaxHeight
-            : nextHeight)
-        .toDouble();
-    if (clampedHeight == _dropdownHeight) {
-      return;
-    }
-    if (mounted) {
-      setState(() => _dropdownHeight = clampedHeight);
-    }
-  }
+  void _handleDropdownHeight(double height) {}
 
   String? _displayValueFor(PlaceSelection selection) {
     final provided = selection.displayValue?.trim();
@@ -195,8 +181,6 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
           height: _inputHeight,
           child: HtmlElementView(viewType: _viewType),
         ),
-        if (_isEditing && _dropdownHeight > 0)
-          SizedBox(height: _dropdownHeight),
         if (hasValue)
           Padding(
             padding: const EdgeInsets.only(top: 6),
