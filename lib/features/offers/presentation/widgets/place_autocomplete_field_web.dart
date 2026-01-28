@@ -14,12 +14,14 @@ class PlaceAutocompleteField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final PlaceSelectionCallback? onSelected;
+  final ValueChanged<bool>? onDropdownOpenChanged;
   final String countryCode;
   const PlaceAutocompleteField({
     super.key,
     required this.controller,
     required this.label,
     this.onSelected,
+    this.onDropdownOpenChanged,
     this.countryCode = 'fr',
   });
   @override
@@ -35,6 +37,7 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
   bool _loadFailed = false;
   String? _errorDetails;
   bool _isEditing = true;
+  bool _isDropdownOpen = false;
   @override
   void initState() {
     super.initState();
@@ -50,6 +53,8 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
       container: _container,
       countryCode: widget.countryCode,
       onSelected: _handleSelection,
+      onInputValueChanged: _handleInputValueChanged,
+      onDropdownOpenChanged: _handleDropdownOpenChanged,
       onDropdownHeightChanged: _handleDropdownHeight,
     );
     ui.platformViewRegistry.registerViewFactory(
@@ -110,6 +115,24 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
         setState(() => _isEditing = false);
       }
     });
+  }
+
+  void _handleInputValueChanged(String value) {
+    final nextValue = value.trim();
+    if (nextValue.isEmpty) {
+      return;
+    }
+    if (widget.controller.text != nextValue) {
+      widget.controller.text = nextValue;
+    }
+  }
+
+  void _handleDropdownOpenChanged(bool isOpen) {
+    if (_isDropdownOpen == isOpen) {
+      return;
+    }
+    _isDropdownOpen = isOpen;
+    widget.onDropdownOpenChanged?.call(isOpen);
   }
 
   void _handleDropdownHeight(double height) {}

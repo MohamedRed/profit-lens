@@ -13,6 +13,8 @@ class PlaceAutocompleteWebController {
   final String countryCode;
   final void Function(PlaceSelection selection) onSelected;
   final ValueChanged<double>? onDropdownHeightChanged;
+  final ValueChanged<String>? onInputValueChanged;
+  final ValueChanged<bool>? onDropdownOpenChanged;
   Element? _autocompleteElement;
   EventListener? _selectListener;
   EventListener? _inputListener;
@@ -27,6 +29,8 @@ class PlaceAutocompleteWebController {
     required this.countryCode,
     required this.onSelected,
     this.onDropdownHeightChanged,
+    this.onInputValueChanged,
+    this.onDropdownOpenChanged,
   });
   Future<void> boot() async {
     if (!hasGoogleMapsApiKey) {
@@ -86,12 +90,19 @@ class PlaceAutocompleteWebController {
     } catch (_) {}
     stylePlacesAutocomplete(autocomplete);
     _inputListener = (_) {
-      _readAutocompleteValue(autocomplete);
+      final value = _readAutocompleteValue(autocomplete);
+      if (value != null && value.isNotEmpty) {
+        onInputValueChanged?.call(value);
+      }
       onDropdownHeightChanged?.call(_fallbackDropdownHeight);
+      onDropdownOpenChanged?.call(true);
     };
     autocomplete.addEventListener('input', _inputListener);
     autocomplete.addEventListener('gmp-input', _inputListener);
-    _blurListener = (_) => onDropdownHeightChanged?.call(0);
+    _blurListener = (_) {
+      onDropdownHeightChanged?.call(0);
+      onDropdownOpenChanged?.call(false);
+    };
     autocomplete.addEventListener('blur', _blurListener);
     autocomplete.addEventListener('focusout', _blurListener);
 
@@ -143,6 +154,7 @@ class PlaceAutocompleteWebController {
         });
       }
       onDropdownHeightChanged?.call(0);
+      onDropdownOpenChanged?.call(false);
     };
     autocomplete.addEventListener('gmp-select', _selectListener);
     autocomplete.addEventListener('gmp-placeselect', _selectListener);
@@ -341,6 +353,7 @@ class PlaceAutocompleteWebController {
     final height = list?.getBoundingClientRect().height ?? 0;
     final clampedHeight = (height.isNaN ? 0 : height).toDouble();
     onDropdownHeightChanged?.call(clampedHeight);
+    onDropdownOpenChanged?.call(clampedHeight > 0);
   }
 
   Element? _findListElement(HtmlElement autocomplete) {

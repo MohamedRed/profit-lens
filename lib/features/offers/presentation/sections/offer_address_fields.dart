@@ -4,7 +4,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/place_selection.dart';
 import '../widgets/place_autocomplete_field.dart';
 
-class OfferAddressFields extends StatelessWidget {
+class OfferAddressFields extends StatefulWidget {
   final TextEditingController pickupNameController;
   final TextEditingController pickupAddressController;
   final ValueChanged<PlaceSelection>? onPickupSelected;
@@ -21,28 +21,47 @@ class OfferAddressFields extends StatelessWidget {
   });
 
   @override
+  State<OfferAddressFields> createState() => _OfferAddressFieldsState();
+}
+
+class _OfferAddressFieldsState extends State<OfferAddressFields> {
+  bool _pickupDropdownOpen = false;
+  bool _dropoffDropdownOpen = false;
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final hidePickup = _dropoffDropdownOpen;
+    final hideDropoff = _pickupDropdownOpen;
     return Column(
       children: [
-        TextFormField(
-          controller: pickupNameController,
-          decoration: InputDecoration(labelText: l10n.pickupNameLabel),
-        ),
-        const SizedBox(height: 12),
-        PlaceAutocompleteField(
-          controller: pickupAddressController,
-          label: l10n.pickupAddressLabel,
-          onSelected: onPickupSelected,
-        ),
+        if (!hidePickup) ...[
+          TextFormField(
+            controller: widget.pickupNameController,
+            decoration: InputDecoration(labelText: l10n.pickupNameLabel),
+          ),
+          const SizedBox(height: 12),
+          PlaceAutocompleteField(
+            controller: widget.pickupAddressController,
+            label: l10n.pickupAddressLabel,
+            onSelected: widget.onPickupSelected,
+            onDropdownOpenChanged: (isOpen) {
+              if (mounted) {
+                setState(() => _pickupDropdownOpen = isOpen);
+              }
+            },
+          ),
+        ],
         AnimatedBuilder(
           animation: Listenable.merge([
-            pickupAddressController,
-            dropoffAddressController,
+            widget.pickupAddressController,
+            widget.dropoffAddressController,
           ]),
           builder: (context, _) {
-            final pickupEmpty = pickupAddressController.text.trim().isEmpty;
-            final dropoffFilled = dropoffAddressController.text.trim().isNotEmpty;
+            final pickupEmpty =
+                widget.pickupAddressController.text.trim().isEmpty;
+            final dropoffFilled =
+                widget.dropoffAddressController.text.trim().isNotEmpty;
             if (!pickupEmpty || !dropoffFilled) {
               return const SizedBox.shrink();
             }
@@ -72,11 +91,17 @@ class OfferAddressFields extends StatelessWidget {
           },
         ),
         const SizedBox(height: 12),
-        PlaceAutocompleteField(
-          controller: dropoffAddressController,
-          label: l10n.dropoffAddressLabel,
-          onSelected: onDropoffSelected,
-        ),
+        if (!hideDropoff)
+          PlaceAutocompleteField(
+            controller: widget.dropoffAddressController,
+            label: l10n.dropoffAddressLabel,
+            onSelected: widget.onDropoffSelected,
+            onDropdownOpenChanged: (isOpen) {
+              if (mounted) {
+                setState(() => _dropoffDropdownOpen = isOpen);
+              }
+            },
+          ),
       ],
     );
   }

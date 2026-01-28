@@ -8,12 +8,14 @@ class PlaceAutocompleteField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final PlaceSelectionCallback? onSelected;
+  final ValueChanged<bool>? onDropdownOpenChanged;
 
   const PlaceAutocompleteField({
     super.key,
     required this.controller,
     required this.label,
     this.onSelected,
+    this.onDropdownOpenChanged,
   });
 
   @override
