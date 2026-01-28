@@ -108,18 +108,37 @@ class PlaceAutocompleteWebController {
 
     _selectListener = (event) {
       final place = _extractPlace(event) ?? _getProperty(autocomplete, 'place');
+      final placeJson = place == null ? null : _readPlaceJson(place);
+      if (kDebugMode && place != null) {
+        try {
+          final objectCtor = js_util.getProperty(window, 'Object');
+          final keys = js_util.callMethod(objectCtor, 'keys', [place]);
+          // ignore: avoid_print
+          print('PlacesUI place keys: ${js_util.dartify(keys)}');
+        } catch (_) {}
+        if (placeJson != null) {
+          // ignore: avoid_print
+          print('PlacesUI place json: $placeJson');
+        }
+      }
       final placeId = _readString(_getProperty(place, 'id')) ??
           _readString(_getProperty(place, 'placeId')) ??
+          _readString(placeJson?['id']) ??
+          _readString(placeJson?['placeId']) ??
           '';
-      final formattedAddress =
-          _readString(_getProperty(place, 'formattedAddress'));
-      final displayName = _getProperty(place, 'displayName');
+      final formattedAddress = _readString(_getProperty(place, 'formattedAddress')) ??
+          _readString(placeJson?['formattedAddress']) ??
+          _readString(placeJson?['formatted_address']);
+      final displayName = _getProperty(place, 'displayName') ??
+          placeJson?['displayName'];
       String? name;
       if (displayName != null) {
         name = _readString(displayName) ??
             _readString(_getProperty(displayName, 'text'));
       }
-      name ??= _readString(_getProperty(place, 'name'));
+      name ??= _readString(_getProperty(place, 'name')) ??
+          _readString(placeJson?['name']) ??
+          _readString(placeJson?['displayName']);
       final location = _getProperty(place, 'location');
       double? lat;
       double? lng;
@@ -131,6 +150,19 @@ class PlaceAutocompleteWebController {
         } catch (_) {
           lat = null;
           lng = null;
+        }
+      }
+      if (lat == null || lng == null) {
+        final locationJson = placeJson?['location'];
+        if (locationJson is Map) {
+          final latValue = locationJson['lat'];
+          final lngValue = locationJson['lng'];
+          if (latValue is num) {
+            lat = latValue.toDouble();
+          }
+          if (lngValue is num) {
+            lng = lngValue.toDouble();
+          }
         }
       }
       final displayValue = formattedAddress ??
@@ -170,6 +202,12 @@ class PlaceAutocompleteWebController {
           _setAutocompleteValue(autocomplete, displayValue);
         });
       }
+      Future.delayed(const Duration(milliseconds: 100), () {
+        final delayedValue = _readAutocompleteValue(autocomplete);
+        if (delayedValue != null && delayedValue.isNotEmpty) {
+          onInputValueChanged?.call(delayedValue);
+        }
+      });
       onDropdownHeightChanged?.call(0);
       onDropdownOpenChanged?.call(false);
     };
@@ -326,6 +364,17 @@ class PlaceAutocompleteWebController {
       _lastTypedValue = selectionText;
       return selectionText;
     }
+    return null;
+  }
+
+  Map<String, dynamic>? _readPlaceJson(Object place) {
+    try {
+      final json = js_util.callMethod(place, 'toJSON', []);
+      final dartified = js_util.dartify(json);
+      if (dartified is Map) {
+        return dartified.cast<String, dynamic>();
+      }
+    } catch (_) {}
     return null;
   }
 
