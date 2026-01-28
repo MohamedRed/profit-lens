@@ -503,7 +503,7 @@ class PlaceAutocompleteWebController {
       scheduleMicrotask(() {
         final displayValue = _readAutocompleteValue(autocomplete) ??
             _readString(item?.text) ??
-            _readString(item?.textContent);
+            _readString(item?.text);
         if (displayValue == null || displayValue.isEmpty) {
           return;
         }
