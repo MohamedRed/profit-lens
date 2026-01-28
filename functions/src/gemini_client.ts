@@ -19,6 +19,7 @@ const offerExtractionSchema = {
         distanceKm: { type: ["number", "null"] },
         pickupName: { type: ["string", "null"] },
         pickupAddress: { type: ["string", "null"] },
+        dropoffName: { type: ["string", "null"] },
         dropoffAddress: { type: ["string", "null"] },
       },
       required: [
@@ -26,6 +27,7 @@ const offerExtractionSchema = {
         "distanceKm",
         "pickupName",
         "pickupAddress",
+        "dropoffName",
         "dropoffAddress",
       ],
       additionalProperties: false,

@@ -53,6 +53,7 @@ class OfferRecordMapper {
       'durationMinutes': record.offer.durationMinutes,
       'pickupName': record.offer.pickupName,
       'pickupAddress': record.offer.pickupAddress,
+      'dropoffName': record.offer.dropoffName,
       'dropoffAddress': record.offer.dropoffAddress,
       'source': record.source.name,
       'createdAt': Timestamp.fromDate(record.createdAt),
@@ -77,6 +78,7 @@ class OfferRecordMapper {
       durationMinutes: (data['durationMinutes'] as num?)?.toDouble(),
       pickupName: data['pickupName'] as String?,
       pickupAddress: data['pickupAddress'] as String?,
+      dropoffName: data['dropoffName'] as String?,
       dropoffAddress: data['dropoffAddress'] as String?,
     );
   }

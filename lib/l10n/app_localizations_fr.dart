@@ -272,6 +272,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pickupAddressLabel => 'Adresse de retrait';
 
   @override
+  String get dropoffNameLabel => 'Nom du destinataire (optionnel)';
+
+  @override
   String get dropoffAddressLabel => 'Adresse de livraison';
 
   @override

@@ -45,6 +45,7 @@ class _OfferFlowCoordinatorState extends State<OfferFlowCoordinator> {
     _controller.durationController.addListener(_onOfferChanged);
     _controller.pickupNameController.addListener(_onOfferChanged);
     _controller.pickupAddressController.addListener(_onOfferChanged);
+    _controller.dropoffNameController.addListener(_onOfferChanged);
     _controller.dropoffAddressController.addListener(_onOfferChanged);
   }
 

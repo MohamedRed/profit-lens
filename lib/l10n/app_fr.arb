@@ -85,6 +85,7 @@
   "durationMinutesLabel": "Temps estimé (minutes)",
   "pickupNameLabel": "Nom du retrait",
   "pickupAddressLabel": "Adresse de retrait",
+  "dropoffNameLabel": "Nom du destinataire (optionnel)",
   "dropoffAddressLabel": "Adresse de livraison",
   "pickupAddressMissingHint": "Cette capture ne fournit que le nom du restaurant et l’adresse du client. L’adresse de retrait peut rester vide.",
   "offerSaveFailedMessage": "Impossible d’enregistrer l’offre.",

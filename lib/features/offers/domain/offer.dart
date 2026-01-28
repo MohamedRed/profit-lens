@@ -4,6 +4,7 @@ class Offer {
   final double? durationMinutes;
   final String? pickupName;
   final String? pickupAddress;
+  final String? dropoffName;
   final String? dropoffAddress;
 
   const Offer({
@@ -12,6 +13,7 @@ class Offer {
     this.durationMinutes,
     this.pickupName,
     this.pickupAddress,
+    this.dropoffName,
     this.dropoffAddress,
   });
 }

@@ -167,9 +167,8 @@ class PlaceAutocompleteWebController {
       double? lng;
       if (location != null) {
         try {
-          final loc = location as Object;
-          lat = (js_util.callMethod(loc, 'lat', []) as num).toDouble();
-          lng = (js_util.callMethod(loc, 'lng', []) as num).toDouble();
+          lat = (js_util.callMethod(location, 'lat', []) as num).toDouble();
+          lng = (js_util.callMethod(location, 'lng', []) as num).toDouble();
         } catch (_) {
           lat = null;
           lng = null;

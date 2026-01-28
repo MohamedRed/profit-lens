@@ -8,6 +8,7 @@ class OfferAddressFields extends StatefulWidget {
   final TextEditingController pickupNameController;
   final TextEditingController pickupAddressController;
   final ValueChanged<PlaceSelection>? onPickupSelected;
+  final TextEditingController dropoffNameController;
   final TextEditingController dropoffAddressController;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
 
@@ -16,6 +17,7 @@ class OfferAddressFields extends StatefulWidget {
     required this.pickupNameController,
     required this.pickupAddressController,
     required this.onPickupSelected,
+    required this.dropoffNameController,
     required this.dropoffAddressController,
     required this.onDropoffSelected,
   });
@@ -91,7 +93,12 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
           },
         ),
         const SizedBox(height: 12),
-        if (!hideDropoff)
+        if (!hideDropoff) ...[
+          TextFormField(
+            controller: widget.dropoffNameController,
+            decoration: InputDecoration(labelText: l10n.dropoffNameLabel),
+          ),
+          const SizedBox(height: 12),
           PlaceAutocompleteField(
             controller: widget.dropoffAddressController,
             label: l10n.dropoffAddressLabel,
@@ -102,6 +109,7 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
               }
             },
           ),
+        ],
       ],
     );
   }

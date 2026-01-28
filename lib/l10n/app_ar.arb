@@ -85,6 +85,7 @@
   "durationMinutesLabel": "المدة المتوقعة (دقائق)",
   "pickupNameLabel": "اسم الاستلام",
   "pickupAddressLabel": "عنوان الاستلام",
+  "dropoffNameLabel": "اسم المستلم (اختياري)",
   "dropoffAddressLabel": "عنوان التسليم",
   "pickupAddressMissingHint": "هذه اللقطة تعرض فقط اسم المطعم وعنوان العميل. يمكن ترك عنوان الاستلام فارغًا.",
   "offerSaveFailedMessage": "تعذر حفظ العرض.",

@@ -13,6 +13,7 @@ class OfferFlowController {
   final TextEditingController durationController = TextEditingController();
   final TextEditingController pickupNameController = TextEditingController();
   final TextEditingController pickupAddressController = TextEditingController();
+  final TextEditingController dropoffNameController = TextEditingController();
   final TextEditingController dropoffAddressController = TextEditingController();
 
   OfferSource source = OfferSource.manual;
@@ -26,6 +27,7 @@ class OfferFlowController {
     durationController.dispose();
     pickupNameController.dispose();
     pickupAddressController.dispose();
+    dropoffNameController.dispose();
     dropoffAddressController.dispose();
   }
 
@@ -37,6 +39,7 @@ class OfferFlowController {
     distanceController.text = result.offer!.distanceKm.toStringAsFixed(1);
     pickupNameController.text = result.offer!.pickupName ?? '';
     pickupAddressController.text = result.offer!.pickupAddress ?? '';
+    dropoffNameController.text = result.offer!.dropoffName ?? '';
     dropoffAddressController.text = result.offer!.dropoffAddress ?? '';
     source = OfferSource.screenshot;
     extraction = OfferExtractionMetadata(
@@ -64,6 +67,9 @@ class OfferFlowController {
         selection.formattedAddress!.isNotEmpty) {
       dropoffAddressController.text = selection.formattedAddress!;
     }
+    if (selection.name != null && selection.name!.isNotEmpty) {
+      dropoffNameController.text = selection.name!;
+    }
   }
 
   Offer? buildOffer() {
@@ -83,6 +89,9 @@ class OfferFlowController {
       pickupAddress: pickupAddressController.text.trim().isEmpty
           ? null
           : pickupAddressController.text.trim(),
+      dropoffName: dropoffNameController.text.trim().isEmpty
+          ? null
+          : dropoffNameController.text.trim(),
       dropoffAddress: dropoffAddressController.text.trim().isEmpty
           ? null
           : dropoffAddressController.text.trim(),

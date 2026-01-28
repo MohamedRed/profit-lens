@@ -56,6 +56,7 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
           durationController: widget.controller.durationController,
           pickupNameController: widget.controller.pickupNameController,
           pickupAddressController: widget.controller.pickupAddressController,
+          dropoffNameController: widget.controller.dropoffNameController,
           dropoffAddressController: widget.controller.dropoffAddressController,
           onPickupSelected: widget.onPickupSelected,
           onDropoffSelected: widget.onDropoffSelected,

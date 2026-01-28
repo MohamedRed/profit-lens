@@ -11,6 +11,7 @@ class OfferDetailsFormFields extends StatelessWidget {
   final TextEditingController pickupNameController;
   final TextEditingController pickupAddressController;
   final ValueChanged<PlaceSelection>? onPickupSelected;
+  final TextEditingController dropoffNameController;
   final TextEditingController dropoffAddressController;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
   final bool showDuration;
@@ -25,6 +26,7 @@ class OfferDetailsFormFields extends StatelessWidget {
     required this.pickupNameController,
     required this.pickupAddressController,
     required this.onPickupSelected,
+    required this.dropoffNameController,
     required this.dropoffAddressController,
     required this.onDropoffSelected,
     required this.showDuration,
@@ -83,6 +85,7 @@ class OfferDetailsFormFields extends StatelessWidget {
             pickupNameController: pickupNameController,
             pickupAddressController: pickupAddressController,
             onPickupSelected: onPickupSelected,
+            dropoffNameController: dropoffNameController,
             dropoffAddressController: dropoffAddressController,
             onDropoffSelected: onDropoffSelected,
           ),

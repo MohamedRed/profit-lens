@@ -2,6 +2,7 @@ type OfferPayload = {
   offer?: {
     pickupName?: string | null;
     pickupAddress?: string | null;
+    dropoffName?: string | null;
     dropoffAddress?: string | null;
   };
   rawText?: string;

@@ -91,7 +91,7 @@ class PlaceAutocompleteDomHelper {
     if (shadowRoot == null) {
       return;
     }
-    _listObserver = MutationObserver((_, __) {
+    _listObserver = MutationObserver((mutations, observer) {
       _emitListHeight();
       _syncInputElement();
       _attachListClickListener();
@@ -150,7 +150,7 @@ class PlaceAutocompleteDomHelper {
       final target = event.target;
       Element? item;
       if (target is Element) {
-        item = target.closest('[role=\"option\"]') ??
+        item = target.closest('[role="option"]') ??
             target.closest('gmp-place-list-item') ??
             target;
       }
@@ -168,8 +168,8 @@ class PlaceAutocompleteDomHelper {
     if (shadowRoot == null) {
       return null;
     }
-    return shadowRoot.querySelector('[part=\"listbox\"]') ??
-        shadowRoot.querySelector('[part=\"listbox-container\"]') ??
+    return shadowRoot.querySelector('[part="listbox"]') ??
+        shadowRoot.querySelector('[part="listbox-container"]') ??
         shadowRoot.querySelector('gmp-place-list');
   }
 
