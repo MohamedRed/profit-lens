@@ -6,6 +6,7 @@ import '../../domain/offer_extraction_metadata.dart';
 import '../../domain/offer_extraction_result.dart';
 import '../../domain/offer_source.dart';
 import '../../domain/place_selection.dart';
+import '../../domain/route_verification.dart';
 
 class OfferFlowController {
   final TextEditingController payoutController = TextEditingController();
@@ -20,6 +21,7 @@ class OfferFlowController {
   OfferExtractionMetadata? extraction;
   PlaceSelection? pickupSelection;
   PlaceSelection? dropoffSelection;
+  RouteVerification? routeVerification;
 
   void dispose() {
     payoutController.dispose();
@@ -48,10 +50,12 @@ class OfferFlowController {
     );
     pickupSelection = null;
     dropoffSelection = null;
+    routeVerification = null;
   }
 
   void applyPickupSelection(PlaceSelection selection) {
     pickupSelection = selection;
+    routeVerification = null;
     if (selection.formattedAddress != null &&
         selection.formattedAddress!.isNotEmpty) {
       pickupAddressController.text = selection.formattedAddress!;
@@ -63,6 +67,7 @@ class OfferFlowController {
 
   void applyDropoffSelection(PlaceSelection selection) {
     dropoffSelection = selection;
+    routeVerification = null;
     if (selection.formattedAddress != null &&
         selection.formattedAddress!.isNotEmpty) {
       dropoffAddressController.text = selection.formattedAddress!;
@@ -95,6 +100,11 @@ class OfferFlowController {
       dropoffAddress: dropoffAddressController.text.trim().isEmpty
           ? null
           : dropoffAddressController.text.trim(),
+      routeVerification: routeVerification,
     );
+  }
+
+  void applyRouteVerification(RouteVerification verification) {
+    routeVerification = verification;
   }
 }

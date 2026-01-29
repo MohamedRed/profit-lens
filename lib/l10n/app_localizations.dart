@@ -640,6 +640,30 @@ abstract class AppLocalizations {
   /// **'This screenshot provides only the restaurant name and the customer address. The pickup address can be left empty.'**
   String get pickupAddressMissingHint;
 
+  /// No description provided for @verifiedDistanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified distance (km)'**
+  String get verifiedDistanceLabel;
+
+  /// No description provided for @verifiedDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified time (minutes)'**
+  String get verifiedDurationLabel;
+
+  /// No description provided for @routeVerificationMissingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select pickup and drop-off from autocomplete to verify the route.'**
+  String get routeVerificationMissingMessage;
+
+  /// No description provided for @routeVerificationFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to verify the route distance. Please try again.'**
+  String get routeVerificationFailedMessage;
+
   /// No description provided for @offerSaveFailedMessage.
   ///
   /// In en, this message translates to:

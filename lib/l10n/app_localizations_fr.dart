@@ -288,6 +288,20 @@ class AppLocalizationsFr extends AppLocalizations {
       'Cette capture ne fournit que le nom du restaurant et l’adresse du client. L’adresse de retrait peut rester vide.';
 
   @override
+  String get verifiedDistanceLabel => 'Distance vérifiée (km)';
+
+  @override
+  String get verifiedDurationLabel => 'Temps vérifié (minutes)';
+
+  @override
+  String get routeVerificationMissingMessage =>
+      'Sélectionnez le retrait et la livraison via l’autocomplétion pour vérifier l’itinéraire.';
+
+  @override
+  String get routeVerificationFailedMessage =>
+      'Impossible de vérifier la distance. Réessayez.';
+
+  @override
   String get offerSaveFailedMessage => 'Impossible d’enregistrer l’offre.';
 
   @override

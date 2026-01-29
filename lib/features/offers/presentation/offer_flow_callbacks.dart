@@ -59,6 +59,7 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
       user: user,
       vehicles: vehicles,
       selectedVehicleId: selectedVehicleId,
+      onLoadingChanged: onLoadingChanged,
     ),
     onSignOut: () => AppScope.of(context).authRepository.signOut(),
   );

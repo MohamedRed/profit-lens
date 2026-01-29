@@ -5,7 +5,8 @@ import 'cost_settings.dart';
 
 class ProfitabilityEngine {
   CostBreakdown evaluate(ProfitabilityInput input) {
-    final distance = input.offer.distanceKm;
+    final distance = input.offer.routeVerification?.distanceKm ??
+        input.offer.distanceKm;
     final energyCost = distance *
         (input.vehicle.energyConsumptionPer100Km / 100) *
         input.vehicle.energyPricePerUnit;
@@ -48,7 +49,8 @@ class ProfitabilityEngine {
     }
     switch (costs.fixedCostAllocation) {
       case FixedCostAllocation.perHour:
-        final durationMinutes = input.offer.durationMinutes;
+        final durationMinutes = input.offer.routeVerification?.durationMinutes ??
+            input.offer.durationMinutes;
         if (durationMinutes == null || durationMinutes <= 0) {
           throw StateError('Missing offer duration for hourly allocation.');
         }

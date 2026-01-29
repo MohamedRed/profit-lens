@@ -285,6 +285,20 @@ class AppLocalizationsAr extends AppLocalizations {
       'هذه اللقطة تعرض فقط اسم المطعم وعنوان العميل. يمكن ترك عنوان الاستلام فارغًا.';
 
   @override
+  String get verifiedDistanceLabel => 'المسافة الموثقة (كم)';
+
+  @override
+  String get verifiedDurationLabel => 'الوقت الموثق (دقائق)';
+
+  @override
+  String get routeVerificationMissingMessage =>
+      'اختر عنوان الاستلام والتسليم من الإكمال التلقائي للتحقق من المسار.';
+
+  @override
+  String get routeVerificationFailedMessage =>
+      'تعذر التحقق من المسافة. حاول مرة أخرى.';
+
+  @override
   String get offerSaveFailedMessage => 'تعذر حفظ العرض.';
 
   @override

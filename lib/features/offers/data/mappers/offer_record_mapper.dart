@@ -6,20 +6,25 @@ import '../../domain/offer_record.dart';
 import '../../domain/offer_source.dart';
 import 'cost_breakdown_mapper.dart';
 import 'cost_settings_mapper.dart';
+import 'route_verification_mapper.dart';
 import 'vehicle_snapshot_mapper.dart';
 
 class OfferRecordMapper {
   final CostSettingsMapper _costSettingsMapper;
   final CostBreakdownMapper _costBreakdownMapper;
   final VehicleSnapshotMapper _vehicleSnapshotMapper;
+  final RouteVerificationMapper _routeVerificationMapper;
 
   OfferRecordMapper({
     CostSettingsMapper? costSettingsMapper,
     CostBreakdownMapper? costBreakdownMapper,
     VehicleSnapshotMapper? vehicleSnapshotMapper,
+    RouteVerificationMapper? routeVerificationMapper,
   })  : _costSettingsMapper = costSettingsMapper ?? CostSettingsMapper(),
         _costBreakdownMapper = costBreakdownMapper ?? CostBreakdownMapper(),
-        _vehicleSnapshotMapper = vehicleSnapshotMapper ?? VehicleSnapshotMapper();
+        _vehicleSnapshotMapper = vehicleSnapshotMapper ?? VehicleSnapshotMapper(),
+        _routeVerificationMapper =
+            routeVerificationMapper ?? RouteVerificationMapper();
 
   OfferRecord? fromDocument(String id, Map<String, dynamic>? data) {
     if (data == null) return null;
@@ -55,6 +60,9 @@ class OfferRecordMapper {
       'pickupAddress': record.offer.pickupAddress,
       'dropoffName': record.offer.dropoffName,
       'dropoffAddress': record.offer.dropoffAddress,
+      if (record.offer.routeVerification != null)
+        'routeVerification':
+            _routeVerificationMapper.toDocument(record.offer.routeVerification!),
       'source': record.source.name,
       'createdAt': Timestamp.fromDate(record.createdAt),
       'vehicleSnapshot': _vehicleSnapshotMapper.toDocument(record.vehicleSnapshot),
@@ -80,6 +88,8 @@ class OfferRecordMapper {
       pickupAddress: data['pickupAddress'] as String?,
       dropoffName: data['dropoffName'] as String?,
       dropoffAddress: data['dropoffAddress'] as String?,
+      routeVerification: _routeVerificationMapper
+          .fromDocument(data['routeVerification'] as Map<String, dynamic>?),
     );
   }
 

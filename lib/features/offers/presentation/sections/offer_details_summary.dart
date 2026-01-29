@@ -24,6 +24,7 @@ class OfferDetailsSummary extends StatelessWidget {
     final pickupAddress = controller.pickupAddressController.text.trim();
     final dropoffName = controller.dropoffNameController.text.trim();
     final dropoffAddress = controller.dropoffAddressController.text.trim();
+    final verification = controller.routeVerification;
     return SectionCard(
       title: l10n.offerDetailsSection,
       children: [
@@ -33,6 +34,14 @@ class OfferDetailsSummary extends StatelessWidget {
           Text('${l10n.distanceKmLabel}: $distance'),
         if (duration.isNotEmpty)
           Text('${l10n.durationMinutesLabel}: $duration'),
+        if (verification != null)
+          Text(
+            '${l10n.verifiedDistanceLabel}: ${verification.distanceKm.toStringAsFixed(1)}',
+          ),
+        if (verification != null)
+          Text(
+            '${l10n.verifiedDurationLabel}: ${verification.durationMinutes.toStringAsFixed(0)}',
+          ),
         if (pickupName.isNotEmpty)
           Text('${l10n.pickupNameLabel}: $pickupName'),
         if (pickupAddress.isNotEmpty)

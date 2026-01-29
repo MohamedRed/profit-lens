@@ -1,3 +1,5 @@
+import 'route_verification.dart';
+
 class Offer {
   final double payoutEuro;
   final double distanceKm;
@@ -6,6 +8,7 @@ class Offer {
   final String? pickupAddress;
   final String? dropoffName;
   final String? dropoffAddress;
+  final RouteVerification? routeVerification;
 
   const Offer({
     required this.payoutEuro,
@@ -15,5 +18,6 @@ class Offer {
     this.pickupAddress,
     this.dropoffName,
     this.dropoffAddress,
+    this.routeVerification,
   });
 }

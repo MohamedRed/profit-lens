@@ -9,6 +9,7 @@ import '../presentation/offer_result_screen.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_analysis.dart';
 import 'offer_flow_guard.dart';
+import 'offer_flow_route_verification.dart';
 
 Future<void> handleOfferAnalysis({
   required BuildContext context,
@@ -18,6 +19,7 @@ Future<void> handleOfferAnalysis({
   required AuthUser user,
   required List<VehicleProfile> vehicles,
   required String? selectedVehicleId,
+  required ValueChanged<bool> onLoadingChanged,
 }) async {
   if (!(formKey.currentState?.validate() ?? false)) {
     return;
@@ -38,6 +40,17 @@ Future<void> handleOfferAnalysis({
   if (!ready) {
     return;
   }
+  onLoadingChanged(true);
+  final verification = await verifyOfferRoute(
+    context: context,
+    controller: controller,
+    vehicle: vehicle,
+  );
+  if (verification == null) {
+    onLoadingChanged(false);
+    return;
+  }
+  controller.applyRouteVerification(verification);
   final record = analyzeOffer(
     context: context,
     controller: controller,
@@ -45,6 +58,7 @@ Future<void> handleOfferAnalysis({
     vehicle: vehicle,
   );
   if (record == null) {
+    onLoadingChanged(false);
     return;
   }
   try {
@@ -57,6 +71,7 @@ Future<void> handleOfferAnalysis({
       );
     }
   }
+  onLoadingChanged(false);
   if (!context.mounted) {
     return;
   }

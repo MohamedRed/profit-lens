@@ -286,6 +286,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'This screenshot provides only the restaurant name and the customer address. The pickup address can be left empty.';
 
   @override
+  String get verifiedDistanceLabel => 'Verified distance (km)';
+
+  @override
+  String get verifiedDurationLabel => 'Verified time (minutes)';
+
+  @override
+  String get routeVerificationMissingMessage =>
+      'Select pickup and drop-off from autocomplete to verify the route.';
+
+  @override
+  String get routeVerificationFailedMessage =>
+      'Unable to verify the route distance. Please try again.';
+
+  @override
   String get offerSaveFailedMessage => 'Unable to save offer.';
 
   @override

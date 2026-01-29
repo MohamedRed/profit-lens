@@ -7,6 +7,7 @@ import { findAdemeMatch, LookupEnergy } from "./ademe_matcher";
 import { requestGeminiOffer } from "./gemini_client";
 import { parseGeminiJson } from "./gemini_json";
 import { postprocessOfferExtraction } from "./offer_postprocess";
+export { verifyOfferRoute } from "./verify_offer_route";
 
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const geminiModel = defineString("GEMINI_MODEL", {
@@ -188,6 +189,7 @@ export const lookupVehicleModel = onCall(
   }
 );
 
+
 function parseEnergy(value?: string): LookupEnergy | null {
   if (value == "electric") return "electric";
   if (value == "fuel") return "fuel";
@@ -212,6 +214,7 @@ function isDebugEnabled() {
   }
   return process.env.GEMINI_DEBUG?.toLowerCase() == "true";
 }
+
 
 function logGeminiText(params: {
   text: string;
