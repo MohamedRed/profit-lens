@@ -9,12 +9,15 @@ import '../../../../core/web/google_maps_loader_web.dart';
 import '../../domain/place_selection.dart';
 import 'place_autocomplete_web_dom_helper.dart';
 import 'place_autocomplete_web_place_details.dart';
+import 'place_autocomplete_web_selection_builder.dart';
 import 'place_autocomplete_web_style.dart';
 import 'place_autocomplete_web_utils.dart';
+import 'place_autocomplete_web_value_setter.dart';
 
 class PlaceAutocompleteWebController {
   final DivElement container;
   final String countryCode;
+  final String? placeholder;
   final void Function(PlaceSelection selection) onSelected;
   final ValueChanged<double>? onDropdownHeightChanged;
   final ValueChanged<String>? onInputValueChanged;
@@ -33,6 +36,7 @@ class PlaceAutocompleteWebController {
   PlaceAutocompleteWebController({
     required this.container,
     required this.countryCode,
+    this.placeholder,
     required this.onSelected,
     this.onDropdownHeightChanged,
     this.onInputValueChanged,
@@ -126,96 +130,17 @@ class PlaceAutocompleteWebController {
     autocomplete.addEventListener('focusout', _blurListener);
 
     _selectListener = (event) {
-      final place =
-          extractPlaceFromEvent(event) ?? getJsProperty(autocomplete, 'place');
-      final placeJson = place == null
-          ? null
-          : PlaceAutocompleteWebPlaceDetails.readPlaceJson(place);
-      if (kDebugMode && place != null) {
-        try {
-          final objectCtor = js_util.getProperty(window, 'Object');
-          final keys = js_util.callMethod(objectCtor, 'keys', [place]);
-          // ignore: avoid_print
-          print('PlacesUI place keys: ${js_util.dartify(keys)}');
-        } catch (_) {}
-        if (placeJson != null) {
-          // ignore: avoid_print
-          print('PlacesUI place json: $placeJson');
-        }
-      }
-      final placeId = readJsString(getJsProperty(place, 'id')) ??
-          readJsString(getJsProperty(place, 'placeId')) ??
-          readJsString(placeJson?['id']) ??
-          readJsString(placeJson?['placeId']) ??
-          '';
-      final formattedAddress =
-          readJsString(getJsProperty(place, 'formattedAddress')) ??
-              readJsString(placeJson?['formattedAddress']) ??
-              readJsString(placeJson?['formatted_address']);
-      final displayName =
-          getJsProperty(place, 'displayName') ?? placeJson?['displayName'];
-      String? name;
-      if (displayName != null) {
-        name = readJsString(displayName) ??
-            readJsString(getJsProperty(displayName, 'text'));
-      }
-      name ??= readJsString(getJsProperty(place, 'name')) ??
-          readJsString(placeJson?['name']) ??
-          readJsString(placeJson?['displayName']);
-      final location = getJsProperty(place, 'location');
-      double? lat;
-      double? lng;
-      if (location != null) {
-        try {
-          lat = (js_util.callMethod(location, 'lat', []) as num).toDouble();
-          lng = (js_util.callMethod(location, 'lng', []) as num).toDouble();
-        } catch (_) {
-          lat = null;
-          lng = null;
-        }
-      }
-      if (lat == null || lng == null) {
-        final locationJson = placeJson?['location'];
-        if (locationJson is Map) {
-          final latValue = locationJson['lat'];
-          final lngValue = locationJson['lng'];
-          if (latValue is num) {
-            lat = latValue.toDouble();
-          }
-          if (lngValue is num) {
-            lng = lngValue.toDouble();
-          }
-        }
-      }
-      final eventDisplayValue = readEventDisplayValue(event);
-      if (eventDisplayValue != null) {
-        _lastTypedValue = eventDisplayValue;
-      }
-      final displayValue = formattedAddress ??
-          name ??
-          eventDisplayValue ??
-          _domHelper?.readAutocompleteValue() ??
-          _lastTypedValue;
-      if (kDebugMode) {
-        // ignore: avoid_print
-        print('PlacesUI select event: ${getJsProperty(event, "type")}');
-        // ignore: avoid_print
-        print('PlacesUI detail: ${getJsProperty(event, "detail")}');
-        // ignore: avoid_print
-        print('PlacesUI place: $place');
-        // ignore: avoid_print
-        print('PlacesUI displayValue: $displayValue');
-        // ignore: avoid_print
-        print('PlacesUI inputValue: ${_domHelper?.readAutocompleteValue()}');
-      }
-      final selection = PlaceSelection(
-        placeId: placeId,
-        displayValue: displayValue,
-        name: name,
-        formattedAddress: formattedAddress,
-        latitude: lat,
-        longitude: lng,
+      final result = buildSelectionFromEvent(
+        event: event,
+        autocomplete: autocomplete,
+        domHelper: _domHelper,
+        lastTypedValue: _lastTypedValue,
       );
+      if (result.typedValue != null) {
+        _lastTypedValue = result.typedValue;
+      }
+      final selection = result.selection;
+      final displayValue = result.displayValue;
       onSelected(selection);
       final fallbackValue = displayValue ?? _domHelper?.readAutocompleteValue();
       if (fallbackValue != null && fallbackValue.isNotEmpty) {
@@ -223,11 +148,17 @@ class PlaceAutocompleteWebController {
       }
       if (displayValue != null && displayValue.isNotEmpty) {
         scheduleMicrotask(() {
-          _setAutocompleteValue(autocomplete, displayValue);
+          if (displayValue == _lastDisplayValue) {
+            return;
+          }
+          _lastDisplayValue = displayValue;
+          setAutocompleteElementValue(autocomplete, displayValue);
         });
       }
-      if ((displayValue == null || displayValue.isEmpty) && placeId.isNotEmpty) {
-        PlaceAutocompleteWebPlaceDetails.fetchPlaceDetails(placeId).then((resolved) {
+      if ((displayValue == null || displayValue.isEmpty) &&
+          selection.placeId.isNotEmpty) {
+        PlaceAutocompleteWebPlaceDetails.fetchPlaceDetails(selection.placeId)
+            .then((resolved) {
           if (resolved == null) {
             return;
           }
@@ -236,7 +167,10 @@ class PlaceAutocompleteWebController {
               resolved.name;
           if (resolvedValue != null && resolvedValue.isNotEmpty) {
             onInputValueChanged?.call(resolvedValue);
-            _setAutocompleteValue(autocomplete, resolvedValue);
+            if (resolvedValue != _lastDisplayValue) {
+              _lastDisplayValue = resolvedValue;
+              setAutocompleteElementValue(autocomplete, resolvedValue);
+            }
           }
           onSelected(resolved);
         });
@@ -276,6 +210,9 @@ class PlaceAutocompleteWebController {
       focusListener: _focusListener,
       blurListener: _blurListener,
     );
+    if (placeholder != null) {
+      _domHelper?.setInputPlaceholder(placeholder);
+    }
 
     container.children
       ..clear()
@@ -287,45 +224,10 @@ class PlaceAutocompleteWebController {
         focusListener: _focusListener,
         blurListener: _blurListener,
       );
+      if (placeholder != null) {
+        _domHelper?.setInputPlaceholder(placeholder);
+      }
     });
-  }
-
-  void _setAutocompleteValue(Element element, String value) {
-    if (value == _lastDisplayValue) {
-      return;
-    }
-    _lastDisplayValue = value;
-    try {
-      js_util.setProperty(element, 'value', value);
-    } catch (_) {}
-    try {
-      js_util.setProperty(element, 'inputValue', value);
-    } catch (_) {}
-    try {
-      js_util.setProperty(element, 'query', value);
-    } catch (_) {}
-    try {
-      js_util.callMethod(element, 'setAttribute', ['value', value]);
-    } catch (_) {}
-    _setShadowInputValue(element, value);
-  }
-
-  void _setShadowInputValue(Element element, String value) {
-    try {
-      final shadowRoot = js_util.getProperty(element, 'shadowRoot');
-      if (shadowRoot == null) {
-        return;
-      }
-      final input = js_util.callMethod(shadowRoot, 'querySelector', ['input']);
-      if (input == null) {
-        return;
-      }
-      js_util.setProperty(input, 'value', value);
-      try {
-        js_util.callMethod(input, 'dispatchEvent', [Event('input')]);
-        js_util.callMethod(input, 'dispatchEvent', [Event('change')]);
-      } catch (_) {}
-    } catch (_) {}
   }
 
   String? get lastTypedValue => _lastTypedValue;

@@ -610,6 +610,12 @@ abstract class AppLocalizations {
   /// **'Pickup address'**
   String get pickupAddressLabel;
 
+  /// No description provided for @pickupAddressPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter pickup address'**
+  String get pickupAddressPlaceholder;
+
   /// No description provided for @dropoffNameLabel.
   ///
   /// In en, this message translates to:
@@ -621,6 +627,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Drop-off address'**
   String get dropoffAddressLabel;
+
+  /// No description provided for @dropoffAddressPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter drop-off address'**
+  String get dropoffAddressPlaceholder;
 
   /// No description provided for @pickupAddressMissingHint.
   ///

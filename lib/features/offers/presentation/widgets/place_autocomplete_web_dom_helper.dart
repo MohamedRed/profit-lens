@@ -16,6 +16,7 @@ class PlaceAutocompleteDomHelper {
   EventListener? _inputListener;
   EventListener? _focusListener;
   EventListener? _blurListener;
+  String? _inputPlaceholder;
 
   PlaceAutocompleteDomHelper({
     required this.container,
@@ -36,6 +37,11 @@ class PlaceAutocompleteDomHelper {
     _raiseHostZIndex();
     _attachListObserver();
     _syncInputElement();
+  }
+
+  void setInputPlaceholder(String? placeholder) {
+    _inputPlaceholder = placeholder;
+    _applyPlaceholder();
   }
 
   void dispose() {
@@ -138,7 +144,19 @@ class PlaceAutocompleteDomHelper {
         _inputElement!.addEventListener('blur', _blurListener);
         _inputElement!.addEventListener('focusout', _blurListener);
       }
+      _applyPlaceholder();
     }
+  }
+
+  void _applyPlaceholder() {
+    if (_inputElement == null) {
+      return;
+    }
+    final placeholder = _inputPlaceholder;
+    if (placeholder == null) {
+      return;
+    }
+    _inputElement!.placeholder = placeholder;
   }
 
   void _attachListClickListener() {

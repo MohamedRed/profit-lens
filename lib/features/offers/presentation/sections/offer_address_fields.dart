@@ -49,6 +49,7 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
             key: OfferFlowKeys.pickupAddressField,
             controller: widget.pickupAddressController,
             label: l10n.pickupAddressLabel,
+            placeholder: l10n.pickupAddressPlaceholder,
             onSelected: widget.onPickupSelected,
             onDropdownOpenChanged: (isOpen) {
               if (mounted) {
@@ -107,6 +108,7 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
             key: OfferFlowKeys.dropoffAddressField,
             controller: widget.dropoffAddressController,
             label: l10n.dropoffAddressLabel,
+            placeholder: l10n.dropoffAddressPlaceholder,
             onSelected: widget.onDropoffSelected,
             onDropdownOpenChanged: (isOpen) {
               if (mounted) {

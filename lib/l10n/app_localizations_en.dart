@@ -270,10 +270,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickupAddressLabel => 'Pickup address';
 
   @override
+  String get pickupAddressPlaceholder => 'Enter pickup address';
+
+  @override
   String get dropoffNameLabel => 'Drop-off name (optional)';
 
   @override
   String get dropoffAddressLabel => 'Drop-off address';
+
+  @override
+  String get dropoffAddressPlaceholder => 'Enter drop-off address';
 
   @override
   String get pickupAddressMissingHint =>

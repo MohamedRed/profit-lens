@@ -13,6 +13,7 @@ typedef PlaceSelectionCallback = void Function(PlaceSelection selection);
 class PlaceAutocompleteField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
+  final String? placeholder;
   final PlaceSelectionCallback? onSelected;
   final ValueChanged<bool>? onDropdownOpenChanged;
   final String countryCode;
@@ -20,6 +21,7 @@ class PlaceAutocompleteField extends StatefulWidget {
     super.key,
     required this.controller,
     required this.label,
+    this.placeholder,
     this.onSelected,
     this.onDropdownOpenChanged,
     this.countryCode = 'fr',
@@ -52,6 +54,7 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
     _webController = PlaceAutocompleteWebController(
       container: _container,
       countryCode: widget.countryCode,
+      placeholder: widget.placeholder ?? widget.label,
       onSelected: _handleSelection,
       onInputValueChanged: _handleInputValueChanged,
       onDropdownOpenChanged: _handleDropdownOpenChanged,
