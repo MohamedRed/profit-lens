@@ -51,11 +51,34 @@ export const extractOfferFromImage = onCall(
       mimeType: payload.mimeType,
     });
     if (debugEnabled) {
-      logger.info("Gemini raw response", {
-        model,
-        mimeType: payload.mimeType,
-        geminiText: text,
-      });
+      const maxChunk = 2000;
+      const totalLength = text.length;
+      const chunks = Math.ceil(totalLength / maxChunk);
+      const maxLoggedChunks = 5;
+      const toLog = Math.min(chunks, maxLoggedChunks);
+      for (let i = 0; i < toLog; i += 1) {
+        const start = i * maxChunk;
+        const end = Math.min(start + maxChunk, totalLength);
+        const slice = text.slice(start, end);
+        const payload = {
+          model,
+          mimeType: payload.mimeType,
+          chunkIndex: i + 1,
+          chunkTotal: chunks,
+          geminiTextLength: totalLength,
+          geminiTextChunk: slice,
+        };
+        logger.info("Gemini raw response chunk", payload);
+        console.log("Gemini raw response chunk", JSON.stringify(payload));
+      }
+      if (chunks > maxLoggedChunks) {
+        logger.warn("Gemini raw response truncated", {
+          model,
+          mimeType: payload.mimeType,
+          geminiTextLength: totalLength,
+          loggedChunks: maxLoggedChunks,
+        });
+      }
     }
 
     try {
