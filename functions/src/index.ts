@@ -40,11 +40,22 @@ export const extractOfferFromImage = onCall(
 
     const model = geminiModel.value();
     const debugEnabled = isDebugEnabled();
+    const debugEnv = process.env.GEMINI_DEBUG ?? "undefined";
     logger.info("Gemini debug mode", {
       debugEnabled,
+      debugEnv,
       model,
       mimeType: payload.mimeType,
     });
+    console.error(
+      "Gemini debug mode",
+      JSON.stringify({
+        debugEnabled,
+        debugEnv,
+        model,
+        mimeType: payload.mimeType,
+      })
+    );
     const debugAllowed = debugRequested && debugEnabled;
     const text = await requestGeminiOffer({
       apiKey,
@@ -71,7 +82,7 @@ export const extractOfferFromImage = onCall(
           geminiTextChunk: slice,
         };
         logger.info("Gemini raw response chunk", payload);
-        console.log("Gemini raw response chunk", JSON.stringify(payload));
+        console.error("Gemini raw response chunk", JSON.stringify(payload));
       }
       if (chunks > maxLoggedChunks) {
         logger.warn("Gemini raw response truncated", {
