@@ -9,7 +9,7 @@ import '../l10n/app_localizations.dart';
 class ProfitLensApp extends StatelessWidget {
   final AppServices services;
 
-  const ProfitLensApp({
+  ProfitLensApp({
     super.key,
     AppServices? services,
   }) : services = services ?? AppServices();
