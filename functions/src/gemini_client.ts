@@ -64,7 +64,7 @@ export async function requestGeminiOffer(
         ],
         generationConfig: {
           temperature: 0.2,
-          maxOutputTokens: 512,
+          maxOutputTokens: 1024,
           responseMimeType: "application/json",
           responseJsonSchema: offerExtractionSchema,
         },
@@ -83,9 +83,26 @@ export async function requestGeminiOffer(
   const body = (await response.json()) as {
     candidates?: Array<{
       content?: { parts?: Array<{ text?: string }> };
+      finishReason?: string;
+      safetyRatings?: Array<{ category?: string; probability?: string }>;
     }>;
     promptFeedback?: { blockReason?: string };
   };
+  const debugEnabled =
+    process.env.FUNCTIONS_EMULATOR === "true" ||
+    process.env.GEMINI_DEBUG?.toLowerCase() === "true";
+  if (debugEnabled) {
+    const candidate = body.candidates?.[0];
+    const meta = {
+      model: request.model,
+      candidateCount: body.candidates?.length ?? 0,
+      finishReason: candidate?.finishReason ?? null,
+      safetyRatings: candidate?.safetyRatings ?? null,
+      blockReason: body.promptFeedback?.blockReason ?? null,
+    };
+    logger.info("Gemini response metadata", meta);
+    console.error("Gemini response metadata", JSON.stringify(meta));
+  }
 
   const text =
     body.candidates?.[0]?.content?.parts
