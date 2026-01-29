@@ -64,7 +64,7 @@ export async function requestGeminiOffer(
         ],
         generationConfig: {
           temperature: 0.2,
-          maxOutputTokens: 1024,
+          maxOutputTokens: 2048,
           responseMimeType: "application/json",
           responseJsonSchema: offerExtractionSchema,
         },
