@@ -57,76 +57,102 @@ export const extractOfferFromImage = onCall(
       })
     );
     const debugAllowed = debugRequested && debugEnabled;
-    const text = await requestGeminiOffer({
+    let text = await requestGeminiOffer({
       apiKey,
       model,
       imageBase64: payload.imageBase64,
       mimeType: payload.mimeType,
     });
     if (debugEnabled) {
-      const maxChunk = 2000;
-      const totalLength = text.length;
-      const chunks = Math.ceil(totalLength / maxChunk);
-      const maxLoggedChunks = 5;
-      const toLog = Math.min(chunks, maxLoggedChunks);
-      for (let i = 0; i < toLog; i += 1) {
-        const start = i * maxChunk;
-        const end = Math.min(start + maxChunk, totalLength);
-        const slice = text.slice(start, end);
-        const logPayload = {
-          model,
-          mimeType: payload.mimeType,
-          chunkIndex: i + 1,
-          chunkTotal: chunks,
-          geminiTextLength: totalLength,
-          geminiTextChunk: slice,
-        };
-        logger.info("Gemini raw response chunk", logPayload);
-        console.error("Gemini raw response chunk", JSON.stringify(logPayload));
-      }
-      if (chunks > maxLoggedChunks) {
-        logger.warn("Gemini raw response truncated", {
-          model,
-          mimeType: payload.mimeType,
-          geminiTextLength: totalLength,
-          loggedChunks: maxLoggedChunks,
-        });
-      }
-    }
-
-    try {
-      const parsed = parseGeminiJson(text);
-      const response = postprocessOfferExtraction(parsed);
-      if (debugAllowed) {
-        return {
-          ...response,
-          debug: {
-            geminiText: text,
-          },
-        };
-      }
-      return response;
-    } catch (error) {
-      const diagnostics: Record<string, unknown> = {
-        ...buildGeminiDiagnostics(text),
+      logGeminiText({
+        text,
         model,
         mimeType: payload.mimeType,
+        attempt: 1,
+      });
+    }
+
+    let parsed: any;
+    try {
+      parsed = parseGeminiJson(text);
+    } catch (error) {
+      const firstDiagnostics = buildGeminiDiagnostics(text);
+      const shouldRetry =
+        firstDiagnostics.startsWithBrace && firstDiagnostics.lastBraceIndex < 0;
+      let finalError: unknown = error;
+      let finalText = text;
+      if (shouldRetry) {
+        logger.warn("Gemini JSON incomplete, retrying", {
+          model,
+          mimeType: payload.mimeType,
+          textLength: firstDiagnostics.textLength,
+        });
+        let retryText = "";
+        try {
+          retryText = await requestGeminiOffer({
+            apiKey,
+            model,
+            imageBase64: payload.imageBase64,
+            mimeType: payload.mimeType,
+          });
+          if (debugEnabled) {
+            logGeminiText({
+              text: retryText,
+              model,
+              mimeType: payload.mimeType,
+              attempt: 2,
+            });
+          }
+          parsed = parseGeminiJson(retryText);
+          const response = postprocessOfferExtraction(parsed);
+          if (debugAllowed) {
+            return {
+              ...response,
+              debug: {
+                geminiText: retryText,
+              },
+            };
+          }
+          return response;
+        } catch (retryError) {
+          finalError = retryError;
+          if (retryText) {
+            finalText = retryText;
+          }
+        }
+      }
+
+      const diagnostics: Record<string, unknown> = {
+        ...buildGeminiDiagnostics(finalText),
+        model,
+        mimeType: payload.mimeType,
+        retryAttempted: shouldRetry,
       };
       if (debugAllowed) {
-        diagnostics.rawGeminiText = text;
+        diagnostics.rawGeminiText = finalText;
       }
       logger.error("Gemini JSON parse failed", diagnostics);
       console.error("Gemini JSON parse failed", JSON.stringify(diagnostics));
       if (debugAllowed) {
-        const code = error instanceof HttpsError ? error.code : "internal";
+        const code = finalError instanceof HttpsError ? finalError.code : "internal";
         const message =
-          error instanceof HttpsError
-            ? error.message
+          finalError instanceof HttpsError
+            ? finalError.message
             : "Gemini JSON parse failed.";
-        throw new HttpsError(code, message, { rawGeminiText: text });
+        throw new HttpsError(code, message, { rawGeminiText: finalText });
       }
-      throw error;
+      throw finalError;
     }
+    const response = postprocessOfferExtraction(parsed);
+    if (debugAllowed) {
+      return {
+        ...response,
+        debug: {
+          geminiText: text,
+        },
+      };
+    }
+    return response;
   }
 );
 
@@ -185,4 +211,42 @@ function isDebugEnabled() {
     return true;
   }
   return process.env.GEMINI_DEBUG?.toLowerCase() == "true";
+}
+
+function logGeminiText(params: {
+  text: string;
+  model: string;
+  mimeType: string;
+  attempt: number;
+}) {
+  const maxChunk = 2000;
+  const totalLength = params.text.length;
+  const chunks = Math.ceil(totalLength / maxChunk);
+  const maxLoggedChunks = 5;
+  const toLog = Math.min(chunks, maxLoggedChunks);
+  for (let i = 0; i < toLog; i += 1) {
+    const start = i * maxChunk;
+    const end = Math.min(start + maxChunk, totalLength);
+    const slice = params.text.slice(start, end);
+    const logPayload = {
+      model: params.model,
+      mimeType: params.mimeType,
+      attempt: params.attempt,
+      chunkIndex: i + 1,
+      chunkTotal: chunks,
+      geminiTextLength: totalLength,
+      geminiTextChunk: slice,
+    };
+    logger.info("Gemini raw response chunk", logPayload);
+    console.error("Gemini raw response chunk", JSON.stringify(logPayload));
+  }
+  if (chunks > maxLoggedChunks) {
+    logger.warn("Gemini raw response truncated", {
+      model: params.model,
+      mimeType: params.mimeType,
+      attempt: params.attempt,
+      geminiTextLength: totalLength,
+      loggedChunks: maxLoggedChunks,
+    });
+  }
 }
