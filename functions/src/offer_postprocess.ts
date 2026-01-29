@@ -9,7 +9,7 @@ type OfferPayload = {
 };
 
 const ADDRESS_LINE_REGEX =
-  /(\b\d{1,5}\b[^\n]*\b(?:rue|avenue|av\.?|boulevard|bd\.?|place|chemin|route|allee|allée|impasse|quai|cours|square|voie|sentier|parvis|passage|esplanade)\b[^\n]*\b\d{5}\b[^\n]*)/i;
+  /(\b\d{1,5}\b[^,\n]*\b(?:rue|avenue|av\.?|boulevard|bd\.?|place|chemin|route|allee|allée|impasse|quai|cours|square|voie|sentier|parvis|passage|esplanade)\b[^,\n]*\b\d{5}\b[^,\n]*)/i;
 
 const POSTAL_CODE_REGEX = /\b\d{5}\b/;
 
@@ -78,9 +78,7 @@ function looksLikeStreet(line: string) {
     lower.includes(" avenue ") ||
     lower.startsWith("avenue ") ||
     lower.includes(" av ") ||
-    lower.includes(" av.") ||
     lower.startsWith("av ") ||
-    lower.startsWith("av.") ||
     lower.includes(" boulevard ") ||
     lower.startsWith("boulevard ") ||
     lower.includes(" bd ") ||

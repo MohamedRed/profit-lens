@@ -1,5 +1,5 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { logger } from "firebase-functions/logger";
+import * as logger from "firebase-functions/logger";
 import { defineSecret, defineString } from "firebase-functions/params";
 import { loadAdemeRecords } from "./ademe_dataset";
 import { selectConsumption } from "./ademe_consumption";
@@ -73,7 +73,7 @@ export const extractOfferFromImage = onCall(
         const start = i * maxChunk;
         const end = Math.min(start + maxChunk, totalLength);
         const slice = text.slice(start, end);
-        const payload = {
+        const logPayload = {
           model,
           mimeType: payload.mimeType,
           chunkIndex: i + 1,
@@ -81,8 +81,8 @@ export const extractOfferFromImage = onCall(
           geminiTextLength: totalLength,
           geminiTextChunk: slice,
         };
-        logger.info("Gemini raw response chunk", payload);
-        console.error("Gemini raw response chunk", JSON.stringify(payload));
+        logger.info("Gemini raw response chunk", logPayload);
+        console.error("Gemini raw response chunk", JSON.stringify(logPayload));
       }
       if (chunks > maxLoggedChunks) {
         logger.warn("Gemini raw response truncated", {
@@ -107,7 +107,7 @@ export const extractOfferFromImage = onCall(
       }
       return response;
     } catch (error) {
-      const diagnostics = {
+      const diagnostics: Record<string, unknown> = {
         ...buildGeminiDiagnostics(text),
         model,
         mimeType: payload.mimeType,

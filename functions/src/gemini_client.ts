@@ -1,5 +1,5 @@
 import { HttpsError } from "firebase-functions/v2/https";
-import { logger } from "firebase-functions/logger";
+import * as logger from "firebase-functions/logger";
 import { offerExtractionPrompt } from "./gemini_prompt";
 
 type GeminiRequest = {
