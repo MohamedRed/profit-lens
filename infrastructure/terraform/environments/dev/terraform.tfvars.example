@@ -1,0 +1,12 @@
+project_id = "your-gcp-project-id"
+region     = "us-central1"
+
+# Optional overrides
+# environment_name    = "dev"
+# network_name        = "profit-lens-dev"
+# subnet_cidr_range   = "10.60.0.0/24"
+# runner_repo         = "MohamedRed/profit-lens"
+# runner_zone         = "us-central1-b"
+# runner_machine_type = "e2-standard-4"
+# runner_version      = "2.316.1"
+# runner_extra_labels = ["profit-lens-dev"]
