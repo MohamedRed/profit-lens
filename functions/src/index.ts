@@ -12,9 +12,6 @@ const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const geminiModel = defineString("GEMINI_MODEL", {
   default: "gemini-3-flash-preview",
 });
-const geminiDebug = defineString("GEMINI_DEBUG", {
-  default: "false",
-});
 
 export const extractOfferFromImage = onCall(
   {
@@ -43,6 +40,11 @@ export const extractOfferFromImage = onCall(
 
     const model = geminiModel.value();
     const debugEnabled = isDebugEnabled();
+    logger.info("Gemini debug mode", {
+      debugEnabled,
+      model,
+      mimeType: payload.mimeType,
+    });
     const debugAllowed = debugRequested && debugEnabled;
     const text = await requestGeminiOffer({
       apiKey,
@@ -171,5 +173,5 @@ function isDebugEnabled() {
   if (process.env.FUNCTIONS_EMULATOR === "true") {
     return true;
   }
-  return geminiDebug.value().toLowerCase() == "true";
+  return process.env.GEMINI_DEBUG?.toLowerCase() == "true";
 }
