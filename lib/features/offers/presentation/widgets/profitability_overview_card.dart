@@ -49,6 +49,18 @@ class ProfitabilityOverviewCard extends StatelessWidget {
               l10n.grossRevenueLabel,
               CurrencyFormat.euro(record.offer.payoutEuro, localeTag),
             ),
+            if (record.offer.routeVerification != null) ...[
+              _row(
+                l10n.verifiedDistanceLabel,
+                record.offer.routeVerification!.distanceKm
+                    .toStringAsFixed(1),
+              ),
+              _row(
+                l10n.verifiedDurationLabel,
+                record.offer.routeVerification!.durationMinutes
+                    .toStringAsFixed(0),
+              ),
+            ],
             _row(
               l10n.totalCostsLabel,
               CurrencyFormat.euro(record.breakdown.totalCosts, localeTag),
