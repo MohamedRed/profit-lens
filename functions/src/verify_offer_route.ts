@@ -1,7 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
-import { geocodeAddress } from "./geocoding_api";
-import { computeRoute, RouteLocationInput, RouteTravelMode } from "./routes_api";
+import { RouteLocationInput, RouteTravelMode } from "./routes_api";
+import { verifyRoute } from "./route_verification";
 
 const routesApiKey = defineSecret("ROUTES_API_KEY");
 const geocodingApiKey = defineSecret("GEOCODING_API_KEY");
@@ -36,27 +36,13 @@ export const verifyOfferRoute = onCall(
         "ROUTES_API_KEY is not set."
       );
     }
-    const resolvedOrigin = await resolveLocation(
+    return verifyRoute({
+      routesApiKey: apiKey,
+      geocodingApiKey: geocodingApiKey.value(),
       origin,
-      geocodingApiKey.value()
-    );
-    const resolvedDestination = await resolveLocation(
       destination,
-      geocodingApiKey.value()
-    );
-    const route = await computeRoute({
-      apiKey,
-      origin: resolvedOrigin,
-      destination: resolvedDestination,
       travelMode,
     });
-    return {
-      distanceKm: route.distanceMeters / 1000,
-      durationMinutes: route.durationSeconds / 60,
-      provider: "google_routes",
-      travelMode,
-      verifiedAt: new Date().toISOString(),
-    };
   }
 );
 
@@ -67,25 +53,4 @@ function isTravelMode(value: string): value is RouteTravelMode {
     value === "TWO_WHEELER" ||
     value === "WALK"
   );
-}
-
-async function resolveLocation(
-  input: RouteLocationInput,
-  geocodingKey?: string
-): Promise<RouteLocationInput> {
-  if (input.placeId || input.latLng) {
-    return input;
-  }
-  const address = input.address?.trim();
-  if (!address) {
-    throw new HttpsError("invalid-argument", "Missing route location.");
-  }
-  if (!geocodingKey) {
-    throw new HttpsError(
-      "failed-precondition",
-      "GEOCODING_API_KEY is not set."
-    );
-  }
-  const coords = await geocodeAddress({ apiKey: geocodingKey, address });
-  return { latLng: coords };
 }

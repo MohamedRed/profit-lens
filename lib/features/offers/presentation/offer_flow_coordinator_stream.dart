@@ -8,7 +8,6 @@ import '../domain/place_selection.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_callbacks.dart';
 import 'offer_flow_coordinator_view.dart';
-import 'offer_flow_preview_builder.dart';
 import 'offer_flow_vehicle_selection.dart';
 
 class OfferFlowCoordinatorStream extends StatelessWidget {
@@ -66,13 +65,7 @@ class OfferFlowCoordinatorStream extends StatelessWidget {
           onLoadingChanged: onLoadingChanged,
           onUpdated: onUpdated,
         );
-        final previewRecord = buildOfferPreview(
-          context: context,
-          controller: controller,
-          profile: profile,
-          vehicles: vehicles,
-          selectedVehicleId: resolvedVehicleId,
-        );
+        final previewRecord = controller.analysisRecord;
         return OfferFlowCoordinatorView(
           user: user,
           formKey: formKey,

@@ -10,6 +10,7 @@ import 'sections/offer_details_section.dart';
 import 'sections/vehicle_picker_section.dart';
 import 'widgets/profitability_overview_card.dart';
 import 'offer_flow_keys.dart';
+import 'offer_analysis_status.dart';
 
 class OfferFlowForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -51,14 +52,14 @@ class OfferFlowForm extends StatelessWidget {
     return Form(
       key: formKey,
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         children: [
           VehiclePickerSection(
             vehicles: vehicles,
             selectedVehicleId: selectedVehicleId,
             onChanged: onVehicleChanged,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           OfferDetailsSection(
             controller: controller,
             requiresDuration: requiresDuration,
@@ -66,14 +67,15 @@ class OfferFlowForm extends StatelessWidget {
             onPickupSelected: onPickupSelected,
             onDropoffSelected: onDropoffSelected,
           ),
-          if (previewRecord != null) ...[
-            const SizedBox(height: 12),
+          if (previewRecord != null &&
+              controller.analysisStatus == OfferAnalysisStatus.completed) ...[
+            const SizedBox(height: 16),
             ProfitabilityOverviewCard(
               record: previewRecord!,
               onViewDetails: onViewDetails,
             ),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           PrimaryButton(
             key: OfferFlowKeys.importScreenshotButton,
             label: isLoading ? l10n.loadingLabel : l10n.importScreenshotButton,

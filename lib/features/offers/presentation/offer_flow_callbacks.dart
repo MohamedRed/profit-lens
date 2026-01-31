@@ -8,6 +8,8 @@ import '../../vehicles/domain/vehicle_profile.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_actions.dart';
 import 'offer_flow_import.dart';
+import 'offer_analysis_status.dart';
+import 'offer_result_screen.dart';
 
 class OfferFlowCallbacks {
   final VoidCallback onImportScreenshot;
@@ -40,7 +42,6 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
       source: ImageSource.gallery,
       picker: AppScope.of(context).offerImagePickerService,
       controller: controller,
-      profile: profile,
       vehicles: vehicles,
       selectedVehicleId: selectedVehicleId,
       onLoadingChanged: onLoadingChanged,
@@ -51,22 +52,37 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
       source: ImageSource.camera,
       picker: AppScope.of(context).offerImagePickerService,
       controller: controller,
-      profile: profile,
       vehicles: vehicles,
       selectedVehicleId: selectedVehicleId,
       onLoadingChanged: onLoadingChanged,
       onUpdated: onUpdated,
     ),
-    onViewDetails: () async => handleOfferAnalysis(
-      context: context,
-      formKey: formKey,
-      controller: controller,
-      profile: profile,
-      user: user,
-      vehicles: vehicles,
-      selectedVehicleId: selectedVehicleId,
-      onLoadingChanged: onLoadingChanged,
-    ),
+    onViewDetails: () async {
+      final record = controller.analysisRecord;
+      if (record != null &&
+          controller.analysisStatus == OfferAnalysisStatus.completed) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => OfferResultScreen(
+              user: user,
+              record: record,
+            ),
+          ),
+        );
+        return;
+      }
+      await handleOfferAnalysis(
+        context: context,
+        formKey: formKey,
+        controller: controller,
+        profile: profile,
+        user: user,
+        vehicles: vehicles,
+        selectedVehicleId: selectedVehicleId,
+        onLoadingChanged: onLoadingChanged,
+        onUpdated: onUpdated,
+      );
+    },
     onSignOut: () => AppScope.of(context).authRepository.signOut(),
   );
 }

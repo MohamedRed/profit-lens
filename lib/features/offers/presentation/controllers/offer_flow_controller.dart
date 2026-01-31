@@ -4,6 +4,7 @@ import '../../../../core/utils/number_parsing.dart';
 import '../../domain/offer.dart';
 import '../../domain/offer_extraction_metadata.dart';
 import '../../domain/offer_extraction_result.dart';
+import '../../domain/offer_record.dart';
 import '../../domain/offer_source.dart';
 import '../../domain/place_selection.dart';
 import '../../domain/route_verification.dart';
@@ -23,6 +24,7 @@ class OfferFlowController {
   PlaceSelection? pickupSelection;
   PlaceSelection? dropoffSelection;
   RouteVerification? routeVerification;
+  OfferRecord? analysisRecord;
   OfferAnalysisStatus analysisStatus = OfferAnalysisStatus.idle;
   String? analysisErrorMessage;
 
@@ -54,11 +56,13 @@ class OfferFlowController {
     pickupSelection = null;
     dropoffSelection = null;
     routeVerification = null;
+    analysisRecord = null;
   }
 
   void applyPickupSelection(PlaceSelection selection) {
     pickupSelection = selection;
     routeVerification = null;
+    analysisRecord = null;
     if (selection.formattedAddress != null &&
         selection.formattedAddress!.isNotEmpty) {
       pickupAddressController.text = selection.formattedAddress!;
@@ -71,6 +75,7 @@ class OfferFlowController {
   void applyDropoffSelection(PlaceSelection selection) {
     dropoffSelection = selection;
     routeVerification = null;
+    analysisRecord = null;
     if (selection.formattedAddress != null &&
         selection.formattedAddress!.isNotEmpty) {
       dropoffAddressController.text = selection.formattedAddress!;
@@ -111,6 +116,10 @@ class OfferFlowController {
     routeVerification = verification;
   }
 
+  void applyAnalysisRecord(OfferRecord record) {
+    analysisRecord = record;
+  }
+
   void setAnalysisStatus(
     OfferAnalysisStatus status, {
     String? errorMessage,
@@ -119,11 +128,19 @@ class OfferFlowController {
     analysisErrorMessage = errorMessage;
   }
 
+  void clearAnalysis() {
+    analysisStatus = OfferAnalysisStatus.idle;
+    analysisErrorMessage = null;
+    analysisRecord = null;
+    routeVerification = null;
+  }
+
   void resetAnalysisIfNeeded() {
     if (analysisStatus == OfferAnalysisStatus.completed ||
         analysisStatus == OfferAnalysisStatus.failed) {
       analysisStatus = OfferAnalysisStatus.idle;
       analysisErrorMessage = null;
+      analysisRecord = null;
     }
   }
 }

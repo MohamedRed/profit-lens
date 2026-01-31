@@ -5,11 +5,12 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../../profile/domain/user_profile.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
+import '../domain/offer_record.dart';
 import '../presentation/offer_result_screen.dart';
 import 'controllers/offer_flow_controller.dart';
-import 'offer_flow_analysis.dart';
 import 'offer_flow_guard.dart';
 import 'offer_flow_route_verification.dart';
+import 'offer_analysis_status.dart';
 
 Future<void> handleOfferAnalysis({
   required BuildContext context,
@@ -20,10 +21,12 @@ Future<void> handleOfferAnalysis({
   required List<VehicleProfile> vehicles,
   required String? selectedVehicleId,
   required ValueChanged<bool> onLoadingChanged,
+  required VoidCallback onUpdated,
 }) async {
   if (!(formKey.currentState?.validate() ?? false)) {
     return;
   }
+  final l10n = AppLocalizations.of(context)!;
   final vehicle = vehicles.firstWhere(
     (item) => item.id == selectedVehicleId,
     orElse: () => vehicles.first,
@@ -40,6 +43,9 @@ Future<void> handleOfferAnalysis({
   if (!ready) {
     return;
   }
+  controller.clearAnalysis();
+  controller.setAnalysisStatus(OfferAnalysisStatus.verifyingRoute);
+  onUpdated();
   onLoadingChanged(true);
   final verification = await verifyOfferRoute(
     context: context,
@@ -48,30 +54,48 @@ Future<void> handleOfferAnalysis({
   );
   if (verification == null) {
     onLoadingChanged(false);
+    onUpdated();
+    return;
+  }
+  if (!context.mounted) {
     return;
   }
   controller.applyRouteVerification(verification);
-  final record = analyzeOffer(
-    context: context,
-    controller: controller,
-    profile: profile,
-    vehicle: vehicle,
-  );
-  if (record == null) {
+  controller.setAnalysisStatus(OfferAnalysisStatus.calculatingProfit);
+  onUpdated();
+  final offer = controller.buildOffer();
+  if (offer == null) {
     onLoadingChanged(false);
+    onUpdated();
     return;
   }
+  OfferRecord? record;
   try {
-    await AppScope.of(context).offerRepository.saveOffer(user.uid, record);
+    record = await AppScope.of(context).offerAnalysisService.analyzeOffer(
+      offer: offer,
+      routeVerification: verification,
+      vehicleId: vehicle.id,
+      source: controller.source,
+      extraction: controller.extraction,
+    );
+    controller.applyAnalysisRecord(record);
+    controller.setAnalysisStatus(OfferAnalysisStatus.completed);
   } catch (_) {
     if (context.mounted) {
-      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.offerSaveFailedMessage)),
       );
     }
+    controller.setAnalysisStatus(
+      OfferAnalysisStatus.failed,
+      errorMessage: l10n.analysisFailedBody,
+    );
+    onLoadingChanged(false);
+    onUpdated();
+    return;
   }
   onLoadingChanged(false);
+  onUpdated();
   if (!context.mounted) {
     return;
   }
@@ -79,7 +103,7 @@ Future<void> handleOfferAnalysis({
     MaterialPageRoute(
       builder: (context) => OfferResultScreen(
         user: user,
-        record: record,
+        record: record!,
       ),
     ),
   );

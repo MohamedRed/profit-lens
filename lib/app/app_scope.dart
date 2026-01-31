@@ -4,6 +4,8 @@ import '../features/auth/data/firebase_auth_repository.dart';
 import '../features/auth/domain/auth_repository.dart';
 import '../features/offers/data/firestore_offer_repository.dart';
 import '../features/offers/data/gemini_offer_ingestion_service.dart';
+import '../features/offers/data/offer_analysis_service.dart';
+import '../features/offers/data/firebase_offer_analysis_service.dart';
 import '../features/offers/data/offer_image_picker_service.dart';
 import '../features/offers/data/offer_ingestion_service.dart';
 import '../features/offers/data/offer_repository.dart';
@@ -24,6 +26,7 @@ class AppServices {
   final OfferRepository offerRepository;
   final OfferImagePickerService offerImagePickerService;
   final OfferIngestionService offerIngestionService;
+  final OfferAnalysisService offerAnalysisService;
   final RouteVerificationService routeVerificationService;
   final ProfitabilityEngine profitabilityEngine;
   final VehicleModelLookupService vehicleModelLookupService;
@@ -35,6 +38,7 @@ class AppServices {
     OfferRepository? offerRepository,
     OfferImagePickerService? offerImagePickerService,
     OfferIngestionService? offerIngestionService,
+    OfferAnalysisService? offerAnalysisService,
     RouteVerificationService? routeVerificationService,
     ProfitabilityEngine? profitabilityEngine,
     VehicleModelLookupService? vehicleModelLookupService,
@@ -47,6 +51,8 @@ class AppServices {
             offerImagePickerService ?? DeviceOfferImagePickerService(),
         offerIngestionService =
             offerIngestionService ?? GeminiOfferIngestionService(),
+        offerAnalysisService =
+            offerAnalysisService ?? FirebaseOfferAnalysisService(),
         routeVerificationService = routeVerificationService ??
             FirebaseRouteVerificationService(),
         profitabilityEngine = profitabilityEngine ?? ProfitabilityEngine(),
