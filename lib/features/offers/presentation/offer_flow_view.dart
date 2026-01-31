@@ -49,7 +49,8 @@ class OfferFlowView extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.offerTabLabel),
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),

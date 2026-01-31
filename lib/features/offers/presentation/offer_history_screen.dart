@@ -32,54 +32,56 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
       builder: (context, snapshot) {
         final offers = snapshot.data ?? [];
         return Scaffold(
-          appBar: AppBar(title: Text(l10n.historyTabLabel)),
-          body: offers.isEmpty
-              ? Center(child: Text(l10n.noHistoryMessage))
-              : Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: SegmentedButton<HistoryViewMode>(
-                        segments: [
-                          ButtonSegment(
-                            value: HistoryViewMode.list,
-                            label: Text(l10n.historyViewListLabel),
-                            icon: const Icon(Icons.list),
-                          ),
-                          ButtonSegment(
-                            value: HistoryViewMode.charts,
-                            label: Text(l10n.historyViewChartsLabel),
-                            icon: const Icon(Icons.show_chart),
-                          ),
-                        ],
-                        selected: {_viewMode},
-                        onSelectionChanged: (selection) {
-                          setState(() => _viewMode = selection.first);
-                        },
+          body: SafeArea(
+            child: offers.isEmpty
+                ? Center(child: Text(l10n.noHistoryMessage))
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
+                        child: SegmentedButton<HistoryViewMode>(
+                          segments: [
+                            ButtonSegment(
+                              value: HistoryViewMode.list,
+                              label: Text(l10n.historyViewListLabel),
+                              icon: const Icon(Icons.list),
+                            ),
+                            ButtonSegment(
+                              value: HistoryViewMode.charts,
+                              label: Text(l10n.historyViewChartsLabel),
+                              icon: const Icon(Icons.show_chart),
+                            ),
+                          ],
+                          selected: {_viewMode},
+                          onSelectionChanged: (selection) {
+                            setState(() => _viewMode = selection.first);
+                          },
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        child: _viewMode == HistoryViewMode.list
-                            ? OfferHistoryList(
-                                offers: offers,
-                                onSelected: (offer) {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          OfferHistoryDetailScreen(
-                                        record: offer,
+                      Expanded(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 250),
+                          child: _viewMode == HistoryViewMode.list
+                              ? OfferHistoryList(
+                                  offers: offers,
+                                  onSelected: (offer) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OfferHistoryDetailScreen(
+                                          record: offer,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              )
-                            : OfferHistoryCharts(offers: offers),
+                                    );
+                                  },
+                                )
+                              : OfferHistoryCharts(offers: offers),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+          ),
         );
       },
     );
