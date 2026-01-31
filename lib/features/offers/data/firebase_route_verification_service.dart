@@ -47,8 +47,8 @@ class FirebaseRouteVerificationService implements RouteVerificationService {
   }
 
   Map<String, dynamic> _encodeLocation(PlaceSelection selection) {
-    final placeId = selection.placeId?.trim();
-    if (placeId != null && placeId.isNotEmpty) {
+    final placeId = selection.placeId.trim();
+    if (placeId.isNotEmpty) {
       return {'placeId': placeId};
     }
     final lat = selection.latitude;
@@ -58,7 +58,13 @@ class FirebaseRouteVerificationService implements RouteVerificationService {
         'latLng': {'lat': lat, 'lng': lng}
       };
     }
-    throw StateError('Missing placeId/latLng for route verification.');
+    final address = _readString(selection.formattedAddress) ??
+        _readString(selection.displayValue) ??
+        _readString(selection.name);
+    if (address != null) {
+      return {'address': address};
+    }
+    throw StateError('Missing placeId/latLng/address for route verification.');
   }
 
   String _mapTravelMode(VehicleType type) {
@@ -71,5 +77,13 @@ class FirebaseRouteVerificationService implements RouteVerificationService {
       case VehicleType.car:
         return 'DRIVE';
     }
+  }
+
+  String? _readString(String? value) {
+    final trimmed = value?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      return null;
+    }
+    return trimmed;
   }
 }

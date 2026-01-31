@@ -8,6 +8,7 @@ type LatLngInput = {
 export type RouteLocationInput = {
   placeId?: string;
   latLng?: LatLngInput;
+  address?: string;
 };
 
 export type RouteTravelMode = "DRIVE" | "BICYCLE" | "TWO_WHEELER" | "WALK";

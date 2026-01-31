@@ -13,8 +13,16 @@ Future<RouteVerification?> verifyOfferRoute({
   required VehicleProfile vehicle,
 }) async {
   final l10n = AppLocalizations.of(context)!;
-  final pickup = controller.pickupSelection;
-  final dropoff = controller.dropoffSelection;
+  final pickup = _buildSelection(
+    selection: controller.pickupSelection,
+    addressText: controller.pickupAddressController.text,
+    nameText: controller.pickupNameController.text,
+  );
+  final dropoff = _buildSelection(
+    selection: controller.dropoffSelection,
+    addressText: controller.dropoffAddressController.text,
+    nameText: controller.dropoffNameController.text,
+  );
   if (!_hasLocation(pickup) || !_hasLocation(dropoff)) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(l10n.routeVerificationMissingMessage)),
@@ -39,9 +47,45 @@ bool _hasLocation(PlaceSelection? selection) {
   if (selection == null) {
     return false;
   }
-  final placeId = selection.placeId?.trim();
-  if (placeId != null && placeId.isNotEmpty) {
+  final placeId = selection.placeId.trim();
+  if (placeId.isNotEmpty) {
     return true;
   }
-  return selection.latitude != null && selection.longitude != null;
+  if (selection.latitude != null && selection.longitude != null) {
+    return true;
+  }
+  final address = _readString(selection.formattedAddress) ??
+      _readString(selection.displayValue) ??
+      _readString(selection.name);
+  return address != null;
+}
+
+PlaceSelection? _buildSelection({
+  required PlaceSelection? selection,
+  required String addressText,
+  required String nameText,
+}) {
+  if (selection != null) {
+    return selection;
+  }
+  final address = addressText.trim();
+  final name = nameText.trim();
+  if (address.isEmpty && name.isEmpty) {
+    return null;
+  }
+  final displayValue = address.isNotEmpty ? address : name;
+  return PlaceSelection(
+    placeId: '',
+    formattedAddress: address.isNotEmpty ? address : null,
+    name: name.isNotEmpty ? name : null,
+    displayValue: displayValue.isNotEmpty ? displayValue : null,
+  );
+}
+
+String? _readString(String? value) {
+  final trimmed = value?.trim();
+  if (trimmed == null || trimmed.isEmpty) {
+    return null;
+  }
+  return trimmed;
 }

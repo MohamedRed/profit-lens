@@ -1,13 +1,15 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
+import { geocodeAddress } from "./geocoding_api";
 import { computeRoute, RouteLocationInput, RouteTravelMode } from "./routes_api";
 
 const routesApiKey = defineSecret("ROUTES_API_KEY");
+const geocodingApiKey = defineSecret("GEOCODING_API_KEY");
 
 export const verifyOfferRoute = onCall(
   {
     cors: true,
-    secrets: [routesApiKey],
+    secrets: [routesApiKey, geocodingApiKey],
     timeoutSeconds: 20,
     memory: "256MiB",
     region: "europe-west1",
@@ -34,10 +36,18 @@ export const verifyOfferRoute = onCall(
         "ROUTES_API_KEY is not set."
       );
     }
+    const resolvedOrigin = await resolveLocation(
+      origin,
+      geocodingApiKey.value()
+    );
+    const resolvedDestination = await resolveLocation(
+      destination,
+      geocodingApiKey.value()
+    );
     const route = await computeRoute({
       apiKey,
-      origin,
-      destination,
+      origin: resolvedOrigin,
+      destination: resolvedDestination,
       travelMode,
     });
     return {
@@ -57,4 +67,25 @@ function isTravelMode(value: string): value is RouteTravelMode {
     value === "TWO_WHEELER" ||
     value === "WALK"
   );
+}
+
+async function resolveLocation(
+  input: RouteLocationInput,
+  geocodingKey?: string
+): Promise<RouteLocationInput> {
+  if (input.placeId || input.latLng) {
+    return input;
+  }
+  const address = input.address?.trim();
+  if (!address) {
+    throw new HttpsError("invalid-argument", "Missing route location.");
+  }
+  if (!geocodingKey) {
+    throw new HttpsError(
+      "failed-precondition",
+      "GEOCODING_API_KEY is not set."
+    );
+  }
+  const coords = await geocodeAddress({ apiKey: geocodingKey, address });
+  return { latLng: coords };
 }
