@@ -44,15 +44,9 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
         hasDistance &&
         (!widget.requiresDuration || hasDuration);
     final analysisStatus = widget.controller.analysisStatus;
-    if (widget.hasExtraction && !_showOptional) {
-      if (analysisStatus.isAnalyzing) {
-        return OfferAnalysisProgressCard(
-          status: analysisStatus,
-          errorMessage: widget.controller.analysisErrorMessage,
-          onEdit: () => setState(() => _showOptional = true),
-        );
-      }
-      if (analysisStatus == OfferAnalysisStatus.failed) {
+    if (!_showOptional) {
+      if (analysisStatus.isAnalyzing ||
+          analysisStatus == OfferAnalysisStatus.failed) {
         return OfferAnalysisProgressCard(
           status: analysisStatus,
           errorMessage: widget.controller.analysisErrorMessage,
