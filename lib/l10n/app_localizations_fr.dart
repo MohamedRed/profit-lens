@@ -18,6 +18,25 @@ class AppLocalizationsFr extends AppLocalizations {
   String get editOfferDetailsButton => 'Modifier les détails';
 
   @override
+  String get analysisProgressTitle => 'Analyse de l\'offre';
+
+  @override
+  String get analysisStepExtracting => 'Extraction des détails de l\'offre';
+
+  @override
+  String get analysisStepVerifyRoute => 'Vérification de l\'itinéraire';
+
+  @override
+  String get analysisStepProfitability => 'Calcul de la rentabilité';
+
+  @override
+  String get analysisFailedTitle => 'Analyse incomplète';
+
+  @override
+  String get analysisFailedBody =>
+      'Nous n\'avons pas pu terminer l\'analyse. Modifiez les détails et réessayez.';
+
+  @override
   String get addOptionalDetailsButton => 'Ajouter des détails optionnels';
 
   @override

@@ -18,6 +18,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get editOfferDetailsButton => 'تعديل التفاصيل';
 
   @override
+  String get analysisProgressTitle => 'جارٍ تحليل العرض';
+
+  @override
+  String get analysisStepExtracting => 'استخراج تفاصيل العرض';
+
+  @override
+  String get analysisStepVerifyRoute => 'التحقق من المسار';
+
+  @override
+  String get analysisStepProfitability => 'حساب الربحية';
+
+  @override
+  String get analysisFailedTitle => 'تحليل غير مكتمل';
+
+  @override
+  String get analysisFailedBody =>
+      'تعذر إكمال التحليل. يرجى تعديل التفاصيل والمحاولة مرة أخرى.';
+
+  @override
   String get addOptionalDetailsButton => 'إضافة تفاصيل اختيارية';
 
   @override

@@ -118,6 +118,42 @@ abstract class AppLocalizations {
   /// **'Edit details'**
   String get editOfferDetailsButton;
 
+  /// No description provided for @analysisProgressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing offer'**
+  String get analysisProgressTitle;
+
+  /// No description provided for @analysisStepExtracting.
+  ///
+  /// In en, this message translates to:
+  /// **'Extracting offer details'**
+  String get analysisStepExtracting;
+
+  /// No description provided for @analysisStepVerifyRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying route'**
+  String get analysisStepVerifyRoute;
+
+  /// No description provided for @analysisStepProfitability.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculating profitability'**
+  String get analysisStepProfitability;
+
+  /// No description provided for @analysisFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis incomplete'**
+  String get analysisFailedTitle;
+
+  /// No description provided for @analysisFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t complete the analysis. Please edit the details and try again.'**
+  String get analysisFailedBody;
+
   /// No description provided for @addOptionalDetailsButton.
   ///
   /// In en, this message translates to:

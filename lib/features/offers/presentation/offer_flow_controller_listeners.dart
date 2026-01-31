@@ -13,14 +13,19 @@ void bindOfferFlowControllerListeners({
     controller.pickupNameController,
     controller.dropoffNameController,
   ]) {
-    textController.addListener(onChanged);
+    textController.addListener(() {
+      controller.resetAnalysisIfNeeded();
+      onChanged();
+    });
   }
   controller.pickupAddressController.addListener(() {
     controller.routeVerification = null;
+    controller.resetAnalysisIfNeeded();
     onChanged();
   });
   controller.dropoffAddressController.addListener(() {
     controller.routeVerification = null;
+    controller.resetAnalysisIfNeeded();
     onChanged();
   });
 }

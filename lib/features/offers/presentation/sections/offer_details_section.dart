@@ -4,6 +4,8 @@ import '../../../../core/widgets/section_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/place_selection.dart';
 import '../controllers/offer_flow_controller.dart';
+import '../offer_analysis_status.dart';
+import 'offer_analysis_progress_card.dart';
 import 'offer_details_form_fields.dart';
 import 'offer_details_summary.dart';
 
@@ -41,11 +43,28 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
     final hasRequired = hasPayout &&
         hasDistance &&
         (!widget.requiresDuration || hasDuration);
-    if (widget.hasExtraction && hasRequired && !_showOptional) {
-      return OfferDetailsSummary(
-        controller: widget.controller,
-        onEdit: () => setState(() => _showOptional = true),
-      );
+    final analysisStatus = widget.controller.analysisStatus;
+    if (widget.hasExtraction && !_showOptional) {
+      if (analysisStatus.isAnalyzing) {
+        return OfferAnalysisProgressCard(
+          status: analysisStatus,
+          errorMessage: widget.controller.analysisErrorMessage,
+          onEdit: () => setState(() => _showOptional = true),
+        );
+      }
+      if (analysisStatus == OfferAnalysisStatus.failed) {
+        return OfferAnalysisProgressCard(
+          status: analysisStatus,
+          errorMessage: widget.controller.analysisErrorMessage,
+          onEdit: () => setState(() => _showOptional = true),
+        );
+      }
+      if (analysisStatus == OfferAnalysisStatus.completed && hasRequired) {
+        return OfferDetailsSummary(
+          controller: widget.controller,
+          onEdit: () => setState(() => _showOptional = true),
+        );
+      }
     }
     return SectionCard(
       title: l10n.offerDetailsSection,

@@ -7,6 +7,7 @@ import '../../domain/offer_extraction_result.dart';
 import '../../domain/offer_source.dart';
 import '../../domain/place_selection.dart';
 import '../../domain/route_verification.dart';
+import '../offer_analysis_status.dart';
 
 class OfferFlowController {
   final TextEditingController payoutController = TextEditingController();
@@ -22,6 +23,8 @@ class OfferFlowController {
   PlaceSelection? pickupSelection;
   PlaceSelection? dropoffSelection;
   RouteVerification? routeVerification;
+  OfferAnalysisStatus analysisStatus = OfferAnalysisStatus.idle;
+  String? analysisErrorMessage;
 
   void dispose() {
     payoutController.dispose();
@@ -106,5 +109,21 @@ class OfferFlowController {
 
   void applyRouteVerification(RouteVerification verification) {
     routeVerification = verification;
+  }
+
+  void setAnalysisStatus(
+    OfferAnalysisStatus status, {
+    String? errorMessage,
+  }) {
+    analysisStatus = status;
+    analysisErrorMessage = errorMessage;
+  }
+
+  void resetAnalysisIfNeeded() {
+    if (analysisStatus == OfferAnalysisStatus.completed ||
+        analysisStatus == OfferAnalysisStatus.failed) {
+      analysisStatus = OfferAnalysisStatus.idle;
+      analysisErrorMessage = null;
+    }
   }
 }
