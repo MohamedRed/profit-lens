@@ -15,13 +15,11 @@ class OfferFlowCallbacks {
   final VoidCallback onImportScreenshot;
   final VoidCallback onCaptureScreenshot;
   final VoidCallback onViewDetails;
-  final VoidCallback onSignOut;
 
   const OfferFlowCallbacks({
     required this.onImportScreenshot,
     required this.onCaptureScreenshot,
     required this.onViewDetails,
-    required this.onSignOut,
   });
 }
 
@@ -83,6 +81,5 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
         onUpdated: onUpdated,
       );
     },
-    onSignOut: () => AppScope.of(context).authRepository.signOut(),
   );
 }

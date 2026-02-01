@@ -78,7 +78,6 @@ class OfferFlowCoordinatorStream extends StatelessWidget {
           onImportScreenshot: callbacks.onImportScreenshot,
           onCaptureScreenshot: callbacks.onCaptureScreenshot,
           onViewDetails: callbacks.onViewDetails,
-          onSignOut: callbacks.onSignOut,
           isLoading: isLoading,
           previewRecord: previewRecord,
           onPickupSelected: onPickupSelected,

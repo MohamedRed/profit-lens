@@ -19,7 +19,6 @@ class OfferFlowView extends StatelessWidget {
   final VoidCallback onImportScreenshot;
   final VoidCallback onCaptureScreenshot;
   final VoidCallback onViewDetails;
-  final VoidCallback onSignOut;
   final bool isLoading;
   final OfferRecord? previewRecord;
   final ValueChanged<PlaceSelection>? onPickupSelected;
@@ -37,7 +36,6 @@ class OfferFlowView extends StatelessWidget {
     required this.onImportScreenshot,
     required this.onCaptureScreenshot,
     required this.onViewDetails,
-    required this.onSignOut,
     required this.isLoading,
     required this.previewRecord,
     required this.onPickupSelected,
@@ -51,12 +49,6 @@ class OfferFlowView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: onSignOut,
-          ),
-        ],
       ),
       body: SafeArea(
         child: vehicles.isEmpty

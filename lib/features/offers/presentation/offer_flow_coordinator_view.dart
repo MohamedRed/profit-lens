@@ -18,7 +18,6 @@ class OfferFlowCoordinatorView extends StatelessWidget {
   final VoidCallback onImportScreenshot;
   final VoidCallback onCaptureScreenshot;
   final VoidCallback onViewDetails;
-  final VoidCallback onSignOut;
   final bool isLoading;
   final OfferRecord? previewRecord;
   final ValueChanged<PlaceSelection>? onPickupSelected;
@@ -36,7 +35,6 @@ class OfferFlowCoordinatorView extends StatelessWidget {
     required this.onImportScreenshot,
     required this.onCaptureScreenshot,
     required this.onViewDetails,
-    required this.onSignOut,
     required this.isLoading,
     required this.previewRecord,
     required this.onPickupSelected,
@@ -56,7 +54,6 @@ class OfferFlowCoordinatorView extends StatelessWidget {
       onImportScreenshot: onImportScreenshot,
       onCaptureScreenshot: onCaptureScreenshot,
       onViewDetails: onViewDetails,
-      onSignOut: onSignOut,
       isLoading: isLoading,
       previewRecord: previewRecord,
       onPickupSelected: onPickupSelected,
