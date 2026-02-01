@@ -10,7 +10,7 @@ export type RouteVerification = {
 
 export type OfferInput = {
   payoutEuro: number;
-  distanceKm: number;
+  distanceKm?: number | null;
   durationMinutes?: number | null;
   pickupName?: string | null;
   pickupAddress?: string | null;

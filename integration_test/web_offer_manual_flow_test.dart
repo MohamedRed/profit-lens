@@ -32,6 +32,7 @@ void main() {
       offerAnalysisService: FakeOfferAnalysisService(
         profile: profile,
         vehicle: vehicle,
+        defaultDistanceKm: 5.4,
       ),
     );
 
@@ -41,10 +42,6 @@ void main() {
     await tester.enterText(
       find.byKey(OfferFlowKeys.payoutField),
       '15.25',
-    );
-    await tester.enterText(
-      find.byKey(OfferFlowKeys.distanceField),
-      '5.4',
     );
     final pickupField = tester.widget<PlaceAutocompleteField>(
       find.byKey(OfferFlowKeys.pickupAddressField),

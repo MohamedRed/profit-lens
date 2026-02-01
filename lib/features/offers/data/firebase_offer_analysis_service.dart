@@ -1,12 +1,13 @@
+import 'dart:convert';
+
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../core/config/app_config.dart';
 import '../../../core/config/firebase_regions.dart';
-import '../domain/offer.dart';
-import '../domain/offer_extraction_metadata.dart';
+import '../domain/offer_input.dart';
 import '../domain/offer_record.dart';
 import '../domain/offer_source.dart';
-import '../domain/route_verification.dart';
 import 'mappers/offer_record_remote_mapper.dart';
 import 'offer_analysis_service.dart';
 
@@ -22,11 +23,10 @@ class FirebaseOfferAnalysisService implements OfferAnalysisService {
 
   @override
   Future<OfferRecord> analyzeOffer({
-    required Offer offer,
-    required RouteVerification? routeVerification,
-    required String? vehicleId,
-    required OfferSource source,
-    OfferExtractionMetadata? extraction,
+    OfferInput? offer,
+    XFile? image,
+    String? vehicleId,
+    OfferSource? source,
   }) async {
     if (!AppConfig.firebaseConfigured) {
       throw StateError('Firebase is not configured.');
@@ -34,17 +34,22 @@ class FirebaseOfferAnalysisService implements OfferAnalysisService {
     final callable = (_functions ??
             FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion))
         .httpsCallable('analyzeOffer');
-    final response = await callable.call(<String, dynamic>{
-      'offer': _encodeOffer(offer),
-      if (routeVerification != null)
-        'routeVerification': _encodeRouteVerification(routeVerification),
+    final payload = <String, dynamic>{
+      if (offer != null) 'offer': _encodeOffer(offer),
       if (vehicleId != null) 'vehicleId': vehicleId,
-      'source': source.name,
-      if (extraction != null)
-        'extraction': {
-          'confidence': extraction.confidence,
-          'rawText': extraction.rawText,
-        },
+      if (source != null) 'source': source.name,
+    };
+    if (image != null) {
+      final mimeType = image.mimeType;
+      if (mimeType == null || mimeType.isEmpty) {
+        throw StateError('Missing image mime type.');
+      }
+      final bytes = await image.readAsBytes();
+      payload['imageBase64'] = base64Encode(bytes);
+      payload['mimeType'] = mimeType;
+    }
+    final response = await callable.call(<String, dynamic>{
+      ...payload,
     });
     final data = Map<String, dynamic>.from(response.data as Map);
     final record = _mapper.fromResponse(data);
@@ -54,25 +59,17 @@ class FirebaseOfferAnalysisService implements OfferAnalysisService {
     return record;
   }
 
-  Map<String, dynamic> _encodeOffer(Offer offer) {
+  Map<String, dynamic> _encodeOffer(OfferInput offer) {
     return {
       'payoutEuro': offer.payoutEuro,
-      'distanceKm': offer.distanceKm,
-      'durationMinutes': offer.durationMinutes,
-      'pickupName': offer.pickupName,
-      'pickupAddress': offer.pickupAddress,
-      'dropoffName': offer.dropoffName,
-      'dropoffAddress': offer.dropoffAddress,
-    };
-  }
-
-  Map<String, dynamic> _encodeRouteVerification(RouteVerification verification) {
-    return {
-      'distanceKm': verification.distanceKm,
-      'durationMinutes': verification.durationMinutes,
-      'provider': verification.provider,
-      'travelMode': verification.travelMode,
-      'verifiedAt': verification.verifiedAt.toIso8601String(),
+      if (offer.distanceKm != null) 'distanceKm': offer.distanceKm,
+      if (offer.durationMinutes != null)
+        'durationMinutes': offer.durationMinutes,
+      if (offer.pickupName != null) 'pickupName': offer.pickupName,
+      if (offer.pickupAddress != null) 'pickupAddress': offer.pickupAddress,
+      if (offer.dropoffName != null) 'dropoffName': offer.dropoffName,
+      if (offer.dropoffAddress != null)
+        'dropoffAddress': offer.dropoffAddress,
     };
   }
 }

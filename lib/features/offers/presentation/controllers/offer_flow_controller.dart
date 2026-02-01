@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/number_parsing.dart';
-import '../../domain/offer.dart';
+import '../../domain/offer_input.dart';
 import '../../domain/offer_extraction_metadata.dart';
 import '../../domain/offer_record.dart';
 import '../../domain/offer_source.dart';
@@ -65,16 +65,14 @@ class OfferFlowController {
     }
   }
 
-  Offer? buildOffer() {
+  OfferInput? buildOffer() {
     final payout = NumberParsing.parseDouble(payoutController.text);
-    final distance = NumberParsing.parseDouble(distanceController.text) ??
-        routeVerification?.distanceKm;
-    final duration = NumberParsing.parseDouble(durationController.text) ??
-        routeVerification?.durationMinutes;
-    if (payout == null || distance == null) {
+    if (payout == null) {
       return null;
     }
-    return Offer(
+    final distance = NumberParsing.parseDouble(distanceController.text);
+    final duration = NumberParsing.parseDouble(durationController.text);
+    return OfferInput(
       payoutEuro: payout,
       distanceKm: distance,
       durationMinutes: duration,
@@ -90,7 +88,6 @@ class OfferFlowController {
       dropoffAddress: dropoffAddressController.text.trim().isEmpty
           ? null
           : dropoffAddressController.text.trim(),
-      routeVerification: routeVerification,
     );
   }
 

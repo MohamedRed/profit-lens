@@ -37,8 +37,8 @@ export const verifyOfferRoute = onCall(
       );
     }
     return verifyRoute({
-      routesApiKey: apiKey,
-      geocodingApiKey: geocodingApiKey.value(),
+      apiKey,
+      geocodingKey: geocodingApiKey.value(),
       origin,
       destination,
       travelMode,

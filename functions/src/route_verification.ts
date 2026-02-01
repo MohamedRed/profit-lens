@@ -1,22 +1,11 @@
 import { HttpsError } from "firebase-functions/v2/https";
 import { geocodeAddress } from "./geocoding_api";
-import {
-  computeRoute,
-  RouteLocationInput,
-  RouteTravelMode,
-} from "./routes_api";
-
-export type RouteVerificationResult = {
-  distanceKm: number;
-  durationMinutes: number;
-  provider: string;
-  travelMode: RouteTravelMode;
-  verifiedAt: string;
-};
+import { computeRoute, RouteLocationInput, RouteTravelMode } from "./routes_api";
+import { RouteVerification } from "./profitability_types";
 
 type VerifyRouteParams = {
-  routesApiKey: string;
-  geocodingApiKey?: string;
+  apiKey: string;
+  geocodingKey: string;
   origin: RouteLocationInput;
   destination: RouteLocationInput;
   travelMode: RouteTravelMode;
@@ -24,19 +13,16 @@ type VerifyRouteParams = {
 
 export async function verifyRoute(
   params: VerifyRouteParams
-): Promise<RouteVerificationResult> {
-  const resolvedOrigin = await resolveLocation(
-    params.origin,
-    params.geocodingApiKey
-  );
-  const resolvedDestination = await resolveLocation(
+): Promise<RouteVerification> {
+  const origin = await resolveLocation(params.origin, params.geocodingKey);
+  const destination = await resolveLocation(
     params.destination,
-    params.geocodingApiKey
+    params.geocodingKey
   );
   const route = await computeRoute({
-    apiKey: params.routesApiKey,
-    origin: resolvedOrigin,
-    destination: resolvedDestination,
+    apiKey: params.apiKey,
+    origin,
+    destination,
     travelMode: params.travelMode,
   });
   return {
@@ -50,7 +36,7 @@ export async function verifyRoute(
 
 async function resolveLocation(
   input: RouteLocationInput,
-  geocodingKey?: string
+  geocodingKey: string
 ): Promise<RouteLocationInput> {
   if (input.placeId || input.latLng) {
     return input;

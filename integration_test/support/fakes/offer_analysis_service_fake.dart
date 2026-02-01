@@ -1,6 +1,7 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:profit_lens/features/offers/data/offer_analysis_service.dart';
 import 'package:profit_lens/features/offers/domain/offer.dart';
+import 'package:profit_lens/features/offers/domain/offer_input.dart';
 import 'package:profit_lens/features/offers/domain/offer_record.dart';
 import 'package:profit_lens/features/offers/domain/offer_source.dart';
 import 'package:profit_lens/features/profile/domain/fixed_cost_allocation.dart';
@@ -13,16 +14,20 @@ class FakeOfferAnalysisService implements OfferAnalysisService {
   final UserProfile profile;
   final VehicleProfile vehicle;
   final Map<String, Offer> offersByImageName;
+  final double? defaultDistanceKm;
+  final double? defaultDurationMinutes;
 
   FakeOfferAnalysisService({
     required this.profile,
     required this.vehicle,
     Map<String, Offer>? offersByImageName,
+    this.defaultDistanceKm,
+    this.defaultDurationMinutes,
   }) : offersByImageName = offersByImageName ?? const {};
 
   @override
   Future<OfferRecord> analyzeOffer({
-    Offer? offer,
+    OfferInput? offer,
     XFile? image,
     String? vehicleId,
     OfferSource? source,
@@ -46,7 +51,7 @@ class FakeOfferAnalysisService implements OfferAnalysisService {
     );
   }
 
-  OfferSource _resolveSource({Offer? offer, XFile? image}) {
+  OfferSource _resolveSource({OfferInput? offer, XFile? image}) {
     if (offer != null) {
       return OfferSource.manual;
     }
@@ -56,9 +61,22 @@ class FakeOfferAnalysisService implements OfferAnalysisService {
     return OfferSource.manual;
   }
 
-  Offer _resolveOffer(Offer? offer, XFile? image) {
+  Offer _resolveOffer(OfferInput? offer, XFile? image) {
     if (offer != null) {
-      return offer;
+      final distance = offer.distanceKm ?? defaultDistanceKm;
+      if (distance == null) {
+        throw StateError('Missing distance for analysis.');
+      }
+      return Offer(
+        payoutEuro: offer.payoutEuro,
+        distanceKm: distance,
+        durationMinutes: offer.durationMinutes ?? defaultDurationMinutes,
+        pickupName: offer.pickupName,
+        pickupAddress: offer.pickupAddress,
+        dropoffName: offer.dropoffName,
+        dropoffAddress: offer.dropoffAddress,
+        routeVerification: null,
+      );
     }
     if (image == null) {
       throw StateError('Missing offer or image for analysis.');
