@@ -40,23 +40,25 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
-                        child: SegmentedButton<HistoryViewMode>(
-                          segments: [
-                            ButtonSegment(
-                              value: HistoryViewMode.list,
-                              label: Text(l10n.historyViewListLabel),
-                              icon: const Icon(Icons.list),
-                            ),
-                            ButtonSegment(
-                              value: HistoryViewMode.charts,
-                              label: Text(l10n.historyViewChartsLabel),
-                              icon: const Icon(Icons.show_chart),
-                            ),
-                          ],
-                          selected: {_viewMode},
-                          onSelectionChanged: (selection) {
-                            setState(() => _viewMode = selection.first);
-                          },
+                        child: Center(
+                          child: SegmentedButton<HistoryViewMode>(
+                            segments: [
+                              ButtonSegment(
+                                value: HistoryViewMode.list,
+                                label: Text(l10n.historyViewListLabel),
+                                icon: const Icon(Icons.list),
+                              ),
+                              ButtonSegment(
+                                value: HistoryViewMode.charts,
+                                label: Text(l10n.historyViewChartsLabel),
+                                icon: const Icon(Icons.show_chart),
+                              ),
+                            ],
+                            selected: {_viewMode},
+                            onSelectionChanged: (selection) {
+                              setState(() => _viewMode = selection.first);
+                            },
+                          ),
                         ),
                       ),
                       Expanded(
