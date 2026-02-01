@@ -13,7 +13,11 @@ type ProfitabilityInput = {
 };
 
 export function evaluateProfitability(input: ProfitabilityInput): CostBreakdown {
-  const distance = input.offer.routeVerification?.distanceKm ?? input.offer.distanceKm;
+  const distance =
+    input.offer.routeVerification?.distanceKm ?? input.offer.distanceKm;
+  if (!distance || distance <= 0) {
+    throw new Error("Missing offer distance.");
+  }
   const energyCost =
     distance *
     (input.vehicle.energyConsumptionPer100Km / 100) *
@@ -23,7 +27,7 @@ export function evaluateProfitability(input: ProfitabilityInput): CostBreakdown 
   const socialContributions =
     input.offer.payoutEuro * input.costs.socialContributionRate;
   const incomeTax = input.offer.payoutEuro * (input.costs.incomeTaxRate ?? 0);
-  const fixedCostAllocation = calculateFixedCostAllocation(input);
+  const fixedCostAllocation = calculateFixedCostAllocation(input, distance);
   const totalCosts =
     energyCost +
     maintenanceCost +
@@ -45,7 +49,10 @@ export function evaluateProfitability(input: ProfitabilityInput): CostBreakdown 
   };
 }
 
-function calculateFixedCostAllocation(input: ProfitabilityInput): number {
+function calculateFixedCostAllocation(
+  input: ProfitabilityInput,
+  distanceKm: number
+): number {
   if (input.costs.monthlyFixedCosts <= 0) {
     return 0;
   }
@@ -71,7 +78,7 @@ function calculateFixedCostAllocation(input: ProfitabilityInput): number {
       }
       return (
         (input.costs.monthlyFixedCosts / input.costs.monthlyDistanceKm) *
-        input.offer.distanceKm
+        distanceKm
       );
     }
     case "perDelivery": {
