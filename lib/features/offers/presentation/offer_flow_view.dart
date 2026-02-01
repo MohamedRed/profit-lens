@@ -57,7 +57,6 @@ class OfferFlowView extends StatelessWidget {
                 formKey: formKey,
                 controller: controller,
                 requiresDuration: requiresDuration,
-                hasExtraction: controller.extraction != null,
                 vehicles: vehicles,
                 selectedVehicleId: selectedVehicleId,
                 onVehicleChanged: onVehicleChanged,

@@ -12,7 +12,6 @@ import 'offer_details_summary.dart';
 class OfferDetailsSection extends StatefulWidget {
   final OfferFlowController controller;
   final bool requiresDuration;
-  final bool hasExtraction;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
 
@@ -20,7 +19,6 @@ class OfferDetailsSection extends StatefulWidget {
     super.key,
     required this.controller,
     required this.requiresDuration,
-    required this.hasExtraction,
     required this.onPickupSelected,
     required this.onDropoffSelected,
   });
@@ -30,67 +28,77 @@ class OfferDetailsSection extends StatefulWidget {
 }
 
 class _OfferDetailsSectionState extends State<OfferDetailsSection> {
-  bool _showOptional = false;
+  bool _isEditing = true;
+  OfferAnalysisStatus? _lastStatus;
+
+  void _syncEditingState(OfferAnalysisStatus status, bool hasRequired) {
+    if (_lastStatus == status) {
+      return;
+    }
+    _lastStatus = status;
+    if (status == OfferAnalysisStatus.completed && hasRequired) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() => _isEditing = false);
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final hasPayout = widget.controller.payoutController.text.trim().isNotEmpty;
-    final hasDistance =
-        widget.controller.distanceController.text.trim().isNotEmpty;
-    final hasDuration =
-        widget.controller.durationController.text.trim().isNotEmpty;
+    final hasPickup =
+        widget.controller.pickupAddressController.text.trim().isNotEmpty;
+    final hasDropoff =
+        widget.controller.dropoffAddressController.text.trim().isNotEmpty;
+    final hasDistance = widget
+            .controller.distanceController.text.trim().isNotEmpty ||
+        widget.controller.routeVerification != null;
+    final hasDuration = widget
+            .controller.durationController.text.trim().isNotEmpty ||
+        widget.controller.routeVerification != null;
     final hasRequired = hasPayout &&
+        hasPickup &&
+        hasDropoff &&
         hasDistance &&
         (!widget.requiresDuration || hasDuration);
     final analysisStatus = widget.controller.analysisStatus;
+    _syncEditingState(analysisStatus, hasRequired);
     if (analysisStatus.isAnalyzing) {
       return OfferAnalysisProgressCard(
         status: analysisStatus,
         errorMessage: widget.controller.analysisErrorMessage,
-        onEdit: () => setState(() => _showOptional = true),
+        onEdit: () => setState(() => _isEditing = true),
       );
     }
-    if (!_showOptional) {
-      if (analysisStatus == OfferAnalysisStatus.failed) {
-        return OfferAnalysisProgressCard(
-          status: analysisStatus,
-          errorMessage: widget.controller.analysisErrorMessage,
-          onEdit: () => setState(() => _showOptional = true),
-        );
-      }
-      if (analysisStatus == OfferAnalysisStatus.completed && hasRequired) {
-        return OfferDetailsSummary(
-          controller: widget.controller,
-          onEdit: () => setState(() => _showOptional = true),
-        );
-      }
+    if (analysisStatus == OfferAnalysisStatus.failed) {
+      return OfferAnalysisProgressCard(
+        status: analysisStatus,
+        errorMessage: widget.controller.analysisErrorMessage,
+        onEdit: () => setState(() => _isEditing = true),
+      );
+    }
+    if (analysisStatus == OfferAnalysisStatus.completed &&
+        hasRequired &&
+        !_isEditing) {
+      return OfferDetailsSummary(
+        controller: widget.controller,
+        onEdit: () => setState(() => _isEditing = true),
+      );
     }
     return SectionCard(
       title: l10n.offerDetailsSection,
       children: [
         OfferDetailsFormFields(
           payoutController: widget.controller.payoutController,
-          distanceController: widget.controller.distanceController,
-          durationController: widget.controller.durationController,
           pickupNameController: widget.controller.pickupNameController,
           pickupAddressController: widget.controller.pickupAddressController,
           dropoffNameController: widget.controller.dropoffNameController,
           dropoffAddressController: widget.controller.dropoffAddressController,
           onPickupSelected: widget.onPickupSelected,
           onDropoffSelected: widget.onDropoffSelected,
-          showDuration: widget.requiresDuration || _showOptional,
-          showPickupFields: _showOptional,
-          requiresDuration: widget.requiresDuration,
-        ),
-        const SizedBox(height: 8),
-        TextButton(
-          onPressed: () => setState(() => _showOptional = !_showOptional),
-          child: Text(
-            _showOptional
-                ? l10n.hideOptionalDetailsButton
-                : l10n.addOptionalDetailsButton,
-          ),
         ),
       ],
     );

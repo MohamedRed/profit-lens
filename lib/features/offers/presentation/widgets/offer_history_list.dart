@@ -19,23 +19,64 @@ class OfferHistoryList extends StatelessWidget {
     final localeTag = Localizations.localeOf(context).toString();
     return ListView.separated(
       key: const ValueKey('history_list'),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(24),
       itemBuilder: (context, index) {
         final offer = offers[index];
-        return ListTile(
-          title: Text(
-            CurrencyFormat.euro(offer.breakdown.netProfit, localeTag),
-          ),
-          subtitle: Text(
-            '${offer.offer.distanceKm.toStringAsFixed(1)} km • ${formatShortDateTime(context, offer.createdAt)}',
-          ),
-          trailing: Text(
-            CurrencyFormat.euro(offer.offer.payoutEuro, localeTag),
-          ),
+        final profit = CurrencyFormat.euro(offer.breakdown.netProfit, localeTag);
+        final payout = CurrencyFormat.euro(offer.offer.payoutEuro, localeTag);
+        final subtitle =
+            '${offer.offer.distanceKm.toStringAsFixed(1)} km • ${formatShortDateTime(context, offer.createdAt)}';
+
+        return InkWell(
           onTap: () => onSelected(offer),
+          borderRadius: BorderRadius.circular(24),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        profit,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontSize: 20),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      payout,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Icon(Icons.chevron_right, color: Color(0xFFA1A1AA)),
+                  ],
+                ),
+              ],
+            ),
+          ),
         );
       },
-      separatorBuilder: (context, index) => const Divider(),
+      separatorBuilder: (context, index) => const SizedBox(height: 16),
       itemCount: offers.length,
     );
   }

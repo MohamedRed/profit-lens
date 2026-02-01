@@ -5,6 +5,7 @@ import '../../offers/presentation/offer_flow_screen.dart';
 import '../../offers/presentation/offer_history_screen.dart';
 import '../../profile/domain/user_profile.dart';
 import '../../settings/presentation/settings_screen.dart';
+import '../../../core/widgets/mobile_pill_nav.dart';
 import '../../../l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,15 +24,27 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  late final List<Widget> _pages;
+  late final List<_HomeTab> _tabs;
 
   @override
   void initState() {
     super.initState();
-    _pages = [
-      OfferFlowScreen(user: widget.user, profile: widget.profile),
-      OfferHistoryScreen(user: widget.user),
-      SettingsScreen(user: widget.user, profile: widget.profile),
+    _tabs = [
+      _HomeTab(
+        labelBuilder: (l10n) => l10n.offerTabLabel,
+        icon: Icons.add_circle_outline,
+        page: OfferFlowScreen(user: widget.user, profile: widget.profile),
+      ),
+      _HomeTab(
+        labelBuilder: (l10n) => l10n.historyTabLabel,
+        icon: Icons.history,
+        page: OfferHistoryScreen(user: widget.user),
+      ),
+      _HomeTab(
+        labelBuilder: (l10n) => l10n.settingsTabLabel,
+        icon: Icons.settings,
+        page: SettingsScreen(user: widget.user, profile: widget.profile),
+      ),
     ];
   }
 
@@ -40,32 +53,35 @@ class _HomeScreenState extends State<HomeScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: IndexedStack(
         index: _currentIndex,
-        children: _pages,
+        children: _tabs.map((tab) => SafeArea(child: tab.page)).toList(),
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: MobilePillNav(
         currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.add_circle_outline),
-            label: l10n.offerTabLabel,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.history),
-            label: l10n.historyTabLabel,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.settings),
-            label: l10n.settingsTabLabel,
-          ),
-        ],
+        items: _tabs
+            .map(
+              (tab) => MobilePillNavItem(
+                icon: tab.icon,
+                label: tab.labelBuilder(l10n),
+              ),
+            )
+            .toList(),
+        onChanged: (index) => setState(() => _currentIndex = index),
       ),
     );
   }
+}
+
+class _HomeTab {
+  final Widget page;
+  final IconData icon;
+  final String Function(AppLocalizations l10n) labelBuilder;
+
+  _HomeTab({
+    required this.page,
+    required this.icon,
+    required this.labelBuilder,
+  });
 }

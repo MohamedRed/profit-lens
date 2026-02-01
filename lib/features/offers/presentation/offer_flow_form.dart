@@ -16,7 +16,6 @@ class OfferFlowForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final OfferFlowController controller;
   final bool requiresDuration;
-  final bool hasExtraction;
   final List<VehicleProfile> vehicles;
   final String? selectedVehicleId;
   final ValueChanged<String?> onVehicleChanged;
@@ -33,7 +32,6 @@ class OfferFlowForm extends StatelessWidget {
     required this.formKey,
     required this.controller,
     required this.requiresDuration,
-    required this.hasExtraction,
     required this.vehicles,
     required this.selectedVehicleId,
     required this.onVehicleChanged,
@@ -63,7 +61,6 @@ class OfferFlowForm extends StatelessWidget {
           OfferDetailsSection(
             controller: controller,
             requiresDuration: requiresDuration,
-            hasExtraction: hasExtraction,
             onPickupSelected: onPickupSelected,
             onDropoffSelected: onDropoffSelected,
           ),

@@ -30,9 +30,9 @@ class OfferDetailsSummary extends StatelessWidget {
       children: [
         if (payout.isNotEmpty)
           Text('${l10n.offerAmountLabel}: €$payout'),
-        if (distance.isNotEmpty)
+        if (verification == null && distance.isNotEmpty)
           Text('${l10n.distanceKmLabel}: $distance'),
-        if (duration.isNotEmpty)
+        if (verification == null && duration.isNotEmpty)
           Text('${l10n.durationMinutesLabel}: $duration'),
         if (verification != null)
           Text(

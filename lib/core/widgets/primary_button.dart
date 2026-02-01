@@ -19,11 +19,11 @@ class PrimaryButton extends StatelessWidget {
       child: FilledButton(
         onPressed: isBusy ? null : onPressed,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 14),
+          padding: const EdgeInsets.symmetric(vertical: 4),
           child: isBusy
               ? const SizedBox(
-                  height: 20,
-                  width: 20,
+                  height: 18,
+                  width: 18,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               : Text(label),
