@@ -9,7 +9,6 @@ import '../domain/offer_record.dart';
 import '../presentation/offer_result_screen.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_guard.dart';
-import 'offer_flow_route_verification.dart';
 import 'offer_analysis_status.dart';
 
 Future<void> handleOfferAnalysis({
@@ -43,60 +42,61 @@ Future<void> handleOfferAnalysis({
   if (!ready) {
     return;
   }
-  controller.clearAnalysis();
+  final runId = controller.startAnalysis();
   controller.setAnalysisStatus(OfferAnalysisStatus.verifyingRoute);
   onUpdated();
   onLoadingChanged(true);
-  final verification = await verifyOfferRoute(
-    context: context,
-    controller: controller,
-    vehicle: vehicle,
-  );
-  if (verification == null) {
-    onLoadingChanged(false);
-    onUpdated();
-    return;
-  }
   if (!context.mounted) {
     return;
   }
-  controller.applyRouteVerification(verification);
-  controller.setAnalysisStatus(OfferAnalysisStatus.calculatingProfit);
-  onUpdated();
   final offer = controller.buildOffer();
   if (offer == null) {
-    onLoadingChanged(false);
-    onUpdated();
+    if (controller.isCurrentAnalysis(runId)) {
+      controller.setAnalysisStatus(
+        OfferAnalysisStatus.failed,
+        errorMessage: l10n.analysisFailedBody,
+      );
+      onLoadingChanged(false);
+      onUpdated();
+    }
     return;
   }
   OfferRecord? record;
   try {
     record = await AppScope.of(context).offerAnalysisService.analyzeOffer(
       offer: offer,
-      routeVerification: verification,
       vehicleId: vehicle.id,
       source: controller.source,
-      extraction: controller.extraction,
     );
-    controller.applyAnalysisRecord(record);
+    if (!controller.isCurrentAnalysis(runId)) {
+      return;
+    }
+    controller.applyAnalysisResult(record);
     controller.setAnalysisStatus(OfferAnalysisStatus.completed);
   } catch (_) {
-    if (context.mounted) {
+    if (context.mounted && controller.isCurrentAnalysis(runId)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.offerSaveFailedMessage)),
       );
     }
-    controller.setAnalysisStatus(
-      OfferAnalysisStatus.failed,
-      errorMessage: l10n.analysisFailedBody,
-    );
-    onLoadingChanged(false);
-    onUpdated();
+    if (controller.isCurrentAnalysis(runId)) {
+      controller.setAnalysisStatus(
+        OfferAnalysisStatus.failed,
+        errorMessage: l10n.analysisFailedBody,
+      );
+      onLoadingChanged(false);
+      onUpdated();
+    }
     return;
   }
-  onLoadingChanged(false);
-  onUpdated();
+  if (controller.isCurrentAnalysis(runId)) {
+    onLoadingChanged(false);
+    onUpdated();
+  }
   if (!context.mounted) {
+    return;
+  }
+  if (!controller.isCurrentAnalysis(runId)) {
     return;
   }
   Navigator.of(context).push(

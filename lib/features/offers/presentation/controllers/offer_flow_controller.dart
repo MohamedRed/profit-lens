@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/utils/number_parsing.dart';
 import '../../domain/offer.dart';
 import '../../domain/offer_extraction_metadata.dart';
-import '../../domain/offer_extraction_result.dart';
 import '../../domain/offer_record.dart';
 import '../../domain/offer_source.dart';
 import '../../domain/place_selection.dart';
@@ -11,6 +10,8 @@ import '../../domain/route_verification.dart';
 import '../offer_analysis_status.dart';
 
 class OfferFlowController {
+  int _analysisRunId = 0;
+
   final TextEditingController payoutController = TextEditingController();
   final TextEditingController distanceController = TextEditingController();
   final TextEditingController durationController = TextEditingController();
@@ -36,27 +37,6 @@ class OfferFlowController {
     pickupAddressController.dispose();
     dropoffNameController.dispose();
     dropoffAddressController.dispose();
-  }
-
-  void applyExtraction(OfferExtractionResult result) {
-    if (result.offer == null) {
-      return;
-    }
-    payoutController.text = result.offer!.payoutEuro.toStringAsFixed(2);
-    distanceController.text = result.offer!.distanceKm.toStringAsFixed(1);
-    pickupNameController.text = result.offer!.pickupName ?? '';
-    pickupAddressController.text = result.offer!.pickupAddress ?? '';
-    dropoffNameController.text = result.offer!.dropoffName ?? '';
-    dropoffAddressController.text = result.offer!.dropoffAddress ?? '';
-    source = OfferSource.screenshot;
-    extraction = OfferExtractionMetadata(
-      confidence: result.confidence,
-      rawText: result.rawText,
-    );
-    pickupSelection = null;
-    dropoffSelection = null;
-    routeVerification = null;
-    analysisRecord = null;
   }
 
   void applyPickupSelection(PlaceSelection selection) {
@@ -87,8 +67,10 @@ class OfferFlowController {
 
   Offer? buildOffer() {
     final payout = NumberParsing.parseDouble(payoutController.text);
-    final distance = NumberParsing.parseDouble(distanceController.text);
-    final duration = NumberParsing.parseDouble(durationController.text);
+    final distance = NumberParsing.parseDouble(distanceController.text) ??
+        routeVerification?.distanceKm;
+    final duration = NumberParsing.parseDouble(durationController.text) ??
+        routeVerification?.durationMinutes;
     if (payout == null || distance == null) {
       return null;
     }
@@ -112,13 +94,29 @@ class OfferFlowController {
     );
   }
 
-  void applyRouteVerification(RouteVerification verification) {
-    routeVerification = verification;
+  void applyAnalysisResult(OfferRecord record) {
+    analysisRecord = record;
+    final offer = record.offer;
+    payoutController.text = offer.payoutEuro.toStringAsFixed(2);
+    distanceController.text = offer.distanceKm.toStringAsFixed(1);
+    durationController.text = offer.durationMinutes == null
+        ? ''
+        : offer.durationMinutes!.toStringAsFixed(0);
+    pickupNameController.text = offer.pickupName ?? '';
+    pickupAddressController.text = offer.pickupAddress ?? '';
+    dropoffNameController.text = offer.dropoffName ?? '';
+    dropoffAddressController.text = offer.dropoffAddress ?? '';
+    source = record.source;
+    extraction = record.extraction;
+    routeVerification = offer.routeVerification;
   }
 
-  void applyAnalysisRecord(OfferRecord record) {
-    analysisRecord = record;
+  int startAnalysis() {
+    clearAnalysis();
+    return _analysisRunId;
   }
+
+  bool isCurrentAnalysis(int runId) => runId == _analysisRunId;
 
   void setAnalysisStatus(
     OfferAnalysisStatus status, {
@@ -129,6 +127,7 @@ class OfferFlowController {
   }
 
   void clearAnalysis() {
+    _analysisRunId += 1;
     analysisStatus = OfferAnalysisStatus.idle;
     analysisErrorMessage = null;
     analysisRecord = null;
@@ -138,9 +137,7 @@ class OfferFlowController {
   void resetAnalysisIfNeeded() {
     if (analysisStatus == OfferAnalysisStatus.completed ||
         analysisStatus == OfferAnalysisStatus.failed) {
-      analysisStatus = OfferAnalysisStatus.idle;
-      analysisErrorMessage = null;
-      analysisRecord = null;
+      clearAnalysis();
     }
   }
 }

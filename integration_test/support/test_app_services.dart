@@ -1,16 +1,14 @@
 import 'package:profit_lens/app/app_scope.dart';
 import 'package:profit_lens/features/auth/domain/auth_repository.dart';
 import 'package:profit_lens/features/offers/data/offer_image_picker_service.dart';
-import 'package:profit_lens/features/offers/data/offer_ingestion_service.dart';
+import 'package:profit_lens/features/offers/data/offer_analysis_service.dart';
 import 'package:profit_lens/features/offers/data/offer_repository.dart';
 import 'package:profit_lens/features/profile/data/user_profile_repository.dart';
-import 'package:profit_lens/features/profitability/domain/profitability_engine.dart';
 import 'package:profit_lens/features/vehicles/data/vehicle_model_lookup_service.dart';
 import 'package:profit_lens/features/vehicles/data/vehicle_repository.dart';
 
 import 'fakes/auth_repository_fake.dart';
 import 'fakes/offer_image_picker_service_fake.dart';
-import 'fakes/offer_ingestion_service_fake.dart';
 import 'fakes/offer_repository_fake.dart';
 import 'fakes/user_profile_repository_fake.dart';
 import 'fakes/vehicle_model_lookup_service_fake.dart';
@@ -23,8 +21,7 @@ class TestAppServices extends AppServices {
     VehicleRepository? vehicleRepository,
     OfferRepository? offerRepository,
     OfferImagePickerService? offerImagePickerService,
-    OfferIngestionService? offerIngestionService,
-    ProfitabilityEngine? profitabilityEngine,
+    OfferAnalysisService? offerAnalysisService,
     VehicleModelLookupService? vehicleModelLookupService,
   }) : super(
           authRepository: authRepository ?? InMemoryAuthRepository(),
@@ -35,9 +32,7 @@ class TestAppServices extends AppServices {
           offerRepository: offerRepository ?? InMemoryOfferRepository(),
           offerImagePickerService:
               offerImagePickerService ?? const ThrowingOfferImagePickerService(),
-          offerIngestionService:
-              offerIngestionService ?? const StubOfferIngestionService(),
-          profitabilityEngine: profitabilityEngine ?? ProfitabilityEngine(),
+          offerAnalysisService: offerAnalysisService,
           vehicleModelLookupService:
               vehicleModelLookupService ?? const StubVehicleModelLookupService(),
         );

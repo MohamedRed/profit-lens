@@ -3,17 +3,12 @@ import 'package:flutter/widgets.dart';
 import '../features/auth/data/firebase_auth_repository.dart';
 import '../features/auth/domain/auth_repository.dart';
 import '../features/offers/data/firestore_offer_repository.dart';
-import '../features/offers/data/gemini_offer_ingestion_service.dart';
 import '../features/offers/data/offer_analysis_service.dart';
 import '../features/offers/data/firebase_offer_analysis_service.dart';
 import '../features/offers/data/offer_image_picker_service.dart';
-import '../features/offers/data/offer_ingestion_service.dart';
 import '../features/offers/data/offer_repository.dart';
-import '../features/offers/data/route_verification_service.dart';
-import '../features/offers/data/firebase_route_verification_service.dart';
 import '../features/profile/data/firestore_user_profile_repository.dart';
 import '../features/profile/data/user_profile_repository.dart';
-import '../features/profitability/domain/profitability_engine.dart';
 import '../features/vehicles/data/firebase_vehicle_model_lookup_service.dart';
 import '../features/vehicles/data/vehicle_model_lookup_service.dart';
 import '../features/vehicles/data/firestore_vehicle_repository.dart';
@@ -25,10 +20,7 @@ class AppServices {
   final VehicleRepository vehicleRepository;
   final OfferRepository offerRepository;
   final OfferImagePickerService offerImagePickerService;
-  final OfferIngestionService offerIngestionService;
   final OfferAnalysisService offerAnalysisService;
-  final RouteVerificationService routeVerificationService;
-  final ProfitabilityEngine profitabilityEngine;
   final VehicleModelLookupService vehicleModelLookupService;
 
   AppServices({
@@ -37,10 +29,7 @@ class AppServices {
     VehicleRepository? vehicleRepository,
     OfferRepository? offerRepository,
     OfferImagePickerService? offerImagePickerService,
-    OfferIngestionService? offerIngestionService,
     OfferAnalysisService? offerAnalysisService,
-    RouteVerificationService? routeVerificationService,
-    ProfitabilityEngine? profitabilityEngine,
     VehicleModelLookupService? vehicleModelLookupService,
   })  : authRepository = authRepository ?? FirebaseAuthRepository(),
         userProfileRepository =
@@ -49,13 +38,8 @@ class AppServices {
         offerRepository = offerRepository ?? FirestoreOfferRepository(),
         offerImagePickerService =
             offerImagePickerService ?? DeviceOfferImagePickerService(),
-        offerIngestionService =
-            offerIngestionService ?? GeminiOfferIngestionService(),
         offerAnalysisService =
             offerAnalysisService ?? FirebaseOfferAnalysisService(),
-        routeVerificationService = routeVerificationService ??
-            FirebaseRouteVerificationService(),
-        profitabilityEngine = profitabilityEngine ?? ProfitabilityEngine(),
         vehicleModelLookupService = vehicleModelLookupService ??
             FirebaseVehicleModelLookupService();
 }

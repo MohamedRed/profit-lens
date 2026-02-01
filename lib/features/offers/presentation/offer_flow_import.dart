@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../app/app_scope.dart';
-import '../data/offer_image_picker_service.dart';
 import '../../../l10n/app_localizations.dart';
-import 'controllers/offer_flow_controller.dart';
+import '../data/offer_image_picker_service.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
-import 'offer_flow_route_verification.dart';
+import '../domain/offer_source.dart';
+import 'controllers/offer_flow_controller.dart';
 import 'offer_analysis_status.dart';
 
 Future<void> importOfferScreenshot({
@@ -19,92 +19,63 @@ Future<void> importOfferScreenshot({
   required ValueChanged<bool> onLoadingChanged,
   required VoidCallback onUpdated,
 }) async {
-  final image = await picker.pickImage(source: source);
-  if (image == null) {
-    return;
-  }
-  if (!context.mounted) {
-    return;
-  }
   final l10n = AppLocalizations.of(context)!;
-  controller.clearAnalysis();
+  final runId = controller.startAnalysis();
   controller.setAnalysisStatus(OfferAnalysisStatus.extracting);
   onUpdated();
   onLoadingChanged(true);
-  try {
-    final result = await AppScope.of(context)
-        .offerIngestionService
-        .extractFromImage(image);
-    if (!context.mounted) {
-      return;
+  final image = await picker.pickImage(source: source);
+  if (image == null) {
+    if (controller.isCurrentAnalysis(runId)) {
+      controller.setAnalysisStatus(OfferAnalysisStatus.idle);
+      onUpdated();
+      onLoadingChanged(false);
     }
-    controller.applyExtraction(result);
-    onUpdated();
-    controller.setAnalysisStatus(OfferAnalysisStatus.verifyingRoute);
-    onUpdated();
+    return;
+  }
+  if (!context.mounted || !controller.isCurrentAnalysis(runId)) {
+    return;
+  }
+  try {
     if (vehicles.isNotEmpty) {
       final vehicle = vehicles.firstWhere(
         (item) => item.id == selectedVehicleId,
         orElse: () => vehicles.first,
       );
-      final verification = await verifyOfferRoute(
-        context: context,
-        controller: controller,
-        vehicle: vehicle,
-      );
-      if (verification == null) {
-        controller.setAnalysisStatus(
-          OfferAnalysisStatus.failed,
-          errorMessage: l10n.analysisFailedBody,
-        );
-        onUpdated();
-        return;
-      }
-      if (!context.mounted) {
-        return;
-      }
-      controller.applyRouteVerification(verification);
-      onUpdated();
-      controller.setAnalysisStatus(OfferAnalysisStatus.calculatingProfit);
-      onUpdated();
-      final offer = controller.buildOffer();
-      if (offer == null) {
-        controller.setAnalysisStatus(
-          OfferAnalysisStatus.failed,
-          errorMessage: l10n.analysisFailedBody,
-        );
-        onUpdated();
-        return;
-      }
       final record = await AppScope.of(context).offerAnalysisService.analyzeOffer(
-        offer: offer,
-        routeVerification: verification,
+        image: image,
         vehicleId: vehicle.id,
-        source: controller.source,
-        extraction: controller.extraction,
+        source: OfferSource.screenshot,
       );
-      controller.applyAnalysisRecord(record);
+      if (!controller.isCurrentAnalysis(runId)) {
+        return;
+      }
+      controller.applyAnalysisResult(record);
       controller.setAnalysisStatus(OfferAnalysisStatus.completed);
       onUpdated();
     } else {
+      if (controller.isCurrentAnalysis(runId)) {
+        controller.setAnalysisStatus(
+          OfferAnalysisStatus.failed,
+          errorMessage: l10n.analysisFailedBody,
+        );
+        onUpdated();
+      }
+    }
+  } catch (_) {
+    if (!context.mounted) return;
+    if (controller.isCurrentAnalysis(runId)) {
       controller.setAnalysisStatus(
         OfferAnalysisStatus.failed,
         errorMessage: l10n.analysisFailedBody,
       );
       onUpdated();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.analysisFailedBody)),
+      );
     }
-  } catch (_) {
-    if (!context.mounted) return;
-    controller.setAnalysisStatus(
-      OfferAnalysisStatus.failed,
-      errorMessage: l10n.analysisFailedBody,
-    );
-    onUpdated();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.analysisFailedBody)),
-    );
   } finally {
-    if (context.mounted) {
+    if (context.mounted && controller.isCurrentAnalysis(runId)) {
       onLoadingChanged(false);
     }
   }

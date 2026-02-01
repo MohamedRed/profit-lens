@@ -3,10 +3,14 @@ import 'package:integration_test/integration_test.dart';
 import 'package:profit_lens/app/app.dart';
 import 'package:profit_lens/core/utils/currency_format.dart';
 import 'package:profit_lens/features/offers/presentation/offer_flow_keys.dart';
+import 'package:profit_lens/features/offers/presentation/offer_flow_actions.dart';
+import 'package:profit_lens/features/offers/presentation/offer_flow_coordinator_body.dart';
 import 'package:profit_lens/features/offers/presentation/offer_result_screen.dart';
 import 'package:profit_lens/features/offers/presentation/widgets/profitability_overview_card.dart';
+import 'package:profit_lens/features/offers/presentation/widgets/place_autocomplete_field.dart';
 
 import 'support/fakes/auth_repository_fake.dart';
+import 'support/fakes/offer_analysis_service_fake.dart';
 import 'support/fakes/user_profile_repository_fake.dart';
 import 'support/fakes/vehicle_repository_fake.dart';
 import 'support/fixtures/test_fixtures.dart';
@@ -17,12 +21,18 @@ void main() {
 
   testWidgets('manual offer entry shows profitability details', (tester) async {
     await tester.binding.setLocale('en', 'US');
+    final profile = TestFixtures.profile();
+    final vehicle = TestFixtures.vehicle();
     final services = TestAppServices(
       authRepository: InMemoryAuthRepository(initialUser: TestFixtures.user),
       userProfileRepository:
-          InMemoryUserProfileRepository(initialProfile: TestFixtures.profile()),
+          InMemoryUserProfileRepository(initialProfile: profile),
       vehicleRepository:
-          InMemoryVehicleRepository(initialVehicles: [TestFixtures.vehicle()]),
+          InMemoryVehicleRepository(initialVehicles: [vehicle]),
+      offerAnalysisService: FakeOfferAnalysisService(
+        profile: profile,
+        vehicle: vehicle,
+      ),
     );
 
     await tester.pumpWidget(ProfitLensApp(services: services));
@@ -36,6 +46,33 @@ void main() {
       find.byKey(OfferFlowKeys.distanceField),
       '5.4',
     );
+    final pickupField = tester.widget<PlaceAutocompleteField>(
+      find.byKey(OfferFlowKeys.pickupAddressField),
+    );
+    pickupField.controller.text = '10 Rue des Fleurs, Paris';
+    final dropoffField = tester.widget<PlaceAutocompleteField>(
+      find.byKey(OfferFlowKeys.dropoffAddressField),
+    );
+    dropoffField.controller.text = '22 Avenue Victor Hugo, Paris';
+    await tester.pumpAndSettle();
+
+    final coordinatorState =
+        tester.state(find.byType(OfferFlowCoordinatorBody)) as dynamic;
+    await handleOfferAnalysis(
+      context: tester.element(find.byType(OfferFlowCoordinatorBody)),
+      formKey: coordinatorState._formKey,
+      controller: coordinatorState._controller,
+      profile: profile,
+      user: TestFixtures.user,
+      vehicles: [vehicle],
+      selectedVehicleId: coordinatorState._selectedVehicleId,
+      onLoadingChanged: coordinatorState._setLoading,
+      onUpdated: coordinatorState._refresh,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(OfferResultScreen), findsOneWidget);
+    await tester.pageBack();
     await tester.pumpAndSettle();
 
     expect(find.byType(ProfitabilityOverviewCard), findsOneWidget);

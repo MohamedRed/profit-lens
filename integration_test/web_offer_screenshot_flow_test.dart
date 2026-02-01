@@ -6,8 +6,8 @@ import 'package:profit_lens/features/offers/presentation/offer_flow_keys.dart';
 import 'package:profit_lens/features/offers/presentation/sections/offer_details_summary.dart';
 
 import 'support/fakes/auth_repository_fake.dart';
+import 'support/fakes/offer_analysis_service_fake.dart';
 import 'support/fakes/offer_image_picker_service_fake.dart';
-import 'support/fakes/offer_ingestion_service_fake.dart';
 import 'support/fakes/user_profile_repository_fake.dart';
 import 'support/fakes/vehicle_repository_fake.dart';
 import 'support/fixtures/test_fixtures.dart';
@@ -18,20 +18,24 @@ void main() {
 
   testWidgets('importing screenshots populates offer summary', (tester) async {
     await tester.binding.setLocale('en', 'US');
+    final profile = TestFixtures.profile();
+    final vehicle = TestFixtures.vehicle();
     final services = TestAppServices(
       authRepository: InMemoryAuthRepository(initialUser: TestFixtures.user),
       userProfileRepository:
-          InMemoryUserProfileRepository(initialProfile: TestFixtures.profile()),
+          InMemoryUserProfileRepository(initialProfile: profile),
       vehicleRepository:
-          InMemoryVehicleRepository(initialVehicles: [TestFixtures.vehicle()]),
+          InMemoryVehicleRepository(initialVehicles: [vehicle]),
       offerImagePickerService: AssetOfferImagePickerService(
         assetsBySource: {
           ImageSource.gallery: TestFixtures.galleryScreenshotPath,
           ImageSource.camera: TestFixtures.cameraScreenshotPath,
         },
       ),
-      offerIngestionService: const AssetOfferIngestionService(
-        resultsByName: TestFixtures.extractionByFileName,
+      offerAnalysisService: FakeOfferAnalysisService(
+        profile: profile,
+        vehicle: vehicle,
+        offersByImageName: TestFixtures.offerByFileName,
       ),
     );
 

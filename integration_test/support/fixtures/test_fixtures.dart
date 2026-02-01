@@ -1,6 +1,5 @@
 import 'package:profit_lens/features/auth/domain/auth_user.dart';
 import 'package:profit_lens/features/offers/domain/offer.dart';
-import 'package:profit_lens/features/offers/domain/offer_extraction_result.dart';
 import 'package:profit_lens/features/profile/domain/business_activity.dart';
 import 'package:profit_lens/features/profile/domain/fixed_cost_allocation.dart';
 import 'package:profit_lens/features/profile/domain/user_profile.dart';
@@ -56,36 +55,28 @@ class TestFixtures {
     );
   }
 
-  static const OfferExtractionResult galleryExtraction = OfferExtractionResult(
-    offer: Offer(
-      payoutEuro: 12.5,
-      distanceKm: 6.2,
-      durationMinutes: 18,
-      pickupName: 'Bistro Lumiere',
-      pickupAddress: '10 Rue des Fleurs, Paris',
-      dropoffName: 'Client A',
-      dropoffAddress: '22 Avenue Victor Hugo, Paris',
-    ),
-    confidence: 0.93,
-    rawText: 'Payout 12.50 EUR, distance 6.2 km',
+  static const Offer galleryOffer = Offer(
+    payoutEuro: 12.5,
+    distanceKm: 6.2,
+    durationMinutes: 18,
+    pickupName: 'Bistro Lumiere',
+    pickupAddress: '10 Rue des Fleurs, Paris',
+    dropoffName: 'Client A',
+    dropoffAddress: '22 Avenue Victor Hugo, Paris',
   );
 
-  static const OfferExtractionResult cameraExtraction = OfferExtractionResult(
-    offer: Offer(
-      payoutEuro: 18.75,
-      distanceKm: 9.8,
-      durationMinutes: 26,
-      pickupName: 'Cafe Mono',
-      pickupAddress: '5 Quai Voltaire, Paris',
-      dropoffName: 'Client B',
-      dropoffAddress: '77 Boulevard Saint-Germain, Paris',
-    ),
-    confidence: 0.9,
-    rawText: 'Payout 18.75 EUR, distance 9.8 km',
+  static const Offer cameraOffer = Offer(
+    payoutEuro: 18.75,
+    distanceKm: 9.8,
+    durationMinutes: 26,
+    pickupName: 'Cafe Mono',
+    pickupAddress: '5 Quai Voltaire, Paris',
+    dropoffName: 'Client B',
+    dropoffAddress: '77 Boulevard Saint-Germain, Paris',
   );
 
-  static const Map<String, OfferExtractionResult> extractionByFileName = {
-    'IMG-20260122-WA0020.JPG': galleryExtraction,
-    'IMG-20260122-WA0021.JPG': cameraExtraction,
+  static const Map<String, Offer> offerByFileName = {
+    'IMG-20260122-WA0020.JPG': galleryOffer,
+    'IMG-20260122-WA0021.JPG': cameraOffer,
   };
 }
