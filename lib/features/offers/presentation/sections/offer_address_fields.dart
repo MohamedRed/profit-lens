@@ -36,15 +36,21 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
     final l10n = AppLocalizations.of(context)!;
     final hidePickup = _dropoffDropdownOpen;
     final hideDropoff = _pickupDropdownOpen;
+    final showPickupName =
+        widget.pickupNameController.text.trim().isNotEmpty;
+    final showDropoffName =
+        widget.dropoffNameController.text.trim().isNotEmpty;
     return Column(
       children: [
         if (!hidePickup) ...[
-          TextFormField(
-            key: OfferFlowKeys.pickupNameField,
-            controller: widget.pickupNameController,
-            decoration: InputDecoration(labelText: l10n.pickupNameLabel),
-          ),
-          const SizedBox(height: 12),
+          if (showPickupName) ...[
+            TextFormField(
+              key: OfferFlowKeys.pickupNameField,
+              controller: widget.pickupNameController,
+              decoration: InputDecoration(labelText: l10n.pickupNameLabel),
+            ),
+            const SizedBox(height: 12),
+          ],
           PlaceAutocompleteField(
             key: OfferFlowKeys.pickupAddressField,
             controller: widget.pickupAddressController,
@@ -98,12 +104,14 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
         ),
         const SizedBox(height: 12),
         if (!hideDropoff) ...[
-          TextFormField(
-            key: OfferFlowKeys.dropoffNameField,
-            controller: widget.dropoffNameController,
-            decoration: InputDecoration(labelText: l10n.dropoffNameLabel),
-          ),
-          const SizedBox(height: 12),
+          if (showDropoffName) ...[
+            TextFormField(
+              key: OfferFlowKeys.dropoffNameField,
+              controller: widget.dropoffNameController,
+              decoration: InputDecoration(labelText: l10n.dropoffNameLabel),
+            ),
+            const SizedBox(height: 12),
+          ],
           PlaceAutocompleteField(
             key: OfferFlowKeys.dropoffAddressField,
             controller: widget.dropoffAddressController,
