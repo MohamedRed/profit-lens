@@ -340,6 +340,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageSectionTitle => 'Language';
 
   @override
+  String get installAppTitle => 'Install app';
+
+  @override
+  String get installAppSubtitle => 'Add ProfitLens to your home screen';
+
+  @override
   String get languageFrench => 'French';
 
   @override

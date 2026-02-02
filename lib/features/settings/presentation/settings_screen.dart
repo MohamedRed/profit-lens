@@ -4,6 +4,7 @@ import '../../../app/app_scope.dart';
 import '../../auth/domain/auth_user.dart';
 import '../../profile/domain/user_profile.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
+import 'widgets/settings_install_card.dart';
 import 'widgets/settings_language_card.dart';
 import 'widgets/settings_profile_card.dart';
 import 'widgets/settings_signout_card.dart';
@@ -34,6 +35,8 @@ class SettingsScreen extends StatelessWidget {
               SettingsProfileCard(user: user, profile: profile),
               const SizedBox(height: 12),
               SettingsLanguageCard(user: user, profile: profile),
+              const SizedBox(height: 12),
+              const SettingsInstallCard(),
               const SizedBox(height: 12),
               SettingsVehicleCard(
                 user: user,

@@ -107,6 +107,8 @@
   "fixedCostsLabel": "Fixed costs allocation",
   "profileSectionTitle": "Business profile",
   "languageSectionTitle": "Language",
+  "installAppTitle": "Install app",
+  "installAppSubtitle": "Add ProfitLens to your home screen",
   "languageFrench": "French",
   "languageEnglish": "English",
   "languageArabic": "Arabic",

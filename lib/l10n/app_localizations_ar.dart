@@ -339,6 +339,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get languageSectionTitle => 'اللغة';
 
   @override
+  String get installAppTitle => 'تثبيت التطبيق';
+
+  @override
+  String get installAppSubtitle => 'أضف ProfitLens إلى الشاشة الرئيسية';
+
+  @override
   String get languageFrench => 'الفرنسية';
 
   @override

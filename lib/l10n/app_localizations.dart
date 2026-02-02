@@ -742,6 +742,18 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get languageSectionTitle;
 
+  /// No description provided for @installAppTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Install app'**
+  String get installAppTitle;
+
+  /// No description provided for @installAppSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add ProfitLens to your home screen'**
+  String get installAppSubtitle;
+
   /// No description provided for @languageFrench.
   ///
   /// In en, this message translates to:

@@ -107,6 +107,8 @@
   "fixedCostsLabel": "Répartition des coûts fixes",
   "profileSectionTitle": "Profil entreprise",
   "languageSectionTitle": "Langue",
+  "installAppTitle": "Installer l'application",
+  "installAppSubtitle": "Ajouter ProfitLens à l'écran d'accueil",
   "languageFrench": "Français",
   "languageEnglish": "Anglais",
   "languageArabic": "Arabe",
