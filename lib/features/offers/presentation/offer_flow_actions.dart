@@ -8,6 +8,7 @@ import '../../vehicles/domain/vehicle_profile.dart';
 import '../domain/offer_record.dart';
 import '../presentation/offer_result_screen.dart';
 import 'controllers/offer_flow_controller.dart';
+import 'offer_flow_error_message.dart';
 import 'offer_flow_guard.dart';
 import 'offer_analysis_status.dart';
 
@@ -72,16 +73,17 @@ Future<void> handleOfferAnalysis({
     }
     controller.applyAnalysisResult(record);
     controller.setAnalysisStatus(OfferAnalysisStatus.completed);
-  } catch (_) {
+  } catch (error) {
+    final message = resolveAnalysisErrorMessage(error, l10n);
     if (context.mounted && controller.isCurrentAnalysis(runId)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.offerSaveFailedMessage)),
+        SnackBar(content: Text(message)),
       );
     }
     if (controller.isCurrentAnalysis(runId)) {
       controller.setAnalysisStatus(
         OfferAnalysisStatus.failed,
-        errorMessage: l10n.analysisFailedBody,
+        errorMessage: message,
       );
       onLoadingChanged(false);
       onUpdated();

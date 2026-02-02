@@ -8,6 +8,7 @@ import '../../vehicles/domain/vehicle_profile.dart';
 import '../domain/offer_source.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_analysis_status.dart';
+import 'offer_flow_error_message.dart';
 
 Future<void> importOfferScreenshot({
   required BuildContext context,
@@ -61,16 +62,16 @@ Future<void> importOfferScreenshot({
         onUpdated();
       }
     }
-  } catch (_) {
+  } catch (error) {
     if (!context.mounted) return;
     if (controller.isCurrentAnalysis(runId)) {
       controller.setAnalysisStatus(
         OfferAnalysisStatus.failed,
-        errorMessage: l10n.analysisFailedBody,
+        errorMessage: resolveAnalysisErrorMessage(error, l10n),
       );
       onUpdated();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.analysisFailedBody)),
+        SnackBar(content: Text(resolveAnalysisErrorMessage(error, l10n))),
       );
     }
   } finally {
