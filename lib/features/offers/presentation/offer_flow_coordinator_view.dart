@@ -6,6 +6,7 @@ import '../domain/offer_record.dart';
 import '../domain/place_selection.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_view.dart';
+import 'offer_flow_loading_action.dart';
 
 class OfferFlowCoordinatorView extends StatelessWidget {
   final AuthUser user;
@@ -18,7 +19,7 @@ class OfferFlowCoordinatorView extends StatelessWidget {
   final VoidCallback onImportScreenshot;
   final VoidCallback onCaptureScreenshot;
   final VoidCallback onViewDetails;
-  final bool isLoading;
+  final OfferFlowLoadingAction? loadingAction;
   final OfferRecord? previewRecord;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
@@ -35,7 +36,7 @@ class OfferFlowCoordinatorView extends StatelessWidget {
     required this.onImportScreenshot,
     required this.onCaptureScreenshot,
     required this.onViewDetails,
-    required this.isLoading,
+    required this.loadingAction,
     required this.previewRecord,
     required this.onPickupSelected,
     required this.onDropoffSelected,
@@ -54,7 +55,7 @@ class OfferFlowCoordinatorView extends StatelessWidget {
       onImportScreenshot: onImportScreenshot,
       onCaptureScreenshot: onCaptureScreenshot,
       onViewDetails: onViewDetails,
-      isLoading: isLoading,
+      loadingAction: loadingAction,
       previewRecord: previewRecord,
       onPickupSelected: onPickupSelected,
       onDropoffSelected: onDropoffSelected,

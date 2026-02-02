@@ -11,6 +11,7 @@ import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_error_message.dart';
 import 'offer_flow_guard.dart';
 import 'offer_analysis_status.dart';
+import 'offer_flow_loading_action.dart';
 
 Future<void> handleOfferAnalysis({
   required BuildContext context,
@@ -20,7 +21,7 @@ Future<void> handleOfferAnalysis({
   required AuthUser user,
   required List<VehicleProfile> vehicles,
   required String? selectedVehicleId,
-  required ValueChanged<bool> onLoadingChanged,
+  required ValueChanged<OfferFlowLoadingAction?> onLoadingChanged,
   required VoidCallback onUpdated,
 }) async {
   if (!(formKey.currentState?.validate() ?? false)) {
@@ -45,7 +46,7 @@ Future<void> handleOfferAnalysis({
   }
   final runId = controller.startAnalysis(OfferAnalysisStatus.verifyingRoute);
   onUpdated();
-  onLoadingChanged(true);
+  onLoadingChanged(OfferFlowLoadingAction.analyze);
   if (!context.mounted) {
     return;
   }
@@ -56,7 +57,7 @@ Future<void> handleOfferAnalysis({
         OfferAnalysisStatus.failed,
         errorMessage: l10n.analysisFailedBody,
       );
-      onLoadingChanged(false);
+      onLoadingChanged(null);
       onUpdated();
     }
     return;
@@ -85,13 +86,13 @@ Future<void> handleOfferAnalysis({
         OfferAnalysisStatus.failed,
         errorMessage: message,
       );
-      onLoadingChanged(false);
+      onLoadingChanged(null);
       onUpdated();
     }
     return;
   }
   if (controller.isCurrentAnalysis(runId)) {
-    onLoadingChanged(false);
+    onLoadingChanged(null);
     onUpdated();
   }
   if (!context.mounted) {

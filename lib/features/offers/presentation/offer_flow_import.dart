@@ -9,6 +9,7 @@ import '../domain/offer_source.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_analysis_status.dart';
 import 'offer_flow_error_message.dart';
+import 'offer_flow_loading_action.dart';
 
 Future<void> importOfferScreenshot({
   required BuildContext context,
@@ -17,7 +18,8 @@ Future<void> importOfferScreenshot({
   required OfferFlowController controller,
   required List<VehicleProfile> vehicles,
   required String? selectedVehicleId,
-  required ValueChanged<bool> onLoadingChanged,
+  required ValueChanged<OfferFlowLoadingAction?> onLoadingChanged,
+  required OfferFlowLoadingAction loadingAction,
   required VoidCallback onUpdated,
 }) async {
   final l10n = AppLocalizations.of(context)!;
@@ -30,7 +32,7 @@ Future<void> importOfferScreenshot({
   }
   final runId = controller.startAnalysis(OfferAnalysisStatus.extracting);
   onUpdated();
-  onLoadingChanged(true);
+  onLoadingChanged(loadingAction);
   if (!context.mounted || !controller.isCurrentAnalysis(runId)) {
     return;
   }
@@ -74,7 +76,7 @@ Future<void> importOfferScreenshot({
     }
   } finally {
     if (context.mounted && controller.isCurrentAnalysis(runId)) {
-      onLoadingChanged(false);
+      onLoadingChanged(null);
     }
   }
 }

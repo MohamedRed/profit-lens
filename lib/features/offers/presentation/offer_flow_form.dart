@@ -10,6 +10,7 @@ import 'sections/offer_details_section.dart';
 import 'sections/vehicle_picker_section.dart';
 import 'widgets/profitability_overview_card.dart';
 import 'offer_flow_keys.dart';
+import 'offer_flow_loading_action.dart';
 import 'offer_analysis_status.dart';
 
 class OfferFlowForm extends StatelessWidget {
@@ -22,7 +23,7 @@ class OfferFlowForm extends StatelessWidget {
   final VoidCallback onImportScreenshot;
   final VoidCallback onCaptureScreenshot;
   final VoidCallback onViewDetails;
-  final bool isLoading;
+  final OfferFlowLoadingAction? loadingAction;
   final OfferRecord? previewRecord;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
@@ -38,7 +39,7 @@ class OfferFlowForm extends StatelessWidget {
     required this.onImportScreenshot,
     required this.onCaptureScreenshot,
     required this.onViewDetails,
-    required this.isLoading,
+    required this.loadingAction,
     required this.previewRecord,
     required this.onPickupSelected,
     required this.onDropoffSelected,
@@ -47,6 +48,11 @@ class OfferFlowForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isBusy = loadingAction != null;
+    final isImportBusy =
+        loadingAction == OfferFlowLoadingAction.importScreenshot;
+    final isCaptureBusy =
+        loadingAction == OfferFlowLoadingAction.captureScreenshot;
     return Form(
       key: formKey,
       child: ListView(
@@ -64,7 +70,7 @@ class OfferFlowForm extends StatelessWidget {
             onPickupSelected: onPickupSelected,
             onDropoffSelected: onDropoffSelected,
           ),
-          if (!isLoading &&
+          if (!isBusy &&
               previewRecord != null &&
               controller.analysisStatus == OfferAnalysisStatus.completed) ...[
             const SizedBox(height: 16),
@@ -77,16 +83,16 @@ class OfferFlowForm extends StatelessWidget {
           PrimaryButton(
             key: OfferFlowKeys.importScreenshotButton,
             label: l10n.importScreenshotButton,
-            onPressed: onImportScreenshot,
-            isBusy: isLoading,
+            onPressed: isBusy ? null : onImportScreenshot,
+            isBusy: isImportBusy,
             showSpinnerWithLabel: true,
           ),
           const SizedBox(height: 12),
           PrimaryButton(
             key: OfferFlowKeys.captureScreenshotButton,
             label: l10n.captureScreenshotButton,
-            onPressed: onCaptureScreenshot,
-            isBusy: isLoading,
+            onPressed: isBusy ? null : onCaptureScreenshot,
+            isBusy: isCaptureBusy,
             showSpinnerWithLabel: true,
           ),
         ],

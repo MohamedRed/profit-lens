@@ -9,6 +9,7 @@ import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_callbacks.dart';
 import 'offer_flow_coordinator_view.dart';
 import 'offer_flow_vehicle_selection.dart';
+import 'offer_flow_loading_action.dart';
 
 class OfferFlowCoordinatorStream extends StatelessWidget {
   final AuthUser user;
@@ -18,9 +19,9 @@ class OfferFlowCoordinatorStream extends StatelessWidget {
   final String? selectedVehicleId;
   final ValueChanged<String?> onVehicleResolved;
   final ValueChanged<String?> onVehicleChanged;
-  final ValueChanged<bool> onLoadingChanged;
+  final ValueChanged<OfferFlowLoadingAction?> onLoadingChanged;
   final VoidCallback onUpdated;
-  final bool isLoading;
+  final OfferFlowLoadingAction? loadingAction;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
 
@@ -35,7 +36,7 @@ class OfferFlowCoordinatorStream extends StatelessWidget {
     required this.onVehicleChanged,
     required this.onLoadingChanged,
     required this.onUpdated,
-    required this.isLoading,
+    required this.loadingAction,
     required this.onPickupSelected,
     required this.onDropoffSelected,
   });
@@ -78,7 +79,7 @@ class OfferFlowCoordinatorStream extends StatelessWidget {
           onImportScreenshot: callbacks.onImportScreenshot,
           onCaptureScreenshot: callbacks.onCaptureScreenshot,
           onViewDetails: callbacks.onViewDetails,
-          isLoading: isLoading,
+          loadingAction: loadingAction,
           previewRecord: previewRecord,
           onPickupSelected: onPickupSelected,
           onDropoffSelected: onDropoffSelected,

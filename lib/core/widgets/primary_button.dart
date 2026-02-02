@@ -23,27 +23,47 @@ class PrimaryButton extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: isBusy
-              ? (showSpinnerWithLabel
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          height: 16,
-                          width: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(label),
-                      ],
-                    )
-                  : const SizedBox(
-                      height: 18,
-                      width: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ))
+              ? _BusyContent(
+                  label: label,
+                  showSpinnerWithLabel: showSpinnerWithLabel,
+                )
               : Text(label),
         ),
       ),
+    );
+  }
+}
+
+class _BusyContent extends StatelessWidget {
+  final String label;
+  final bool showSpinnerWithLabel;
+
+  const _BusyContent({
+    required this.label,
+    required this.showSpinnerWithLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final disabledColor = Theme.of(context).disabledColor;
+    final spinner = SizedBox(
+      height: 16,
+      width: 16,
+      child: CircularProgressIndicator(
+        strokeWidth: 2,
+        valueColor: AlwaysStoppedAnimation(disabledColor),
+      ),
+    );
+    if (!showSpinnerWithLabel) {
+      return spinner;
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        spinner,
+        const SizedBox(width: 8),
+        Text(label, style: TextStyle(color: disabledColor)),
+      ],
     );
   }
 }

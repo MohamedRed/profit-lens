@@ -10,6 +10,7 @@ import 'offer_flow_actions.dart';
 import 'offer_flow_import.dart';
 import 'offer_analysis_status.dart';
 import 'offer_result_screen.dart';
+import 'offer_flow_loading_action.dart';
 
 class OfferFlowCallbacks {
   final VoidCallback onImportScreenshot;
@@ -31,7 +32,7 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
   required AuthUser user,
   required List<VehicleProfile> vehicles,
   required String? selectedVehicleId,
-  required ValueChanged<bool> onLoadingChanged,
+  required ValueChanged<OfferFlowLoadingAction?> onLoadingChanged,
   required VoidCallback onUpdated,
 }) {
   return OfferFlowCallbacks(
@@ -43,6 +44,7 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
       vehicles: vehicles,
       selectedVehicleId: selectedVehicleId,
       onLoadingChanged: onLoadingChanged,
+      loadingAction: OfferFlowLoadingAction.importScreenshot,
       onUpdated: onUpdated,
     ),
     onCaptureScreenshot: () => importOfferScreenshot(
@@ -53,6 +55,7 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
       vehicles: vehicles,
       selectedVehicleId: selectedVehicleId,
       onLoadingChanged: onLoadingChanged,
+      loadingAction: OfferFlowLoadingAction.captureScreenshot,
       onUpdated: onUpdated,
     ),
     onViewDetails: () async {

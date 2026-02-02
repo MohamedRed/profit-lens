@@ -4,6 +4,7 @@ import '../../profile/domain/user_profile.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_controller_listeners.dart';
 import 'offer_flow_coordinator_stream.dart';
+import 'offer_flow_loading_action.dart';
 
 class OfferFlowCoordinatorBody extends StatefulWidget {
   final AuthUser user;
@@ -24,7 +25,7 @@ class _OfferFlowCoordinatorBodyState extends State<OfferFlowCoordinatorBody> {
   final _formKey = GlobalKey<FormState>();
   late final OfferFlowController _controller;
   String? _selectedVehicleId;
-  bool _isLoading = false;
+  OfferFlowLoadingAction? _loadingAction;
 
   @override
   void initState() {
@@ -48,10 +49,10 @@ class _OfferFlowCoordinatorBodyState extends State<OfferFlowCoordinatorBody> {
     }
   }
 
-  void _setLoading(bool value) {
+  void _setLoading(OfferFlowLoadingAction? value) {
     if (mounted) {
       setState(() {
-        _isLoading = value;
+        _loadingAction = value;
       });
     }
   }
@@ -79,7 +80,7 @@ class _OfferFlowCoordinatorBodyState extends State<OfferFlowCoordinatorBody> {
       onVehicleChanged: _setSelectedVehicle,
       onLoadingChanged: _setLoading,
       onUpdated: _refresh,
-      isLoading: _isLoading,
+      loadingAction: _loadingAction,
       onPickupSelected: _controller.applyPickupSelection,
       onDropoffSelected: _controller.applyDropoffSelection,
     );

@@ -7,6 +7,7 @@ import '../domain/place_selection.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_form.dart';
+import 'offer_flow_loading_action.dart';
 
 class OfferFlowView extends StatelessWidget {
   final AuthUser user;
@@ -19,7 +20,7 @@ class OfferFlowView extends StatelessWidget {
   final VoidCallback onImportScreenshot;
   final VoidCallback onCaptureScreenshot;
   final VoidCallback onViewDetails;
-  final bool isLoading;
+  final OfferFlowLoadingAction? loadingAction;
   final OfferRecord? previewRecord;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
@@ -36,7 +37,7 @@ class OfferFlowView extends StatelessWidget {
     required this.onImportScreenshot,
     required this.onCaptureScreenshot,
     required this.onViewDetails,
-    required this.isLoading,
+    required this.loadingAction,
     required this.previewRecord,
     required this.onPickupSelected,
     required this.onDropoffSelected,
@@ -63,7 +64,7 @@ class OfferFlowView extends StatelessWidget {
                 onImportScreenshot: onImportScreenshot,
                 onCaptureScreenshot: onCaptureScreenshot,
                 onViewDetails: onViewDetails,
-                isLoading: isLoading,
+                loadingAction: loadingAction,
                 previewRecord: previewRecord,
                 onPickupSelected: onPickupSelected,
                 onDropoffSelected: onDropoffSelected,
