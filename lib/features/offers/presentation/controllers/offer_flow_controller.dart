@@ -108,8 +108,10 @@ class OfferFlowController {
     routeVerification = offer.routeVerification;
   }
 
-  int startAnalysis() {
+  int startAnalysis(OfferAnalysisStatus status) {
     clearAnalysis();
+    analysisStatus = status;
+    analysisErrorMessage = null;
     return _analysisRunId;
   }
 

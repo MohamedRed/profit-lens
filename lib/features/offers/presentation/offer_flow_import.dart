@@ -20,8 +20,7 @@ Future<void> importOfferScreenshot({
   required VoidCallback onUpdated,
 }) async {
   final l10n = AppLocalizations.of(context)!;
-  final runId = controller.startAnalysis();
-  controller.setAnalysisStatus(OfferAnalysisStatus.extracting);
+  final runId = controller.startAnalysis(OfferAnalysisStatus.extracting);
   onUpdated();
   onLoadingChanged(true);
   final image = await picker.pickImage(source: source);

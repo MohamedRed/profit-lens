@@ -64,7 +64,8 @@ class OfferFlowForm extends StatelessWidget {
             onPickupSelected: onPickupSelected,
             onDropoffSelected: onDropoffSelected,
           ),
-          if (previewRecord != null &&
+          if (!isLoading &&
+              previewRecord != null &&
               controller.analysisStatus == OfferAnalysisStatus.completed) ...[
             const SizedBox(height: 16),
             ProfitabilityOverviewCard(

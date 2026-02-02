@@ -42,8 +42,7 @@ Future<void> handleOfferAnalysis({
   if (!ready) {
     return;
   }
-  final runId = controller.startAnalysis();
-  controller.setAnalysisStatus(OfferAnalysisStatus.verifyingRoute);
+  final runId = controller.startAnalysis(OfferAnalysisStatus.verifyingRoute);
   onUpdated();
   onLoadingChanged(true);
   if (!context.mounted) {
