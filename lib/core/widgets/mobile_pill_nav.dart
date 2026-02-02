@@ -28,59 +28,47 @@ class MobilePillNav extends StatelessWidget {
       currentIndex >= 0 && currentIndex < items.length,
       'MobilePillNav currentIndex must be within item range.',
     );
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.transparent,
-            Color(0xAAFFFFFF),
-          ],
+    return SafeArea(
+      minimum: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+      child: Container(
+        height: 72,
+        decoration: BoxDecoration(
+          color: ShadcnColors.surface,
+          borderRadius: BorderRadius.circular(ShadcnRadius.pill),
         ),
-      ),
-      child: SafeArea(
-        minimum: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-        child: Container(
-          height: 72,
-          decoration: BoxDecoration(
-            color: ShadcnColors.surface,
-            borderRadius: BorderRadius.circular(ShadcnRadius.pill),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final indicatorWidth = constraints.maxWidth / items.length;
-              return Stack(
-                children: [
-                  AnimatedPositioned(
-                    duration: ShadcnDurations.short,
-                    curve: Curves.easeOut,
-                    left: indicatorWidth * currentIndex,
-                    top: 0,
-                    bottom: 0,
-                    child: Container(
-                      width: indicatorWidth,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(28),
-                      ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final indicatorWidth = constraints.maxWidth / items.length;
+            return Stack(
+              children: [
+                AnimatedPositioned(
+                  duration: ShadcnDurations.short,
+                  curve: Curves.easeOut,
+                  left: indicatorWidth * currentIndex,
+                  top: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: indicatorWidth,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
                     ),
                   ),
-                  Row(
-                    children: [
-                      for (int i = 0; i < items.length; i++)
-                        _NavButton(
-                          item: items[i],
-                          isActive: i == currentIndex,
-                          onTap: () => onChanged(i),
-                        ),
-                    ],
-                  ),
-                ],
-              );
-            },
-          ),
+                ),
+                Row(
+                  children: [
+                    for (int i = 0; i < items.length; i++)
+                      _NavButton(
+                        item: items[i],
+                        isActive: i == currentIndex,
+                        onTap: () => onChanged(i),
+                      ),
+                  ],
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
