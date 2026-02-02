@@ -7,11 +7,13 @@ import '../controllers/offer_flow_controller.dart';
 class OfferDetailsSummary extends StatelessWidget {
   final OfferFlowController controller;
   final VoidCallback onEdit;
+  final VoidCallback onReset;
 
   const OfferDetailsSummary({
     super.key,
     required this.controller,
     required this.onEdit,
+    required this.onReset,
   });
 
   @override
@@ -51,7 +53,22 @@ class OfferDetailsSummary extends StatelessWidget {
         if (dropoffAddress.isNotEmpty)
           Text('${l10n.dropoffAddressLabel}: $dropoffAddress'),
         const SizedBox(height: 8),
-        TextButton(onPressed: onEdit, child: Text(l10n.editOfferDetailsButton)),
+        Row(
+          children: [
+            TextButton(
+              onPressed: onEdit,
+              child: Text(l10n.editOfferDetailsButton),
+            ),
+            const SizedBox(width: 8),
+            TextButton(
+              onPressed: onReset,
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+              ),
+              child: Text(l10n.resetOfferButton),
+            ),
+          ],
+        ),
       ],
     );
   }

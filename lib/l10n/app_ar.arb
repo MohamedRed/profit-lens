@@ -3,6 +3,7 @@
   "appTitle": "ProfitLens",
   "offerDetailsSection": "تفاصيل العرض",
   "editOfferDetailsButton": "تعديل التفاصيل",
+  "resetOfferButton": "إعادة تعيين العرض",
   "analysisProgressTitle": "جارٍ تحليل العرض",
   "analysisStepExtracting": "استخراج تفاصيل العرض",
   "analysisStepVerifyRoute": "التحقق من المسار",

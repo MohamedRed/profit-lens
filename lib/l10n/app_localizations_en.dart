@@ -18,6 +18,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editOfferDetailsButton => 'Edit details';
 
   @override
+  String get resetOfferButton => 'Reset offer';
+
+  @override
   String get analysisProgressTitle => 'Analyzing offer';
 
   @override

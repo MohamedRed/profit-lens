@@ -18,6 +18,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get editOfferDetailsButton => 'تعديل التفاصيل';
 
   @override
+  String get resetOfferButton => 'إعادة تعيين العرض';
+
+  @override
   String get analysisProgressTitle => 'جارٍ تحليل العرض';
 
   @override

@@ -3,6 +3,7 @@
   "appTitle": "ProfitLens",
   "offerDetailsSection": "Détails de l'offre",
   "editOfferDetailsButton": "Modifier les détails",
+  "resetOfferButton": "Réinitialiser l’offre",
   "analysisProgressTitle": "Analyse de l'offre",
   "analysisStepExtracting": "Extraction des détails de l'offre",
   "analysisStepVerifyRoute": "Vérification de l'itinéraire",

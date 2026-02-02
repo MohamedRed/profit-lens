@@ -108,6 +108,21 @@ class OfferFlowController {
     routeVerification = offer.routeVerification;
   }
 
+  void resetOfferDetails() {
+    payoutController.clear();
+    distanceController.clear();
+    durationController.clear();
+    pickupNameController.clear();
+    pickupAddressController.clear();
+    dropoffNameController.clear();
+    dropoffAddressController.clear();
+    pickupSelection = null;
+    dropoffSelection = null;
+    extraction = null;
+    source = OfferSource.manual;
+    clearAnalysis();
+  }
+
   int startAnalysis(OfferAnalysisStatus status) {
     clearAnalysis();
     analysisStatus = status;

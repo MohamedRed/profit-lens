@@ -118,6 +118,12 @@ abstract class AppLocalizations {
   /// **'Edit details'**
   String get editOfferDetailsButton;
 
+  /// No description provided for @resetOfferButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset offer'**
+  String get resetOfferButton;
+
   /// No description provided for @analysisProgressTitle.
   ///
   /// In en, this message translates to:

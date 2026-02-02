@@ -45,6 +45,11 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
     }
   }
 
+  void _resetOffer() {
+    widget.controller.resetOfferDetails();
+    setState(() => _isEditing = true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -86,6 +91,7 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
       return OfferDetailsSummary(
         controller: widget.controller,
         onEdit: () => setState(() => _isEditing = true),
+        onReset: _resetOffer,
       );
     }
     return SectionCard(
@@ -99,6 +105,17 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
           dropoffAddressController: widget.controller.dropoffAddressController,
           onPickupSelected: widget.onPickupSelected,
           onDropoffSelected: widget.onDropoffSelected,
+        ),
+        const SizedBox(height: 8),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton(
+            onPressed: _resetOffer,
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Text(l10n.resetOfferButton),
+          ),
         ),
       ],
     );
