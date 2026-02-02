@@ -106,17 +106,6 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
           onPickupSelected: widget.onPickupSelected,
           onDropoffSelected: widget.onDropoffSelected,
         ),
-        const SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: TextButton(
-            onPressed: _resetOffer,
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: Text(l10n.resetOfferButton),
-          ),
-        ),
       ],
     );
   }
