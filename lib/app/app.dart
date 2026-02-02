@@ -33,6 +33,17 @@ class ProfitLensApp extends StatelessWidget {
           Locale('en'),
           Locale('ar'),
         ],
+        localeResolutionCallback: (locale, supportedLocales) {
+          if (locale == null) {
+            return const Locale('fr');
+          }
+          for (final supported in supportedLocales) {
+            if (supported.languageCode == locale.languageCode) {
+              return supported;
+            }
+          }
+          return const Locale('fr');
+        },
         home: const AuthGate(),
       ),
     );
