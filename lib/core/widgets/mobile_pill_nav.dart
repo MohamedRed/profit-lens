@@ -64,13 +64,6 @@ class MobilePillNav extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(28),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x1A000000),
-                            blurRadius: 12,
-                            offset: Offset(0, 4),
-                          )
-                        ],
                       ),
                     ),
                   ),
