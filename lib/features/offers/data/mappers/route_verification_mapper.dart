@@ -9,7 +9,7 @@ class RouteVerificationMapper {
     final duration = (data['durationMinutes'] as num?)?.toDouble();
     final provider = data['provider'] as String?;
     final travelMode = data['travelMode'] as String?;
-    final verifiedAt = (data['verifiedAt'] as Timestamp?)?.toDate();
+    final verifiedAt = _parseVerifiedAt(data['verifiedAt']);
     if (distance == null ||
         duration == null ||
         provider == null ||
@@ -24,6 +24,19 @@ class RouteVerificationMapper {
       travelMode: travelMode,
       verifiedAt: verifiedAt,
     );
+  }
+
+  DateTime? _parseVerifiedAt(dynamic value) {
+    if (value is Timestamp) {
+      return value.toDate();
+    }
+    if (value is DateTime) {
+      return value;
+    }
+    if (value is String) {
+      return DateTime.tryParse(value);
+    }
+    return null;
   }
 
   Map<String, dynamic> toDocument(RouteVerification verification) {
