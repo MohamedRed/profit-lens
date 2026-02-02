@@ -21,18 +21,16 @@ Future<void> importOfferScreenshot({
   required VoidCallback onUpdated,
 }) async {
   final l10n = AppLocalizations.of(context)!;
+  final image = await picker.pickImage(source: source);
+  if (image == null) {
+    return;
+  }
+  if (!context.mounted) {
+    return;
+  }
   final runId = controller.startAnalysis(OfferAnalysisStatus.extracting);
   onUpdated();
   onLoadingChanged(true);
-  final image = await picker.pickImage(source: source);
-  if (image == null) {
-    if (controller.isCurrentAnalysis(runId)) {
-      controller.setAnalysisStatus(OfferAnalysisStatus.idle);
-      onUpdated();
-      onLoadingChanged(false);
-    }
-    return;
-  }
   if (!context.mounted || !controller.isCurrentAnalysis(runId)) {
     return;
   }
