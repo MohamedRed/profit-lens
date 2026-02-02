@@ -47,10 +47,6 @@ class OfferFlowView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-      ),
       body: SafeArea(
         child: vehicles.isEmpty
             ? Center(child: Text(l10n.noVehiclesMessage))

@@ -28,7 +28,6 @@ class SettingsScreen extends StatelessWidget {
       builder: (context, snapshot) {
         final vehicles = snapshot.data ?? [];
         return Scaffold(
-          appBar: AppBar(),
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
