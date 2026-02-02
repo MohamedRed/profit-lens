@@ -12,7 +12,7 @@ class CostSettingsMapper {
     final monthlyFixedCosts = (data['monthlyFixedCosts'] as num?)?.toDouble();
     final monthlyHours = (data['monthlyWorkingHours'] as num?)?.toDouble();
     final monthlyDistance = (data['monthlyDistanceKm'] as num?)?.toDouble();
-    final monthlyDeliveries = data['monthlyDeliveries'] as int?;
+    final monthlyDeliveries = (data['monthlyDeliveries'] as num?)?.toInt();
     if (socialRate == null ||
         allocation == null ||
         monthlyFixedCosts == null ||
