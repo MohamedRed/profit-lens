@@ -114,6 +114,7 @@ export const analyzeOffer = onCall(
       uid,
       offerId: docRef.id,
       source,
+      runtime: process.version,
     });
 
     return { record };
