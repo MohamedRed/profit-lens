@@ -13,10 +13,11 @@ class UserProfileMapper {
     final fixedCosts = (data['monthlyFixedCosts'] as num?)?.toDouble();
     final monthlyHours = (data['monthlyWorkingHours'] as num?)?.toDouble();
     final monthlyDistance = (data['monthlyDistanceKm'] as num?)?.toDouble();
-    final monthlyDeliveries = data['monthlyDeliveries'] as int?;
+    final monthlyDeliveries = (data['monthlyDeliveries'] as num?)?.toInt();
     final countryCode = data['countryCode'] as String?;
     final currencyCode = data['currencyCode'] as String?;
     final useFranceDefaults = data['useFranceDefaults'] as bool?;
+    final preferredLocale = data['preferredLocale'] as String?;
 
     if (activity == null ||
         allocation == null ||
@@ -46,6 +47,7 @@ class UserProfileMapper {
       monthlyDeliveries: monthlyDeliveries,
       defaultVehicleId: data['defaultVehicleId'] as String?,
       useFranceDefaults: useFranceDefaults,
+      preferredLocale: preferredLocale ?? 'fr',
     );
   }
 
@@ -64,6 +66,7 @@ class UserProfileMapper {
       'monthlyDeliveries': profile.monthlyDeliveries,
       'defaultVehicleId': profile.defaultVehicleId,
       'useFranceDefaults': profile.useFranceDefaults,
+      'preferredLocale': profile.preferredLocale,
     };
   }
 

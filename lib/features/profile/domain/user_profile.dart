@@ -16,6 +16,7 @@ class UserProfile {
   final int monthlyDeliveries;
   final String? defaultVehicleId;
   final bool useFranceDefaults;
+  final String? preferredLocale;
 
   const UserProfile({
     required this.uid,
@@ -32,6 +33,7 @@ class UserProfile {
     required this.monthlyDeliveries,
     required this.defaultVehicleId,
     required this.useFranceDefaults,
+    required this.preferredLocale,
   });
 
   UserProfile copyWith({
@@ -49,6 +51,7 @@ class UserProfile {
     int? monthlyDeliveries,
     String? defaultVehicleId,
     bool? useFranceDefaults,
+    String? preferredLocale,
   }) {
     return UserProfile(
       uid: uid ?? this.uid,
@@ -66,6 +69,7 @@ class UserProfile {
       monthlyDeliveries: monthlyDeliveries ?? this.monthlyDeliveries,
       defaultVehicleId: defaultVehicleId ?? this.defaultVehicleId,
       useFranceDefaults: useFranceDefaults ?? this.useFranceDefaults,
+      preferredLocale: preferredLocale ?? this.preferredLocale,
     );
   }
 }

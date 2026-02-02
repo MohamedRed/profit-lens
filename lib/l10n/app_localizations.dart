@@ -730,6 +730,30 @@ abstract class AppLocalizations {
   /// **'Business profile'**
   String get profileSectionTitle;
 
+  /// No description provided for @languageSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageSectionTitle;
+
+  /// No description provided for @languageFrench.
+  ///
+  /// In en, this message translates to:
+  /// **'French'**
+  String get languageFrench;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageArabic.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get languageArabic;
+
   /// No description provided for @vehiclesSectionTitle.
   ///
   /// In en, this message translates to:

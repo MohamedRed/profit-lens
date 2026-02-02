@@ -70,6 +70,7 @@ Future<void> saveProfileSetup({
     monthlyDeliveries: values.monthlyDeliveries,
     defaultVehicleId: vehicle.id,
     useFranceDefaults: businessController.useFranceDefaults,
+    preferredLocale: 'fr',
   );
 
   onSavingChanged(true);

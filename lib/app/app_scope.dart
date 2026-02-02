@@ -13,6 +13,7 @@ import '../features/vehicles/data/firebase_vehicle_model_lookup_service.dart';
 import '../features/vehicles/data/vehicle_model_lookup_service.dart';
 import '../features/vehicles/data/firestore_vehicle_repository.dart';
 import '../features/vehicles/data/vehicle_repository.dart';
+import '../core/localization/app_locale_controller.dart';
 
 class AppServices {
   final AuthRepository authRepository;
@@ -22,6 +23,7 @@ class AppServices {
   final OfferImagePickerService offerImagePickerService;
   final OfferAnalysisService offerAnalysisService;
   final VehicleModelLookupService vehicleModelLookupService;
+  final AppLocaleController localeController;
 
   AppServices({
     AuthRepository? authRepository,
@@ -31,6 +33,7 @@ class AppServices {
     OfferImagePickerService? offerImagePickerService,
     OfferAnalysisService? offerAnalysisService,
     VehicleModelLookupService? vehicleModelLookupService,
+    AppLocaleController? localeController,
   })  : authRepository = authRepository ?? FirebaseAuthRepository(),
         userProfileRepository =
             userProfileRepository ?? FirestoreUserProfileRepository(),
@@ -41,7 +44,8 @@ class AppServices {
         offerAnalysisService =
             offerAnalysisService ?? FirebaseOfferAnalysisService(),
         vehicleModelLookupService = vehicleModelLookupService ??
-            FirebaseVehicleModelLookupService();
+            FirebaseVehicleModelLookupService(),
+        localeController = localeController ?? AppLocaleController();
 }
 
 class AppScope extends InheritedWidget {

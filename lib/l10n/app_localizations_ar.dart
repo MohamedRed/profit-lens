@@ -333,6 +333,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileSectionTitle => 'ملف النشاط';
 
   @override
+  String get languageSectionTitle => 'اللغة';
+
+  @override
+  String get languageFrench => 'الفرنسية';
+
+  @override
+  String get languageEnglish => 'الإنجليزية';
+
+  @override
+  String get languageArabic => 'العربية';
+
+  @override
   String get vehiclesSectionTitle => 'المركبات';
 
   @override

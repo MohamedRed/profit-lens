@@ -334,6 +334,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileSectionTitle => 'Business profile';
 
   @override
+  String get languageSectionTitle => 'Language';
+
+  @override
+  String get languageFrench => 'French';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageArabic => 'Arabic';
+
+  @override
   String get vehiclesSectionTitle => 'Vehicles';
 
   @override

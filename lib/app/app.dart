@@ -18,33 +18,26 @@ class ProfitLensApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScope(
       services: services,
-      child: MaterialApp(
-        onGenerateTitle: (context) =>
-            AppLocalizations.of(context)?.appTitle ?? 'ProfitLens',
-        theme: AppTheme.light(),
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('fr'),
-          Locale('en'),
-          Locale('ar'),
-        ],
-        localeResolutionCallback: (locale, supportedLocales) {
-          if (locale == null) {
-            return const Locale('fr');
-          }
-          for (final supported in supportedLocales) {
-            if (supported.languageCode == locale.languageCode) {
-              return supported;
-            }
-          }
-          return const Locale('fr');
-        },
-        home: const AuthGate(),
+      child: AnimatedBuilder(
+        animation: services.localeController,
+        builder: (context, _) => MaterialApp(
+          locale: services.localeController.locale,
+          onGenerateTitle: (context) =>
+              AppLocalizations.of(context)?.appTitle ?? 'ProfitLens',
+          theme: AppTheme.light(),
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('fr'),
+            Locale('en'),
+            Locale('ar'),
+          ],
+          home: const AuthGate(),
+        ),
       ),
     );
   }

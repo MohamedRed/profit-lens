@@ -25,6 +25,11 @@ class ProfileGate extends StatelessWidget {
         if (profile == null) {
           return ProfileSetupScreen(user: user);
         }
+        final localeController = AppScope.of(context).localeController;
+        final preferredLocale = profile.preferredLocale ?? 'fr';
+        if (localeController.locale.languageCode != preferredLocale) {
+          localeController.setLocaleCode(preferredLocale);
+        }
         return HomeScreen(user: user, profile: profile);
       },
     );

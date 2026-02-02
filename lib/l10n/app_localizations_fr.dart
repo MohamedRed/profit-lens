@@ -336,6 +336,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profileSectionTitle => 'Profil entreprise';
 
   @override
+  String get languageSectionTitle => 'Langue';
+
+  @override
+  String get languageFrench => 'Français';
+
+  @override
+  String get languageEnglish => 'Anglais';
+
+  @override
+  String get languageArabic => 'Arabe';
+
+  @override
   String get vehiclesSectionTitle => 'Véhicules';
 
   @override
