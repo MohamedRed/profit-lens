@@ -76,13 +76,13 @@ class OfferFlowForm extends StatelessWidget {
           const SizedBox(height: 24),
           PrimaryButton(
             key: OfferFlowKeys.importScreenshotButton,
-            label: isLoading ? l10n.loadingLabel : l10n.importScreenshotButton,
+            label: l10n.importScreenshotButton,
             onPressed: isLoading ? null : onImportScreenshot,
           ),
           const SizedBox(height: 12),
           PrimaryButton(
             key: OfferFlowKeys.captureScreenshotButton,
-            label: isLoading ? l10n.loadingLabel : l10n.captureScreenshotButton,
+            label: l10n.captureScreenshotButton,
             onPressed: isLoading ? null : onCaptureScreenshot,
           ),
         ],
