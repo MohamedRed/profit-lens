@@ -53,6 +53,19 @@ class _SettingsLanguageCardState extends State<SettingsLanguageCard> {
     }
   }
 
+  String _flagFor(String code) {
+    switch (code) {
+      case 'fr':
+        return '🇫🇷';
+      case 'en':
+        return '🇬🇧';
+      case 'ar':
+        return '🇲🇦';
+      default:
+        return '🏳️';
+    }
+  }
+
   Future<void> _applySelection(String? value) async {
     if (value == null || value == _selected) {
       return;
@@ -105,7 +118,13 @@ class _SettingsLanguageCardState extends State<SettingsLanguageCard> {
                   .map(
                     (code) => DropdownMenuItem(
                       value: code,
-                      child: Text(_labelFor(code, l10n)),
+                      child: Row(
+                        children: [
+                          Text(_flagFor(code)),
+                          const SizedBox(width: 8),
+                          Text(_labelFor(code, l10n)),
+                        ],
+                      ),
                     ),
                   )
                   .toList(),
