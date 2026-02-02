@@ -145,6 +145,20 @@
     });
   </script>
   <script src="flutter_bootstrap.js" async></script>
-  <pwa-install></pwa-install>
+  <pwa-install manual-chrome manual-apple></pwa-install>
+  <script>
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
+
+    if (!isStandalone) {
+      customElements.whenDefined("pwa-install").then(() => {
+        const installPrompt = document.querySelector("pwa-install");
+        if (installPrompt && installPrompt.showDialog) {
+          installPrompt.showDialog(true);
+        }
+      });
+    }
+  </script>
 </body>
 </html>
