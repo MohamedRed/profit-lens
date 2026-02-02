@@ -11,6 +11,9 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
+    "predeploy": [
+      "./tool/build_web.sh"
+    ],
     "public": "build/web",
     "ignore": [
       "firebase.json",
