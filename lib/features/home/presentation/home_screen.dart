@@ -7,6 +7,7 @@ import '../../profile/domain/user_profile.dart';
 import '../../settings/presentation/settings_screen.dart';
 import '../../../core/widgets/mobile_pill_nav.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../core/platform/google_maps_preloader.dart';
 
 class HomeScreen extends StatefulWidget {
   final AuthUser user;
@@ -29,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    preloadGoogleMaps();
     _tabs = [
       _HomeTab(
         labelBuilder: (l10n) => l10n.offerTabLabel,
