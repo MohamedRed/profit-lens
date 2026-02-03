@@ -3,10 +3,12 @@
 - When you do an improvement, don't forget to remove the legacy code which is not used anymore if any.
 - When you do improvements, try to apply modular architecture to not have super long un-manageable code files.
 - Don't create fallbacks without asking and getting an approval first.
-- When a code file reaches 100–300 lines, you need to break it down into different component following modular architecture. 
+- When a code file reaches 300 lines, you need to break it down into different component following modular architecture. 
 - I don't want quick fixes, but professional code for enterprise clients.
 - Build always enterprise-grade level products. 
 - everytime you finish a task, git commit and push the changes.
 - codify changes in Terraform when needed
 - check if changes need to be included in the web-integhration-smoke.yml
 - no shallow solving of issues, always fix the root cause.
+- when working with UI, use pencil mcp server with "Shadcn UI" system and "mobile-3-minimalvibrant" style guide. Always make the UI responsive.
+- For UI, always think how to optimize loading speed for the best user experience.

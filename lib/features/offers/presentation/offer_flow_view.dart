@@ -8,7 +8,6 @@ import '../../vehicles/domain/vehicle_profile.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_form.dart';
 import 'offer_flow_loading_action.dart';
-import 'sections/vehicle_picker_header.dart';
 
 class OfferFlowView extends StatelessWidget {
   final AuthUser user;
@@ -51,30 +50,20 @@ class OfferFlowView extends StatelessWidget {
       body: SafeArea(
         child: vehicles.isEmpty
             ? Center(child: Text(l10n.noVehiclesMessage))
-            : Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    VehiclePickerHeader(
-                      vehicles: vehicles,
-                      selectedVehicleId: selectedVehicleId,
-                      onChanged: onVehicleChanged,
-                    ),
-                    Expanded(
-                      child: OfferFlowForm(
-                        controller: controller,
-                        requiresDuration: requiresDuration,
-                        onImportScreenshot: onImportScreenshot,
-                        onCaptureScreenshot: onCaptureScreenshot,
-                        onViewDetails: onViewDetails,
-                        loadingAction: loadingAction,
-                        previewRecord: previewRecord,
-                        onPickupSelected: onPickupSelected,
-                        onDropoffSelected: onDropoffSelected,
-                      ),
-                    ),
-                  ],
-                ),
+            : OfferFlowForm(
+                formKey: formKey,
+                controller: controller,
+                requiresDuration: requiresDuration,
+                vehicles: vehicles,
+                selectedVehicleId: selectedVehicleId,
+                onVehicleChanged: onVehicleChanged,
+                onImportScreenshot: onImportScreenshot,
+                onCaptureScreenshot: onCaptureScreenshot,
+                onViewDetails: onViewDetails,
+                loadingAction: loadingAction,
+                previewRecord: previewRecord,
+                onPickupSelected: onPickupSelected,
+                onDropoffSelected: onDropoffSelected,
               ),
       ),
     );
