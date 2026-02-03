@@ -6,4 +6,12 @@ class NumberParsing {
     }
     return double.tryParse(sanitized);
   }
+
+  static int? parseInt(String value) {
+    final sanitized = value.trim();
+    if (sanitized.isEmpty) {
+      return null;
+    }
+    return int.tryParse(sanitized);
+  }
 }

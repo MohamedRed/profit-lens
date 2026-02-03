@@ -7,6 +7,7 @@ class VehicleProfile {
   final String name;
   final String? brand;
   final String? model;
+  final int? registrationYear;
   final VehicleType type;
   final EnergyType energyType;
   final FuelType? fuelType;
@@ -20,6 +21,7 @@ class VehicleProfile {
     required this.name,
     required this.brand,
     required this.model,
+    required this.registrationYear,
     required this.type,
     required this.energyType,
     this.fuelType,
@@ -34,6 +36,7 @@ class VehicleProfile {
     String? name,
     String? brand,
     String? model,
+    int? registrationYear,
     VehicleType? type,
     EnergyType? energyType,
     FuelType? fuelType,
@@ -47,6 +50,7 @@ class VehicleProfile {
       name: name ?? this.name,
       brand: brand ?? this.brand,
       model: model ?? this.model,
+      registrationYear: registrationYear ?? this.registrationYear,
       type: type ?? this.type,
       energyType: energyType ?? this.energyType,
       fuelType: fuelType ?? this.fuelType,

@@ -455,6 +455,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get vehicleModelLabel => 'Modèle';
+  @override
+  String get vehicleRegistrationYearLabel => 'Année d\'immatriculation';
+  @override
+  String get vehicleRegistrationYearHint => 'AAAA';
+  @override
+  String get vehicleRegistrationYearInvalid => 'Entrez une année valide.';
 
   @override
   String get useVehiclePresetsLabel => 'Utiliser les valeurs véhicule';

@@ -24,6 +24,8 @@ VehicleProfile buildVehicleProfile({
 }) {
   final brand = controller.brandController.text.trim();
   final model = controller.modelController.text.trim();
+  final registrationYear =
+      NumberParsing.parseInt(controller.registrationYearController.text);
   final consumption =
       NumberParsing.parseDouble(controller.consumptionController.text);
   final energyPrice =
@@ -46,6 +48,7 @@ VehicleProfile buildVehicleProfile({
     name: '$brand $model',
     brand: brand,
     model: model,
+    registrationYear: registrationYear,
     type: controller.vehicleType,
     energyType: controller.energyType,
     fuelType: controller.fuelType,

@@ -9,6 +9,7 @@ import 'vehicle_form_defaults.dart';
 class VehicleFormController {
   final TextEditingController brandController;
   final TextEditingController modelController;
+  final TextEditingController registrationYearController;
   final TextEditingController consumptionController;
   final TextEditingController energyPriceController;
   final TextEditingController maintenanceController;
@@ -21,6 +22,7 @@ class VehicleFormController {
   VehicleFormController({
     required this.brandController,
     required this.modelController,
+    required this.registrationYearController,
     required this.consumptionController,
     required this.energyPriceController,
     required this.maintenanceController,
@@ -36,6 +38,9 @@ class VehicleFormController {
   }) {
     final brandController = TextEditingController(text: vehicle?.brand ?? '');
     final modelController = TextEditingController(text: vehicle?.model ?? '');
+    final registrationYearController = TextEditingController(
+      text: vehicle?.registrationYear?.toString() ?? '',
+    );
     final consumptionController = TextEditingController(
       text: vehicle == null
           ? ''
@@ -56,6 +61,7 @@ class VehicleFormController {
     final controller = VehicleFormController(
       brandController: brandController,
       modelController: modelController,
+      registrationYearController: registrationYearController,
       consumptionController: consumptionController,
       energyPriceController: energyPriceController,
       maintenanceController: maintenanceController,
@@ -82,6 +88,7 @@ class VehicleFormController {
   void dispose() {
     brandController.dispose();
     modelController.dispose();
+    registrationYearController.dispose();
     consumptionController.dispose();
     energyPriceController.dispose();
     maintenanceController.dispose();

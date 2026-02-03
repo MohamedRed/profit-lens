@@ -11,6 +11,7 @@ class VehicleSnapshotMapper {
     final name = data['name'] as String?;
     final brand = data['brand'] as String?;
     final model = data['model'] as String?;
+    final registrationYear = (data['registrationYear'] as num?)?.toInt();
     final type = _vehicleTypeFromString(data['type'] as String?);
     final energyType = _energyTypeFromString(data['energyType'] as String?);
     final consumption = (data['energyConsumptionPer100Km'] as num?)?.toDouble();
@@ -32,6 +33,7 @@ class VehicleSnapshotMapper {
       name: name,
       brand: brand,
       model: model,
+      registrationYear: registrationYear,
       type: type,
       energyType: energyType,
       fuelType: _fuelTypeFromString(data['fuelType'] as String?),
@@ -48,6 +50,8 @@ class VehicleSnapshotMapper {
       'name': vehicle.name,
       'brand': vehicle.brand,
       'model': vehicle.model,
+      if (vehicle.registrationYear != null)
+        'registrationYear': vehicle.registrationYear,
       'type': vehicle.type.name,
       'energyType': vehicle.energyType.name,
       'fuelType': vehicle.fuelType?.name,

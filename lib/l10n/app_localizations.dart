@@ -964,6 +964,24 @@ abstract class AppLocalizations {
   /// **'Model'**
   String get vehicleModelLabel;
 
+  /// No description provided for @vehicleRegistrationYearLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration year'**
+  String get vehicleRegistrationYearLabel;
+
+  /// No description provided for @vehicleRegistrationYearHint.
+  ///
+  /// In en, this message translates to:
+  /// **'YYYY'**
+  String get vehicleRegistrationYearHint;
+
+  /// No description provided for @vehicleRegistrationYearInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid year.'**
+  String get vehicleRegistrationYearInvalid;
+
   /// No description provided for @useVehiclePresetsLabel.
   ///
   /// In en, this message translates to:

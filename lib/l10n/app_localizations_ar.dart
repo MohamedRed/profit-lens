@@ -451,6 +451,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get vehicleModelLabel => 'الطراز';
+  @override
+  String get vehicleRegistrationYearLabel => 'سنة التسجيل';
+  @override
+  String get vehicleRegistrationYearHint => 'YYYY';
+  @override
+  String get vehicleRegistrationYearInvalid => 'يرجى إدخال سنة صحيحة.';
 
   @override
   String get useVehiclePresetsLabel => 'استخدام قيم المركبة الافتراضية';

@@ -24,6 +24,7 @@ class VehicleSection extends StatelessWidget {
   final ValueChanged<bool> onPresetsChanged;
   final VoidCallback onPresetEdited;
   final TextEditingController brandController, modelController;
+  final TextEditingController registrationYearController;
   final TextEditingController consumptionController, energyPriceController;
   final TextEditingController maintenanceController, depreciationController;
   final String consumptionSuffix, energyPriceSuffix;
@@ -42,6 +43,7 @@ class VehicleSection extends StatelessWidget {
     required this.onPresetEdited,
     required this.brandController,
     required this.modelController,
+    required this.registrationYearController,
     required this.consumptionController,
     required this.energyPriceController,
     required this.maintenanceController,
@@ -71,6 +73,7 @@ class VehicleSection extends StatelessWidget {
           vehicleType: vehicleType,
           brandController: brandController,
           modelController: modelController,
+          registrationYearController: registrationYearController,
           onModelLookup: onModelLookup,
         ),
         const SizedBox(height: 12),

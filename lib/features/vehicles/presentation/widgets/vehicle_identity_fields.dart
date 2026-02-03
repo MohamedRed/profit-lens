@@ -9,6 +9,7 @@ class VehicleIdentityFields extends StatelessWidget {
   final VehicleType vehicleType;
   final TextEditingController brandController;
   final TextEditingController modelController;
+  final TextEditingController registrationYearController;
   final VoidCallback? onModelLookup;
 
   const VehicleIdentityFields({
@@ -16,6 +17,7 @@ class VehicleIdentityFields extends StatelessWidget {
     required this.vehicleType,
     required this.brandController,
     required this.modelController,
+    required this.registrationYearController,
     required this.onModelLookup,
   });
 
@@ -46,6 +48,27 @@ class VehicleIdentityFields extends StatelessWidget {
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
               return l10n.requiredFieldError;
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 12),
+        TextFormField(
+          controller: registrationYearController,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: l10n.vehicleRegistrationYearLabel,
+            hintText: l10n.vehicleRegistrationYearHint,
+          ),
+          validator: (value) {
+            final trimmed = value?.trim() ?? '';
+            if (trimmed.isEmpty) {
+              return null;
+            }
+            final year = int.tryParse(trimmed);
+            final currentYear = DateTime.now().year;
+            if (year == null || year < 1980 || year > currentYear) {
+              return l10n.vehicleRegistrationYearInvalid;
             }
             return null;
           },

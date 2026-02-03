@@ -11,6 +11,7 @@ class VehicleProfileMapper {
     final name = data['name'] as String?;
     final brand = data['brand'] as String?;
     final model = data['model'] as String?;
+    final registrationYear = (data['registrationYear'] as num?)?.toInt();
     final consumption = (data['energyConsumptionPer100Km'] as num?)?.toDouble();
     final energyPrice = (data['energyPricePerUnit'] as num?)?.toDouble();
     final maintenance = (data['maintenancePerKm'] as num?)?.toDouble();
@@ -29,6 +30,7 @@ class VehicleProfileMapper {
       name: name,
       brand: brand,
       model: model,
+      registrationYear: registrationYear,
       type: type,
       energyType: energyType,
       fuelType: _fuelTypeFromString(data['fuelType'] as String?),
@@ -44,6 +46,8 @@ class VehicleProfileMapper {
       'name': vehicle.name,
       'brand': vehicle.brand,
       'model': vehicle.model,
+      if (vehicle.registrationYear != null)
+        'registrationYear': vehicle.registrationYear,
       'type': vehicle.type.name,
       'energyType': vehicle.energyType.name,
       'fuelType': vehicle.fuelType?.name,
