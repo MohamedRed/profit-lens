@@ -452,10 +452,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vehicleModelLabel => 'Model';
+
   @override
   String get vehicleRegistrationYearLabel => 'Registration year';
+
   @override
   String get vehicleRegistrationYearHint => 'YYYY';
+
   @override
   String get vehicleRegistrationYearInvalid => 'Enter a valid year.';
 
