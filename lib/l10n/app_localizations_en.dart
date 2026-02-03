@@ -15,6 +15,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offerDetailsSection => 'Offer details';
 
   @override
+  String get manualEntrySubtitle => 'Or enter the offer details manually.';
+
+  @override
+  String get manualEntryButton => 'Enter manually';
+
+  @override
   String get editOfferDetailsButton => 'Edit details';
 
   @override

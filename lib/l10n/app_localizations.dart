@@ -112,6 +112,18 @@ abstract class AppLocalizations {
   /// **'Offer details'**
   String get offerDetailsSection;
 
+  /// No description provided for @manualEntrySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Or enter the offer details manually.'**
+  String get manualEntrySubtitle;
+
+  /// No description provided for @manualEntryButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter manually'**
+  String get manualEntryButton;
+
   /// No description provided for @editOfferDetailsButton.
   ///
   /// In en, this message translates to:

@@ -49,6 +49,7 @@ class OfferFlowForm extends StatelessWidget {
         PrimaryButton(
           key: OfferFlowKeys.importScreenshotButton,
           label: l10n.importScreenshotButton,
+          icon: Icons.upload_file,
           onPressed: isBusy ? null : onImportScreenshot,
           isBusy: isImportBusy,
           showSpinnerWithLabel: true,
@@ -57,6 +58,7 @@ class OfferFlowForm extends StatelessWidget {
         PrimaryButton(
           key: OfferFlowKeys.captureScreenshotButton,
           label: l10n.captureScreenshotButton,
+          icon: Icons.camera_alt,
           onPressed: isBusy ? null : onCaptureScreenshot,
           isBusy: isCaptureBusy,
           showSpinnerWithLabel: true,

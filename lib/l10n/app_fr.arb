@@ -2,6 +2,8 @@
   "@@locale": "fr",
   "appTitle": "ProfitLens",
   "offerDetailsSection": "Détails de l'offre",
+  "manualEntrySubtitle": "Ou saisissez les détails manuellement.",
+  "manualEntryButton": "Saisir manuellement",
   "editOfferDetailsButton": "Modifier les détails",
   "resetOfferButton": "Réinitialiser l’offre",
   "analysisProgressTitle": "Analyse de l'offre",

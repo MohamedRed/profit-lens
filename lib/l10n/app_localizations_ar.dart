@@ -15,6 +15,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get offerDetailsSection => 'تفاصيل العرض';
 
   @override
+  String get manualEntrySubtitle => 'أو أدخل تفاصيل العرض يدويًا.';
+
+  @override
+  String get manualEntryButton => 'إدخال يدوي';
+
+  @override
   String get editOfferDetailsButton => 'تعديل التفاصيل';
 
   @override

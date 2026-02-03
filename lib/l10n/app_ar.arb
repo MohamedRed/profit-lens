@@ -2,6 +2,8 @@
   "@@locale": "ar",
   "appTitle": "ProfitLens",
   "offerDetailsSection": "تفاصيل العرض",
+  "manualEntrySubtitle": "أو أدخل تفاصيل العرض يدويًا.",
+  "manualEntryButton": "إدخال يدوي",
   "editOfferDetailsButton": "تعديل التفاصيل",
   "resetOfferButton": "إعادة تعيين العرض",
   "analysisProgressTitle": "جارٍ تحليل العرض",

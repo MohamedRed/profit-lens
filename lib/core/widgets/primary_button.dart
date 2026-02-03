@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String label;
+  final IconData? icon;
   final VoidCallback? onPressed;
   final bool isBusy;
   final bool showSpinnerWithLabel;
@@ -9,6 +10,7 @@ class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     super.key,
     required this.label,
+    this.icon,
     required this.onPressed,
     this.isBusy = false,
     this.showSpinnerWithLabel = false,
@@ -27,9 +29,34 @@ class PrimaryButton extends StatelessWidget {
                   label: label,
                   showSpinnerWithLabel: showSpinnerWithLabel,
                 )
-              : Text(label),
+              : _ButtonContent(label: label, icon: icon),
         ),
       ),
+    );
+  }
+}
+
+class _ButtonContent extends StatelessWidget {
+  final String label;
+  final IconData? icon;
+
+  const _ButtonContent({
+    required this.label,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (icon == null) {
+      return Text(label);
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 18),
+        const SizedBox(width: 8),
+        Text(label),
+      ],
     );
   }
 }

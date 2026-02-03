@@ -28,7 +28,7 @@ class OfferDetailsSection extends StatefulWidget {
 }
 
 class _OfferDetailsSectionState extends State<OfferDetailsSection> {
-  bool _isEditing = true;
+  bool _isEditing = false;
   OfferAnalysisStatus? _lastStatus;
 
   void _syncEditingState(OfferAnalysisStatus status, bool hasRequired) {
@@ -58,6 +58,11 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
         widget.controller.pickupAddressController.text.trim().isNotEmpty;
     final hasDropoff =
         widget.controller.dropoffAddressController.text.trim().isNotEmpty;
+    final hasAnyInput = hasPayout ||
+        hasPickup ||
+        hasDropoff ||
+        widget.controller.pickupNameController.text.trim().isNotEmpty ||
+        widget.controller.dropoffNameController.text.trim().isNotEmpty;
     final hasDistance = widget
             .controller.distanceController.text.trim().isNotEmpty ||
         widget.controller.routeVerification != null;
@@ -92,6 +97,25 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
         controller: widget.controller,
         onEdit: () => setState(() => _isEditing = true),
         onReset: _resetOffer,
+      );
+    }
+    if (!_isEditing &&
+        !hasAnyInput &&
+        analysisStatus == OfferAnalysisStatus.idle) {
+      return SectionCard(
+        title: l10n.offerDetailsSection,
+        children: [
+          Text(
+            l10n.manualEntrySubtitle,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 12),
+          TextButton.icon(
+            onPressed: () => setState(() => _isEditing = true),
+            icon: const Icon(Icons.edit),
+            label: Text(l10n.manualEntryButton),
+          ),
+        ],
       );
     }
     return SectionCard(
