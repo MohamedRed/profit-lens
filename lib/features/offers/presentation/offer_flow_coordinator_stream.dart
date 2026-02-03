@@ -46,6 +46,16 @@ class OfferFlowCoordinatorStream extends StatelessWidget {
     return StreamBuilder<List<VehicleProfile>>(
       stream: AppScope.of(context).vehicleRepository.watchVehicles(user.uid),
       builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            !snapshot.hasData) {
+          return const Scaffold(
+            body: SafeArea(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
         final vehicles = snapshot.data ?? [];
         final resolvedVehicleId = resolveVehicleId(
           profile: profile,
