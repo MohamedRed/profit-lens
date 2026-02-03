@@ -43,6 +43,7 @@ class ProfileSetupVehicleSection extends StatelessWidget {
       onPresetEdited: onPresetEdited,
       brandController: controller.brandController,
       modelController: controller.modelController,
+      registrationYearController: controller.registrationYearController,
       consumptionController: controller.consumptionController,
       energyPriceController: controller.energyPriceController,
       maintenanceController: controller.maintenanceController,
