@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../vehicles/data/vehicle_model_lookup_service.dart';
+import '../../vehicles/data/vehicle_plate_lookup_service.dart';
 import '../../vehicles/domain/energy_type.dart';
 import '../../vehicles/domain/fuel_type.dart';
 import '../../vehicles/domain/vehicle_type.dart';
@@ -7,6 +8,7 @@ import '../../vehicles/presentation/controllers/vehicle_form_controller_actions.
 import '../../vehicles/presentation/controllers/vehicle_form_defaults.dart';
 import '../../vehicles/presentation/vehicle_form_actions.dart';
 import '../../vehicles/presentation/vehicle_form_model_lookup.dart';
+import '../../vehicles/presentation/vehicle_form_plate_lookup.dart';
 import 'profile_setup_state.dart';
 extension ProfileSetupStateVehicle on ProfileSetupState {
   void applyPresetsForType({required bool setEnergyType}) {
@@ -86,6 +88,21 @@ extension ProfileSetupStateVehicle on ProfileSetupState {
       controller: vehicleController,
       service: service,
       energyType: vehicleController.energyType,
+      onApplyStart: () => isApplyingPresets = true,
+      onApplyEnd: () => isApplyingPresets = false,
+    );
+  }
+
+  Future<void> lookupPlate({
+    required BuildContext context,
+    required VehiclePlateLookupService service,
+  }) async {
+    await lookupVehiclePlate(
+      context: context,
+      controller: vehicleController,
+      service: service,
+      useFranceDefaults: businessController.useFranceDefaults,
+      useVehiclePresets: useVehiclePresets,
       onApplyStart: () => isApplyingPresets = true,
       onApplyEnd: () => isApplyingPresets = false,
     );

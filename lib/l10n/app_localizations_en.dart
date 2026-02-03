@@ -454,6 +454,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vehicleModelLabel => 'Model';
 
   @override
+  String get vehicleLicensePlateLabel => 'License plate';
+
+  @override
+  String get vehicleLicensePlateHint => 'AA-123-AA';
+
+  @override
+  String get vehicleLicensePlateInvalid => 'Enter a valid French plate.';
+
+  @override
   String get vehicleRegistrationYearLabel => 'Registration year';
 
   @override
@@ -464,6 +473,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get useVehiclePresetsLabel => 'Use vehicle presets';
+
+  @override
+  String get plateLookupButtonLabel => 'Lookup';
+
+  @override
+  String get plateLookupAppliedMessage => 'Vehicle details applied.';
+
+  @override
+  String get plateLookupNotFoundMessage => 'No vehicle found for this plate.';
+
+  @override
+  String get plateLookupFailedMessage => 'Unable to fetch plate data.';
 
   @override
   String get modelLookupAppliedMessage => 'Model consumption applied.';

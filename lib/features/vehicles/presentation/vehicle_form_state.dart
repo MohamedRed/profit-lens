@@ -11,6 +11,7 @@ class VehicleFormState extends ChangeNotifier {
   bool isSaving = false;
   bool useVehiclePresets;
   bool isLookingUpModel = false;
+  bool isLookingUpPlate = false;
   bool isApplyingPresets = false;
 
   VehicleFormState({

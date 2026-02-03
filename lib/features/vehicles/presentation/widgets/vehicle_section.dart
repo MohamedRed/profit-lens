@@ -23,12 +23,15 @@ class VehicleSection extends StatelessWidget {
   final ValueChanged<FuelType?> onFuelTypeChanged;
   final ValueChanged<bool> onPresetsChanged;
   final VoidCallback onPresetEdited;
+  final TextEditingController licensePlateController;
   final TextEditingController brandController, modelController;
   final TextEditingController registrationYearController;
   final TextEditingController consumptionController, energyPriceController;
   final TextEditingController maintenanceController, depreciationController;
   final String consumptionSuffix, energyPriceSuffix;
   final VoidCallback? onModelLookup;
+  final VoidCallback? onPlateLookup;
+  final bool isLookingUpPlate;
 
   const VehicleSection({
     super.key,
@@ -41,6 +44,7 @@ class VehicleSection extends StatelessWidget {
     required this.onFuelTypeChanged,
     required this.onPresetsChanged,
     required this.onPresetEdited,
+    required this.licensePlateController,
     required this.brandController,
     required this.modelController,
     required this.registrationYearController,
@@ -51,6 +55,8 @@ class VehicleSection extends StatelessWidget {
     required this.consumptionSuffix,
     required this.energyPriceSuffix,
     required this.onModelLookup,
+    required this.onPlateLookup,
+    required this.isLookingUpPlate,
   });
 
   @override
@@ -71,10 +77,13 @@ class VehicleSection extends StatelessWidget {
         const SizedBox(height: 12),
         VehicleIdentityFields(
           vehicleType: vehicleType,
+          licensePlateController: licensePlateController,
           brandController: brandController,
           modelController: modelController,
           registrationYearController: registrationYearController,
           onModelLookup: onModelLookup,
+          onPlateLookup: onPlateLookup,
+          isLookingUpPlate: isLookingUpPlate,
         ),
         const SizedBox(height: 12),
         EnergyTypeField(

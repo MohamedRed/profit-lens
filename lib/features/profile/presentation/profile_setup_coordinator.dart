@@ -53,6 +53,22 @@ class _ProfileSetupCoordinatorState extends State<ProfileSetupCoordinator> {
     }
   }
 
+  Future<void> _lookupPlate() async {
+    if (_state.isLookingUpPlate) {
+      return;
+    }
+    _state.isLookingUpPlate = true;
+    _state.refresh();
+    await _state.lookupPlate(
+      context: context,
+      service: AppScope.of(context).vehiclePlateLookupService,
+    );
+    if (mounted) {
+      _state.isLookingUpPlate = false;
+      _state.refresh();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -70,6 +86,8 @@ class _ProfileSetupCoordinatorState extends State<ProfileSetupCoordinator> {
             onVehiclePresetsChanged: _state.togglePresets,
             onVehiclePresetEdited: _state.markPresetEdited,
             onModelLookup: _state.useVehiclePresets ? _lookupModel : null,
+            onPlateLookup: _lookupPlate,
+            isLookingUpPlate: _state.isLookingUpPlate,
             onActivityChanged: (value) {
               _state.businessController.activity = value;
               _state.refresh();

@@ -7,6 +7,7 @@ import '../../domain/vehicle_type.dart';
 import 'vehicle_form_defaults.dart';
 
 class VehicleFormController {
+  final TextEditingController licensePlateController;
   final TextEditingController brandController;
   final TextEditingController modelController;
   final TextEditingController registrationYearController;
@@ -20,6 +21,7 @@ class VehicleFormController {
   FuelType? fuelType;
 
   VehicleFormController({
+    required this.licensePlateController,
     required this.brandController,
     required this.modelController,
     required this.registrationYearController,
@@ -36,6 +38,9 @@ class VehicleFormController {
     required VehicleProfile? vehicle,
     required bool useFranceDefaults,
   }) {
+    final licensePlateController = TextEditingController(
+      text: vehicle?.licensePlate ?? '',
+    );
     final brandController = TextEditingController(text: vehicle?.brand ?? '');
     final modelController = TextEditingController(text: vehicle?.model ?? '');
     final registrationYearController = TextEditingController(
@@ -59,6 +64,7 @@ class VehicleFormController {
     );
 
     final controller = VehicleFormController(
+      licensePlateController: licensePlateController,
       brandController: brandController,
       modelController: modelController,
       registrationYearController: registrationYearController,
@@ -86,6 +92,7 @@ class VehicleFormController {
   }
 
   void dispose() {
+    licensePlateController.dispose();
     brandController.dispose();
     modelController.dispose();
     registrationYearController.dispose();

@@ -10,7 +10,9 @@ import '../features/offers/data/offer_repository.dart';
 import '../features/profile/data/firestore_user_profile_repository.dart';
 import '../features/profile/data/user_profile_repository.dart';
 import '../features/vehicles/data/firebase_vehicle_model_lookup_service.dart';
+import '../features/vehicles/data/firebase_vehicle_plate_lookup_service.dart';
 import '../features/vehicles/data/vehicle_model_lookup_service.dart';
+import '../features/vehicles/data/vehicle_plate_lookup_service.dart';
 import '../features/vehicles/data/firestore_vehicle_repository.dart';
 import '../features/vehicles/data/vehicle_repository.dart';
 import '../core/localization/app_locale_controller.dart';
@@ -23,6 +25,7 @@ class AppServices {
   final OfferImagePickerService offerImagePickerService;
   final OfferAnalysisService offerAnalysisService;
   final VehicleModelLookupService vehicleModelLookupService;
+  final VehiclePlateLookupService vehiclePlateLookupService;
   final AppLocaleController localeController;
 
   AppServices({
@@ -33,6 +36,7 @@ class AppServices {
     OfferImagePickerService? offerImagePickerService,
     OfferAnalysisService? offerAnalysisService,
     VehicleModelLookupService? vehicleModelLookupService,
+    VehiclePlateLookupService? vehiclePlateLookupService,
     AppLocaleController? localeController,
   })  : authRepository = authRepository ?? FirebaseAuthRepository(),
         userProfileRepository =
@@ -45,6 +49,8 @@ class AppServices {
             offerAnalysisService ?? FirebaseOfferAnalysisService(),
         vehicleModelLookupService = vehicleModelLookupService ??
             FirebaseVehicleModelLookupService(),
+        vehiclePlateLookupService = vehiclePlateLookupService ??
+            FirebaseVehiclePlateLookupService(),
         localeController = localeController ?? AppLocaleController();
 }
 

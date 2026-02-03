@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../core/utils/number_parsing.dart';
 import '../../auth/domain/auth_user.dart';
+import '../domain/license_plate.dart';
 import '../domain/vehicle_profile.dart';
 import 'controllers/vehicle_form_controller.dart';
 
@@ -24,6 +25,9 @@ VehicleProfile buildVehicleProfile({
 }) {
   final brand = controller.brandController.text.trim();
   final model = controller.modelController.text.trim();
+  final licensePlate =
+      normalizeFrenchLicensePlate(controller.licensePlateController.text);
+  final resolvedPlate = licensePlate.isEmpty ? null : licensePlate;
   final registrationYear =
       NumberParsing.parseInt(controller.registrationYearController.text);
   final consumption =
@@ -46,6 +50,7 @@ VehicleProfile buildVehicleProfile({
   return VehicleProfile(
     id: id,
     name: '$brand $model',
+    licensePlate: resolvedPlate,
     brand: brand,
     model: model,
     registrationYear: registrationYear,

@@ -21,6 +21,8 @@ class ProfileSetupView extends StatelessWidget {
   final ValueChanged<bool> onVehiclePresetsChanged;
   final VoidCallback onVehiclePresetEdited;
   final VoidCallback? onModelLookup;
+  final VoidCallback? onPlateLookup;
+  final bool isLookingUpPlate;
   final ValueChanged<BusinessActivity> onActivityChanged;
   final ValueChanged<FixedCostAllocation> onAllocationChanged;
   final ValueChanged<bool> onDefaultsChanged;
@@ -34,6 +36,7 @@ class ProfileSetupView extends StatelessWidget {
     required this.vehicleController, required this.isSaving,
     required this.useVehiclePresets, required this.onVehiclePresetsChanged,
     required this.onVehiclePresetEdited, required this.onModelLookup,
+    required this.onPlateLookup, required this.isLookingUpPlate,
     required this.onActivityChanged, required this.onAllocationChanged,
     required this.onDefaultsChanged, required this.onVehicleTypeChanged,
     required this.onEnergyTypeChanged, required this.onFuelTypeChanged,
@@ -77,6 +80,8 @@ class ProfileSetupView extends StatelessWidget {
             onEnergyTypeChanged: onEnergyTypeChanged,
             onFuelTypeChanged: onFuelTypeChanged,
             onModelLookup: onModelLookup,
+            onPlateLookup: onPlateLookup,
+            isLookingUpPlate: isLookingUpPlate,
           ),
           const SizedBox(height: 12),
           const ProfileSetupSourcesSection(),

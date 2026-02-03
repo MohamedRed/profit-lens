@@ -37,6 +37,17 @@ The app calls a Firebase callable function named `extractOfferFromImage`.
    firebase deploy --only functions
    ```
 
+## France license plate lookup (API Plaque)
+Vehicle lookup via plate uses the `lookupVehicleByPlate` callable function.
+1. Set the API Plaque token as a secret:
+   ```bash
+   firebase functions:secrets:set API_PLAQUE_TOKEN
+   ```
+2. Deploy functions:
+   ```bash
+   firebase deploy --only functions
+   ```
+
 ## France presets
 Defaults live in `lib/features/defaults/data/france_defaults.dart` and can be overridden by the user. Sources are shown in the app under "Preset sources".
 

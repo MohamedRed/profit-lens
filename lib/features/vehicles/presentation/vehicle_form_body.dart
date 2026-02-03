@@ -18,6 +18,8 @@ class VehicleFormBody extends StatelessWidget {
   final ValueChanged<bool> onPresetsChanged;
   final VoidCallback onPresetEdited;
   final VoidCallback? onModelLookup;
+  final VoidCallback? onPlateLookup;
+  final bool isLookingUpPlate;
   final bool isSaving;
   final VoidCallback onSave;
   final ValueChanged<VehicleType> onVehicleTypeChanged;
@@ -32,6 +34,8 @@ class VehicleFormBody extends StatelessWidget {
     required this.onPresetsChanged,
     required this.onPresetEdited,
     required this.onModelLookup,
+    required this.onPlateLookup,
+    required this.isLookingUpPlate,
     required this.isSaving,
     required this.onSave,
     required this.onVehicleTypeChanged,
@@ -57,6 +61,7 @@ class VehicleFormBody extends StatelessWidget {
             onFuelTypeChanged: onFuelTypeChanged,
             onPresetsChanged: onPresetsChanged,
             onPresetEdited: onPresetEdited,
+            licensePlateController: controller.licensePlateController,
             brandController: controller.brandController,
             modelController: controller.modelController,
             registrationYearController: controller.registrationYearController,
@@ -67,6 +72,8 @@ class VehicleFormBody extends StatelessWidget {
             consumptionSuffix: controller.consumptionSuffix(),
             energyPriceSuffix: controller.energyPriceSuffix(),
             onModelLookup: onModelLookup,
+            onPlateLookup: onPlateLookup,
+            isLookingUpPlate: isLookingUpPlate,
           ),
           const SizedBox(height: 12),
           PresetSourcesSection(sources: VehiclePresetsFr.sources),

@@ -5,6 +5,7 @@ import '../../auth/domain/auth_user.dart';
 import '../../profile/domain/user_profile.dart';
 import '../domain/vehicle_profile.dart';
 import 'vehicle_form_model_lookup.dart';
+import 'vehicle_form_plate_lookup.dart';
 import 'vehicle_form_state.dart';
 import 'vehicle_form_state_actions.dart';
 import 'vehicle_form_view.dart';
@@ -64,6 +65,27 @@ class _VehicleFormCoordinatorState extends State<VehicleFormCoordinator> {
     }
   }
 
+  Future<void> _lookupPlate() async {
+    if (_state.isLookingUpPlate) {
+      return;
+    }
+    _state.isLookingUpPlate = true;
+    _state.refresh();
+    await lookupVehiclePlate(
+      context: context,
+      controller: _state.controller,
+      service: AppScope.of(context).vehiclePlateLookupService,
+      useFranceDefaults: _state.profile.useFranceDefaults,
+      useVehiclePresets: _state.useVehiclePresets,
+      onApplyStart: () => _state.isApplyingPresets = true,
+      onApplyEnd: () => _state.isApplyingPresets = false,
+    );
+    if (mounted) {
+      _state.isLookingUpPlate = false;
+      _state.refresh();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -79,6 +101,8 @@ class _VehicleFormCoordinatorState extends State<VehicleFormCoordinator> {
         onPresetsChanged: _state.togglePresets,
         onPresetEdited: _state.markPresetEdited,
         onModelLookup: _state.useVehiclePresets ? _lookupModel : null,
+        onPlateLookup: _lookupPlate,
+        isLookingUpPlate: _state.isLookingUpPlate,
         isSaving: _state.isSaving,
         onSave: () => _state.save(
           context: context,

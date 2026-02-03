@@ -3,22 +3,29 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/vehicle_type.dart';
 import 'vehicle_brand_autocomplete_field.dart';
+import 'vehicle_license_plate_field.dart';
 import 'vehicle_model_autocomplete_field.dart';
 
 class VehicleIdentityFields extends StatelessWidget {
   final VehicleType vehicleType;
+  final TextEditingController licensePlateController;
   final TextEditingController brandController;
   final TextEditingController modelController;
   final TextEditingController registrationYearController;
   final VoidCallback? onModelLookup;
+  final VoidCallback? onPlateLookup;
+  final bool isLookingUpPlate;
 
   const VehicleIdentityFields({
     super.key,
     required this.vehicleType,
+    required this.licensePlateController,
     required this.brandController,
     required this.modelController,
     required this.registrationYearController,
     required this.onModelLookup,
+    required this.onPlateLookup,
+    required this.isLookingUpPlate,
   });
 
   @override
@@ -26,6 +33,12 @@ class VehicleIdentityFields extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
+        VehicleLicensePlateField(
+          controller: licensePlateController,
+          isLookupInProgress: isLookingUpPlate,
+          onLookup: onPlateLookup,
+        ),
+        const SizedBox(height: 12),
         VehicleBrandAutocompleteField(
           vehicleType: vehicleType,
           controller: brandController,

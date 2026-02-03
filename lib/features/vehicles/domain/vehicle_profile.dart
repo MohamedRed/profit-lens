@@ -5,6 +5,7 @@ import 'vehicle_type.dart';
 class VehicleProfile {
   final String id;
   final String name;
+  final String? licensePlate;
   final String? brand;
   final String? model;
   final int? registrationYear;
@@ -19,6 +20,7 @@ class VehicleProfile {
   const VehicleProfile({
     required this.id,
     required this.name,
+    required this.licensePlate,
     required this.brand,
     required this.model,
     required this.registrationYear,
@@ -34,6 +36,7 @@ class VehicleProfile {
   VehicleProfile copyWith({
     String? id,
     String? name,
+    String? licensePlate,
     String? brand,
     String? model,
     int? registrationYear,
@@ -48,6 +51,7 @@ class VehicleProfile {
     return VehicleProfile(
       id: id ?? this.id,
       name: name ?? this.name,
+      licensePlate: licensePlate ?? this.licensePlate,
       brand: brand ?? this.brand,
       model: model ?? this.model,
       registrationYear: registrationYear ?? this.registrationYear,

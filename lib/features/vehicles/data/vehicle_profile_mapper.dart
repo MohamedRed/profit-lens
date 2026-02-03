@@ -9,6 +9,7 @@ class VehicleProfileMapper {
     final type = _vehicleTypeFromString(data['type'] as String?);
     final energyType = _energyTypeFromString(data['energyType'] as String?);
     final name = data['name'] as String?;
+    final licensePlate = data['licensePlate'] as String?;
     final brand = data['brand'] as String?;
     final model = data['model'] as String?;
     final registrationYear = (data['registrationYear'] as num?)?.toInt();
@@ -28,6 +29,7 @@ class VehicleProfileMapper {
     return VehicleProfile(
       id: id,
       name: name,
+      licensePlate: licensePlate,
       brand: brand,
       model: model,
       registrationYear: registrationYear,
@@ -44,6 +46,7 @@ class VehicleProfileMapper {
   Map<String, dynamic> toDocument(VehicleProfile vehicle) {
     return {
       'name': vehicle.name,
+      'licensePlate': vehicle.licensePlate,
       'brand': vehicle.brand,
       'model': vehicle.model,
       if (vehicle.registrationYear != null)

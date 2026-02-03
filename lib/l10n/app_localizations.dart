@@ -964,6 +964,24 @@ abstract class AppLocalizations {
   /// **'Model'**
   String get vehicleModelLabel;
 
+  /// No description provided for @vehicleLicensePlateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'License plate'**
+  String get vehicleLicensePlateLabel;
+
+  /// No description provided for @vehicleLicensePlateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'AA-123-AA'**
+  String get vehicleLicensePlateHint;
+
+  /// No description provided for @vehicleLicensePlateInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid French plate.'**
+  String get vehicleLicensePlateInvalid;
+
   /// No description provided for @vehicleRegistrationYearLabel.
   ///
   /// In en, this message translates to:
@@ -987,6 +1005,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Use vehicle presets'**
   String get useVehiclePresetsLabel;
+
+  /// No description provided for @plateLookupButtonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Lookup'**
+  String get plateLookupButtonLabel;
+
+  /// No description provided for @plateLookupAppliedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle details applied.'**
+  String get plateLookupAppliedMessage;
+
+  /// No description provided for @plateLookupNotFoundMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No vehicle found for this plate.'**
+  String get plateLookupNotFoundMessage;
+
+  /// No description provided for @plateLookupFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to fetch plate data.'**
+  String get plateLookupFailedMessage;
 
   /// No description provided for @modelLookupAppliedMessage.
   ///

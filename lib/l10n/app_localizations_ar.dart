@@ -453,6 +453,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vehicleModelLabel => 'الطراز';
 
   @override
+  String get vehicleLicensePlateLabel => 'لوحة المركبة';
+
+  @override
+  String get vehicleLicensePlateHint => 'AA-123-AA';
+
+  @override
+  String get vehicleLicensePlateInvalid => 'يرجى إدخال لوحة فرنسية صحيحة.';
+
+  @override
   String get vehicleRegistrationYearLabel => 'سنة التسجيل';
 
   @override
@@ -463,6 +472,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get useVehiclePresetsLabel => 'استخدام قيم المركبة الافتراضية';
+
+  @override
+  String get plateLookupButtonLabel => 'بحث';
+
+  @override
+  String get plateLookupAppliedMessage => 'تم تطبيق بيانات المركبة.';
+
+  @override
+  String get plateLookupNotFoundMessage => 'لم يتم العثور على مركبة لهذه اللوحة.';
+
+  @override
+  String get plateLookupFailedMessage => 'تعذر جلب بيانات اللوحة.';
 
   @override
   String get modelLookupAppliedMessage => 'تم تطبيق الاستهلاك.';

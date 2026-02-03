@@ -43,8 +43,10 @@ class TestFixtures {
     return VehicleProfile(
       id: id,
       name: 'City Bike',
+      licensePlate: null,
       brand: 'Urban',
       model: 'Flow',
+      registrationYear: null,
       type: VehicleType.bike,
       energyType: EnergyType.none,
       fuelType: null,

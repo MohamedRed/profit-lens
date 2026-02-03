@@ -4,6 +4,7 @@ import { defineSecret, defineString } from "firebase-functions/params";
 import { loadAdemeRecords } from "./ademe_dataset";
 import { selectConsumption } from "./ademe_consumption";
 import { findAdemeMatch, LookupEnergy } from "./ademe_matcher";
+export { lookupVehicleByPlate } from "./vehicle_plate_lookup";
 import { requestGeminiOffer } from "./gemini_client";
 import { parseGeminiJson } from "./gemini_json";
 import { postprocessOfferExtraction } from "./offer_postprocess";

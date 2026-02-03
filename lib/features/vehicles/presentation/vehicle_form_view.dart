@@ -14,6 +14,8 @@ class VehicleFormView extends StatelessWidget {
   final ValueChanged<bool> onPresetsChanged;
   final VoidCallback onPresetEdited;
   final VoidCallback? onModelLookup;
+  final VoidCallback? onPlateLookup;
+  final bool isLookingUpPlate;
   final bool isSaving;
   final VoidCallback onSave;
   final ValueChanged<VehicleType> onVehicleTypeChanged;
@@ -29,6 +31,8 @@ class VehicleFormView extends StatelessWidget {
     required this.onPresetsChanged,
     required this.onPresetEdited,
     required this.onModelLookup,
+    required this.onPlateLookup,
+    required this.isLookingUpPlate,
     required this.isSaving,
     required this.onSave,
     required this.onVehicleTypeChanged,
@@ -48,6 +52,8 @@ class VehicleFormView extends StatelessWidget {
           onPresetsChanged: onPresetsChanged,
           onPresetEdited: onPresetEdited,
           onModelLookup: onModelLookup,
+          onPlateLookup: onPlateLookup,
+          isLookingUpPlate: isLookingUpPlate,
           isSaving: isSaving,
           onSave: onSave,
           onVehicleTypeChanged: onVehicleTypeChanged,

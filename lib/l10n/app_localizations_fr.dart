@@ -457,6 +457,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get vehicleModelLabel => 'Modèle';
 
   @override
+  String get vehicleLicensePlateLabel => 'Plaque d\'immatriculation';
+
+  @override
+  String get vehicleLicensePlateHint => 'AA-123-AA';
+
+  @override
+  String get vehicleLicensePlateInvalid => 'Entrez une plaque française valide.';
+
+  @override
   String get vehicleRegistrationYearLabel => 'Année d\'immatriculation';
 
   @override
@@ -467,6 +476,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get useVehiclePresetsLabel => 'Utiliser les valeurs véhicule';
+
+  @override
+  String get plateLookupButtonLabel => 'Rechercher';
+
+  @override
+  String get plateLookupAppliedMessage => 'Données du véhicule appliquées.';
+
+  @override
+  String get plateLookupNotFoundMessage => 'Aucun véhicule trouvé pour cette plaque.';
+
+  @override
+  String get plateLookupFailedMessage => 'Impossible de récupérer les données de la plaque.';
 
   @override
   String get modelLookupAppliedMessage => 'Consommation appliquée.';

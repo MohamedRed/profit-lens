@@ -16,6 +16,8 @@ class ProfileSetupVehicleSection extends StatelessWidget {
   final ValueChanged<EnergyType> onEnergyTypeChanged;
   final ValueChanged<FuelType?> onFuelTypeChanged;
   final VoidCallback? onModelLookup;
+  final VoidCallback? onPlateLookup;
+  final bool isLookingUpPlate;
 
   const ProfileSetupVehicleSection({
     super.key,
@@ -27,6 +29,8 @@ class ProfileSetupVehicleSection extends StatelessWidget {
     required this.onEnergyTypeChanged,
     required this.onFuelTypeChanged,
     required this.onModelLookup,
+    required this.onPlateLookup,
+    required this.isLookingUpPlate,
   });
 
   @override
@@ -41,6 +45,7 @@ class ProfileSetupVehicleSection extends StatelessWidget {
       onFuelTypeChanged: onFuelTypeChanged,
       onPresetsChanged: onPresetsChanged,
       onPresetEdited: onPresetEdited,
+      licensePlateController: controller.licensePlateController,
       brandController: controller.brandController,
       modelController: controller.modelController,
       registrationYearController: controller.registrationYearController,
@@ -51,6 +56,8 @@ class ProfileSetupVehicleSection extends StatelessWidget {
       consumptionSuffix: controller.consumptionSuffix(),
       energyPriceSuffix: controller.energyPriceSuffix(),
       onModelLookup: onModelLookup,
+      onPlateLookup: onPlateLookup,
+      isLookingUpPlate: isLookingUpPlate,
     );
   }
 }

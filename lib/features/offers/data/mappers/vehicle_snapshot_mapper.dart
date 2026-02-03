@@ -9,6 +9,7 @@ class VehicleSnapshotMapper {
     if (data == null) return null;
     final id = data['id'] as String?;
     final name = data['name'] as String?;
+    final licensePlate = data['licensePlate'] as String?;
     final brand = data['brand'] as String?;
     final model = data['model'] as String?;
     final registrationYear = (data['registrationYear'] as num?)?.toInt();
@@ -31,6 +32,7 @@ class VehicleSnapshotMapper {
     return VehicleProfile(
       id: id,
       name: name,
+      licensePlate: licensePlate,
       brand: brand,
       model: model,
       registrationYear: registrationYear,
@@ -48,6 +50,7 @@ class VehicleSnapshotMapper {
     return {
       'id': vehicle.id,
       'name': vehicle.name,
+      'licensePlate': vehicle.licensePlate,
       'brand': vehicle.brand,
       'model': vehicle.model,
       if (vehicle.registrationYear != null)
