@@ -36,6 +36,7 @@ migrate_working_dir/
 
 # Local dev config (keys)
 /tool/dev_dart_defines.json
+functions/.env.*
 
 # Symbolication related
 app.*.symbols
