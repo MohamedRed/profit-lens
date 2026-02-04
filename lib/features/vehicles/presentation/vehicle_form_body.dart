@@ -9,7 +9,9 @@ import '../domain/fuel_type.dart';
 import '../domain/vehicle_type.dart';
 import 'controllers/vehicle_form_controller.dart';
 import 'controllers/vehicle_form_controller_actions.dart';
-import 'widgets/vehicle_section.dart';
+import 'widgets/vehicle_costs_section.dart';
+import 'widgets/vehicle_details_section.dart';
+import 'widgets/vehicle_energy_section.dart';
 
 class VehicleFormBody extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -51,29 +53,38 @@ class VehicleFormBody extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          VehicleSection(
+          VehicleDetailsSection(
             vehicleType: controller.vehicleType,
-            energyType: controller.energyType,
-            fuelType: controller.fuelType,
             useVehiclePresets: useVehiclePresets,
             onVehicleTypeChanged: onVehicleTypeChanged,
-            onEnergyTypeChanged: onEnergyTypeChanged,
-            onFuelTypeChanged: onFuelTypeChanged,
             onPresetsChanged: onPresetsChanged,
             onPresetEdited: onPresetEdited,
             licensePlateController: controller.licensePlateController,
             brandController: controller.brandController,
             modelController: controller.modelController,
             registrationYearController: controller.registrationYearController,
-            consumptionController: controller.consumptionController,
-            energyPriceController: controller.energyPriceController,
-            maintenanceController: controller.maintenanceController,
-            depreciationController: controller.depreciationController,
-            consumptionSuffix: controller.consumptionSuffix(),
-            energyPriceSuffix: controller.energyPriceSuffix(),
             onModelLookup: onModelLookup,
             onPlateLookup: onPlateLookup,
             isLookingUpPlate: isLookingUpPlate,
+          ),
+          const SizedBox(height: 12),
+          VehicleEnergySection(
+            vehicleType: controller.vehicleType,
+            energyType: controller.energyType,
+            fuelType: controller.fuelType,
+            onEnergyTypeChanged: onEnergyTypeChanged,
+            onFuelTypeChanged: onFuelTypeChanged,
+            onPresetEdited: onPresetEdited,
+            consumptionController: controller.consumptionController,
+            energyPriceController: controller.energyPriceController,
+            consumptionSuffix: controller.consumptionSuffix(),
+            energyPriceSuffix: controller.energyPriceSuffix(),
+          ),
+          const SizedBox(height: 12),
+          VehicleCostsSection(
+            maintenanceController: controller.maintenanceController,
+            depreciationController: controller.depreciationController,
+            onPresetEdited: onPresetEdited,
           ),
           const SizedBox(height: 12),
           PresetSourcesSection(sources: VehiclePresetsFr.sources),

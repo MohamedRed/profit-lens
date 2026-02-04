@@ -61,6 +61,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vehicleSection => 'المركبة';
 
   @override
+  String get vehicleDetailsSectionTitle => 'تفاصيل المركبة';
+
+  @override
+  String get vehicleEnergySectionTitle => 'الطاقة والاستهلاك';
+
+  @override
+  String get vehicleCostsSectionTitle => 'الصيانة والاهتلاك';
+
+  @override
   String get vehicleTypeLabel => 'نوع المركبة';
 
   @override

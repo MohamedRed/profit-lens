@@ -61,6 +61,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vehicleSection => 'Vehicle';
 
   @override
+  String get vehicleDetailsSectionTitle => 'Vehicle details';
+
+  @override
+  String get vehicleEnergySectionTitle => 'Energy & consumption';
+
+  @override
+  String get vehicleCostsSectionTitle => 'Maintenance & depreciation';
+
+  @override
   String get vehicleTypeLabel => 'Vehicle type';
 
   @override

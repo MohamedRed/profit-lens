@@ -202,6 +202,24 @@ abstract class AppLocalizations {
   /// **'Vehicle'**
   String get vehicleSection;
 
+  /// No description provided for @vehicleDetailsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle details'**
+  String get vehicleDetailsSectionTitle;
+
+  /// No description provided for @vehicleEnergySectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy & consumption'**
+  String get vehicleEnergySectionTitle;
+
+  /// No description provided for @vehicleCostsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance & depreciation'**
+  String get vehicleCostsSectionTitle;
+
   /// No description provided for @vehicleTypeLabel.
   ///
   /// In en, this message translates to:
