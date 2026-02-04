@@ -29,6 +29,7 @@ class TestFixtures {
       activity: BusinessActivity.deliveryServices,
       socialContributionRate: 0.22,
       incomeTaxRate: 0.12,
+      useLiberatoryTax: false,
       fixedCostAllocation: FixedCostAllocation.perDelivery,
       monthlyFixedCosts: 0,
       monthlyWorkingHours: 0,

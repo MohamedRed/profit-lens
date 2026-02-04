@@ -63,6 +63,7 @@ Future<void> saveProfileSetup({
     activity: businessController.activity,
     socialContributionRate: values.socialRate / 100,
     incomeTaxRate: values.incomeTax == null ? null : values.incomeTax! / 100,
+    useLiberatoryTax: businessController.useLiberatoryTax,
     fixedCostAllocation: businessController.allocation,
     monthlyFixedCosts: values.monthlyFixedCosts,
     monthlyWorkingHours: values.monthlyHours,

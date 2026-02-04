@@ -334,6 +334,18 @@ abstract class AppLocalizations {
   /// **'Auto-entrepreneur contribution rate'**
   String get socialRateLabel;
 
+  /// No description provided for @liberatoryTaxLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Prélèvement libératoire'**
+  String get liberatoryTaxLabel;
+
+  /// No description provided for @liberatoryTaxHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply a flat income tax rate on turnover.'**
+  String get liberatoryTaxHint;
+
   /// No description provided for @useFranceDefaultsLabel.
   ///
   /// In en, this message translates to:
@@ -831,6 +843,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Income tax rate'**
   String get incomeTaxRateLabel;
+
+  /// No description provided for @incomeTaxEstimatedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated default. You can override it.'**
+  String get incomeTaxEstimatedHint;
 
   /// No description provided for @monthlyFixedCostsLabel.
   ///

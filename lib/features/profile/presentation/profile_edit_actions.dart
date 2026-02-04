@@ -43,6 +43,7 @@ Future<void> saveProfileEdit({
     activity: controller.activity,
     socialContributionRate: values.socialRate / 100,
     incomeTaxRate: values.incomeTax == null ? null : values.incomeTax! / 100,
+    useLiberatoryTax: controller.useLiberatoryTax,
     fixedCostAllocation: controller.allocation,
     monthlyFixedCosts: values.monthlyFixedCosts,
     monthlyWorkingHours: values.monthlyHours,

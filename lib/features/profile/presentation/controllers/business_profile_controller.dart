@@ -16,6 +16,7 @@ class BusinessProfileController {
   BusinessActivity activity;
   FixedCostAllocation allocation;
   bool useFranceDefaults;
+  bool useLiberatoryTax;
 
   BusinessProfileController._({
     required this.socialRateController,
@@ -27,6 +28,7 @@ class BusinessProfileController {
     required this.activity,
     required this.allocation,
     required this.useFranceDefaults,
+    required this.useLiberatoryTax,
   });
 
   factory BusinessProfileController.forSetup() {
@@ -40,6 +42,7 @@ class BusinessProfileController {
       activity: BusinessActivity.deliveryServices,
       allocation: FixedCostAllocation.perKm,
       useFranceDefaults: true,
+      useLiberatoryTax: false,
     );
     controller.applyFranceDefaults();
     return controller;
@@ -70,6 +73,7 @@ class BusinessProfileController {
       activity: profile.activity,
       allocation: profile.fixedCostAllocation,
       useFranceDefaults: profile.useFranceDefaults,
+      useLiberatoryTax: profile.useLiberatoryTax,
     );
   }
 
@@ -80,6 +84,12 @@ class BusinessProfileController {
     socialRateController.text =
         (FranceDefaults.socialContributionRateServices * 100)
             .toStringAsFixed(1);
+    incomeTaxController.text = (FranceDefaults.incomeTaxRateForActivity(
+          activity: activity,
+          useLiberatoryTax: useLiberatoryTax,
+        ) *
+        100)
+        .toStringAsFixed(1);
   }
 
   void dispose() {

@@ -1,4 +1,5 @@
 import '../../vehicles/domain/fuel_type.dart';
+import '../../profile/domain/business_activity.dart';
 
 class DefaultSource {
   final String label;
@@ -15,6 +16,11 @@ class DefaultSource {
 class FranceDefaults {
   static const double socialContributionRateServices = 0.212;
   static const String socialContributionRateDate = '2026-01-01';
+
+  static const double incomeTaxRateLiberatorySales = 0.01;
+  static const double incomeTaxRateLiberatoryServices = 0.017;
+  static const double incomeTaxRateAssumedStandard = 0.11;
+  static const String incomeTaxRateDate = '2026-01-01';
 
   static const double electricityPricePerKwh = 0.1940;
   static const String electricityPriceDate = '2026-02-01';
@@ -36,6 +42,11 @@ class FranceDefaults {
       lastChecked: '2026-01-23',
     ),
     DefaultSource(
+      label: 'Auto-entrepreneur income tax (prélèvement libératoire) rates',
+      url: 'https://entreprendre.service-public.fr/vosdroits/F36244',
+      lastChecked: '2026-02-04',
+    ),
+    DefaultSource(
       label: 'Tarif Bleu residential electricity price (base option 6 kVA)',
       url: 'https://www.cre.fr/actualites/grille-tarifaire-des-tarifs-reglementes-bleus-residentiels-applicables-au-1er-fevrier-2026/',
       lastChecked: '2026-01-23',
@@ -46,4 +57,20 @@ class FranceDefaults {
       lastChecked: '2026-01-23',
     ),
   ];
+
+  static double incomeTaxRateForActivity({
+    required BusinessActivity activity,
+    required bool useLiberatoryTax,
+  }) {
+    if (!useLiberatoryTax) {
+      return incomeTaxRateAssumedStandard;
+    }
+    switch (activity) {
+      case BusinessActivity.sales:
+        return incomeTaxRateLiberatorySales;
+      case BusinessActivity.deliveryServices:
+      case BusinessActivity.services:
+        return incomeTaxRateLiberatoryServices;
+    }
+  }
 }

@@ -16,6 +16,8 @@ class BusinessCostsSection extends StatelessWidget {
   final ValueChanged<FixedCostAllocation> onAllocationChanged;
   final bool useFranceDefaults;
   final ValueChanged<bool> onDefaultsChanged;
+  final bool useLiberatoryTax;
+  final ValueChanged<bool> onLiberatoryTaxChanged;
 
   const BusinessCostsSection({
     super.key,
@@ -29,6 +31,8 @@ class BusinessCostsSection extends StatelessWidget {
     required this.onAllocationChanged,
     required this.useFranceDefaults,
     required this.onDefaultsChanged,
+    required this.useLiberatoryTax,
+    required this.onLiberatoryTaxChanged,
   });
 
   @override
@@ -48,6 +52,8 @@ class BusinessCostsSection extends StatelessWidget {
           onAllocationChanged: onAllocationChanged,
           useFranceDefaults: useFranceDefaults,
           onDefaultsChanged: onDefaultsChanged,
+          useLiberatoryTax: useLiberatoryTax,
+          onLiberatoryTaxChanged: onLiberatoryTaxChanged,
         ),
       ],
     );

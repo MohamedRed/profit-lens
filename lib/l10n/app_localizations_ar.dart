@@ -127,6 +127,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get socialRateLabel => 'نسبة اشتراكات رائد الأعمال';
 
   @override
+  String get liberatoryTaxLabel => 'الاقتطاع الضريبي التحريري';
+
+  @override
+  String get liberatoryTaxHint => 'تطبيق نسبة ضريبة ثابتة على رقم الأعمال.';
+
+  @override
   String get useFranceDefaultsLabel => 'استخدام القيم الافتراضية لفرنسا';
 
   @override
@@ -382,6 +388,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get incomeTaxRateLabel => 'نسبة ضريبة الدخل';
+
+  @override
+  String get incomeTaxEstimatedHint => 'قيمة تقديرية افتراضية ويمكنك تعديلها.';
 
   @override
   String get monthlyFixedCostsLabel => 'تكاليف ثابتة شهرية';

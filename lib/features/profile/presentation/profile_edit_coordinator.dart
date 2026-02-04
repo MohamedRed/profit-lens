@@ -45,6 +45,15 @@ class _ProfileEditCoordinatorState extends State<ProfileEditCoordinator> {
     });
   }
 
+  void _onLiberatoryTaxChanged(bool value) {
+    setState(() {
+      _controller.useLiberatoryTax = value;
+      if (_controller.useFranceDefaults) {
+        _controller.applyFranceDefaults();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -58,6 +67,9 @@ class _ProfileEditCoordinatorState extends State<ProfileEditCoordinator> {
           onActivityChanged: (value) {
             setState(() {
               _controller.activity = value;
+              if (_controller.useFranceDefaults) {
+                _controller.applyFranceDefaults();
+              }
             });
           },
           onAllocationChanged: (value) {
@@ -66,6 +78,7 @@ class _ProfileEditCoordinatorState extends State<ProfileEditCoordinator> {
             });
           },
           onDefaultsChanged: _onDefaultsChanged,
+          onLiberatoryTaxChanged: _onLiberatoryTaxChanged,
           onSave: () => saveProfileEdit(
             context: context,
             user: widget.user,

@@ -90,6 +90,9 @@ class _ProfileSetupCoordinatorState extends State<ProfileSetupCoordinator> {
             isLookingUpPlate: _state.isLookingUpPlate,
             onActivityChanged: (value) {
               _state.businessController.activity = value;
+              if (_state.businessController.useFranceDefaults) {
+                _state.businessController.applyFranceDefaults();
+              }
               _state.refresh();
             },
             onAllocationChanged: (value) {
@@ -97,6 +100,13 @@ class _ProfileSetupCoordinatorState extends State<ProfileSetupCoordinator> {
               _state.refresh();
             },
             onDefaultsChanged: _state.updateDefaults,
+            onLiberatoryTaxChanged: (value) {
+              _state.businessController.useLiberatoryTax = value;
+              if (_state.businessController.useFranceDefaults) {
+                _state.businessController.applyFranceDefaults();
+              }
+              _state.refresh();
+            },
             onVehicleTypeChanged: _state.changeVehicleType,
             onEnergyTypeChanged: _state.changeEnergyType,
             onFuelTypeChanged: _state.changeFuelType,

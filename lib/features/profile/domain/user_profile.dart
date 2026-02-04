@@ -9,6 +9,7 @@ class UserProfile {
   final BusinessActivity activity;
   final double socialContributionRate;
   final double? incomeTaxRate;
+  final bool useLiberatoryTax;
   final FixedCostAllocation fixedCostAllocation;
   final double monthlyFixedCosts;
   final double monthlyWorkingHours;
@@ -26,6 +27,7 @@ class UserProfile {
     required this.activity,
     required this.socialContributionRate,
     required this.incomeTaxRate,
+    required this.useLiberatoryTax,
     required this.fixedCostAllocation,
     required this.monthlyFixedCosts,
     required this.monthlyWorkingHours,
@@ -44,6 +46,7 @@ class UserProfile {
     BusinessActivity? activity,
     double? socialContributionRate,
     double? incomeTaxRate,
+    bool? useLiberatoryTax,
     FixedCostAllocation? fixedCostAllocation,
     double? monthlyFixedCosts,
     double? monthlyWorkingHours,
@@ -62,6 +65,7 @@ class UserProfile {
       socialContributionRate:
           socialContributionRate ?? this.socialContributionRate,
       incomeTaxRate: incomeTaxRate ?? this.incomeTaxRate,
+      useLiberatoryTax: useLiberatoryTax ?? this.useLiberatoryTax,
       fixedCostAllocation: fixedCostAllocation ?? this.fixedCostAllocation,
       monthlyFixedCosts: monthlyFixedCosts ?? this.monthlyFixedCosts,
       monthlyWorkingHours: monthlyWorkingHours ?? this.monthlyWorkingHours,

@@ -15,6 +15,8 @@ class BusinessCostsFields extends StatelessWidget {
   final ValueChanged<FixedCostAllocation> onAllocationChanged;
   final bool useFranceDefaults;
   final ValueChanged<bool> onDefaultsChanged;
+  final bool useLiberatoryTax;
+  final ValueChanged<bool> onLiberatoryTaxChanged;
 
   const BusinessCostsFields({
     super.key,
@@ -28,6 +30,8 @@ class BusinessCostsFields extends StatelessWidget {
     required this.onAllocationChanged,
     required this.useFranceDefaults,
     required this.onDefaultsChanged,
+    required this.useLiberatoryTax,
+    required this.onLiberatoryTaxChanged,
   });
 
   @override
@@ -57,12 +61,21 @@ class BusinessCostsFields extends StatelessWidget {
           },
         ),
         const SizedBox(height: 12),
+        SwitchListTile.adaptive(
+          value: useLiberatoryTax,
+          onChanged: onLiberatoryTaxChanged,
+          title: Text(l10n.liberatoryTaxLabel),
+          subtitle: Text(l10n.liberatoryTaxHint),
+          contentPadding: EdgeInsets.zero,
+        ),
+        const SizedBox(height: 8),
         TextFormField(
           controller: incomeTaxController,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
             labelText: l10n.incomeTaxRateLabel,
             suffixText: '%',
+            helperText: l10n.incomeTaxEstimatedHint,
           ),
         ),
         const SizedBox(height: 12),

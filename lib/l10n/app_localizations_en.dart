@@ -127,6 +127,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get socialRateLabel => 'Auto-entrepreneur contribution rate';
 
   @override
+  String get liberatoryTaxLabel => 'Prélèvement libératoire';
+
+  @override
+  String get liberatoryTaxHint => 'Apply a flat income tax rate on turnover.';
+
+  @override
   String get useFranceDefaultsLabel => 'Use France presets';
 
   @override
@@ -383,6 +389,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get incomeTaxRateLabel => 'Income tax rate';
+
+  @override
+  String get incomeTaxEstimatedHint =>
+      'Estimated default. You can override it.';
 
   @override
   String get monthlyFixedCostsLabel => 'Monthly fixed costs';

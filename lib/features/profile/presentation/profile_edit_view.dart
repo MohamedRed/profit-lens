@@ -17,6 +17,7 @@ class ProfileEditView extends StatelessWidget {
   final ValueChanged<BusinessActivity> onActivityChanged;
   final ValueChanged<FixedCostAllocation> onAllocationChanged;
   final ValueChanged<bool> onDefaultsChanged;
+  final ValueChanged<bool> onLiberatoryTaxChanged;
   final VoidCallback onSave;
 
   const ProfileEditView({
@@ -27,6 +28,7 @@ class ProfileEditView extends StatelessWidget {
     required this.onActivityChanged,
     required this.onAllocationChanged,
     required this.onDefaultsChanged,
+    required this.onLiberatoryTaxChanged,
     required this.onSave,
   });
 
@@ -54,6 +56,8 @@ class ProfileEditView extends StatelessWidget {
             onAllocationChanged: onAllocationChanged,
             useFranceDefaults: controller.useFranceDefaults,
             onDefaultsChanged: onDefaultsChanged,
+            useLiberatoryTax: controller.useLiberatoryTax,
+            onLiberatoryTaxChanged: onLiberatoryTaxChanged,
           ),
           const SizedBox(height: 12),
           PresetSourcesSection(sources: FranceDefaults.sources),

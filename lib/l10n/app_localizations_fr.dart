@@ -127,6 +127,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get socialRateLabel => 'Taux de cotisations auto‑entrepreneur';
 
   @override
+  String get liberatoryTaxLabel => 'Prélèvement libératoire';
+
+  @override
+  String get liberatoryTaxHint =>
+      'Appliquer un taux forfaitaire d’impôt sur le chiffre d’affaires.';
+
+  @override
   String get useFranceDefaultsLabel => 'Utiliser les valeurs France';
 
   @override
@@ -385,6 +392,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get incomeTaxRateLabel => 'Taux d’impôt sur le revenu';
+
+  @override
+  String get incomeTaxEstimatedHint => 'Valeur estimée par défaut, modifiable.';
 
   @override
   String get monthlyFixedCostsLabel => 'Coûts fixes mensuels';

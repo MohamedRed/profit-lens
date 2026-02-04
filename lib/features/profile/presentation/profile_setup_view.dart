@@ -26,6 +26,7 @@ class ProfileSetupView extends StatelessWidget {
   final ValueChanged<BusinessActivity> onActivityChanged;
   final ValueChanged<FixedCostAllocation> onAllocationChanged;
   final ValueChanged<bool> onDefaultsChanged;
+  final ValueChanged<bool> onLiberatoryTaxChanged;
   final ValueChanged<VehicleType> onVehicleTypeChanged;
   final ValueChanged<EnergyType> onEnergyTypeChanged;
   final ValueChanged<FuelType?> onFuelTypeChanged;
@@ -38,7 +39,8 @@ class ProfileSetupView extends StatelessWidget {
     required this.onVehiclePresetEdited, required this.onModelLookup,
     required this.onPlateLookup, required this.isLookingUpPlate,
     required this.onActivityChanged, required this.onAllocationChanged,
-    required this.onDefaultsChanged, required this.onVehicleTypeChanged,
+    required this.onDefaultsChanged, required this.onLiberatoryTaxChanged,
+    required this.onVehicleTypeChanged,
     required this.onEnergyTypeChanged, required this.onFuelTypeChanged,
     required this.onSave,
   });
@@ -69,6 +71,8 @@ class ProfileSetupView extends StatelessWidget {
             onAllocationChanged: onAllocationChanged,
             useFranceDefaults: businessController.useFranceDefaults,
             onDefaultsChanged: onDefaultsChanged,
+            useLiberatoryTax: businessController.useLiberatoryTax,
+            onLiberatoryTaxChanged: onLiberatoryTaxChanged,
           ),
           const SizedBox(height: 12),
           ProfileSetupVehicleSection(

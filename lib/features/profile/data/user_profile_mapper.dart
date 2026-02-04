@@ -17,6 +17,7 @@ class UserProfileMapper {
     final countryCode = data['countryCode'] as String?;
     final currencyCode = data['currencyCode'] as String?;
     final useFranceDefaults = data['useFranceDefaults'] as bool?;
+    final useLiberatoryTax = data['useLiberatoryTax'] as bool? ?? false;
     final preferredLocale = data['preferredLocale'] as String?;
 
     if (activity == null ||
@@ -40,6 +41,7 @@ class UserProfileMapper {
       activity: activity,
       socialContributionRate: socialRate,
       incomeTaxRate: (data['incomeTaxRate'] as num?)?.toDouble(),
+      useLiberatoryTax: useLiberatoryTax,
       fixedCostAllocation: allocation,
       monthlyFixedCosts: fixedCosts,
       monthlyWorkingHours: monthlyHours,
@@ -59,6 +61,7 @@ class UserProfileMapper {
       'activity': profile.activity.name,
       'socialContributionRate': profile.socialContributionRate,
       'incomeTaxRate': profile.incomeTaxRate,
+      'useLiberatoryTax': profile.useLiberatoryTax,
       'fixedCostAllocation': profile.fixedCostAllocation.name,
       'monthlyFixedCosts': profile.monthlyFixedCosts,
       'monthlyWorkingHours': profile.monthlyWorkingHours,
