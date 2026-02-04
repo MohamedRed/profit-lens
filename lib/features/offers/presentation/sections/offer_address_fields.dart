@@ -38,6 +38,8 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
     final hideDropoff = _pickupDropdownOpen;
     final showPickupName =
         widget.pickupNameController.text.trim().isNotEmpty;
+    final showPickupAddress =
+        widget.pickupAddressController.text.trim().isNotEmpty;
     final showDropoffName =
         widget.dropoffNameController.text.trim().isNotEmpty;
     return Column(
@@ -49,59 +51,22 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
               controller: widget.pickupNameController,
               decoration: InputDecoration(labelText: l10n.pickupNameLabel),
             ),
-            const SizedBox(height: 12),
+            if (showPickupAddress) const SizedBox(height: 12),
           ],
-          PlaceAutocompleteField(
-            key: OfferFlowKeys.pickupAddressField,
-            controller: widget.pickupAddressController,
-            label: l10n.pickupAddressLabel,
-            placeholder: l10n.pickupAddressPlaceholder,
-            onSelected: widget.onPickupSelected,
-            onDropdownOpenChanged: (isOpen) {
-              if (mounted) {
-                setState(() => _pickupDropdownOpen = isOpen);
-              }
-            },
-          ),
+          if (showPickupAddress)
+            PlaceAutocompleteField(
+              key: OfferFlowKeys.pickupAddressField,
+              controller: widget.pickupAddressController,
+              label: l10n.pickupAddressLabel,
+              placeholder: l10n.pickupAddressPlaceholder,
+              onSelected: widget.onPickupSelected,
+              onDropdownOpenChanged: (isOpen) {
+                if (mounted) {
+                  setState(() => _pickupDropdownOpen = isOpen);
+                }
+              },
+            ),
         ],
-        AnimatedBuilder(
-          animation: Listenable.merge([
-            widget.pickupAddressController,
-            widget.dropoffAddressController,
-          ]),
-          builder: (context, _) {
-            final pickupEmpty =
-                widget.pickupAddressController.text.trim().isEmpty;
-            final dropoffFilled =
-                widget.dropoffAddressController.text.trim().isNotEmpty;
-            if (!pickupEmpty || !dropoffFilled) {
-              return const SizedBox.shrink();
-            }
-            return Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.info_outline,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      l10n.pickupAddressMissingHint,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
         const SizedBox(height: 12),
         if (!hideDropoff) ...[
           if (showDropoffName) ...[
