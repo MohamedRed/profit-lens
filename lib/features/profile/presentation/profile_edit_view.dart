@@ -7,7 +7,8 @@ import '../../../l10n/app_localizations.dart';
 import '../../profile/domain/fixed_cost_allocation.dart';
 import '../../profile/domain/business_activity.dart';
 import 'controllers/business_profile_controller.dart';
-import 'sections/business_costs_section.dart';
+import 'sections/business_fixed_costs_section.dart';
+import 'sections/business_taxes_section.dart';
 import 'sections/business_activity_field.dart';
 
 class ProfileEditView extends StatelessWidget {
@@ -45,19 +46,22 @@ class ProfileEditView extends StatelessWidget {
             onChanged: onActivityChanged,
           ),
           const SizedBox(height: 12),
-          BusinessCostsSection(
+          BusinessTaxesSection(
             socialRateController: controller.socialRateController,
             incomeTaxController: controller.incomeTaxController,
+            useFranceDefaults: controller.useFranceDefaults,
+            onDefaultsChanged: onDefaultsChanged,
+            useLiberatoryTax: controller.useLiberatoryTax,
+            onLiberatoryTaxChanged: onLiberatoryTaxChanged,
+          ),
+          const SizedBox(height: 12),
+          BusinessFixedCostsSection(
             monthlyFixedCostsController: controller.monthlyFixedCostsController,
             monthlyHoursController: controller.monthlyHoursController,
             monthlyDistanceController: controller.monthlyDistanceController,
             monthlyDeliveriesController: controller.monthlyDeliveriesController,
             allocation: controller.allocation,
             onAllocationChanged: onAllocationChanged,
-            useFranceDefaults: controller.useFranceDefaults,
-            onDefaultsChanged: onDefaultsChanged,
-            useLiberatoryTax: controller.useLiberatoryTax,
-            onLiberatoryTaxChanged: onLiberatoryTaxChanged,
           ),
           const SizedBox(height: 12),
           PresetSourcesSection(sources: FranceDefaults.sources),

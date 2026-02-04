@@ -368,6 +368,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get incomeTaxLabel => 'ضريبة الدخل';
 
   @override
+  String get monthlyCostsSectionTitle => 'التكاليف الشهرية';
+
+  @override
   String get fixedCostsLabel => 'تخصيص التكاليف الثابتة';
 
   @override

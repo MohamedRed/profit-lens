@@ -129,6 +129,7 @@
   "offerSaveFailedMessage": "Impossible d’enregistrer l’offre.",
   "historyDetailTitle": "Détails de l’offre",
   "incomeTaxLabel": "Impôt sur le revenu",
+  "monthlyCostsSectionTitle": "Coûts mensuels",
   "fixedCostsLabel": "Répartition des coûts fixes",
   "profileSectionTitle": "Profil entreprise",
   "languageSectionTitle": "Langue",

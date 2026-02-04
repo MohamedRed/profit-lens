@@ -784,6 +784,12 @@ abstract class AppLocalizations {
   /// **'Income tax'**
   String get incomeTaxLabel;
 
+  /// No description provided for @monthlyCostsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly costs'**
+  String get monthlyCostsSectionTitle;
+
   /// No description provided for @fixedCostsLabel.
   ///
   /// In en, this message translates to:

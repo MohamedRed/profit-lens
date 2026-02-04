@@ -369,6 +369,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get incomeTaxLabel => 'Income tax';
 
   @override
+  String get monthlyCostsSectionTitle => 'Monthly costs';
+
+  @override
   String get fixedCostsLabel => 'Fixed costs allocation';
 
   @override

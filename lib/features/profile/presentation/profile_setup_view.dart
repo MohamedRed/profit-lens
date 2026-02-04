@@ -8,7 +8,8 @@ import '../../vehicles/domain/fuel_type.dart';
 import '../../vehicles/domain/vehicle_type.dart';
 import '../../vehicles/presentation/controllers/vehicle_form_controller.dart';
 import 'controllers/business_profile_controller.dart';
-import 'sections/business_costs_section.dart';
+import 'sections/business_fixed_costs_section.dart';
+import 'sections/business_taxes_section.dart';
 import 'sections/business_activity_field.dart';
 import 'profile_setup_sources_section.dart';
 import 'profile_setup_vehicle_section.dart';
@@ -57,9 +58,16 @@ class ProfileSetupView extends StatelessWidget {
             onChanged: onActivityChanged,
           ),
           const SizedBox(height: 12),
-          BusinessCostsSection(
+          BusinessTaxesSection(
             socialRateController: businessController.socialRateController,
             incomeTaxController: businessController.incomeTaxController,
+            useFranceDefaults: businessController.useFranceDefaults,
+            onDefaultsChanged: onDefaultsChanged,
+            useLiberatoryTax: businessController.useLiberatoryTax,
+            onLiberatoryTaxChanged: onLiberatoryTaxChanged,
+          ),
+          const SizedBox(height: 12),
+          BusinessFixedCostsSection(
             monthlyFixedCostsController:
                 businessController.monthlyFixedCostsController,
             monthlyHoursController: businessController.monthlyHoursController,
@@ -69,10 +77,6 @@ class ProfileSetupView extends StatelessWidget {
                 businessController.monthlyDeliveriesController,
             allocation: businessController.allocation,
             onAllocationChanged: onAllocationChanged,
-            useFranceDefaults: businessController.useFranceDefaults,
-            onDefaultsChanged: onDefaultsChanged,
-            useLiberatoryTax: businessController.useLiberatoryTax,
-            onLiberatoryTaxChanged: onLiberatoryTaxChanged,
           ),
           const SizedBox(height: 12),
           ProfileSetupVehicleSection(

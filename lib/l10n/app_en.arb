@@ -129,6 +129,7 @@
   "offerSaveFailedMessage": "Unable to save offer.",
   "historyDetailTitle": "Offer details",
   "incomeTaxLabel": "Income tax",
+  "monthlyCostsSectionTitle": "Monthly costs",
   "fixedCostsLabel": "Fixed costs allocation",
   "profileSectionTitle": "Business profile",
   "languageSectionTitle": "Language",

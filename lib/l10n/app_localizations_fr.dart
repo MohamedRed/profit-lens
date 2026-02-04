@@ -372,6 +372,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get incomeTaxLabel => 'Impôt sur le revenu';
 
   @override
+  String get monthlyCostsSectionTitle => 'Coûts mensuels';
+
+  @override
   String get fixedCostsLabel => 'Répartition des coûts fixes';
 
   @override
