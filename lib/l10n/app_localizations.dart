@@ -607,7 +607,7 @@ abstract class AppLocalizations {
   /// No description provided for @profitThresholdLabel.
   ///
   /// In en, this message translates to:
-  /// **'Profitability threshold'**
+  /// **'Break-even'**
   String get profitThresholdLabel;
 
   /// No description provided for @historyChartEmptyMessage.
@@ -619,7 +619,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyChartHintMessage.
   ///
   /// In en, this message translates to:
-  /// **'Use this chart to track profitability trends across offers.'**
+  /// **'Use this chart to compare profits above/below the break-even line.'**
   String get historyChartHintMessage;
 
   /// No description provided for @latestProfitLabel.

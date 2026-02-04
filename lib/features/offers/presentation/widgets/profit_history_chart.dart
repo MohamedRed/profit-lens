@@ -26,12 +26,12 @@ class ProfitHistoryChart extends StatelessWidget {
     final sorted = [...offers]..sort(
         (a, b) => a.createdAt.compareTo(b.createdAt),
       );
-    final values = sorted.map((offer) => offer.offer.payoutEuro).toList();
-    final thresholdValues =
-        sorted.map((offer) => offer.breakdown.totalCosts).toList();
-    final combinedValues = [...values, ...thresholdValues];
-    final minValue = combinedValues.reduce(math.min);
-    final maxValue = combinedValues.reduce(math.max);
+    final values = sorted.map((offer) => offer.breakdown.netProfit).toList();
+    final minValue = values.reduce(math.min);
+    final maxValue = values.reduce(math.max);
+    final maxAbs = math.max(minValue.abs(), maxValue.abs());
+    final normalizedMax = maxAbs == 0 ? 1 : maxAbs;
+    final normalizedMin = -normalizedMax;
     final localeTag = Localizations.localeOf(context).toString();
     final latest = CurrencyFormat.euro(values.last, localeTag);
 
@@ -54,9 +54,8 @@ class ProfitHistoryChart extends StatelessWidget {
           child: CustomPaint(
             painter: _ProfitHistoryChartPainter(
               values: values,
-              thresholdValues: thresholdValues,
-              minValue: minValue,
-              maxValue: maxValue,
+              minValue: normalizedMin,
+              maxValue: normalizedMax,
               lineColor: Theme.of(context).colorScheme.primary,
               thresholdColor: Theme.of(context).colorScheme.outline,
               axisColor: Theme.of(context).dividerColor,
@@ -120,7 +119,7 @@ class _ProfitHistoryChartPainter extends CustomPainter {
   final List<double> values;
   final double minValue;
   final double maxValue;
-  final List<double> thresholdValues;
+  final double threshold;
   final Color lineColor;
   final Color thresholdColor;
   final Color axisColor;
@@ -131,7 +130,7 @@ class _ProfitHistoryChartPainter extends CustomPainter {
     required this.values,
     required this.minValue,
     required this.maxValue,
-    required this.thresholdValues,
+    this.threshold = 0,
     required this.lineColor,
     required this.thresholdColor,
     required this.axisColor,
@@ -185,6 +184,18 @@ class _ProfitHistoryChartPainter extends CustomPainter {
       ..strokeWidth = 1;
     canvas.drawRRect(chartRRect, axisPaint);
 
+    final thresholdPaint = Paint()
+      ..color = thresholdColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    final thresholdY = chartRect.bottom -
+        ((threshold - normalizedMin) / range) * chartRect.height;
+    canvas.drawLine(
+      Offset(chartRect.left, thresholdY),
+      Offset(chartRect.right, thresholdY),
+      thresholdPaint,
+    );
+
     final linePaint = Paint()
       ..color = lineColor
       ..style = PaintingStyle.stroke
@@ -196,11 +207,6 @@ class _ProfitHistoryChartPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final path = Path();
-    final thresholdPaint = Paint()
-      ..color = thresholdColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    final thresholdPath = Path();
     canvas.save();
     canvas.clipRRect(chartRRect);
     for (var i = 0; i < values.length; i++) {
@@ -214,27 +220,17 @@ class _ProfitHistoryChartPainter extends CustomPainter {
         path.lineTo(x, y);
       }
       canvas.drawCircle(Offset(x, y), 4, pointPaint);
-
-      final thresholdY = chartRect.bottom -
-          ((thresholdValues[i] - normalizedMin) / range) *
-              chartRect.height;
-      if (i == 0) {
-        thresholdPath.moveTo(x, thresholdY);
-      } else {
-        thresholdPath.lineTo(x, thresholdY);
-      }
     }
     canvas.drawPath(path, linePaint);
-    canvas.drawPath(thresholdPath, thresholdPaint);
     canvas.restore();
   }
 
   @override
   bool shouldRepaint(covariant _ProfitHistoryChartPainter oldDelegate) {
     return oldDelegate.values != values ||
-        oldDelegate.thresholdValues != thresholdValues ||
         oldDelegate.minValue != minValue ||
         oldDelegate.maxValue != maxValue ||
+        oldDelegate.threshold != threshold ||
         oldDelegate.lineColor != lineColor ||
         oldDelegate.thresholdColor != thresholdColor ||
         oldDelegate.axisColor != axisColor ||

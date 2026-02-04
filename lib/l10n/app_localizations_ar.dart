@@ -258,10 +258,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get historyViewChartsLabel => 'رسوم بيانية';
 
   @override
-  String get historyChartTitle => 'تطور العائد مع الوقت';
+  String get historyChartTitle => 'تطور الربح مع الوقت';
 
   @override
-  String get historyChartProfitLabel => 'العائد';
+  String get historyChartProfitLabel => 'الربح';
 
   @override
   String get profitThresholdLabel => 'حد التعادل';
@@ -272,10 +272,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get historyChartHintMessage =>
-      'استخدم هذا الرسم لمقارنة العائد بحد التعادل.';
+      'استخدم هذا الرسم لمقارنة الأرباح فوق/تحت حد التعادل.';
 
   @override
-  String get latestProfitLabel => 'آخر عائد';
+  String get latestProfitLabel => 'آخر ربح';
 
   @override
   String get extractionFailedMessage => 'تعذر استخراج تفاصيل العرض.';
