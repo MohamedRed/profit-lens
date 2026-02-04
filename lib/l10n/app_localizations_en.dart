@@ -258,13 +258,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyViewChartsLabel => 'Charts';
 
   @override
-  String get historyChartTitle => 'Profit over time';
+  String get historyChartTitle => 'Payout over time';
 
   @override
-  String get historyChartProfitLabel => 'Profit';
+  String get historyChartProfitLabel => 'Payout';
 
   @override
-  String get profitThresholdLabel => 'Profitability threshold';
+  String get profitThresholdLabel => 'Break-even payout';
 
   @override
   String get historyChartEmptyMessage =>
@@ -272,10 +272,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get historyChartHintMessage =>
-      'Use this chart to track profitability trends across offers.';
+      'Use this chart to compare payouts to the break-even amount.';
 
   @override
-  String get latestProfitLabel => 'Latest profit';
+  String get latestProfitLabel => 'Latest payout';
 
   @override
   String get extractionFailedMessage =>

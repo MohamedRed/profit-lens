@@ -261,10 +261,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get historyViewChartsLabel => 'Graphiques';
 
   @override
-  String get historyChartTitle => 'Évolution du profit';
+  String get historyChartTitle => 'Évolution des revenus';
 
   @override
-  String get historyChartProfitLabel => 'Profit';
+  String get historyChartProfitLabel => 'Revenu';
 
   @override
   String get profitThresholdLabel => 'Seuil de rentabilité';
@@ -275,10 +275,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get historyChartHintMessage =>
-      'Utilisez ce graphique pour suivre l’évolution de la rentabilité.';
+      'Utilisez ce graphique pour comparer les revenus au seuil de rentabilité.';
 
   @override
-  String get latestProfitLabel => 'Dernier profit';
+  String get latestProfitLabel => 'Dernier revenu';
 
   @override
   String get extractionFailedMessage =>

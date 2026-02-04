@@ -21,7 +21,6 @@ class OfferHistoryCharts extends StatelessWidget {
       children: [
         ProfitHistoryChart(
           offers: offers,
-          threshold: 0,
         ),
         const SizedBox(height: 8),
         Text(
