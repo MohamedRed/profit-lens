@@ -25,13 +25,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  late final List<_HomeTab> _tabs;
 
   @override
   void initState() {
     super.initState();
     preloadGoogleMaps();
-    _tabs = [
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final tabs = [
       _HomeTab(
         labelBuilder: (l10n) => l10n.offerTabLabel,
         icon: Icons.add_circle_outline,
@@ -48,21 +52,16 @@ class _HomeScreenState extends State<HomeScreen> {
         page: SettingsScreen(user: widget.user, profile: widget.profile),
       ),
     ];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: IndexedStack(
         index: _currentIndex,
-        children: _tabs.map((tab) => SafeArea(child: tab.page)).toList(),
+        children: tabs.map((tab) => SafeArea(child: tab.page)).toList(),
       ),
       bottomNavigationBar: MobilePillNav(
         currentIndex: _currentIndex,
-        items: _tabs
+        items: tabs
             .map(
               (tab) => MobilePillNavItem(
                 icon: tab.icon,
