@@ -35,6 +35,7 @@ class ProfitHistoryChart extends StatelessWidget {
     final normalizedMin = -normalizedMax;
     final localeTag = Localizations.localeOf(context).toString();
     final latest = CurrencyFormat.euro(values.last, localeTag);
+    final thresholdLabel = CurrencyFormat.euro(0, localeTag);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,20 +53,49 @@ class ProfitHistoryChart extends StatelessWidget {
         SizedBox(
           height: 220,
           width: double.infinity,
-          child: CustomPaint(
-            painter: _ProfitHistoryChartPainter(
-              values: values,
-              minValue: normalizedMin,
-              maxValue: normalizedMax,
-              lineColor: Theme.of(context).colorScheme.primary,
-              thresholdColor: Theme.of(context).colorScheme.outline,
-              axisColor: Theme.of(context).dividerColor,
-              gridColor: Theme.of(context).colorScheme.outlineVariant,
-              backgroundColor: Theme.of(context)
-                  .colorScheme
-                  .surfaceContainerHighest
-                  .withValues(alpha: 0.4),
-            ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              const padding = 16.0;
+              final chartHeight = constraints.maxHeight - padding * 2;
+              final range = normalizedMax - normalizedMin;
+              final thresholdRatio =
+                  (0 - normalizedMin) / (range == 0 ? 1 : range);
+              final thresholdY = padding +
+                  chartHeight -
+                  (thresholdRatio * chartHeight);
+              final badgeTop = thresholdY
+                  .clamp(8.0, constraints.maxHeight - 28.0);
+              return Stack(
+                children: [
+                  Positioned.fill(
+                    child: CustomPaint(
+                      painter: _ProfitHistoryChartPainter(
+                        values: values,
+                        minValue: normalizedMin,
+                        maxValue: normalizedMax,
+                        lineColor: Theme.of(context).colorScheme.primary,
+                        thresholdColor: Theme.of(context).colorScheme.error,
+                        axisColor: Theme.of(context).dividerColor,
+                        gridColor:
+                            Theme.of(context).colorScheme.outlineVariant,
+                        backgroundColor: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest
+                            .withValues(alpha: 0.4),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: badgeTop,
+                    right: padding,
+                    child: _ThresholdBadge(
+                      label: thresholdLabel,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
         const SizedBox(height: 8),
@@ -112,6 +142,37 @@ class _LegendItem extends StatelessWidget {
         const SizedBox(width: 6),
         Text(label),
       ],
+    );
+  }
+}
+
+class _ThresholdBadge extends StatelessWidget {
+  final String label;
+  final Color color;
+
+  const _ThresholdBadge({
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Text(
+          label,
+          style: Theme.of(context)
+              .textTheme
+              .labelSmall
+              ?.copyWith(color: color),
+        ),
+      ),
     );
   }
 }
@@ -188,7 +249,7 @@ class _ProfitHistoryChartPainter extends CustomPainter {
     final thresholdPaint = Paint()
       ..color = thresholdColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+      ..strokeWidth = 2.5;
     final thresholdY = chartRect.bottom -
         ((threshold - normalizedMin) / range) * chartRect.height;
     canvas.drawLine(
