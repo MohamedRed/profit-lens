@@ -18,7 +18,7 @@ class EnergyTypeField extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return DropdownButtonFormField<EnergyType>(
-      initialValue: value,
+      value: value,
       decoration: InputDecoration(labelText: l10n.energyTypeLabel),
       items: EnergyType.values
           .map(

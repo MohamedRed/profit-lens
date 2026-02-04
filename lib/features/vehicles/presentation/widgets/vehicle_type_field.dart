@@ -18,7 +18,7 @@ class VehicleTypeField extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return DropdownButtonFormField<VehicleType>(
-      initialValue: value,
+      value: value,
       decoration: InputDecoration(labelText: l10n.vehicleTypeLabel),
       items: VehicleType.values
           .map(

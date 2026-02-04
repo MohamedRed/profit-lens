@@ -18,8 +18,7 @@ class FuelTypeField extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return DropdownButtonFormField<FuelType>(
-      key: ValueKey(value),
-      initialValue: value,
+      value: value,
       decoration: InputDecoration(labelText: l10n.fuelTypeLabel),
       items: FuelType.values
           .map(
