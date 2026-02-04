@@ -24,8 +24,10 @@ class OfferHistoryList extends StatelessWidget {
         final offer = offers[index];
         final profit = CurrencyFormat.euro(offer.breakdown.netProfit, localeTag);
         final payout = CurrencyFormat.euro(offer.offer.payoutEuro, localeTag);
+        final distanceKm = offer.offer.routeVerification?.distanceKm ??
+            offer.offer.distanceKm;
         final subtitle =
-            '${offer.offer.distanceKm.toStringAsFixed(1)} km • ${formatShortDateTime(context, offer.createdAt)}';
+            '${distanceKm.toStringAsFixed(1)} km • ${formatShortDateTime(context, offer.createdAt)}';
 
         return InkWell(
           onTap: () => onSelected(offer),
