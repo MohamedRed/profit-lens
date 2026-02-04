@@ -34,7 +34,7 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           const padding = 16.0;
-          const labelWidth = 64.0;
+          const labelWidth = 44.0;
           final chartHeight = constraints.maxHeight - padding * 2;
           final range = maxValue - minValue;
           final thresholdRatio = (0 - minValue) / (range == 0 ? 1 : range);
@@ -79,7 +79,7 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 4),
               Expanded(
                 child: Stack(
                   children: [
