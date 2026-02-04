@@ -74,7 +74,11 @@ Future<void> deleteVehicleForm({
     final services = AppScope.of(context);
     await services.vehicleRepository.deleteVehicle(user.uid, existing.id);
     if (profile.defaultVehicleId == existing.id) {
-      final updatedProfile = profile.copyWith(defaultVehicleId: null);
+      final remainingVehicles =
+          await services.vehicleRepository.fetchVehicles(user.uid);
+      final newDefaultId =
+          remainingVehicles.isEmpty ? null : remainingVehicles.first.id;
+      final updatedProfile = profile.copyWith(defaultVehicleId: newDefaultId);
       await services.userProfileRepository.saveProfile(updatedProfile);
     }
     if (context.mounted) {
