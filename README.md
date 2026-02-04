@@ -37,11 +37,11 @@ The app calls a Firebase callable function named `extractOfferFromImage`.
    firebase deploy --only functions
    ```
 
-## France license plate lookup (API Plaque)
+## France license plate lookup (RapidAPI)
 Vehicle lookup via plate uses the `lookupVehicleByPlate` callable function.
-1. Set the API Plaque token as a secret:
+1. Set the RapidAPI key as a secret:
    ```bash
-   firebase functions:secrets:set API_PLAQUE_TOKEN
+   firebase functions:secrets:set RAPIDAPI_PLAQUE_KEY
    ```
 2. Deploy functions:
    ```bash

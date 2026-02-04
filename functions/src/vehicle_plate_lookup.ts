@@ -4,9 +4,9 @@ import {
   fetchVehicleByPlate,
   mapEnergyLabel,
   normalizeFrenchPlate,
-} from "./api_plaque_client";
+} from "./plate_lookup_client";
 
-const apiPlaqueToken = defineSecret("API_PLAQUE_TOKEN");
+const rapidApiPlateKey = defineSecret("RAPIDAPI_PLAQUE_KEY");
 
 export const lookupVehicleByPlate = onCall(
   {
@@ -14,7 +14,7 @@ export const lookupVehicleByPlate = onCall(
     timeoutSeconds: 20,
     memory: "256MiB",
     region: "europe-west1",
-    secrets: [apiPlaqueToken],
+    secrets: [rapidApiPlateKey],
   },
   async (request) => {
     if (!request.auth?.uid) {
@@ -32,22 +32,29 @@ export const lookupVehicleByPlate = onCall(
     if (countryCode != "FR") {
       throw new HttpsError("failed-precondition", "Unsupported country.");
     }
-    const token = apiPlaqueToken.value();
-    if (!token) {
+    const apiKey = rapidApiPlateKey.value();
+    if (!apiKey) {
       throw new HttpsError(
         "failed-precondition",
-        "API_PLAQUE_TOKEN is not set."
+        "RAPIDAPI_PLAQUE_KEY is not set."
       );
     }
     const plate = normalizeFrenchPlate(rawPlate);
     if (!plate) {
       throw new HttpsError("invalid-argument", "Invalid plate input.");
     }
-    const vehicle = await fetchVehicleByPlate({
-      plate,
-      token,
-      countryCode,
-    });
+    let vehicle;
+    try {
+      vehicle = await fetchVehicleByPlate({
+        plate,
+        apiKey,
+      });
+    } catch (error) {
+      if (error instanceof HttpsError) {
+        throw error;
+      }
+      throw new HttpsError("internal", "Vehicle lookup failed.");
+    }
     if (!vehicle) {
       return { match: false };
     }
