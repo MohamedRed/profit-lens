@@ -5,6 +5,9 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
   final double minValue;
   final double maxValue;
   final String thresholdLabel;
+  final String topLabel;
+  final String midLabel;
+  final String bottomLabel;
 
   const ProfitHistoryChartCanvas({
     super.key,
@@ -12,6 +15,9 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
     required this.minValue,
     required this.maxValue,
     required this.thresholdLabel,
+    required this.topLabel,
+    required this.midLabel,
+    required this.bottomLabel,
   });
 
   @override
@@ -29,6 +35,10 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
               padding + chartHeight - (thresholdRatio * chartHeight);
           final badgeTop =
               thresholdY.clamp(8.0, constraints.maxHeight - 28.0);
+          final labelStyle = Theme.of(context)
+              .textTheme
+              .labelSmall
+              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
           return Stack(
             children: [
               Positioned.fill(
@@ -55,6 +65,21 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
                   label: thresholdLabel,
                   color: Theme.of(context).colorScheme.error,
                 ),
+              ),
+              Positioned(
+                left: 4,
+                top: 4,
+                child: Text(topLabel, style: labelStyle),
+              ),
+              Positioned(
+                left: 4,
+                top: (constraints.maxHeight / 2) - 8,
+                child: Text(midLabel, style: labelStyle),
+              ),
+              Positioned(
+                left: 4,
+                bottom: 4,
+                child: Text(bottomLabel, style: labelStyle),
               ),
             ],
           );

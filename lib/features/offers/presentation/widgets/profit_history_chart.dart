@@ -37,6 +37,9 @@ class ProfitHistoryChart extends StatelessWidget {
     final localeTag = Localizations.localeOf(context).toString();
     final latest = CurrencyFormat.euro(values.last, localeTag);
     final thresholdLabel = CurrencyFormat.euro(0, localeTag);
+    final topLabel = CurrencyFormat.euro(normalizedMax, localeTag);
+    final midLabel = thresholdLabel;
+    final bottomLabel = CurrencyFormat.euro(normalizedMin, localeTag);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,6 +59,9 @@ class ProfitHistoryChart extends StatelessWidget {
           minValue: normalizedMin,
           maxValue: normalizedMax,
           thresholdLabel: thresholdLabel,
+          topLabel: topLabel,
+          midLabel: midLabel,
+          bottomLabel: bottomLabel,
         ),
         const SizedBox(height: 8),
         Wrap(
