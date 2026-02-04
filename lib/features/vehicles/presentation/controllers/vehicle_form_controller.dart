@@ -63,6 +63,12 @@ class VehicleFormController {
       text: vehicle == null ? '' : vehicle.depreciationPerKm.toStringAsFixed(2),
     );
 
+    final defaultVehicleType = vehicle?.type ?? VehicleType.car;
+    final defaultEnergyType =
+        vehicle?.energyType ?? defaultEnergyTypeForVehicle(defaultVehicleType);
+    final defaultFuelType = vehicle?.fuelType ??
+        defaultFuelTypeForVehicle(defaultVehicleType, defaultEnergyType);
+
     final controller = VehicleFormController(
       licensePlateController: licensePlateController,
       brandController: brandController,
@@ -72,9 +78,9 @@ class VehicleFormController {
       energyPriceController: energyPriceController,
       maintenanceController: maintenanceController,
       depreciationController: depreciationController,
-      vehicleType: vehicle?.type ?? VehicleType.bike,
-      energyType: vehicle?.energyType ?? EnergyType.none,
-      fuelType: vehicle?.fuelType ?? FuelType.e10,
+      vehicleType: defaultVehicleType,
+      energyType: defaultEnergyType,
+      fuelType: defaultFuelType,
     );
 
     if (vehicle == null) {

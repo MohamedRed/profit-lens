@@ -45,6 +45,31 @@ extension VehicleFormStateActions on VehicleFormState {
     updateVehicleType(controller: controller, value: value);
     if (useVehiclePresets) {
       applyPresetsForType(setEnergyType: true);
+      refresh();
+      return;
+    }
+
+    final defaultEnergyType = defaultEnergyTypeForVehicle(value);
+    final requiresEnergyReset = value == VehicleType.bike ||
+        value == VehicleType.ebike ||
+        controller.energyType == EnergyType.none;
+    if (requiresEnergyReset) {
+      controller.energyType = defaultEnergyType;
+      controller.fuelType =
+          defaultFuelTypeForVehicle(value, controller.energyType);
+      controller.applyEnergyPriceDefaults(
+        useFranceDefaults: profile.useFranceDefaults,
+      );
+      if (controller.energyType == EnergyType.none) {
+        controller.consumptionController.text = '0';
+      }
+    } else if (controller.energyType == EnergyType.fuel &&
+        controller.fuelType == null) {
+      controller.fuelType =
+          defaultFuelTypeForVehicle(value, controller.energyType);
+      controller.applyEnergyPriceDefaults(
+        useFranceDefaults: profile.useFranceDefaults,
+      );
     }
     refresh();
   }
