@@ -150,6 +150,7 @@
   "vehicleLicensePlateLabel": "Plaque d'immatriculation",
   "vehicleLicensePlateHint": "AA-123-AA",
   "vehicleLicensePlateInvalid": "Entrez une plaque française valide.",
+  "vehicleLicensePlateDuplicate": "Une voiture avec cette plaque existe déjà.",
   "vehicleRegistrationYearLabel": "Année d'immatriculation",
   "vehicleRegistrationYearHint": "AAAA",
   "vehicleRegistrationYearInvalid": "Entrez une année valide.",

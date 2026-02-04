@@ -12,6 +12,10 @@ service cloud.firestore {
         allow read, write: if isOwner(uid);
       }
 
+      match /vehiclePlateIndex/{plate} {
+        allow read, write: if isOwner(uid);
+      }
+
       match /offers/{offerId} {
         allow read, write: if isOwner(uid);
       }

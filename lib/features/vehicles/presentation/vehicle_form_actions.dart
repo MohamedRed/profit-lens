@@ -8,6 +8,7 @@ import '../domain/energy_type.dart';
 import '../domain/fuel_type.dart';
 import '../domain/vehicle_profile.dart';
 import '../domain/vehicle_type.dart';
+import '../data/vehicle_repository_exceptions.dart';
 import 'controllers/vehicle_form_controller.dart';
 import 'controllers/vehicle_form_controller_actions.dart';
 import 'vehicle_form_helpers.dart';
@@ -42,8 +43,14 @@ Future<void> saveVehicleForm({
     if (context.mounted) {
       Navigator.of(context).pop();
     }
-  } catch (_) {
+  } catch (error) {
     if (!context.mounted) return;
+    if (error is VehiclePlateAlreadyExistsException) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.vehicleLicensePlateDuplicate)),
+      );
+      return;
+    }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(l10n.vehicleSaveFailedMessage)),
     );

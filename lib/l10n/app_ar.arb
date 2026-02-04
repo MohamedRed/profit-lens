@@ -150,6 +150,7 @@
   "vehicleLicensePlateLabel": "لوحة المركبة",
   "vehicleLicensePlateHint": "AA-123-AA",
   "vehicleLicensePlateInvalid": "يرجى إدخال لوحة فرنسية صحيحة.",
+  "vehicleLicensePlateDuplicate": "توجد مركبة بهذه اللوحة بالفعل.",
   "vehicleRegistrationYearLabel": "سنة التسجيل",
   "vehicleRegistrationYearHint": "YYYY",
   "vehicleRegistrationYearInvalid": "يرجى إدخال سنة صحيحة.",

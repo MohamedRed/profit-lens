@@ -1000,6 +1000,12 @@ abstract class AppLocalizations {
   /// **'Enter a valid French plate.'**
   String get vehicleLicensePlateInvalid;
 
+  /// No description provided for @vehicleLicensePlateDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'A vehicle with this plate already exists.'**
+  String get vehicleLicensePlateDuplicate;
+
   /// No description provided for @vehicleRegistrationYearLabel.
   ///
   /// In en, this message translates to:

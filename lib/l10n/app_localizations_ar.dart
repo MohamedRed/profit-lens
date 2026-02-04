@@ -471,6 +471,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vehicleLicensePlateInvalid => 'يرجى إدخال لوحة فرنسية صحيحة.';
 
   @override
+  String get vehicleLicensePlateDuplicate => 'توجد مركبة بهذه اللوحة بالفعل.';
+
+  @override
   String get vehicleRegistrationYearLabel => 'سنة التسجيل';
 
   @override

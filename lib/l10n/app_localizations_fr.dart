@@ -477,6 +477,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Entrez une plaque française valide.';
 
   @override
+  String get vehicleLicensePlateDuplicate =>
+      'Une voiture avec cette plaque existe déjà.';
+
+  @override
   String get vehicleRegistrationYearLabel => 'Année d\'immatriculation';
 
   @override

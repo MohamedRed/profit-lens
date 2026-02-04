@@ -150,6 +150,7 @@
   "vehicleLicensePlateLabel": "License plate",
   "vehicleLicensePlateHint": "AA-123-AA",
   "vehicleLicensePlateInvalid": "Enter a valid French plate.",
+  "vehicleLicensePlateDuplicate": "A vehicle with this plate already exists.",
   "vehicleRegistrationYearLabel": "Registration year",
   "vehicleRegistrationYearHint": "YYYY",
   "vehicleRegistrationYearInvalid": "Enter a valid year.",

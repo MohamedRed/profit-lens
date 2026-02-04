@@ -473,6 +473,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vehicleLicensePlateInvalid => 'Enter a valid French plate.';
 
   @override
+  String get vehicleLicensePlateDuplicate =>
+      'A vehicle with this plate already exists.';
+
+  @override
   String get vehicleRegistrationYearLabel => 'Registration year';
 
   @override
