@@ -480,7 +480,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get plateLookupAppliedMessage => 'تم تطبيق بيانات المركبة.';
 
   @override
-  String get plateLookupNotFoundMessage => 'لم يتم العثور على مركبة لهذه اللوحة.';
+  String get plateLookupNotFoundMessage =>
+      'لم يتم العثور على مركبة لهذه اللوحة.';
 
   @override
   String get plateLookupFailedMessage => 'تعذر جلب بيانات اللوحة.';
