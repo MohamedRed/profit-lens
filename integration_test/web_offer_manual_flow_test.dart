@@ -7,7 +7,6 @@ import 'package:profit_lens/features/offers/presentation/offer_flow_actions.dart
 import 'package:profit_lens/features/offers/presentation/offer_flow_coordinator_body.dart';
 import 'package:profit_lens/features/offers/presentation/offer_result_screen.dart';
 import 'package:profit_lens/features/offers/presentation/widgets/profitability_overview_card.dart';
-import 'package:profit_lens/features/offers/presentation/widgets/place_autocomplete_field.dart';
 
 import 'support/fakes/auth_repository_fake.dart';
 import 'support/fakes/offer_analysis_service_fake.dart';
@@ -39,22 +38,20 @@ void main() {
     await tester.pumpWidget(ProfitLensApp(services: services));
     await tester.pumpAndSettle();
 
-    await tester.enterText(
-      find.byKey(OfferFlowKeys.payoutField),
-      '15.25',
-    );
-    final pickupField = tester.widget<PlaceAutocompleteField>(
-      find.byKey(OfferFlowKeys.pickupAddressField),
-    );
-    pickupField.controller.text = '10 Rue des Fleurs, Paris';
-    final dropoffField = tester.widget<PlaceAutocompleteField>(
-      find.byKey(OfferFlowKeys.dropoffAddressField),
-    );
-    dropoffField.controller.text = '22 Avenue Victor Hugo, Paris';
+    expect(find.text('Or enter the offer details manually.'), findsOneWidget);
+    await tester.tap(find.text('Enter manually'));
     await tester.pumpAndSettle();
+    expect(find.byKey(OfferFlowKeys.payoutField), findsOneWidget);
+    await tester.enterText(find.byKey(OfferFlowKeys.payoutField), '15.25');
 
     final coordinatorState =
         tester.state(find.byType(OfferFlowCoordinatorBody)) as dynamic;
+    coordinatorState._controller.pickupAddressController.text =
+        '10 Rue des Fleurs, Paris';
+    coordinatorState._controller.dropoffAddressController.text =
+        '22 Avenue Victor Hugo, Paris';
+    coordinatorState._refresh();
+    await tester.pumpAndSettle();
     await handleOfferAnalysis(
       context: tester.element(find.byType(OfferFlowCoordinatorBody)),
       formKey: coordinatorState._formKey,

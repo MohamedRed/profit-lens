@@ -81,7 +81,9 @@ class FakeOfferAnalysisService implements OfferAnalysisService {
     if (image == null) {
       throw StateError('Missing offer or image for analysis.');
     }
-    final name = image.path.split('/').last;
+    final name = image.path.isNotEmpty
+        ? image.path.split('/').last
+        : image.name;
     final resolved = offersByImageName[name];
     if (resolved == null) {
       throw StateError('Missing fixture for image: $name');
