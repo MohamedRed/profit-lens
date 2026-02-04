@@ -82,21 +82,21 @@ class OfferFlowForm extends StatelessWidget {
             showSpinnerWithLabel: true,
           ),
           const SizedBox(height: 16),
+          if (!isBusy &&
+              previewRecord != null &&
+              controller.analysisStatus == OfferAnalysisStatus.completed) ...[
+            ProfitabilityOverviewCard(
+              record: previewRecord!,
+              onViewDetails: onViewDetails,
+            ),
+          ],
+          const SizedBox(height: 16),
           OfferDetailsSection(
             controller: controller,
             requiresDuration: requiresDuration,
             onPickupSelected: onPickupSelected,
             onDropoffSelected: onDropoffSelected,
           ),
-          if (!isBusy &&
-              previewRecord != null &&
-              controller.analysisStatus == OfferAnalysisStatus.completed) ...[
-            const SizedBox(height: 16),
-            ProfitabilityOverviewCard(
-              record: previewRecord!,
-              onViewDetails: onViewDetails,
-            ),
-          ],
         ],
       ),
     );
