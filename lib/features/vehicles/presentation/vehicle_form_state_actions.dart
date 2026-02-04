@@ -62,6 +62,7 @@ extension VehicleFormStateActions on VehicleFormState {
       );
       if (controller.energyType == EnergyType.none) {
         controller.consumptionController.text = '0';
+        controller.energyPriceController.text = '0';
       }
     } else if (controller.energyType == EnergyType.fuel &&
         controller.fuelType == null) {

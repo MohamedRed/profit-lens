@@ -15,6 +15,7 @@ class VehicleIdentityFields extends StatelessWidget {
   final VoidCallback? onModelLookup;
   final VoidCallback? onPlateLookup;
   final bool isLookingUpPlate;
+  final bool showLicensePlate;
 
   const VehicleIdentityFields({
     super.key,
@@ -26,6 +27,7 @@ class VehicleIdentityFields extends StatelessWidget {
     required this.onModelLookup,
     required this.onPlateLookup,
     required this.isLookingUpPlate,
+    required this.showLicensePlate,
   });
 
   @override
@@ -33,12 +35,14 @@ class VehicleIdentityFields extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
-        VehicleLicensePlateField(
-          controller: licensePlateController,
-          isLookupInProgress: isLookingUpPlate,
-          onLookup: onPlateLookup,
-        ),
-        const SizedBox(height: 12),
+        if (showLicensePlate) ...[
+          VehicleLicensePlateField(
+            controller: licensePlateController,
+            isLookupInProgress: isLookingUpPlate,
+            onLookup: onPlateLookup,
+          ),
+          const SizedBox(height: 12),
+        ],
         VehicleBrandAutocompleteField(
           vehicleType: vehicleType,
           controller: brandController,

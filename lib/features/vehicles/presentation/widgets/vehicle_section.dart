@@ -62,6 +62,11 @@ class VehicleSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final showLicensePlate =
+        vehicleType == VehicleType.car || vehicleType == VehicleType.scooter;
+    final showEnergyType = showLicensePlate;
+    final showEnergyFields = vehicleType != VehicleType.bike;
+    final showFuelType = showEnergyType && energyType == EnergyType.fuel;
     return SectionCard(
       title: l10n.vehicleSection,
       children: [
@@ -84,27 +89,32 @@ class VehicleSection extends StatelessWidget {
           onModelLookup: onModelLookup,
           onPlateLookup: onPlateLookup,
           isLookingUpPlate: isLookingUpPlate,
+          showLicensePlate: showLicensePlate,
         ),
-        const SizedBox(height: 12),
-        EnergyTypeField(
-          value: energyType,
-          onChanged: onEnergyTypeChanged,
-        ),
-        if (energyType == EnergyType.fuel) ...[
+        if (showEnergyType) ...[
+          const SizedBox(height: 12),
+          EnergyTypeField(
+            value: energyType,
+            onChanged: onEnergyTypeChanged,
+          ),
+        ],
+        if (showFuelType) ...[
           const SizedBox(height: 12),
           FuelTypeField(
             value: fuelType,
             onChanged: onFuelTypeChanged,
           ),
         ],
-        const SizedBox(height: 12),
-        VehicleEnergyFields(
-          consumptionController: consumptionController,
-          energyPriceController: energyPriceController,
-          consumptionSuffix: consumptionSuffix,
-          energyPriceSuffix: energyPriceSuffix,
-          onConsumptionChanged: (_) => onPresetEdited(),
-        ),
+        if (showEnergyFields) ...[
+          const SizedBox(height: 12),
+          VehicleEnergyFields(
+            consumptionController: consumptionController,
+            energyPriceController: energyPriceController,
+            consumptionSuffix: consumptionSuffix,
+            energyPriceSuffix: energyPriceSuffix,
+            onConsumptionChanged: (_) => onPresetEdited(),
+          ),
+        ],
         const SizedBox(height: 12),
         VehicleMaintenanceFields(
           maintenanceController: maintenanceController,

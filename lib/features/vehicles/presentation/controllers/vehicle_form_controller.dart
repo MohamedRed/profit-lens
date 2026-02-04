@@ -64,10 +64,23 @@ class VehicleFormController {
     );
 
     final defaultVehicleType = vehicle?.type ?? VehicleType.car;
-    final defaultEnergyType =
-        vehicle?.energyType ?? defaultEnergyTypeForVehicle(defaultVehicleType);
-    final defaultFuelType = vehicle?.fuelType ??
-        defaultFuelTypeForVehicle(defaultVehicleType, defaultEnergyType);
+    final derivedEnergyType = defaultEnergyTypeForVehicle(defaultVehicleType);
+    final resolvedEnergyType = vehicle == null
+        ? derivedEnergyType
+        : (defaultVehicleType == VehicleType.bike ||
+                defaultVehicleType == VehicleType.ebike)
+            ? derivedEnergyType
+            : (vehicle.energyType ?? derivedEnergyType);
+    final resolvedFuelType = vehicle == null
+        ? defaultFuelTypeForVehicle(defaultVehicleType, resolvedEnergyType)
+        : (defaultVehicleType == VehicleType.bike ||
+                defaultVehicleType == VehicleType.ebike)
+            ? defaultFuelTypeForVehicle(defaultVehicleType, resolvedEnergyType)
+            : (vehicle.fuelType ??
+                defaultFuelTypeForVehicle(
+                  defaultVehicleType,
+                  resolvedEnergyType,
+                ));
 
     final controller = VehicleFormController(
       licensePlateController: licensePlateController,
@@ -79,8 +92,8 @@ class VehicleFormController {
       maintenanceController: maintenanceController,
       depreciationController: depreciationController,
       vehicleType: defaultVehicleType,
-      energyType: defaultEnergyType,
-      fuelType: defaultFuelType,
+      energyType: resolvedEnergyType,
+      fuelType: resolvedFuelType,
     );
 
     if (vehicle == null) {
@@ -90,9 +103,10 @@ class VehicleFormController {
         energyPriceController: controller.energyPriceController,
         useFranceDefaults: useFranceDefaults,
       );
-      if (controller.energyType == EnergyType.none) {
-        controller.consumptionController.text = '0';
-      }
+    }
+    if (controller.energyType == EnergyType.none) {
+      controller.consumptionController.text = '0';
+      controller.energyPriceController.text = '0';
     }
     return controller;
   }

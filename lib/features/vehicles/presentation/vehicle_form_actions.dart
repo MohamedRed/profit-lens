@@ -75,6 +75,7 @@ void updateEnergyType({
   controller.applyEnergyPriceDefaults(useFranceDefaults: useFranceDefaults);
   if (controller.energyType == EnergyType.none) {
     controller.consumptionController.text = '0';
+    controller.energyPriceController.text = '0';
   }
 }
 
