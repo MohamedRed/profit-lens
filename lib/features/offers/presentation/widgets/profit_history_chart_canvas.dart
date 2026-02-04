@@ -34,6 +34,7 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           const padding = 16.0;
+          const labelWidth = 64.0;
           final chartHeight = constraints.maxHeight - padding * 2;
           final range = maxValue - minValue;
           final thresholdRatio = (0 - minValue) / (range == 0 ? 1 : range);
@@ -57,40 +58,59 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
                 ),
               )
               .toList();
-          return Stack(
+          return Row(
             children: [
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: _ProfitHistoryChartPainter(
-                    values: values,
-                    minValue: minValue,
-                    maxValue: maxValue,
-                    lineColor: Theme.of(context).colorScheme.primary,
-                    thresholdColor: Theme.of(context).colorScheme.error,
-                    axisColor: Theme.of(context).dividerColor,
-                    gridColor: Theme.of(context).colorScheme.outlineVariant,
-                    backgroundColor: Theme.of(context)
-                        .colorScheme
-                        .surfaceContainerHighest
-                        .withValues(alpha: 0.4),
-                  ),
+              SizedBox(
+                width: labelWidth,
+                height: constraints.maxHeight,
+                child: Stack(
+                  children: [
+                    for (final tick in tickPositions)
+                      Positioned(
+                        right: 8,
+                        top: tick.top
+                            .clamp(2.0, constraints.maxHeight - 16.0),
+                        child: Text(
+                          tick.label,
+                          style: labelStyle,
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                  ],
                 ),
               ),
-              Positioned(
-                top: badgeTop,
-                right: padding,
-                child: _ThresholdBadge(
-                  label: thresholdLabel,
-                  color: Theme.of(context).colorScheme.error,
+              const SizedBox(width: 8),
+              Expanded(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: _ProfitHistoryChartPainter(
+                          values: values,
+                          minValue: minValue,
+                          maxValue: maxValue,
+                          lineColor: Theme.of(context).colorScheme.primary,
+                          thresholdColor: Theme.of(context).colorScheme.error,
+                          axisColor: Theme.of(context).dividerColor,
+                          gridColor: Theme.of(context).colorScheme.outlineVariant,
+                          backgroundColor: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest
+                              .withValues(alpha: 0.4),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: badgeTop,
+                      right: padding,
+                      child: _ThresholdBadge(
+                        label: thresholdLabel,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              for (final tick in tickPositions)
-                Positioned(
-                  left: 4,
-                  top: tick.top
-                      .clamp(2.0, constraints.maxHeight - 16.0),
-                  child: Text(tick.label, style: labelStyle),
-                ),
             ],
           );
         },
