@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 
+class ChartAxisTick {
+  final double value;
+  final String label;
+
+  const ChartAxisTick({
+    required this.value,
+    required this.label,
+  });
+}
+
 class ProfitHistoryChartCanvas extends StatelessWidget {
   final List<double> values;
   final double minValue;
   final double maxValue;
   final String thresholdLabel;
-  final String topLabel;
-  final String midLabel;
-  final String bottomLabel;
+  final List<ChartAxisTick> axisTicks;
 
   const ProfitHistoryChartCanvas({
     super.key,
@@ -15,9 +23,7 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
     required this.minValue,
     required this.maxValue,
     required this.thresholdLabel,
-    required this.topLabel,
-    required this.midLabel,
-    required this.bottomLabel,
+    required this.axisTicks,
   });
 
   @override
@@ -39,6 +45,18 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
               .textTheme
               .labelSmall
               ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
+          final tickPositions = axisTicks
+              .map(
+                (tick) => _AxisTickPosition(
+                  label: tick.label,
+                  top: padding +
+                      chartHeight -
+                      (((tick.value - minValue) / (range == 0 ? 1 : range)) *
+                          chartHeight) -
+                      8,
+                ),
+              )
+              .toList();
           return Stack(
             children: [
               Positioned.fill(
@@ -66,27 +84,29 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
                   color: Theme.of(context).colorScheme.error,
                 ),
               ),
-              Positioned(
-                left: 4,
-                top: 4,
-                child: Text(topLabel, style: labelStyle),
-              ),
-              Positioned(
-                left: 4,
-                top: (constraints.maxHeight / 2) - 8,
-                child: Text(midLabel, style: labelStyle),
-              ),
-              Positioned(
-                left: 4,
-                bottom: 4,
-                child: Text(bottomLabel, style: labelStyle),
-              ),
+              for (final tick in tickPositions)
+                Positioned(
+                  left: 4,
+                  top: tick.top
+                      .clamp(2.0, constraints.maxHeight - 16.0),
+                  child: Text(tick.label, style: labelStyle),
+                ),
             ],
           );
         },
       ),
     );
   }
+}
+
+class _AxisTickPosition {
+  final String label;
+  final double top;
+
+  const _AxisTickPosition({
+    required this.label,
+    required this.top,
+  });
 }
 
 class _ThresholdBadge extends StatelessWidget {
