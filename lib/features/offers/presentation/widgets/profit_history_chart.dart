@@ -27,10 +27,11 @@ class ProfitHistoryChart extends StatelessWidget {
         (a, b) => a.createdAt.compareTo(b.createdAt),
       );
     final values = sorted.map((offer) => offer.breakdown.netProfit).toList();
-    final minValue = values.reduce(math.min);
-    final maxValue = values.reduce(math.max);
-    final maxAbs = math.max(minValue.abs(), maxValue.abs());
-    final normalizedMax = maxAbs == 0 ? 1 : maxAbs;
+    final minValue = values.reduce((a, b) => a < b ? a : b);
+    final maxValue = values.reduce((a, b) => a > b ? a : b);
+    final maxAbs =
+        math.max(minValue.abs(), maxValue.abs()).toDouble();
+    final normalizedMax = maxAbs == 0 ? 1.0 : maxAbs;
     final normalizedMin = -normalizedMax;
     final localeTag = Localizations.localeOf(context).toString();
     final latest = CurrencyFormat.euro(values.last, localeTag);
