@@ -453,7 +453,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get saveVehicleButton => 'حفظ المركبة';
 
   @override
+  String get deleteVehicleAction => 'حذف المركبة';
+
+  @override
+  String get deleteVehicleTitle => 'حذف المركبة؟';
+
+  @override
+  String get deleteVehicleMessage =>
+      'سيؤدي ذلك إلى إزالة المركبة وإعداداتها المحفوظة. يمكنك إضافتها مرة أخرى لاحقًا.';
+
+  @override
+  String get deleteVehicleCancel => 'إلغاء';
+
+  @override
+  String get deleteVehicleConfirm => 'حذف';
+
+  @override
   String get vehicleSaveFailedMessage => 'تعذر حفظ المركبة.';
+
+  @override
+  String get vehicleDeleteFailedMessage => 'تعذر حذف المركبة.';
 
   @override
   String get vehicleBrandLabel => 'العلامة التجارية';

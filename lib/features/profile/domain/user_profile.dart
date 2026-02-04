@@ -2,6 +2,8 @@ import 'business_activity.dart';
 import 'fixed_cost_allocation.dart';
 
 class UserProfile {
+  static const _nullSentinel = Object();
+
   final String uid;
   final String? email;
   final String countryCode;
@@ -40,40 +42,47 @@ class UserProfile {
 
   UserProfile copyWith({
     String? uid,
-    String? email,
+    Object? email = _nullSentinel,
     String? countryCode,
     String? currencyCode,
     BusinessActivity? activity,
     double? socialContributionRate,
-    double? incomeTaxRate,
+    Object? incomeTaxRate = _nullSentinel,
     bool? useLiberatoryTax,
     FixedCostAllocation? fixedCostAllocation,
     double? monthlyFixedCosts,
     double? monthlyWorkingHours,
     double? monthlyDistanceKm,
     int? monthlyDeliveries,
-    String? defaultVehicleId,
+    Object? defaultVehicleId = _nullSentinel,
     bool? useFranceDefaults,
-    String? preferredLocale,
+    Object? preferredLocale = _nullSentinel,
   }) {
     return UserProfile(
       uid: uid ?? this.uid,
-      email: email ?? this.email,
+      email:
+          identical(email, _nullSentinel) ? this.email : email as String?,
       countryCode: countryCode ?? this.countryCode,
       currencyCode: currencyCode ?? this.currencyCode,
       activity: activity ?? this.activity,
       socialContributionRate:
           socialContributionRate ?? this.socialContributionRate,
-      incomeTaxRate: incomeTaxRate ?? this.incomeTaxRate,
+      incomeTaxRate: identical(incomeTaxRate, _nullSentinel)
+          ? this.incomeTaxRate
+          : incomeTaxRate as double?,
       useLiberatoryTax: useLiberatoryTax ?? this.useLiberatoryTax,
       fixedCostAllocation: fixedCostAllocation ?? this.fixedCostAllocation,
       monthlyFixedCosts: monthlyFixedCosts ?? this.monthlyFixedCosts,
       monthlyWorkingHours: monthlyWorkingHours ?? this.monthlyWorkingHours,
       monthlyDistanceKm: monthlyDistanceKm ?? this.monthlyDistanceKm,
       monthlyDeliveries: monthlyDeliveries ?? this.monthlyDeliveries,
-      defaultVehicleId: defaultVehicleId ?? this.defaultVehicleId,
+      defaultVehicleId: identical(defaultVehicleId, _nullSentinel)
+          ? this.defaultVehicleId
+          : defaultVehicleId as String?,
       useFranceDefaults: useFranceDefaults ?? this.useFranceDefaults,
-      preferredLocale: preferredLocale ?? this.preferredLocale,
+      preferredLocale: identical(preferredLocale, _nullSentinel)
+          ? this.preferredLocale
+          : preferredLocale as String?,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../domain/energy_type.dart';
 import '../domain/fuel_type.dart';
 import '../domain/vehicle_type.dart';
@@ -18,6 +19,7 @@ class VehicleFormView extends StatelessWidget {
   final bool isLookingUpPlate;
   final bool isSaving;
   final VoidCallback onSave;
+  final VoidCallback? onDelete;
   final ValueChanged<VehicleType> onVehicleTypeChanged;
   final ValueChanged<EnergyType> onEnergyTypeChanged;
   final ValueChanged<FuelType?> onFuelTypeChanged;
@@ -35,6 +37,7 @@ class VehicleFormView extends StatelessWidget {
     required this.isLookingUpPlate,
     required this.isSaving,
     required this.onSave,
+    required this.onDelete,
     required this.onVehicleTypeChanged,
     required this.onEnergyTypeChanged,
     required this.onFuelTypeChanged,
@@ -42,8 +45,19 @@ class VehicleFormView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          if (onDelete != null)
+            IconButton(
+              icon: const Icon(Icons.delete_outline),
+              tooltip: l10n.deleteVehicleAction,
+              onPressed: onDelete,
+            ),
+        ],
+      ),
       body: SafeArea(
         child: VehicleFormBody(
           formKey: formKey,

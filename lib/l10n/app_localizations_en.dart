@@ -455,7 +455,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveVehicleButton => 'Save vehicle';
 
   @override
+  String get deleteVehicleAction => 'Delete vehicle';
+
+  @override
+  String get deleteVehicleTitle => 'Delete vehicle?';
+
+  @override
+  String get deleteVehicleMessage =>
+      'This will remove the vehicle and its saved settings. You can add it again later.';
+
+  @override
+  String get deleteVehicleCancel => 'Cancel';
+
+  @override
+  String get deleteVehicleConfirm => 'Delete';
+
+  @override
   String get vehicleSaveFailedMessage => 'Unable to save vehicle.';
+
+  @override
+  String get vehicleDeleteFailedMessage => 'Unable to delete vehicle.';
 
   @override
   String get vehicleBrandLabel => 'Brand';

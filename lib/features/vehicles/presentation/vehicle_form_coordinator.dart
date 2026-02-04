@@ -86,6 +86,34 @@ class _VehicleFormCoordinatorState extends State<VehicleFormCoordinator> {
     }
   }
 
+  Future<void> _confirmDelete() async {
+    final l10n = AppLocalizations.of(context)!;
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.deleteVehicleTitle),
+        content: Text(l10n.deleteVehicleMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.deleteVehicleCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Text(l10n.deleteVehicleConfirm),
+          ),
+        ],
+      ),
+    );
+    if (shouldDelete != true || !mounted) {
+      return;
+    }
+    await _state.delete(context: context, user: widget.user);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -109,6 +137,7 @@ class _VehicleFormCoordinatorState extends State<VehicleFormCoordinator> {
           formKey: _formKey,
           user: widget.user,
         ),
+        onDelete: widget.vehicle == null ? null : _confirmDelete,
         onVehicleTypeChanged: _state.changeVehicleType,
         onEnergyTypeChanged: _state.changeEnergyType,
         onFuelTypeChanged: _state.changeFuelType,

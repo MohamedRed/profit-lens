@@ -457,8 +457,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get saveVehicleButton => 'Enregistrer le véhicule';
 
   @override
+  String get deleteVehicleAction => 'Supprimer le véhicule';
+
+  @override
+  String get deleteVehicleTitle => 'Supprimer le véhicule ?';
+
+  @override
+  String get deleteVehicleMessage =>
+      'Cela supprimera le véhicule et ses paramètres enregistrés. Vous pourrez l’ajouter de nouveau plus tard.';
+
+  @override
+  String get deleteVehicleCancel => 'Annuler';
+
+  @override
+  String get deleteVehicleConfirm => 'Supprimer';
+
+  @override
   String get vehicleSaveFailedMessage =>
       'Impossible d’enregistrer le véhicule.';
+
+  @override
+  String get vehicleDeleteFailedMessage =>
+      'Impossible de supprimer le véhicule.';
 
   @override
   String get vehicleBrandLabel => 'Marque';

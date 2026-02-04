@@ -117,4 +117,24 @@ extension VehicleFormStateActions on VehicleFormState {
       },
     );
   }
+
+  Future<void> delete({
+    required BuildContext context,
+    required AuthUser user,
+  }) async {
+    final existingVehicle = existing;
+    if (existingVehicle == null) {
+      return;
+    }
+    await deleteVehicleForm(
+      context: context,
+      user: user,
+      profile: profile,
+      existing: existingVehicle,
+      onDeletingChanged: (value) {
+        isSaving = value;
+        refresh();
+      },
+    );
+  }
 }

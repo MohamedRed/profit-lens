@@ -964,11 +964,47 @@ abstract class AppLocalizations {
   /// **'Save vehicle'**
   String get saveVehicleButton;
 
+  /// No description provided for @deleteVehicleAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete vehicle'**
+  String get deleteVehicleAction;
+
+  /// No description provided for @deleteVehicleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete vehicle?'**
+  String get deleteVehicleTitle;
+
+  /// No description provided for @deleteVehicleMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will remove the vehicle and its saved settings. You can add it again later.'**
+  String get deleteVehicleMessage;
+
+  /// No description provided for @deleteVehicleCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get deleteVehicleCancel;
+
+  /// No description provided for @deleteVehicleConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteVehicleConfirm;
+
   /// No description provided for @vehicleSaveFailedMessage.
   ///
   /// In en, this message translates to:
   /// **'Unable to save vehicle.'**
   String get vehicleSaveFailedMessage;
+
+  /// No description provided for @vehicleDeleteFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to delete vehicle.'**
+  String get vehicleDeleteFailedMessage;
 
   /// No description provided for @vehicleBrandLabel.
   ///

@@ -13,5 +13,9 @@ String? resolveVehicleId({
       vehicles.any((vehicle) => vehicle.id == selectedVehicleId)) {
     return selectedVehicleId;
   }
-  return profile.defaultVehicleId ?? vehicles.first.id;
+  if (profile.defaultVehicleId != null &&
+      vehicles.any((vehicle) => vehicle.id == profile.defaultVehicleId)) {
+    return profile.defaultVehicleId;
+  }
+  return vehicles.first.id;
 }

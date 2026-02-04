@@ -61,6 +61,37 @@ Future<void> saveVehicleForm({
   }
 }
 
+Future<void> deleteVehicleForm({
+  required BuildContext context,
+  required AuthUser user,
+  required UserProfile profile,
+  required VehicleProfile existing,
+  required ValueChanged<bool> onDeletingChanged,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
+  onDeletingChanged(true);
+  try {
+    final services = AppScope.of(context);
+    await services.vehicleRepository.deleteVehicle(user.uid, existing.id);
+    if (profile.defaultVehicleId == existing.id) {
+      final updatedProfile = profile.copyWith(defaultVehicleId: null);
+      await services.userProfileRepository.saveProfile(updatedProfile);
+    }
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
+  } catch (_) {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.vehicleDeleteFailedMessage)),
+    );
+  } finally {
+    if (context.mounted) {
+      onDeletingChanged(false);
+    }
+  }
+}
+
 void updateVehicleType({
   required VehicleFormController controller,
   required VehicleType value,
