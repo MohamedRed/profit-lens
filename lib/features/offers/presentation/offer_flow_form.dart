@@ -49,10 +49,6 @@ class OfferFlowForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isBusy = loadingAction != null;
-    final isImportBusy =
-        loadingAction == OfferFlowLoadingAction.importScreenshot;
-    final isCaptureBusy =
-        loadingAction == OfferFlowLoadingAction.captureScreenshot;
     return Form(
       key: formKey,
       child: ListView(
@@ -69,8 +65,6 @@ class OfferFlowForm extends StatelessWidget {
             label: l10n.importScreenshotButton,
             icon: Icons.upload_file,
             onPressed: isBusy ? null : onImportScreenshot,
-            isBusy: isImportBusy,
-            showSpinnerWithLabel: true,
           ),
           const SizedBox(height: 12),
           PrimaryButton(
@@ -78,8 +72,6 @@ class OfferFlowForm extends StatelessWidget {
             label: l10n.captureScreenshotButton,
             icon: Icons.camera_alt,
             onPressed: isBusy ? null : onCaptureScreenshot,
-            isBusy: isCaptureBusy,
-            showSpinnerWithLabel: true,
           ),
           const SizedBox(height: 16),
           if (!isBusy &&
