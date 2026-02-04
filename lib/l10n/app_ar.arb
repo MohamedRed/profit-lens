@@ -88,6 +88,27 @@
   "historyChartEmptyMessage": "أضف عرضين على الأقل لعرض الرسم البياني.",
   "historyChartHintMessage": "استخدم هذا الرسم لمقارنة الأرباح فوق/تحت حد التعادل.",
   "latestProfitLabel": "آخر ربح",
+  "historySummaryTodayMore": "عروض اليوم أكثر ربحية من السابقة بمقدار {amount}.",
+  "@historySummaryTodayMore": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "historySummaryTodayLess": "عروض اليوم أقل ربحية من السابقة بمقدار {amount}.",
+  "@historySummaryTodayLess": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "historySummaryTodayEqual": "عروض اليوم مشابهة تقريبًا لربحية العروض السابقة.",
+  "historySummaryNoToday": "لا توجد عروض اليوم.",
+  "historySummaryNotEnoughHistory": "لا يوجد سجل كافٍ للمقارنة مع اليوم.",
+  "historySummaryAverageProfit": "متوسط الربح: {amount}",
+  "@historySummaryAverageProfit": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
   "extractionFailedMessage": "تعذر استخراج تفاصيل العرض.",
   "captureScreenshotButton": "التقاط صورة",
   "mapsAutocompleteUnavailableMessage": "الإكمال التلقائي للعناوين غير متاح. تحقق من مفتاح Google Maps API وإعداد Places UI Kit.",

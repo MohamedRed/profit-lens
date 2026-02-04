@@ -628,6 +628,42 @@ abstract class AppLocalizations {
   /// **'Latest profit'**
   String get latestProfitLabel;
 
+  /// No description provided for @historySummaryTodayMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s offers are more profitable than earlier ones by {amount}.'**
+  String historySummaryTodayMore(String amount);
+
+  /// No description provided for @historySummaryTodayLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s offers are less profitable than earlier ones by {amount}.'**
+  String historySummaryTodayLess(String amount);
+
+  /// No description provided for @historySummaryTodayEqual.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s offers are about as profitable as earlier ones.'**
+  String get historySummaryTodayEqual;
+
+  /// No description provided for @historySummaryNoToday.
+  ///
+  /// In en, this message translates to:
+  /// **'No offers today yet.'**
+  String get historySummaryNoToday;
+
+  /// No description provided for @historySummaryNotEnoughHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough history to compare today.'**
+  String get historySummaryNotEnoughHistory;
+
+  /// No description provided for @historySummaryAverageProfit.
+  ///
+  /// In en, this message translates to:
+  /// **'Average profit: {amount}'**
+  String historySummaryAverageProfit(String amount);
+
   /// No description provided for @extractionFailedMessage.
   ///
   /// In en, this message translates to:

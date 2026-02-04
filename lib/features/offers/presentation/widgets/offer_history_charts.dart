@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/offer_record.dart';
 import 'profit_history_chart.dart';
+import 'profit_history_summary.dart';
 
 class OfferHistoryCharts extends StatelessWidget {
   final List<OfferRecord> offers;
@@ -22,7 +23,9 @@ class OfferHistoryCharts extends StatelessWidget {
         ProfitHistoryChart(
           offers: offers,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
+        ProfitHistorySummary(offers: offers),
+        const SizedBox(height: 12),
         Text(
           l10n.historyChartHintMessage,
           style: Theme.of(context).textTheme.bodySmall,

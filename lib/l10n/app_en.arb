@@ -88,6 +88,27 @@
   "historyChartEmptyMessage": "Add at least 2 offers to see the chart.",
   "historyChartHintMessage": "Use this chart to compare profits above/below the break-even line.",
   "latestProfitLabel": "Latest profit",
+  "historySummaryTodayMore": "Today's offers are more profitable than earlier ones by {amount}.",
+  "@historySummaryTodayMore": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "historySummaryTodayLess": "Today's offers are less profitable than earlier ones by {amount}.",
+  "@historySummaryTodayLess": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "historySummaryTodayEqual": "Today's offers are about as profitable as earlier ones.",
+  "historySummaryNoToday": "No offers today yet.",
+  "historySummaryNotEnoughHistory": "Not enough history to compare today.",
+  "historySummaryAverageProfit": "Average profit: {amount}",
+  "@historySummaryAverageProfit": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
   "extractionFailedMessage": "Unable to extract offer details from the screenshot.",
   "captureScreenshotButton": "Capture screenshot",
   "mapsAutocompleteUnavailableMessage": "Address autocomplete is unavailable. Check the Google Maps API key and Places UI Kit setup.",

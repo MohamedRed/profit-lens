@@ -278,6 +278,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get latestProfitLabel => 'Latest profit';
 
   @override
+  String historySummaryTodayMore(String amount) {
+    return 'Today\'s offers are more profitable than earlier ones by $amount.';
+  }
+
+  @override
+  String historySummaryTodayLess(String amount) {
+    return 'Today\'s offers are less profitable than earlier ones by $amount.';
+  }
+
+  @override
+  String get historySummaryTodayEqual =>
+      'Today\'s offers are about as profitable as earlier ones.';
+
+  @override
+  String get historySummaryNoToday => 'No offers today yet.';
+
+  @override
+  String get historySummaryNotEnoughHistory =>
+      'Not enough history to compare today.';
+
+  @override
+  String historySummaryAverageProfit(String amount) {
+    return 'Average profit: $amount';
+  }
+
+  @override
   String get extractionFailedMessage =>
       'Unable to extract offer details from the screenshot.';
 

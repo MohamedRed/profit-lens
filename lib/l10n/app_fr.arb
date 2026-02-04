@@ -88,6 +88,27 @@
   "historyChartEmptyMessage": "Ajoutez au moins 2 offres pour voir le graphique.",
   "historyChartHintMessage": "Utilisez ce graphique pour comparer les profits au-dessus/au-dessous du seuil de rentabilité.",
   "latestProfitLabel": "Dernier profit",
+  "historySummaryTodayMore": "Les offres d’aujourd’hui sont plus rentables que les précédentes de {amount}.",
+  "@historySummaryTodayMore": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "historySummaryTodayLess": "Les offres d’aujourd’hui sont moins rentables que les précédentes de {amount}.",
+  "@historySummaryTodayLess": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "historySummaryTodayEqual": "Les offres d’aujourd’hui sont à peu près aussi rentables que les précédentes.",
+  "historySummaryNoToday": "Aucune offre aujourd’hui.",
+  "historySummaryNotEnoughHistory": "Historique insuffisant pour comparer aujourd’hui.",
+  "historySummaryAverageProfit": "Profit moyen : {amount}",
+  "@historySummaryAverageProfit": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
   "extractionFailedMessage": "Impossible d’extraire les détails de l’offre.",
   "captureScreenshotButton": "Prendre une capture",
   "mapsAutocompleteUnavailableMessage": "L’autocomplétion d’adresse est indisponible. Vérifiez la clé Google Maps API et la configuration de Places UI Kit.",

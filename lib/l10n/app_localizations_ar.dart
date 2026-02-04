@@ -278,6 +278,32 @@ class AppLocalizationsAr extends AppLocalizations {
   String get latestProfitLabel => 'آخر ربح';
 
   @override
+  String historySummaryTodayMore(String amount) {
+    return 'عروض اليوم أكثر ربحية من السابقة بمقدار $amount.';
+  }
+
+  @override
+  String historySummaryTodayLess(String amount) {
+    return 'عروض اليوم أقل ربحية من السابقة بمقدار $amount.';
+  }
+
+  @override
+  String get historySummaryTodayEqual =>
+      'عروض اليوم مشابهة تقريبًا لربحية العروض السابقة.';
+
+  @override
+  String get historySummaryNoToday => 'لا توجد عروض اليوم.';
+
+  @override
+  String get historySummaryNotEnoughHistory =>
+      'لا يوجد سجل كافٍ للمقارنة مع اليوم.';
+
+  @override
+  String historySummaryAverageProfit(String amount) {
+    return 'متوسط الربح: $amount';
+  }
+
+  @override
   String get extractionFailedMessage => 'تعذر استخراج تفاصيل العرض.';
 
   @override

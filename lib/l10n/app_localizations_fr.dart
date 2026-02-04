@@ -281,6 +281,32 @@ class AppLocalizationsFr extends AppLocalizations {
   String get latestProfitLabel => 'Dernier profit';
 
   @override
+  String historySummaryTodayMore(String amount) {
+    return 'Les offres d’aujourd’hui sont plus rentables que les précédentes de $amount.';
+  }
+
+  @override
+  String historySummaryTodayLess(String amount) {
+    return 'Les offres d’aujourd’hui sont moins rentables que les précédentes de $amount.';
+  }
+
+  @override
+  String get historySummaryTodayEqual =>
+      'Les offres d’aujourd’hui sont à peu près aussi rentables que les précédentes.';
+
+  @override
+  String get historySummaryNoToday => 'Aucune offre aujourd’hui.';
+
+  @override
+  String get historySummaryNotEnoughHistory =>
+      'Historique insuffisant pour comparer aujourd’hui.';
+
+  @override
+  String historySummaryAverageProfit(String amount) {
+    return 'Profit moyen : $amount';
+  }
+
+  @override
   String get extractionFailedMessage =>
       'Impossible d’extraire les détails de l’offre.';
 
