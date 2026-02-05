@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../../app/app_scope.dart';
 import '../../auth/domain/auth_user.dart';
@@ -11,7 +13,7 @@ import 'offer_flow_coordinator_view.dart';
 import 'offer_flow_vehicle_selection.dart';
 import 'offer_flow_loading_action.dart';
 
-class OfferFlowCoordinatorStream extends StatelessWidget {
+class OfferFlowCoordinatorStream extends StatefulWidget {
   final AuthUser user;
   final UserProfile profile;
   final GlobalKey<FormState> formKey;
@@ -42,9 +44,47 @@ class OfferFlowCoordinatorStream extends StatelessWidget {
   });
 
   @override
+  State<OfferFlowCoordinatorStream> createState() =>
+      _OfferFlowCoordinatorStreamState();
+}
+
+class _OfferFlowCoordinatorStreamState
+    extends State<OfferFlowCoordinatorStream> {
+  static const _emptyDelay = Duration(milliseconds: 600);
+  Timer? _emptyStateTimer;
+  bool _showEmptyState = false;
+
+  @override
+  void dispose() {
+    _emptyStateTimer?.cancel();
+    super.dispose();
+  }
+
+  void _scheduleEmptyState() {
+    if (_showEmptyState || _emptyStateTimer != null) {
+      return;
+    }
+    _emptyStateTimer = Timer(_emptyDelay, () {
+      if (!mounted) return;
+      setState(() {
+        _showEmptyState = true;
+        _emptyStateTimer = null;
+      });
+    });
+  }
+
+  void _clearEmptyState() {
+    _emptyStateTimer?.cancel();
+    _emptyStateTimer = null;
+    if (_showEmptyState) {
+      setState(() => _showEmptyState = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<VehicleProfile>>(
-      stream: AppScope.of(context).vehicleRepository.watchVehicles(user.uid),
+      stream: AppScope.of(context).vehicleRepository.watchVehicles(widget.user.uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             !snapshot.hasData) {
@@ -57,42 +97,64 @@ class OfferFlowCoordinatorStream extends StatelessWidget {
           );
         }
         final vehicles = snapshot.data ?? [];
+        if (vehicles.isEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              _scheduleEmptyState();
+            }
+          });
+          if (!_showEmptyState) {
+            return const Scaffold(
+              body: SafeArea(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+          }
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              _clearEmptyState();
+            }
+          });
+        }
         final resolvedVehicleId = resolveVehicleId(
-          profile: profile,
+          profile: widget.profile,
           vehicles: vehicles,
-          selectedVehicleId: selectedVehicleId,
+          selectedVehicleId: widget.selectedVehicleId,
         );
-        if (resolvedVehicleId != selectedVehicleId) {
-          onVehicleResolved(resolvedVehicleId);
+        if (resolvedVehicleId != widget.selectedVehicleId) {
+          widget.onVehicleResolved(resolvedVehicleId);
         }
         final callbacks = buildOfferFlowCallbacks(
           context: context,
-          formKey: formKey,
-          controller: controller,
-          profile: profile,
-          user: user,
+          formKey: widget.formKey,
+          controller: widget.controller,
+          profile: widget.profile,
+          user: widget.user,
           vehicles: vehicles,
           selectedVehicleId: resolvedVehicleId,
-          onLoadingChanged: onLoadingChanged,
-          onUpdated: onUpdated,
+          onLoadingChanged: widget.onLoadingChanged,
+          onUpdated: widget.onUpdated,
         );
-        final previewRecord = controller.analysisRecord;
+        final previewRecord = widget.controller.analysisRecord;
         return OfferFlowCoordinatorView(
-          user: user,
-          formKey: formKey,
-          controller: controller,
+          user: widget.user,
+          formKey: widget.formKey,
+          controller: widget.controller,
           requiresDuration:
-              profile.fixedCostAllocation == FixedCostAllocation.perHour,
+              widget.profile.fixedCostAllocation == FixedCostAllocation.perHour,
           vehicles: vehicles,
           selectedVehicleId: resolvedVehicleId,
-          onVehicleChanged: onVehicleChanged,
+          onVehicleChanged: widget.onVehicleChanged,
           onImportScreenshot: callbacks.onImportScreenshot,
           onCaptureScreenshot: callbacks.onCaptureScreenshot,
           onViewDetails: callbacks.onViewDetails,
-          loadingAction: loadingAction,
+          loadingAction: widget.loadingAction,
           previewRecord: previewRecord,
-          onPickupSelected: onPickupSelected,
-          onDropoffSelected: onDropoffSelected,
+          onPickupSelected: widget.onPickupSelected,
+          onDropoffSelected: widget.onDropoffSelected,
         );
       },
     );
