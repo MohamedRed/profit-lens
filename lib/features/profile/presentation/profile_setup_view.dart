@@ -45,31 +45,36 @@ class ProfileSetupView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Form(
       key: formKey,
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          ProfileSetupStepper(
-            businessController: businessController,
-            vehicleController: vehicleController,
-            isSaving: isSaving,
-            useVehiclePresets: useVehiclePresets,
-            onVehiclePresetsChanged: onVehiclePresetsChanged,
-            onVehiclePresetEdited: onVehiclePresetEdited,
-            onModelLookup: onModelLookup,
-            onPlateLookup: onPlateLookup,
-            isLookingUpPlate: isLookingUpPlate,
-            onActivityChanged: onActivityChanged,
-            onAllocationChanged: onAllocationChanged,
-            onDefaultsChanged: onDefaultsChanged,
-            onLiberatoryTaxChanged: onLiberatoryTaxChanged,
-            onVehicleTypeChanged: onVehicleTypeChanged,
-            onEnergyTypeChanged: onEnergyTypeChanged,
-            onFuelTypeChanged: onFuelTypeChanged,
-            onSave: onSave,
-          ),
-          const SizedBox(height: 12),
-          const ProfileSetupSourcesSection(),
-        ],
+      child: LayoutBuilder(
+        builder: (context, constraints) => ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            SizedBox(
+              height: constraints.maxHeight,
+              child: ProfileSetupStepper(
+                businessController: businessController,
+                vehicleController: vehicleController,
+                isSaving: isSaving,
+                useVehiclePresets: useVehiclePresets,
+                onVehiclePresetsChanged: onVehiclePresetsChanged,
+                onVehiclePresetEdited: onVehiclePresetEdited,
+                onModelLookup: onModelLookup,
+                onPlateLookup: onPlateLookup,
+                isLookingUpPlate: isLookingUpPlate,
+                onActivityChanged: onActivityChanged,
+                onAllocationChanged: onAllocationChanged,
+                onDefaultsChanged: onDefaultsChanged,
+                onLiberatoryTaxChanged: onLiberatoryTaxChanged,
+                onVehicleTypeChanged: onVehicleTypeChanged,
+                onEnergyTypeChanged: onEnergyTypeChanged,
+                onFuelTypeChanged: onFuelTypeChanged,
+                onSave: onSave,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const ProfileSetupSourcesSection(),
+          ],
+        ),
       ),
     );
   }

@@ -105,76 +105,88 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
         title: Text(l10n.vehicleDetailsSectionTitle),
         state: _stepState(0),
         isActive: _currentStep >= 0,
-        content: VehicleDetailsSection(
-          vehicleType: vehicleController.vehicleType,
-          useVehiclePresets: widget.useVehiclePresets,
-          onVehicleTypeChanged: widget.onVehicleTypeChanged,
-          onPresetsChanged: widget.onVehiclePresetsChanged,
-          onPresetEdited: widget.onVehiclePresetEdited,
-          licensePlateController: vehicleController.licensePlateController,
-          brandController: vehicleController.brandController,
-          modelController: vehicleController.modelController,
-          registrationYearController: vehicleController.registrationYearController,
-          onModelLookup: widget.onModelLookup,
-          onPlateLookup: widget.onPlateLookup,
-          isLookingUpPlate: widget.isLookingUpPlate,
+        content: _wrapStepContent(
+          VehicleDetailsSection(
+            vehicleType: vehicleController.vehicleType,
+            useVehiclePresets: widget.useVehiclePresets,
+            onVehicleTypeChanged: widget.onVehicleTypeChanged,
+            onPresetsChanged: widget.onVehiclePresetsChanged,
+            onPresetEdited: widget.onVehiclePresetEdited,
+            licensePlateController: vehicleController.licensePlateController,
+            brandController: vehicleController.brandController,
+            modelController: vehicleController.modelController,
+            registrationYearController:
+                vehicleController.registrationYearController,
+            onModelLookup: widget.onModelLookup,
+            onPlateLookup: widget.onPlateLookup,
+            isLookingUpPlate: widget.isLookingUpPlate,
+          ),
         ),
       ),
       Step(
         title: Text(l10n.vehicleEnergySectionTitle),
         state: _stepState(1),
         isActive: _currentStep >= 1,
-        content: VehicleEnergySection(
-          vehicleType: vehicleController.vehicleType,
-          energyType: vehicleController.energyType,
-          fuelType: vehicleController.fuelType,
-          onEnergyTypeChanged: widget.onEnergyTypeChanged,
-          onFuelTypeChanged: widget.onFuelTypeChanged,
-          onPresetEdited: widget.onVehiclePresetEdited,
-          consumptionController: vehicleController.consumptionController,
-          energyPriceController: vehicleController.energyPriceController,
-          consumptionSuffix: vehicleController.consumptionSuffix(),
-          energyPriceSuffix: vehicleController.energyPriceSuffix(),
+        content: _wrapStepContent(
+          VehicleEnergySection(
+            vehicleType: vehicleController.vehicleType,
+            energyType: vehicleController.energyType,
+            fuelType: vehicleController.fuelType,
+            onEnergyTypeChanged: widget.onEnergyTypeChanged,
+            onFuelTypeChanged: widget.onFuelTypeChanged,
+            onPresetEdited: widget.onVehiclePresetEdited,
+            consumptionController: vehicleController.consumptionController,
+            energyPriceController: vehicleController.energyPriceController,
+            consumptionSuffix: vehicleController.consumptionSuffix(),
+            energyPriceSuffix: vehicleController.energyPriceSuffix(),
+          ),
         ),
       ),
       Step(
         title: Text(l10n.vehicleCostsSectionTitle),
         state: _stepState(2),
         isActive: _currentStep >= 2,
-        content: VehicleCostsSection(
-          maintenanceController: vehicleController.maintenanceController,
-          depreciationController: vehicleController.depreciationController,
-          onPresetEdited: widget.onVehiclePresetEdited,
+        content: _wrapStepContent(
+          VehicleCostsSection(
+            maintenanceController: vehicleController.maintenanceController,
+            depreciationController: vehicleController.depreciationController,
+            onPresetEdited: widget.onVehiclePresetEdited,
+          ),
         ),
       ),
       Step(
         title: Text(l10n.costsSection),
         state: _stepState(3),
         isActive: _currentStep >= 3,
-        content: BusinessTaxesSetupSection(
-          activity: businessController.activity,
-          onActivityChanged: widget.onActivityChanged,
-          socialRateController: businessController.socialRateController,
-          incomeTaxController: businessController.incomeTaxController,
-          useFranceDefaults: businessController.useFranceDefaults,
-          onDefaultsChanged: widget.onDefaultsChanged,
-          useLiberatoryTax: businessController.useLiberatoryTax,
-          onLiberatoryTaxChanged: widget.onLiberatoryTaxChanged,
+        content: _wrapStepContent(
+          BusinessTaxesSetupSection(
+            activity: businessController.activity,
+            onActivityChanged: widget.onActivityChanged,
+            socialRateController: businessController.socialRateController,
+            incomeTaxController: businessController.incomeTaxController,
+            useFranceDefaults: businessController.useFranceDefaults,
+            onDefaultsChanged: widget.onDefaultsChanged,
+            useLiberatoryTax: businessController.useLiberatoryTax,
+            onLiberatoryTaxChanged: widget.onLiberatoryTaxChanged,
+          ),
         ),
       ),
       Step(
         title: Text(l10n.monthlyCostsSectionTitle),
         state: _stepState(4),
         isActive: _currentStep >= 4,
-        content: BusinessFixedCostsSection(
-          monthlyFixedCostsController:
-              businessController.monthlyFixedCostsController,
-          monthlyHoursController: businessController.monthlyHoursController,
-          monthlyDistanceController: businessController.monthlyDistanceController,
-          monthlyDeliveriesController:
-              businessController.monthlyDeliveriesController,
-          allocation: businessController.allocation,
-          onAllocationChanged: widget.onAllocationChanged,
+        content: _wrapStepContent(
+          BusinessFixedCostsSection(
+            monthlyFixedCostsController:
+                businessController.monthlyFixedCostsController,
+            monthlyHoursController: businessController.monthlyHoursController,
+            monthlyDistanceController:
+                businessController.monthlyDistanceController,
+            monthlyDeliveriesController:
+                businessController.monthlyDeliveriesController,
+            allocation: businessController.allocation,
+            onAllocationChanged: widget.onAllocationChanged,
+          ),
         ),
       ),
     ];
@@ -188,6 +200,16 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
       return StepState.editing;
     }
     return StepState.indexed;
+  }
+
+  Widget _wrapStepContent(Widget child) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: child,
+      ),
+    );
   }
 
   Widget _buildControls(
