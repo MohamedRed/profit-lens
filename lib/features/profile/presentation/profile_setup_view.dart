@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/widgets/primary_button.dart';
-import '../../../l10n/app_localizations.dart';
 import '../../profile/domain/business_activity.dart';
 import '../../profile/domain/fixed_cost_allocation.dart';
 import '../../vehicles/domain/energy_type.dart';
@@ -8,11 +6,9 @@ import '../../vehicles/domain/fuel_type.dart';
 import '../../vehicles/domain/vehicle_type.dart';
 import '../../vehicles/presentation/controllers/vehicle_form_controller.dart';
 import 'controllers/business_profile_controller.dart';
-import 'sections/business_fixed_costs_section.dart';
-import 'sections/business_taxes_section.dart';
-import 'sections/business_activity_field.dart';
 import 'profile_setup_sources_section.dart';
-import 'profile_setup_vehicle_section.dart';
+import 'profile_setup_stepper.dart';
+
 class ProfileSetupView extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final BusinessProfileController businessController;
@@ -47,57 +43,32 @@ class ProfileSetupView extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return Form(
       key: formKey,
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          BusinessActivityField(
-            value: businessController.activity,
-            onChanged: onActivityChanged,
-          ),
-          const SizedBox(height: 12),
-          BusinessTaxesSection(
-            socialRateController: businessController.socialRateController,
-            incomeTaxController: businessController.incomeTaxController,
-            useFranceDefaults: businessController.useFranceDefaults,
-            onDefaultsChanged: onDefaultsChanged,
-            useLiberatoryTax: businessController.useLiberatoryTax,
-            onLiberatoryTaxChanged: onLiberatoryTaxChanged,
-          ),
-          const SizedBox(height: 12),
-          BusinessFixedCostsSection(
-            monthlyFixedCostsController:
-                businessController.monthlyFixedCostsController,
-            monthlyHoursController: businessController.monthlyHoursController,
-            monthlyDistanceController:
-                businessController.monthlyDistanceController,
-            monthlyDeliveriesController:
-                businessController.monthlyDeliveriesController,
-            allocation: businessController.allocation,
-            onAllocationChanged: onAllocationChanged,
-          ),
-          const SizedBox(height: 12),
-          ProfileSetupVehicleSection(
-            controller: vehicleController,
+          ProfileSetupStepper(
+            businessController: businessController,
+            vehicleController: vehicleController,
+            isSaving: isSaving,
             useVehiclePresets: useVehiclePresets,
-            onPresetsChanged: onVehiclePresetsChanged,
-            onPresetEdited: onVehiclePresetEdited,
-            onVehicleTypeChanged: onVehicleTypeChanged,
-            onEnergyTypeChanged: onEnergyTypeChanged,
-            onFuelTypeChanged: onFuelTypeChanged,
+            onVehiclePresetsChanged: onVehiclePresetsChanged,
+            onVehiclePresetEdited: onVehiclePresetEdited,
             onModelLookup: onModelLookup,
             onPlateLookup: onPlateLookup,
             isLookingUpPlate: isLookingUpPlate,
+            onActivityChanged: onActivityChanged,
+            onAllocationChanged: onAllocationChanged,
+            onDefaultsChanged: onDefaultsChanged,
+            onLiberatoryTaxChanged: onLiberatoryTaxChanged,
+            onVehicleTypeChanged: onVehicleTypeChanged,
+            onEnergyTypeChanged: onEnergyTypeChanged,
+            onFuelTypeChanged: onFuelTypeChanged,
+            onSave: onSave,
           ),
           const SizedBox(height: 12),
           const ProfileSetupSourcesSection(),
-          const SizedBox(height: 16),
-          PrimaryButton(
-            label: isSaving ? l10n.loadingLabel : l10n.saveProfileButton,
-            onPressed: isSaving ? null : onSave,
-          ),
         ],
       ),
     );

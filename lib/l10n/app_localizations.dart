@@ -556,6 +556,18 @@ abstract class AppLocalizations {
   /// **'Loading...'**
   String get loadingLabel;
 
+  /// No description provided for @nextButtonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get nextButtonLabel;
+
+  /// No description provided for @backButtonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get backButtonLabel;
+
   /// No description provided for @requiredFieldError.
   ///
   /// In en, this message translates to:

@@ -241,6 +241,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingLabel => 'Loading...';
 
   @override
+  String get nextButtonLabel => 'Next';
+
+  @override
+  String get backButtonLabel => 'Back';
+
+  @override
   String get requiredFieldError => 'This field is required.';
 
   @override

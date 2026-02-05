@@ -76,6 +76,8 @@
   "createAccountButton": "Create an account",
   "registerButton": "Register",
   "loadingLabel": "Loading...",
+  "nextButtonLabel": "Next",
+  "backButtonLabel": "Back",
   "requiredFieldError": "This field is required.",
   "passwordLengthError": "Password must be at least 8 characters.",
   "passwordMismatchError": "Passwords do not match.",

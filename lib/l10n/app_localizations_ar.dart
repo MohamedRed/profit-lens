@@ -212,8 +212,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get signInTitle => 'تسجيل الدخول';
 
   @override
-  String get signInSubtitle =>
-      'حلّل عروض التوصيل بسرعة واحتفِ بكل يورو.';
+  String get signInSubtitle => 'حلّل عروض التوصيل بسرعة واحتفِ بكل يورو.';
 
   @override
   String get registerTitle => 'إنشاء حساب';
@@ -238,6 +237,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get loadingLabel => 'جارٍ التحميل...';
+
+  @override
+  String get nextButtonLabel => 'التالي';
+
+  @override
+  String get backButtonLabel => 'السابق';
 
   @override
   String get requiredFieldError => 'هذا الحقل مطلوب.';

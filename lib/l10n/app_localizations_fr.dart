@@ -242,6 +242,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loadingLabel => 'Chargement…';
 
   @override
+  String get nextButtonLabel => 'Suivant';
+
+  @override
+  String get backButtonLabel => 'Retour';
+
+  @override
   String get requiredFieldError => 'Champ obligatoire.';
 
   @override

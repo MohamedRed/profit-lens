@@ -76,6 +76,8 @@
   "createAccountButton": "إنشاء حساب",
   "registerButton": "تسجيل",
   "loadingLabel": "جارٍ التحميل...",
+  "nextButtonLabel": "التالي",
+  "backButtonLabel": "السابق",
   "requiredFieldError": "هذا الحقل مطلوب.",
   "passwordLengthError": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
   "passwordMismatchError": "كلمتا المرور غير متطابقتين.",
