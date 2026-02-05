@@ -8,6 +8,7 @@ import '../../vehicles/domain/energy_type.dart';
 import '../../vehicles/domain/fuel_type.dart';
 import '../../vehicles/domain/vehicle_type.dart';
 import '../../vehicles/presentation/controllers/vehicle_form_controller.dart';
+import '../../vehicles/presentation/controllers/vehicle_form_controller_actions.dart';
 import '../../vehicles/presentation/widgets/vehicle_costs_section.dart';
 import '../../vehicles/presentation/widgets/vehicle_details_section.dart';
 import '../../vehicles/presentation/widgets/vehicle_energy_section.dart';
