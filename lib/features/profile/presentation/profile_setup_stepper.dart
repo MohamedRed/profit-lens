@@ -83,133 +83,98 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final steps = _buildSteps(l10n);
-    return Stepper(
-      type: StepperType.horizontal,
-      currentStep: _currentStep,
-      onStepTapped: _goToStep,
-      physics: const ClampingScrollPhysics(),
-      controlsBuilder: (context, details) => _buildControls(
-        context,
-        l10n,
-        steps.length,
-      ),
-      steps: steps,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _ProfileStepHeader(
+          steps: steps,
+          currentStep: _currentStep,
+          onStepTapped: _goToStep,
+        ),
+        const SizedBox(height: 12),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: steps[_currentStep].content,
+          ),
+        ),
+        _buildControls(context, l10n, steps.length),
+      ],
     );
   }
 
-  List<Step> _buildSteps(AppLocalizations l10n) {
+  List<_ProfileStepData> _buildSteps(AppLocalizations l10n) {
     final vehicleController = widget.vehicleController;
     final businessController = widget.businessController;
     return [
-      Step(
-        title: Text(l10n.vehicleDetailsSectionTitle),
-        state: _stepState(0),
-        isActive: _currentStep >= 0,
-        content: _wrapStepContent(
-          VehicleDetailsSection(
-            vehicleType: vehicleController.vehicleType,
-            useVehiclePresets: widget.useVehiclePresets,
-            onVehicleTypeChanged: widget.onVehicleTypeChanged,
-            onPresetsChanged: widget.onVehiclePresetsChanged,
-            onPresetEdited: widget.onVehiclePresetEdited,
-            licensePlateController: vehicleController.licensePlateController,
-            brandController: vehicleController.brandController,
-            modelController: vehicleController.modelController,
-            registrationYearController:
-                vehicleController.registrationYearController,
-            onModelLookup: widget.onModelLookup,
-            onPlateLookup: widget.onPlateLookup,
-            isLookingUpPlate: widget.isLookingUpPlate,
-          ),
+      _ProfileStepData(
+        label: l10n.vehicleDetailsSectionTitle,
+        content: VehicleDetailsSection(
+          vehicleType: vehicleController.vehicleType,
+          useVehiclePresets: widget.useVehiclePresets,
+          onVehicleTypeChanged: widget.onVehicleTypeChanged,
+          onPresetsChanged: widget.onVehiclePresetsChanged,
+          onPresetEdited: widget.onVehiclePresetEdited,
+          licensePlateController: vehicleController.licensePlateController,
+          brandController: vehicleController.brandController,
+          modelController: vehicleController.modelController,
+          registrationYearController:
+              vehicleController.registrationYearController,
+          onModelLookup: widget.onModelLookup,
+          onPlateLookup: widget.onPlateLookup,
+          isLookingUpPlate: widget.isLookingUpPlate,
         ),
       ),
-      Step(
-        title: Text(l10n.vehicleEnergySectionTitle),
-        state: _stepState(1),
-        isActive: _currentStep >= 1,
-        content: _wrapStepContent(
-          VehicleEnergySection(
-            vehicleType: vehicleController.vehicleType,
-            energyType: vehicleController.energyType,
-            fuelType: vehicleController.fuelType,
-            onEnergyTypeChanged: widget.onEnergyTypeChanged,
-            onFuelTypeChanged: widget.onFuelTypeChanged,
-            onPresetEdited: widget.onVehiclePresetEdited,
-            consumptionController: vehicleController.consumptionController,
-            energyPriceController: vehicleController.energyPriceController,
-            consumptionSuffix: vehicleController.consumptionSuffix(),
-            energyPriceSuffix: vehicleController.energyPriceSuffix(),
-          ),
+      _ProfileStepData(
+        label: l10n.vehicleEnergySectionTitle,
+        content: VehicleEnergySection(
+          vehicleType: vehicleController.vehicleType,
+          energyType: vehicleController.energyType,
+          fuelType: vehicleController.fuelType,
+          onEnergyTypeChanged: widget.onEnergyTypeChanged,
+          onFuelTypeChanged: widget.onFuelTypeChanged,
+          onPresetEdited: widget.onVehiclePresetEdited,
+          consumptionController: vehicleController.consumptionController,
+          energyPriceController: vehicleController.energyPriceController,
+          consumptionSuffix: vehicleController.consumptionSuffix(),
+          energyPriceSuffix: vehicleController.energyPriceSuffix(),
         ),
       ),
-      Step(
-        title: Text(l10n.vehicleCostsSectionTitle),
-        state: _stepState(2),
-        isActive: _currentStep >= 2,
-        content: _wrapStepContent(
-          VehicleCostsSection(
-            maintenanceController: vehicleController.maintenanceController,
-            depreciationController: vehicleController.depreciationController,
-            onPresetEdited: widget.onVehiclePresetEdited,
-          ),
+      _ProfileStepData(
+        label: l10n.vehicleCostsSectionTitle,
+        content: VehicleCostsSection(
+          maintenanceController: vehicleController.maintenanceController,
+          depreciationController: vehicleController.depreciationController,
+          onPresetEdited: widget.onVehiclePresetEdited,
         ),
       ),
-      Step(
-        title: Text(l10n.costsSection),
-        state: _stepState(3),
-        isActive: _currentStep >= 3,
-        content: _wrapStepContent(
-          BusinessTaxesSetupSection(
-            activity: businessController.activity,
-            onActivityChanged: widget.onActivityChanged,
-            socialRateController: businessController.socialRateController,
-            incomeTaxController: businessController.incomeTaxController,
-            useFranceDefaults: businessController.useFranceDefaults,
-            onDefaultsChanged: widget.onDefaultsChanged,
-            useLiberatoryTax: businessController.useLiberatoryTax,
-            onLiberatoryTaxChanged: widget.onLiberatoryTaxChanged,
-          ),
+      _ProfileStepData(
+        label: l10n.costsSection,
+        content: BusinessTaxesSetupSection(
+          activity: businessController.activity,
+          onActivityChanged: widget.onActivityChanged,
+          socialRateController: businessController.socialRateController,
+          incomeTaxController: businessController.incomeTaxController,
+          useFranceDefaults: businessController.useFranceDefaults,
+          onDefaultsChanged: widget.onDefaultsChanged,
+          useLiberatoryTax: businessController.useLiberatoryTax,
+          onLiberatoryTaxChanged: widget.onLiberatoryTaxChanged,
         ),
       ),
-      Step(
-        title: Text(l10n.monthlyCostsSectionTitle),
-        state: _stepState(4),
-        isActive: _currentStep >= 4,
-        content: _wrapStepContent(
-          BusinessFixedCostsSection(
-            monthlyFixedCostsController:
-                businessController.monthlyFixedCostsController,
-            monthlyHoursController: businessController.monthlyHoursController,
-            monthlyDistanceController:
-                businessController.monthlyDistanceController,
-            monthlyDeliveriesController:
-                businessController.monthlyDeliveriesController,
-            allocation: businessController.allocation,
-            onAllocationChanged: widget.onAllocationChanged,
-          ),
+      _ProfileStepData(
+        label: l10n.monthlyCostsSectionTitle,
+        content: BusinessFixedCostsSection(
+          monthlyFixedCostsController:
+              businessController.monthlyFixedCostsController,
+          monthlyHoursController: businessController.monthlyHoursController,
+          monthlyDistanceController: businessController.monthlyDistanceController,
+          monthlyDeliveriesController:
+              businessController.monthlyDeliveriesController,
+          allocation: businessController.allocation,
+          onAllocationChanged: widget.onAllocationChanged,
         ),
       ),
     ];
-  }
-
-  StepState _stepState(int index) {
-    if (_currentStep > index) {
-      return StepState.complete;
-    }
-    if (_currentStep == index) {
-      return StepState.editing;
-    }
-    return StepState.indexed;
-  }
-
-  Widget _wrapStepContent(Widget child) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: child,
-      ),
-    );
   }
 
   Widget _buildControls(
@@ -242,5 +207,94 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
         ],
       ),
     );
+  }
+}
+
+class _ProfileStepData {
+  final String label;
+  final Widget content;
+
+  const _ProfileStepData({
+    required this.label,
+    required this.content,
+  });
+}
+
+class _ProfileStepHeader extends StatelessWidget {
+  final List<_ProfileStepData> steps;
+  final int currentStep;
+  final ValueChanged<int> onStepTapped;
+
+  const _ProfileStepHeader({
+    required this.steps,
+    required this.currentStep,
+    required this.onStepTapped,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final activeColor = theme.colorScheme.primary;
+    final inactiveColor = theme.colorScheme.outlineVariant;
+    final completeColor = theme.colorScheme.primaryContainer;
+    final textStyle = theme.textTheme.labelSmall;
+    final children = <Widget>[];
+
+    for (var i = 0; i < steps.length; i++) {
+      if (i > 0) {
+        children.add(const SizedBox(width: 8));
+      }
+      final isActive = i == currentStep;
+      final isComplete = i < currentStep;
+      final circleColor = isComplete
+          ? completeColor
+          : isActive
+              ? activeColor
+              : inactiveColor;
+      final circleTextColor = isComplete
+          ? theme.colorScheme.onPrimaryContainer
+          : isActive
+              ? theme.colorScheme.onPrimary
+              : theme.colorScheme.onSurfaceVariant;
+      children.add(
+        Expanded(
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => onStepTapped(i),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: circleColor,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      isComplete ? '✓' : '${i + 1}',
+                      style: textStyle?.copyWith(color: circleTextColor),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    steps[i].label,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textStyle,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Row(children: children);
   }
 }
