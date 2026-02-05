@@ -49,6 +49,9 @@ class OfferFlowForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isBusy = loadingAction != null;
+    final showOverview = !isBusy &&
+        previewRecord != null &&
+        controller.analysisStatus == OfferAnalysisStatus.completed;
     return Form(
       key: formKey,
       child: ListView(
@@ -74,21 +77,21 @@ class OfferFlowForm extends StatelessWidget {
             onPressed: isBusy ? null : onCaptureScreenshot,
           ),
           const SizedBox(height: 16),
-          if (!isBusy &&
-              previewRecord != null &&
-              controller.analysisStatus == OfferAnalysisStatus.completed) ...[
+          if (showOverview) ...[
             ProfitabilityOverviewCard(
               record: previewRecord!,
               onViewDetails: onViewDetails,
             ),
           ],
-          const SizedBox(height: 16),
-          OfferDetailsSection(
-            controller: controller,
-            requiresDuration: requiresDuration,
-            onPickupSelected: onPickupSelected,
-            onDropoffSelected: onDropoffSelected,
-          ),
+          if (!showOverview) ...[
+            const SizedBox(height: 16),
+            OfferDetailsSection(
+              controller: controller,
+              requiresDuration: requiresDuration,
+              onPickupSelected: onPickupSelected,
+              onDropoffSelected: onDropoffSelected,
+            ),
+          ],
         ],
       ),
     );
