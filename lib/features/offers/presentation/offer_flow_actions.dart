@@ -10,6 +10,7 @@ import '../presentation/offer_result_screen.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_error_message.dart';
 import 'offer_flow_guard.dart';
+import 'offer_flow_analysis_progress.dart';
 import 'offer_analysis_status.dart';
 import 'offer_flow_loading_action.dart';
 
@@ -45,6 +46,16 @@ Future<void> handleOfferAnalysis({
     return;
   }
   final runId = controller.startAnalysis(OfferAnalysisStatus.verifyingRoute);
+  final progress = OfferAnalysisProgressDriver.start(
+    controller: controller,
+    runId: runId,
+    onUpdated: onUpdated,
+    steps: const [
+      OfferAnalysisStatus.verifyingRoute,
+      OfferAnalysisStatus.calculatingProfit,
+    ],
+    stepDelay: const Duration(milliseconds: 450),
+  );
   onUpdated();
   onLoadingChanged(OfferFlowLoadingAction.analyze);
   if (!context.mounted) {
@@ -73,6 +84,10 @@ Future<void> handleOfferAnalysis({
       return;
     }
     controller.applyAnalysisResult(record);
+    await progress.waitForMinimumDuration();
+    if (!controller.isCurrentAnalysis(runId)) {
+      return;
+    }
     controller.setAnalysisStatus(OfferAnalysisStatus.completed);
   } catch (error) {
     final message = resolveAnalysisErrorMessage(error, l10n);
