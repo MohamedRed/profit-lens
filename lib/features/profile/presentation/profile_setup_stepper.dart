@@ -84,6 +84,7 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
     final l10n = AppLocalizations.of(context)!;
     final steps = _buildSteps(l10n);
     return Stepper(
+      type: StepperType.horizontal,
       currentStep: _currentStep,
       onStepTapped: _goToStep,
       physics: const ClampingScrollPhysics(),
