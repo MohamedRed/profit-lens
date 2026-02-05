@@ -6,7 +6,6 @@ import '../../vehicles/domain/fuel_type.dart';
 import '../../vehicles/domain/vehicle_type.dart';
 import '../../vehicles/presentation/controllers/vehicle_form_controller.dart';
 import 'controllers/business_profile_controller.dart';
-import 'profile_setup_sources_section.dart';
 import 'profile_setup_stepper.dart';
 
 class ProfileSetupView extends StatelessWidget {
@@ -75,8 +74,6 @@ class ProfileSetupView extends StatelessWidget {
                   onSave: onSave,
                 ),
               ),
-              const SizedBox(height: 12),
-              const ProfileSetupSourcesSection(),
             ],
           );
         },

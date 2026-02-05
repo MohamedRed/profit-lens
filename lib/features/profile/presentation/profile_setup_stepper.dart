@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../core/widgets/primary_button.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../defaults/data/france_defaults.dart';
+import '../../defaults/data/vehicle_presets_fr.dart';
+import '../../defaults/presentation/preset_sources_section.dart';
 import '../../profile/domain/business_activity.dart';
 import '../../profile/domain/fixed_cost_allocation.dart';
 import '../../vehicles/domain/energy_type.dart';
@@ -109,56 +112,68 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
     return [
       _ProfileStepData(
         label: l10n.vehicleDetailsSectionTitle,
-        content: VehicleDetailsSection(
-          vehicleType: vehicleController.vehicleType,
-          useVehiclePresets: widget.useVehiclePresets,
-          onVehicleTypeChanged: widget.onVehicleTypeChanged,
-          onPresetsChanged: widget.onVehiclePresetsChanged,
-          onPresetEdited: widget.onVehiclePresetEdited,
-          licensePlateController: vehicleController.licensePlateController,
-          brandController: vehicleController.brandController,
-          modelController: vehicleController.modelController,
-          registrationYearController:
-              vehicleController.registrationYearController,
-          onModelLookup: widget.onModelLookup,
-          onPlateLookup: widget.onPlateLookup,
-          isLookingUpPlate: widget.isLookingUpPlate,
+        content: _withSources(
+          VehicleDetailsSection(
+            vehicleType: vehicleController.vehicleType,
+            useVehiclePresets: widget.useVehiclePresets,
+            onVehicleTypeChanged: widget.onVehicleTypeChanged,
+            onPresetsChanged: widget.onVehiclePresetsChanged,
+            onPresetEdited: widget.onVehiclePresetEdited,
+            licensePlateController: vehicleController.licensePlateController,
+            brandController: vehicleController.brandController,
+            modelController: vehicleController.modelController,
+            registrationYearController:
+                vehicleController.registrationYearController,
+            onModelLookup: widget.onModelLookup,
+            onPlateLookup: widget.onPlateLookup,
+            isLookingUpPlate: widget.isLookingUpPlate,
+          ),
+          VehiclePresetsFr.sources,
         ),
       ),
       _ProfileStepData(
         label: l10n.vehicleEnergySectionTitle,
-        content: VehicleEnergySection(
-          vehicleType: vehicleController.vehicleType,
-          energyType: vehicleController.energyType,
-          fuelType: vehicleController.fuelType,
-          onEnergyTypeChanged: widget.onEnergyTypeChanged,
-          onFuelTypeChanged: widget.onFuelTypeChanged,
-          onPresetEdited: widget.onVehiclePresetEdited,
-          consumptionController: vehicleController.consumptionController,
-          energyPriceController: vehicleController.energyPriceController,
-          consumptionSuffix: vehicleController.consumptionSuffix(),
-          energyPriceSuffix: vehicleController.energyPriceSuffix(),
+        content: _withSources(
+          VehicleEnergySection(
+            vehicleType: vehicleController.vehicleType,
+            energyType: vehicleController.energyType,
+            fuelType: vehicleController.fuelType,
+            onEnergyTypeChanged: widget.onEnergyTypeChanged,
+            onFuelTypeChanged: widget.onFuelTypeChanged,
+            onPresetEdited: widget.onVehiclePresetEdited,
+            consumptionController: vehicleController.consumptionController,
+            energyPriceController: vehicleController.energyPriceController,
+            consumptionSuffix: vehicleController.consumptionSuffix(),
+            energyPriceSuffix: vehicleController.energyPriceSuffix(),
+          ),
+          VehiclePresetsFr.sources,
         ),
       ),
       _ProfileStepData(
         label: l10n.vehicleCostsSectionTitle,
-        content: VehicleCostsSection(
-          maintenanceController: vehicleController.maintenanceController,
-          depreciationController: vehicleController.depreciationController,
-          onPresetEdited: widget.onVehiclePresetEdited,
+        content: _withSources(
+          VehicleCostsSection(
+            maintenanceController: vehicleController.maintenanceController,
+            depreciationController: vehicleController.depreciationController,
+            onPresetEdited: widget.onVehiclePresetEdited,
+          ),
+          VehiclePresetsFr.sources,
         ),
       ),
       _ProfileStepData(
         label: l10n.costsSection,
-        content: BusinessTaxesSetupSection(
-          activity: businessController.activity,
-          onActivityChanged: widget.onActivityChanged,
-          socialRateController: businessController.socialRateController,
-          incomeTaxController: businessController.incomeTaxController,
-          useFranceDefaults: businessController.useFranceDefaults,
-          onDefaultsChanged: widget.onDefaultsChanged,
-          useLiberatoryTax: businessController.useLiberatoryTax,
-          onLiberatoryTaxChanged: widget.onLiberatoryTaxChanged,
+        content: _withSources(
+          BusinessTaxesSetupSection(
+            activity: businessController.activity,
+            onActivityChanged: widget.onActivityChanged,
+            socialRateController: businessController.socialRateController,
+            incomeTaxController: businessController.incomeTaxController,
+            useFranceDefaults: businessController.useFranceDefaults,
+            onDefaultsChanged: widget.onDefaultsChanged,
+            useLiberatoryTax: businessController.useLiberatoryTax,
+            onLiberatoryTaxChanged: widget.onLiberatoryTaxChanged,
+          ),
+          FranceDefaults.sources,
         ),
       ),
       _ProfileStepData(
@@ -206,6 +221,20 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _withSources(
+    Widget content,
+    List<DefaultSource> sources,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        content,
+        const SizedBox(height: 12),
+        PresetSourcesSection(sources: sources),
+      ],
     );
   }
 }
