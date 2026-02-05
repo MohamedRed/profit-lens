@@ -112,23 +112,20 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
     return [
       _ProfileStepData(
         label: l10n.vehicleDetailsSectionTitle,
-        content: _withSources(
-          VehicleDetailsSection(
-            vehicleType: vehicleController.vehicleType,
-            useVehiclePresets: widget.useVehiclePresets,
-            onVehicleTypeChanged: widget.onVehicleTypeChanged,
-            onPresetsChanged: widget.onVehiclePresetsChanged,
-            onPresetEdited: widget.onVehiclePresetEdited,
-            licensePlateController: vehicleController.licensePlateController,
-            brandController: vehicleController.brandController,
-            modelController: vehicleController.modelController,
-            registrationYearController:
-                vehicleController.registrationYearController,
-            onModelLookup: widget.onModelLookup,
-            onPlateLookup: widget.onPlateLookup,
-            isLookingUpPlate: widget.isLookingUpPlate,
-          ),
-          VehiclePresetsFr.sources,
+        content: VehicleDetailsSection(
+          vehicleType: vehicleController.vehicleType,
+          useVehiclePresets: widget.useVehiclePresets,
+          onVehicleTypeChanged: widget.onVehicleTypeChanged,
+          onPresetsChanged: widget.onVehiclePresetsChanged,
+          onPresetEdited: widget.onVehiclePresetEdited,
+          licensePlateController: vehicleController.licensePlateController,
+          brandController: vehicleController.brandController,
+          modelController: vehicleController.modelController,
+          registrationYearController:
+              vehicleController.registrationYearController,
+          onModelLookup: widget.onModelLookup,
+          onPlateLookup: widget.onPlateLookup,
+          isLookingUpPlate: widget.isLookingUpPlate,
         ),
       ),
       _ProfileStepData(
@@ -147,6 +144,7 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
             energyPriceSuffix: vehicleController.energyPriceSuffix(),
           ),
           VehiclePresetsFr.sources,
+          showSources: widget.useVehiclePresets,
         ),
       ),
       _ProfileStepData(
@@ -158,6 +156,7 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
             onPresetEdited: widget.onVehiclePresetEdited,
           ),
           VehiclePresetsFr.sources,
+          showSources: widget.useVehiclePresets,
         ),
       ),
       _ProfileStepData(
@@ -174,6 +173,7 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
             onLiberatoryTaxChanged: widget.onLiberatoryTaxChanged,
           ),
           FranceDefaults.sources,
+          showSources: businessController.useFranceDefaults,
         ),
       ),
       _ProfileStepData(
@@ -227,7 +227,11 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
   Widget _withSources(
     Widget content,
     List<DefaultSource> sources,
+    {required bool showSources}
   ) {
+    if (!showSources) {
+      return content;
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
