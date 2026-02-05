@@ -52,6 +52,15 @@ class OfferFlowForm extends StatelessWidget {
     final showOverview = !isBusy &&
         previewRecord != null &&
         controller.analysisStatus == OfferAnalysisStatus.completed;
+    final hasAnyInput = controller.payoutController.text.trim().isNotEmpty ||
+        controller.distanceController.text.trim().isNotEmpty ||
+        controller.durationController.text.trim().isNotEmpty ||
+        controller.pickupNameController.text.trim().isNotEmpty ||
+        controller.pickupAddressController.text.trim().isNotEmpty ||
+        controller.dropoffNameController.text.trim().isNotEmpty ||
+        controller.dropoffAddressController.text.trim().isNotEmpty;
+    final showDetailsSection = !showOverview &&
+        (controller.analysisStatus != OfferAnalysisStatus.idle || hasAnyInput);
     return Form(
       key: formKey,
       child: ListView(
@@ -83,7 +92,7 @@ class OfferFlowForm extends StatelessWidget {
               onViewDetails: onViewDetails,
             ),
           ],
-          if (!showOverview) ...[
+          if (showDetailsSection) ...[
             const SizedBox(height: 16),
             OfferDetailsSection(
               controller: controller,
