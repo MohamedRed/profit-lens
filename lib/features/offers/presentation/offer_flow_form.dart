@@ -27,6 +27,8 @@ class OfferFlowForm extends StatelessWidget {
   final OfferRecord? previewRecord;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
+  final bool showManualEntry;
+  final VoidCallback onManualEntry;
 
   const OfferFlowForm({
     super.key,
@@ -43,6 +45,8 @@ class OfferFlowForm extends StatelessWidget {
     required this.previewRecord,
     required this.onPickupSelected,
     required this.onDropoffSelected,
+    required this.showManualEntry,
+    required this.onManualEntry,
   });
 
   @override
@@ -60,7 +64,10 @@ class OfferFlowForm extends StatelessWidget {
         controller.dropoffNameController.text.trim().isNotEmpty ||
         controller.dropoffAddressController.text.trim().isNotEmpty;
     final showDetailsSection = !showOverview &&
-        (controller.analysisStatus != OfferAnalysisStatus.idle || hasAnyInput);
+        (controller.analysisStatus != OfferAnalysisStatus.idle ||
+            hasAnyInput ||
+            showManualEntry);
+    final showManualEntryLink = !showOverview && !showDetailsSection;
     return Form(
       key: formKey,
       child: ListView(
@@ -85,6 +92,14 @@ class OfferFlowForm extends StatelessWidget {
             icon: Icons.camera_alt,
             onPressed: isBusy ? null : onCaptureScreenshot,
           ),
+          if (showManualEntryLink) ...[
+            const SizedBox(height: 8),
+            TextButton.icon(
+              onPressed: onManualEntry,
+              icon: const Icon(Icons.edit),
+              label: Text(l10n.manualEntryButton),
+            ),
+          ],
           const SizedBox(height: 16),
           if (showOverview) ...[
             ProfitabilityOverviewCard(

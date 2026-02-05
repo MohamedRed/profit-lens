@@ -23,6 +23,8 @@ class OfferFlowCoordinatorView extends StatelessWidget {
   final OfferRecord? previewRecord;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
+  final bool showManualEntry;
+  final VoidCallback onManualEntry;
 
   const OfferFlowCoordinatorView({
     super.key,
@@ -40,6 +42,8 @@ class OfferFlowCoordinatorView extends StatelessWidget {
     required this.previewRecord,
     required this.onPickupSelected,
     required this.onDropoffSelected,
+    required this.showManualEntry,
+    required this.onManualEntry,
   });
 
   @override
@@ -59,6 +63,8 @@ class OfferFlowCoordinatorView extends StatelessWidget {
       previewRecord: previewRecord,
       onPickupSelected: onPickupSelected,
       onDropoffSelected: onDropoffSelected,
+      showManualEntry: showManualEntry,
+      onManualEntry: onManualEntry,
     );
   }
 }

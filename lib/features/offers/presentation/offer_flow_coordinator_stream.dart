@@ -26,6 +26,8 @@ class OfferFlowCoordinatorStream extends StatefulWidget {
   final OfferFlowLoadingAction? loadingAction;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
+  final bool showManualEntry;
+  final VoidCallback onManualEntry;
 
   const OfferFlowCoordinatorStream({
     super.key,
@@ -41,6 +43,8 @@ class OfferFlowCoordinatorStream extends StatefulWidget {
     required this.loadingAction,
     required this.onPickupSelected,
     required this.onDropoffSelected,
+    required this.showManualEntry,
+    required this.onManualEntry,
   });
 
   @override
@@ -144,6 +148,8 @@ class _OfferFlowCoordinatorStreamState
           previewRecord: previewRecord,
           onPickupSelected: widget.onPickupSelected,
           onDropoffSelected: widget.onDropoffSelected,
+          showManualEntry: widget.showManualEntry,
+          onManualEntry: widget.onManualEntry,
         );
       },
     );

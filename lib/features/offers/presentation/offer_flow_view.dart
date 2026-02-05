@@ -24,6 +24,8 @@ class OfferFlowView extends StatelessWidget {
   final OfferRecord? previewRecord;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
+  final bool showManualEntry;
+  final VoidCallback onManualEntry;
 
   const OfferFlowView({
     super.key,
@@ -41,6 +43,8 @@ class OfferFlowView extends StatelessWidget {
     required this.previewRecord,
     required this.onPickupSelected,
     required this.onDropoffSelected,
+    required this.showManualEntry,
+    required this.onManualEntry,
   });
 
   @override
@@ -64,6 +68,8 @@ class OfferFlowView extends StatelessWidget {
                 previewRecord: previewRecord,
                 onPickupSelected: onPickupSelected,
                 onDropoffSelected: onDropoffSelected,
+                showManualEntry: showManualEntry,
+                onManualEntry: onManualEntry,
               ),
       ),
     );
