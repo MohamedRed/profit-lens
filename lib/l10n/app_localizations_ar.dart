@@ -212,6 +212,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get signInTitle => 'تسجيل الدخول';
 
   @override
+  String get signInSubtitle =>
+      'حلّل عروض التوصيل بسرعة واحتفِ بكل يورو.';
+
+  @override
   String get registerTitle => 'إنشاء حساب';
 
   @override
@@ -287,12 +291,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get latestProfitLabel => 'آخر ربح';
 
   @override
-  String historySummaryTodayMore(String amount) {
+  String historySummaryTodayMore(Object amount) {
     return 'عروض اليوم أكثر ربحية من السابقة بمقدار $amount.';
   }
 
   @override
-  String historySummaryTodayLess(String amount) {
+  String historySummaryTodayLess(Object amount) {
     return 'عروض اليوم أقل ربحية من السابقة بمقدار $amount.';
   }
 
@@ -308,7 +312,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'لا يوجد سجل كافٍ للمقارنة مع اليوم.';
 
   @override
-  String historySummaryAverageProfit(String amount) {
+  String historySummaryAverageProfit(Object amount) {
     return 'متوسط الربح: $amount';
   }
 

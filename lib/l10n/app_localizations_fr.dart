@@ -214,6 +214,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get signInTitle => 'Connexion';
 
   @override
+  String get signInSubtitle =>
+      'Analysez vos offres de livraison plus vite et gardez chaque euro.';
+
+  @override
   String get registerTitle => 'Créer un compte';
 
   @override
@@ -290,12 +294,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get latestProfitLabel => 'Dernier profit';
 
   @override
-  String historySummaryTodayMore(String amount) {
+  String historySummaryTodayMore(Object amount) {
     return 'Les offres d’aujourd’hui sont plus rentables que les précédentes de $amount.';
   }
 
   @override
-  String historySummaryTodayLess(String amount) {
+  String historySummaryTodayLess(Object amount) {
     return 'Les offres d’aujourd’hui sont moins rentables que les précédentes de $amount.';
   }
 
@@ -311,7 +315,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Historique insuffisant pour comparer aujourd’hui.';
 
   @override
-  String historySummaryAverageProfit(String amount) {
+  String historySummaryAverageProfit(Object amount) {
     return 'Profit moyen : $amount';
   }
 

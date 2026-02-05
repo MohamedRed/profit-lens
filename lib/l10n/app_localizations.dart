@@ -502,6 +502,12 @@ abstract class AppLocalizations {
   /// **'Sign in'**
   String get signInTitle;
 
+  /// No description provided for @signInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze delivery offers faster and keep every euro.'**
+  String get signInSubtitle;
+
   /// No description provided for @registerTitle.
   ///
   /// In en, this message translates to:
@@ -650,13 +656,13 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Today\'s offers are more profitable than earlier ones by {amount}.'**
-  String historySummaryTodayMore(String amount);
+  String historySummaryTodayMore(Object amount);
 
   /// No description provided for @historySummaryTodayLess.
   ///
   /// In en, this message translates to:
   /// **'Today\'s offers are less profitable than earlier ones by {amount}.'**
-  String historySummaryTodayLess(String amount);
+  String historySummaryTodayLess(Object amount);
 
   /// No description provided for @historySummaryTodayEqual.
   ///
@@ -680,7 +686,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Average profit: {amount}'**
-  String historySummaryAverageProfit(String amount);
+  String historySummaryAverageProfit(Object amount);
 
   /// No description provided for @extractionFailedMessage.
   ///
