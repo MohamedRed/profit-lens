@@ -45,13 +45,19 @@ Future<void> lookupVehiclePlate({
       return;
     }
     onApplyStart();
-    _applyPlateLookupResult(
+    final applied = _applyPlateLookupResult(
       controller: controller,
       result: result,
       useFranceDefaults: useFranceDefaults,
       useVehiclePresets: useVehiclePresets,
     );
     onApplyEnd();
+    if (!applied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.plateLookupNotFoundMessage)),
+      );
+      return;
+    }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(l10n.plateLookupAppliedMessage)),
     );
@@ -63,21 +69,30 @@ Future<void> lookupVehiclePlate({
   }
 }
 
-void _applyPlateLookupResult({
+bool _applyPlateLookupResult({
   required VehicleFormController controller,
   required VehiclePlateLookupResult result,
   required bool useFranceDefaults,
   required bool useVehiclePresets,
 }) {
-  if (result.brand != null && result.brand!.trim().isNotEmpty) {
-    controller.brandController.text = result.brand!;
+  var applied = false;
+  final brand = _sanitizeLookupValue(result.brand);
+  if (brand != null) {
+    controller.brandController.text = brand;
+    applied = true;
   }
-  if (result.model != null && result.model!.trim().isNotEmpty) {
-    controller.modelController.text = result.model!;
+  final model = _sanitizeLookupValue(result.model);
+  if (model != null) {
+    controller.modelController.text = model;
+    applied = true;
   }
-  if (result.registrationYear != null) {
+  if (result.registrationYear != null && result.registrationYear! > 0) {
     controller.registrationYearController.text =
         result.registrationYear.toString();
+    applied = true;
+  }
+  if (result.energyType != null || result.fuelType != null) {
+    applied = true;
   }
   _applyEnergyLookup(
     controller: controller,
@@ -85,10 +100,11 @@ void _applyPlateLookupResult({
     fuelType: result.fuelType,
     useFranceDefaults: useFranceDefaults,
   );
-  if (useVehiclePresets) {
+  if (useVehiclePresets && applied) {
     controller.applyTypePresets();
     controller.applyEnergyPriceDefaults(useFranceDefaults: useFranceDefaults);
   }
+  return applied;
 }
 
 void _applyEnergyLookup({
@@ -117,4 +133,26 @@ void _applyEnergyLookup({
   if (controller.energyType == EnergyType.none) {
     controller.consumptionController.text = '0';
   }
+}
+
+String? _sanitizeLookupValue(String? value) {
+  if (value == null) return null;
+  final trimmed = value.trim();
+  if (trimmed.isEmpty) return null;
+  final normalized = trimmed.toLowerCase();
+  const unknownValues = {
+    'unknown',
+    'inconnu',
+    'n/a',
+    'na',
+    'null',
+    '-',
+  };
+  if (unknownValues.contains(normalized)) {
+    return null;
+  }
+  if (normalized.contains('renseign') || normalized.contains('indisponible')) {
+    return null;
+  }
+  return trimmed;
 }
