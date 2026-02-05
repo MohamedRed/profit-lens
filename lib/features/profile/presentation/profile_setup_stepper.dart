@@ -91,7 +91,7 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
           currentStep: _currentStep,
           onStepTapped: _goToStep,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.only(bottom: 12),
@@ -235,15 +235,14 @@ class _ProfileStepHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final activeColor = theme.colorScheme.primary;
-    final inactiveColor = theme.colorScheme.outlineVariant;
+    final inactiveColor = theme.colorScheme.primary.withOpacity(0.2);
     final completeColor = theme.colorScheme.primaryContainer;
+    final lineActive = theme.colorScheme.primary.withOpacity(0.5);
+    final lineInactive = theme.colorScheme.primary.withOpacity(0.15);
     final textStyle = theme.textTheme.labelSmall;
     final children = <Widget>[];
 
     for (var i = 0; i < steps.length; i++) {
-      if (i > 0) {
-        children.add(const SizedBox(width: 8));
-      }
       final isActive = i == currentStep;
       final isComplete = i < currentStep;
       final circleColor = isComplete
@@ -257,44 +256,55 @@ class _ProfileStepHeader extends StatelessWidget {
               ? theme.colorScheme.onPrimary
               : theme.colorScheme.onSurfaceVariant;
       children.add(
-        Expanded(
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () => onStepTapped(i),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 28,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: circleColor,
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      isComplete ? '✓' : '${i + 1}',
-                      style: textStyle?.copyWith(color: circleTextColor),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    steps[i].label,
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: textStyle,
-                  ),
-                ],
+        InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => onStepTapped(i),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Container(
+              width: 22,
+              height: 22,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: circleColor,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                isComplete ? '✓' : '${i + 1}',
+                style: textStyle?.copyWith(
+                  color: circleTextColor,
+                  fontSize: 11,
+                ),
               ),
             ),
           ),
         ),
       );
+      if (i < steps.length - 1) {
+        children.add(
+          Expanded(
+            child: Container(
+              height: 2,
+              margin: const EdgeInsets.symmetric(horizontal: 6),
+              color: i < currentStep ? lineActive : lineInactive,
+            ),
+          ),
+        );
+      }
     }
 
-    return Row(children: children);
+    return Column(
+      children: [
+        Row(children: children),
+        const SizedBox(height: 6),
+        Text(
+          steps[currentStep].label,
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: textStyle,
+        ),
+      ],
+    );
   }
 }
