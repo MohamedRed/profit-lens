@@ -51,6 +51,7 @@ class OfferFlowCoordinatorStream extends StatefulWidget {
 class _OfferFlowCoordinatorStreamState
     extends State<OfferFlowCoordinatorStream> {
   static const _emptyDelay = Duration(milliseconds: 600);
+  static const _loadingTopPadding = 24.0;
   Timer? _emptyStateTimer;
   bool _showEmptyState = false;
 
@@ -88,13 +89,7 @@ class _OfferFlowCoordinatorStreamState
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             !snapshot.hasData) {
-          return const Scaffold(
-            body: SafeArea(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          );
+          return _buildLoadingScaffold();
         }
         final vehicles = snapshot.data ?? [];
         if (vehicles.isEmpty) {
@@ -104,13 +99,7 @@ class _OfferFlowCoordinatorStreamState
             }
           });
           if (!_showEmptyState) {
-            return const Scaffold(
-              body: SafeArea(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            );
+            return _buildLoadingScaffold();
           }
         } else {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -160,4 +149,17 @@ class _OfferFlowCoordinatorStreamState
     );
   }
 
+  Widget _buildLoadingScaffold() {
+    return Scaffold(
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(top: _loadingTopPadding),
+            child: const CircularProgressIndicator(),
+          ),
+        ),
+      ),
+    );
+  }
 }
