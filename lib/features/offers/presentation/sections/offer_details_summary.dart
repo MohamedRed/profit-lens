@@ -59,11 +59,11 @@ class OfferDetailsSummary extends StatelessWidget {
             Text('${l10n.durationMinutesLabel}: $duration'),
           if (verification != null)
             Text(
-              '${l10n.verifiedDistanceLabel}: ${verification.distanceKm.toStringAsFixed(1)}',
+              '${l10n.verifiedDistanceLabel}: ${verification.distanceKm.toStringAsFixed(1)} ${l10n.distanceUnitKm}',
             ),
           if (verification != null)
             Text(
-              '${l10n.verifiedDurationLabel}: ${verification.durationMinutes.toStringAsFixed(0)}',
+              '${l10n.verifiedDurationLabel}: ${verification.durationMinutes.toStringAsFixed(0)} ${l10n.durationUnitMinutes}',
             ),
           if (pickupName.isNotEmpty)
             Text('${l10n.pickupNameLabel}: $pickupName'),

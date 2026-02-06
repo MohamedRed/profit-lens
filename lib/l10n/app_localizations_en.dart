@@ -172,12 +172,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offerDecisionDecline => 'Decline';
 
   @override
-  String offerDecisionAbove(String amount) {
+  String offerDecisionAbove(Object amount) {
     return '$amount above your target';
   }
 
   @override
-  String offerDecisionBelow(String amount) {
+  String offerDecisionBelow(Object amount) {
     return '$amount below your target';
   }
 
@@ -390,10 +390,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'This screenshot provides only the restaurant name and the customer address. The pickup address can be left empty.';
 
   @override
-  String get verifiedDistanceLabel => 'Verified distance (km)';
+  String get verifiedDistanceLabel => 'Verified distance';
 
   @override
-  String get verifiedDurationLabel => 'Verified time (minutes)';
+  String get verifiedDurationLabel => 'Verified time';
+
+  @override
+  String get distanceUnitKm => 'km';
+
+  @override
+  String get durationUnitMinutes => 'min';
 
   @override
   String get routeVerificationMissingMessage =>

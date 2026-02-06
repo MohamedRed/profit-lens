@@ -55,13 +55,11 @@ class ProfitabilityOverviewCard extends StatelessWidget {
             if (record.offer.routeVerification != null) ...[
               _row(
                 l10n.verifiedDistanceLabel,
-                record.offer.routeVerification!.distanceKm
-                    .toStringAsFixed(1),
+                '${record.offer.routeVerification!.distanceKm.toStringAsFixed(1)} ${l10n.distanceUnitKm}',
               ),
               _row(
                 l10n.verifiedDurationLabel,
-                record.offer.routeVerification!.durationMinutes
-                    .toStringAsFixed(0),
+                '${record.offer.routeVerification!.durationMinutes.toStringAsFixed(0)} ${l10n.durationUnitMinutes}',
               ),
             ],
             _row(

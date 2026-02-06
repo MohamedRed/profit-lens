@@ -172,12 +172,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get offerDecisionDecline => 'ارفض';
 
   @override
-  String offerDecisionAbove(String amount) {
+  String offerDecisionAbove(Object amount) {
     return '$amount فوق هدفك';
   }
 
   @override
-  String offerDecisionBelow(String amount) {
+  String offerDecisionBelow(Object amount) {
     return '$amount تحت هدفك';
   }
 
@@ -388,10 +388,16 @@ class AppLocalizationsAr extends AppLocalizations {
       'هذه اللقطة تعرض فقط اسم المطعم وعنوان العميل. يمكن ترك عنوان الاستلام فارغًا.';
 
   @override
-  String get verifiedDistanceLabel => 'المسافة الموثقة (كم)';
+  String get verifiedDistanceLabel => 'المسافة الموثقة';
 
   @override
-  String get verifiedDurationLabel => 'الوقت الموثق (دقائق)';
+  String get verifiedDurationLabel => 'الوقت الموثق';
+
+  @override
+  String get distanceUnitKm => 'كم';
+
+  @override
+  String get durationUnitMinutes => 'د';
 
   @override
   String get routeVerificationMissingMessage =>

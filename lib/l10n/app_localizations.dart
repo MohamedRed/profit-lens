@@ -427,14 +427,14 @@ abstract class AppLocalizations {
   /// No description provided for @offerDecisionAbove.
   ///
   /// In en, this message translates to:
-  /// **'{amount} above break-even'**
-  String offerDecisionAbove(String amount);
+  /// **'{amount} above your target'**
+  String offerDecisionAbove(Object amount);
 
   /// No description provided for @offerDecisionBelow.
   ///
   /// In en, this message translates to:
   /// **'{amount} below your target'**
-  String offerDecisionBelow(String amount);
+  String offerDecisionBelow(Object amount);
 
   /// No description provided for @profitabilityTargetTitle.
   ///
@@ -823,14 +823,26 @@ abstract class AppLocalizations {
   /// No description provided for @verifiedDistanceLabel.
   ///
   /// In en, this message translates to:
-  /// **'Verified distance (km)'**
+  /// **'Verified distance'**
   String get verifiedDistanceLabel;
 
   /// No description provided for @verifiedDurationLabel.
   ///
   /// In en, this message translates to:
-  /// **'Verified time (minutes)'**
+  /// **'Verified time'**
   String get verifiedDurationLabel;
+
+  /// No description provided for @distanceUnitKm.
+  ///
+  /// In en, this message translates to:
+  /// **'km'**
+  String get distanceUnitKm;
+
+  /// No description provided for @durationUnitMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get durationUnitMinutes;
 
   /// No description provided for @routeVerificationMissingMessage.
   ///
