@@ -75,6 +75,11 @@ class OfferFlowForm extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           if (showOverview) ...[
+            ProfitabilityDecisionCard(
+              record: previewRecord!,
+              minProfitabilityEuro: minProfitabilityEuro,
+            ),
+            const SizedBox(height: 12),
             ProfitabilityOverviewCard(
               record: previewRecord!,
               minProfitabilityEuro: minProfitabilityEuro,

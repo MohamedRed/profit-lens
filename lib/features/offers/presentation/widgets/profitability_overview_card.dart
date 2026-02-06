@@ -23,26 +23,9 @@ class ProfitabilityOverviewCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final localeTag = Localizations.localeOf(context).toString();
     final netProfit = record.breakdown.netProfit;
-    final targetDelta = netProfit - minProfitabilityEuro;
-    final isAccept = targetDelta >= 0;
-    final decisionColor = isAccept
-        ? Colors.green.shade600
-        : Theme.of(context).colorScheme.error;
-    final decisionBackground = isAccept
-        ? Colors.green.shade600.withOpacity(0.12)
-        : Theme.of(context).colorScheme.error.withOpacity(0.12);
     final netColor = netProfit >= 0
         ? Theme.of(context).colorScheme.primary
         : Theme.of(context).colorScheme.error;
-    final decisionLabel =
-        isAccept ? l10n.offerDecisionAccept : l10n.offerDecisionDecline;
-    final decisionDetail = isAccept
-        ? l10n.offerDecisionAbove(
-            CurrencyFormat.euro(targetDelta.abs(), localeTag),
-          )
-        : l10n.offerDecisionBelow(
-            CurrencyFormat.euro(targetDelta.abs(), localeTag),
-          );
 
     return Card(
       child: Padding(
@@ -53,13 +36,6 @@ class ProfitabilityOverviewCard extends StatelessWidget {
             Text(
               l10n.profitabilityOverviewTitle,
               style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 12),
-            _DecisionSection(
-              label: decisionLabel,
-              detail: decisionDetail,
-              textColor: decisionColor,
-              backgroundColor: decisionBackground,
             ),
             const SizedBox(height: 16),
             Text(
@@ -117,6 +93,52 @@ class ProfitabilityOverviewCard extends StatelessWidget {
           Text(label),
           Text(value),
         ],
+      ),
+    );
+  }
+}
+
+class ProfitabilityDecisionCard extends StatelessWidget {
+  final OfferRecord record;
+  final double minProfitabilityEuro;
+
+  const ProfitabilityDecisionCard({
+    super.key,
+    required this.record,
+    required this.minProfitabilityEuro,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final localeTag = Localizations.localeOf(context).toString();
+    final targetDelta = record.breakdown.netProfit - minProfitabilityEuro;
+    final isAccept = targetDelta >= 0;
+    final decisionColor = isAccept
+        ? Colors.green.shade600
+        : Theme.of(context).colorScheme.error;
+    final decisionBackground = isAccept
+        ? Colors.green.shade600.withOpacity(0.12)
+        : Theme.of(context).colorScheme.error.withOpacity(0.12);
+    final decisionLabel =
+        isAccept ? l10n.offerDecisionAccept : l10n.offerDecisionDecline;
+    final decisionDetail = isAccept
+        ? l10n.offerDecisionAbove(
+            CurrencyFormat.euro(targetDelta.abs(), localeTag),
+          )
+        : l10n.offerDecisionBelow(
+            CurrencyFormat.euro(targetDelta.abs(), localeTag),
+          );
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: _DecisionSection(
+          label: decisionLabel,
+          detail: decisionDetail,
+          textColor: decisionColor,
+          backgroundColor: decisionBackground,
+        ),
       ),
     );
   }
