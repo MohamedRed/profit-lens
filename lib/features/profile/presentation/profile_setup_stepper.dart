@@ -18,6 +18,7 @@ import '../../vehicles/presentation/widgets/vehicle_energy_section.dart';
 import 'controllers/business_profile_controller.dart';
 import 'sections/business_fixed_costs_section.dart';
 import 'sections/business_taxes_setup_section.dart';
+import 'sections/profitability_target_section.dart';
 
 class ProfileSetupStepper extends StatefulWidget {
   final BusinessProfileController businessController;
@@ -178,15 +179,26 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
       ),
       _ProfileStepData(
         label: l10n.monthlyCostsSectionTitle,
-        content: BusinessFixedCostsSection(
-          monthlyFixedCostsController:
-              businessController.monthlyFixedCostsController,
-          monthlyHoursController: businessController.monthlyHoursController,
-          monthlyDistanceController: businessController.monthlyDistanceController,
-          monthlyDeliveriesController:
-              businessController.monthlyDeliveriesController,
-          allocation: businessController.allocation,
-          onAllocationChanged: widget.onAllocationChanged,
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            BusinessFixedCostsSection(
+              monthlyFixedCostsController:
+                  businessController.monthlyFixedCostsController,
+              monthlyHoursController: businessController.monthlyHoursController,
+              monthlyDistanceController:
+                  businessController.monthlyDistanceController,
+              monthlyDeliveriesController:
+                  businessController.monthlyDeliveriesController,
+              allocation: businessController.allocation,
+              onAllocationChanged: widget.onAllocationChanged,
+            ),
+            const SizedBox(height: 12),
+            ProfitabilityTargetSection(
+              minProfitabilityController:
+                  businessController.minProfitabilityController,
+            ),
+          ],
         ),
       ),
     ];

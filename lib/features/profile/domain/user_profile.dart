@@ -17,6 +17,7 @@ class UserProfile {
   final double monthlyWorkingHours;
   final double monthlyDistanceKm;
   final int monthlyDeliveries;
+  final double minProfitabilityEuro;
   final String? defaultVehicleId;
   final bool useFranceDefaults;
   final String? preferredLocale;
@@ -35,6 +36,7 @@ class UserProfile {
     required this.monthlyWorkingHours,
     required this.monthlyDistanceKm,
     required this.monthlyDeliveries,
+    required this.minProfitabilityEuro,
     required this.defaultVehicleId,
     required this.useFranceDefaults,
     required this.preferredLocale,
@@ -54,6 +56,7 @@ class UserProfile {
     double? monthlyWorkingHours,
     double? monthlyDistanceKm,
     int? monthlyDeliveries,
+    double? minProfitabilityEuro,
     Object? defaultVehicleId = _nullSentinel,
     bool? useFranceDefaults,
     Object? preferredLocale = _nullSentinel,
@@ -76,6 +79,8 @@ class UserProfile {
       monthlyWorkingHours: monthlyWorkingHours ?? this.monthlyWorkingHours,
       monthlyDistanceKm: monthlyDistanceKm ?? this.monthlyDistanceKm,
       monthlyDeliveries: monthlyDeliveries ?? this.monthlyDeliveries,
+      minProfitabilityEuro:
+          minProfitabilityEuro ?? this.minProfitabilityEuro,
       defaultVehicleId: identical(defaultVehicleId, _nullSentinel)
           ? this.defaultVehicleId
           : defaultVehicleId as String?,

@@ -69,6 +69,7 @@ Future<void> saveProfileSetup({
     monthlyWorkingHours: values.monthlyHours,
     monthlyDistanceKm: values.monthlyDistance,
     monthlyDeliveries: values.monthlyDeliveries,
+    minProfitabilityEuro: values.minProfitabilityEuro,
     defaultVehicleId: vehicle.id,
     useFranceDefaults: businessController.useFranceDefaults,
     preferredLocale: 'fr',

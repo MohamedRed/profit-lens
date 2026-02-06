@@ -433,8 +433,26 @@ abstract class AppLocalizations {
   /// No description provided for @offerDecisionBelow.
   ///
   /// In en, this message translates to:
-  /// **'{amount} below break-even'**
+  /// **'{amount} below your target'**
   String offerDecisionBelow(String amount);
+
+  /// No description provided for @profitabilityTargetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profitability target'**
+  String get profitabilityTargetTitle;
+
+  /// No description provided for @minProfitabilityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum profit per offer'**
+  String get minProfitabilityLabel;
+
+  /// No description provided for @minProfitabilityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested default: €2.00'**
+  String get minProfitabilityHint;
 
   /// No description provided for @viewProfitabilityDetailsButton.
   ///

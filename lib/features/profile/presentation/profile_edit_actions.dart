@@ -49,6 +49,7 @@ Future<void> saveProfileEdit({
     monthlyWorkingHours: values.monthlyHours,
     monthlyDistanceKm: values.monthlyDistance,
     monthlyDeliveries: values.monthlyDeliveries,
+    minProfitabilityEuro: values.minProfitabilityEuro,
     useFranceDefaults: controller.useFranceDefaults,
   );
 

@@ -27,6 +27,7 @@ class OfferFlowForm extends StatelessWidget {
   final OfferRecord? previewRecord;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
+  final double minProfitabilityEuro;
 
   const OfferFlowForm({
     super.key,
@@ -43,6 +44,7 @@ class OfferFlowForm extends StatelessWidget {
     required this.previewRecord,
     required this.onPickupSelected,
     required this.onDropoffSelected,
+    required this.minProfitabilityEuro,
   });
 
   @override
@@ -75,6 +77,7 @@ class OfferFlowForm extends StatelessWidget {
           if (showOverview) ...[
             ProfitabilityOverviewCard(
               record: previewRecord!,
+              minProfitabilityEuro: minProfitabilityEuro,
               onViewDetails: onViewDetails,
             ),
           ],

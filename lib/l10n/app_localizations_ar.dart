@@ -173,13 +173,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String offerDecisionAbove(String amount) {
-    return '$amount فوق نقطة التعادل';
+    return '$amount فوق هدفك';
   }
 
   @override
   String offerDecisionBelow(String amount) {
-    return '$amount تحت نقطة التعادل';
+    return '$amount تحت هدفك';
   }
+
+  @override
+  String get profitabilityTargetTitle => 'هدف الربحية';
+
+  @override
+  String get minProfitabilityLabel => 'الحد الأدنى للربح لكل عرض';
+
+  @override
+  String get minProfitabilityHint => 'القيمة المقترحة: 2.00 €';
 
   @override
   String get viewProfitabilityDetailsButton => 'عرض التفاصيل';

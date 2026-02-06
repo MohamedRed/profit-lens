@@ -54,18 +54,21 @@
   "profitabilityOverviewTitle": "Aperçu de la rentabilité",
   "offerDecisionAccept": "Accepter",
   "offerDecisionDecline": "Refuser",
-  "offerDecisionAbove": "{amount} au-dessus du seuil",
+  "offerDecisionAbove": "{amount} au-dessus de votre objectif",
   "@offerDecisionAbove": {
     "placeholders": {
       "amount": {}
     }
   },
-  "offerDecisionBelow": "{amount} en dessous du seuil",
+  "offerDecisionBelow": "{amount} en dessous de votre objectif",
   "@offerDecisionBelow": {
     "placeholders": {
       "amount": {}
     }
   },
+  "profitabilityTargetTitle": "Objectif de rentabilité",
+  "minProfitabilityLabel": "Profit minimum par offre",
+  "minProfitabilityHint": "Valeur suggérée : 2,00 €",
   "viewProfitabilityDetailsButton": "Voir les détails",
   "resultTitle": "Rentabilité",
   "grossRevenueLabel": "Revenu brut",

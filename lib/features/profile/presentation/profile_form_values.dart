@@ -8,6 +8,7 @@ class BusinessProfileValues {
   final double monthlyHours;
   final double monthlyDistance;
   final int monthlyDeliveries;
+  final double minProfitabilityEuro;
 
   const BusinessProfileValues({
     required this.socialRate,
@@ -16,6 +17,7 @@ class BusinessProfileValues {
     required this.monthlyHours,
     required this.monthlyDistance,
     required this.monthlyDeliveries,
+    required this.minProfitabilityEuro,
   });
 }
 
@@ -26,6 +28,12 @@ BusinessProfileValues? parseBusinessProfileValues(
     controller.socialRateController.text,
   );
   if (socialRate == null) {
+    return null;
+  }
+  final minProfitability = NumberParsing.parseDouble(
+    controller.minProfitabilityController.text,
+  );
+  if (minProfitability == null) {
     return null;
   }
   return BusinessProfileValues(
@@ -45,5 +53,6 @@ BusinessProfileValues? parseBusinessProfileValues(
         0,
     monthlyDeliveries:
         int.tryParse(controller.monthlyDeliveriesController.text) ?? 0,
+    minProfitabilityEuro: minProfitability,
   );
 }

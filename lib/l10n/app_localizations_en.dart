@@ -173,13 +173,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String offerDecisionAbove(String amount) {
-    return '$amount above break-even';
+    return '$amount above your target';
   }
 
   @override
   String offerDecisionBelow(String amount) {
-    return '$amount below break-even';
+    return '$amount below your target';
   }
+
+  @override
+  String get profitabilityTargetTitle => 'Profitability target';
+
+  @override
+  String get minProfitabilityLabel => 'Minimum profit per offer';
+
+  @override
+  String get minProfitabilityHint => 'Suggested default: €2.00';
 
   @override
   String get viewProfitabilityDetailsButton => 'View details';

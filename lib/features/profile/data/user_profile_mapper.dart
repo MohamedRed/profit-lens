@@ -1,6 +1,7 @@
 import '../../../core/extensions/iterable_extensions.dart';
 import '../../profile/domain/business_activity.dart';
 import '../../profile/domain/fixed_cost_allocation.dart';
+import '../../profile/domain/profile_defaults.dart';
 import '../../profile/domain/user_profile.dart';
 
 class UserProfileMapper {
@@ -14,6 +15,9 @@ class UserProfileMapper {
     final monthlyHours = (data['monthlyWorkingHours'] as num?)?.toDouble();
     final monthlyDistance = (data['monthlyDistanceKm'] as num?)?.toDouble();
     final monthlyDeliveries = (data['monthlyDeliveries'] as num?)?.toInt();
+    final minProfitability = (data['minProfitabilityEuro'] as num?)
+            ?.toDouble() ??
+        ProfileDefaults.minProfitabilityEuro;
     final countryCode = data['countryCode'] as String?;
     final currencyCode = data['currencyCode'] as String?;
     final useFranceDefaults = data['useFranceDefaults'] as bool?;
@@ -47,6 +51,7 @@ class UserProfileMapper {
       monthlyWorkingHours: monthlyHours,
       monthlyDistanceKm: monthlyDistance,
       monthlyDeliveries: monthlyDeliveries,
+      minProfitabilityEuro: minProfitability,
       defaultVehicleId: data['defaultVehicleId'] as String?,
       useFranceDefaults: useFranceDefaults,
       preferredLocale: preferredLocale ?? 'fr',
@@ -67,6 +72,7 @@ class UserProfileMapper {
       'monthlyWorkingHours': profile.monthlyWorkingHours,
       'monthlyDistanceKm': profile.monthlyDistanceKm,
       'monthlyDeliveries': profile.monthlyDeliveries,
+      'minProfitabilityEuro': profile.minProfitabilityEuro,
       'defaultVehicleId': profile.defaultVehicleId,
       'useFranceDefaults': profile.useFranceDefaults,
       'preferredLocale': profile.preferredLocale,

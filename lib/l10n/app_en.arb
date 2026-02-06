@@ -54,18 +54,21 @@
   "profitabilityOverviewTitle": "Profitability overview",
   "offerDecisionAccept": "Accept",
   "offerDecisionDecline": "Decline",
-  "offerDecisionAbove": "{amount} above break-even",
+  "offerDecisionAbove": "{amount} above your target",
   "@offerDecisionAbove": {
     "placeholders": {
       "amount": {}
     }
   },
-  "offerDecisionBelow": "{amount} below break-even",
+  "offerDecisionBelow": "{amount} below your target",
   "@offerDecisionBelow": {
     "placeholders": {
       "amount": {}
     }
   },
+  "profitabilityTargetTitle": "Profitability target",
+  "minProfitabilityLabel": "Minimum profit per offer",
+  "minProfitabilityHint": "Suggested default: €2.00",
   "viewProfitabilityDetailsButton": "View details",
   "resultTitle": "Profitability",
   "grossRevenueLabel": "Gross revenue",

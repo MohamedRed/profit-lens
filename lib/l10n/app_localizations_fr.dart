@@ -174,13 +174,22 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String offerDecisionAbove(String amount) {
-    return '$amount au-dessus du seuil';
+    return '$amount au-dessus de votre objectif';
   }
 
   @override
   String offerDecisionBelow(String amount) {
-    return '$amount en dessous du seuil';
+    return '$amount en dessous de votre objectif';
   }
+
+  @override
+  String get profitabilityTargetTitle => 'Objectif de rentabilité';
+
+  @override
+  String get minProfitabilityLabel => 'Profit minimum par offre';
+
+  @override
+  String get minProfitabilityHint => 'Valeur suggérée : 2,00 €';
 
   @override
   String get viewProfitabilityDetailsButton => 'Voir les détails';

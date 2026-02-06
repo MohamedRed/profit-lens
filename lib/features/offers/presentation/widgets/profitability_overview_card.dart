@@ -8,11 +8,13 @@ import '../offer_flow_keys.dart';
 
 class ProfitabilityOverviewCard extends StatelessWidget {
   final OfferRecord record;
+  final double minProfitabilityEuro;
   final VoidCallback onViewDetails;
 
   const ProfitabilityOverviewCard({
     super.key,
     required this.record,
+    required this.minProfitabilityEuro,
     required this.onViewDetails,
   });
 
@@ -21,7 +23,8 @@ class ProfitabilityOverviewCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final localeTag = Localizations.localeOf(context).toString();
     final netProfit = record.breakdown.netProfit;
-    final isAccept = netProfit >= 0;
+    final targetDelta = netProfit - minProfitabilityEuro;
+    final isAccept = targetDelta >= 0;
     final netColor = netProfit >= 0
         ? Theme.of(context).colorScheme.primary
         : Theme.of(context).colorScheme.error;
@@ -35,10 +38,10 @@ class ProfitabilityOverviewCard extends StatelessWidget {
         isAccept ? l10n.offerDecisionAccept : l10n.offerDecisionDecline;
     final decisionDetail = isAccept
         ? l10n.offerDecisionAbove(
-            CurrencyFormat.euro(netProfit.abs(), localeTag),
+            CurrencyFormat.euro(targetDelta.abs(), localeTag),
           )
         : l10n.offerDecisionBelow(
-            CurrencyFormat.euro(netProfit.abs(), localeTag),
+            CurrencyFormat.euro(targetDelta.abs(), localeTag),
           );
 
     return Card(
@@ -101,6 +104,10 @@ class ProfitabilityOverviewCard extends StatelessWidget {
             _row(
               l10n.totalCostsLabel,
               CurrencyFormat.euro(record.breakdown.totalCosts, localeTag),
+            ),
+            _row(
+              l10n.minProfitabilityLabel,
+              CurrencyFormat.euro(minProfitabilityEuro, localeTag),
             ),
             const SizedBox(height: 12),
             PrimaryButton(

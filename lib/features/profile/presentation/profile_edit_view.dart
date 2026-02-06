@@ -10,6 +10,7 @@ import 'controllers/business_profile_controller.dart';
 import 'sections/business_fixed_costs_section.dart';
 import 'sections/business_taxes_section.dart';
 import 'sections/business_activity_field.dart';
+import 'sections/profitability_target_section.dart';
 
 class ProfileEditView extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -62,6 +63,10 @@ class ProfileEditView extends StatelessWidget {
             monthlyDeliveriesController: controller.monthlyDeliveriesController,
             allocation: controller.allocation,
             onAllocationChanged: onAllocationChanged,
+          ),
+          const SizedBox(height: 12),
+          ProfitabilityTargetSection(
+            minProfitabilityController: controller.minProfitabilityController,
           ),
           const SizedBox(height: 12),
           PresetSourcesSection(sources: FranceDefaults.sources),

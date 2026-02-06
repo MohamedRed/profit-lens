@@ -155,6 +155,7 @@ class _OfferFlowCoordinatorStreamState
           previewRecord: previewRecord,
           onPickupSelected: widget.onPickupSelected,
           onDropoffSelected: widget.onDropoffSelected,
+          minProfitabilityEuro: widget.profile.minProfitabilityEuro,
         );
       },
     );

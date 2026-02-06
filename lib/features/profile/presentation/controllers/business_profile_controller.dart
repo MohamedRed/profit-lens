@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../defaults/data/france_defaults.dart';
 import '../../domain/business_activity.dart';
 import '../../domain/fixed_cost_allocation.dart';
+import '../../domain/profile_defaults.dart';
 import '../../domain/user_profile.dart';
 
 class BusinessProfileController {
@@ -12,6 +13,7 @@ class BusinessProfileController {
   final TextEditingController monthlyHoursController;
   final TextEditingController monthlyDistanceController;
   final TextEditingController monthlyDeliveriesController;
+  final TextEditingController minProfitabilityController;
 
   BusinessActivity activity;
   FixedCostAllocation allocation;
@@ -25,6 +27,7 @@ class BusinessProfileController {
     required this.monthlyHoursController,
     required this.monthlyDistanceController,
     required this.monthlyDeliveriesController,
+    required this.minProfitabilityController,
     required this.activity,
     required this.allocation,
     required this.useFranceDefaults,
@@ -39,6 +42,9 @@ class BusinessProfileController {
       monthlyHoursController: TextEditingController(),
       monthlyDistanceController: TextEditingController(),
       monthlyDeliveriesController: TextEditingController(),
+      minProfitabilityController: TextEditingController(
+        text: ProfileDefaults.minProfitabilityEuro.toStringAsFixed(2),
+      ),
       activity: BusinessActivity.deliveryServices,
       allocation: FixedCostAllocation.perKm,
       useFranceDefaults: true,
@@ -70,6 +76,9 @@ class BusinessProfileController {
       monthlyDeliveriesController: TextEditingController(
         text: profile.monthlyDeliveries.toString(),
       ),
+      minProfitabilityController: TextEditingController(
+        text: profile.minProfitabilityEuro.toStringAsFixed(2),
+      ),
       activity: profile.activity,
       allocation: profile.fixedCostAllocation,
       useFranceDefaults: profile.useFranceDefaults,
@@ -99,5 +108,6 @@ class BusinessProfileController {
     monthlyHoursController.dispose();
     monthlyDistanceController.dispose();
     monthlyDeliveriesController.dispose();
+    minProfitabilityController.dispose();
   }
 }
