@@ -45,16 +45,21 @@ Future<void> handleOfferAnalysis({
   if (!ready) {
     return;
   }
-  final runId = controller.startAnalysis(OfferAnalysisStatus.verifyingRoute);
+  final runId = controller.startAnalysis(OfferAnalysisStatus.extracting);
   final progress = OfferAnalysisProgressDriver.start(
     controller: controller,
     runId: runId,
     onUpdated: onUpdated,
     steps: const [
+      OfferAnalysisStatus.extracting,
       OfferAnalysisStatus.verifyingRoute,
       OfferAnalysisStatus.calculatingProfit,
     ],
-    stepDelay: const Duration(milliseconds: 700),
+    stepDurations: const [
+      Duration(milliseconds: 900),
+      Duration(milliseconds: 800),
+      Duration(milliseconds: 500),
+    ],
   );
   onUpdated();
   onLoadingChanged(OfferFlowLoadingAction.analyze);

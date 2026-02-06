@@ -26,25 +26,31 @@ class OfferAnalysisProgressDriver {
     required int runId,
     required AnalysisUpdate onUpdated,
     required List<OfferAnalysisStatus> steps,
-    required Duration stepDelay,
+    required List<Duration> stepDurations,
   }) {
+    assert(steps.length == stepDurations.length);
     final driver = OfferAnalysisProgressDriver._(
       controller: controller,
       runId: runId,
       onUpdated: onUpdated,
       startedAt: DateTime.now(),
-      minDuration: stepDelay * steps.length,
+      minDuration: stepDurations.fold(
+        Duration.zero,
+        (total, duration) => total + duration,
+      ),
     );
-    driver._scheduleSteps(steps, stepDelay);
+    driver._scheduleSteps(steps, stepDurations);
     return driver;
   }
 
   void _scheduleSteps(
     List<OfferAnalysisStatus> steps,
-    Duration stepDelay,
+    List<Duration> stepDurations,
   ) {
+    var accumulated = Duration.zero;
     for (var i = 1; i < steps.length; i += 1) {
-      Future<void>.delayed(stepDelay * i, () {
+      accumulated += stepDurations[i - 1];
+      Future<void>.delayed(accumulated, () {
         if (!_isActive) return;
         if (!controller.analysisStatus.isAnalyzing) return;
         controller.setAnalysisStatus(steps[i]);
