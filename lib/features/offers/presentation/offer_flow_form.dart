@@ -67,7 +67,7 @@ class OfferFlowForm extends StatelessWidget {
         (controller.analysisStatus != OfferAnalysisStatus.idle ||
             hasAnyInput ||
             showManualEntry);
-    final showManualEntryLink = !showOverview && !showDetailsSection;
+    final showManualEntryLink = false;
     return Form(
       key: formKey,
       child: ListView(
@@ -92,14 +92,6 @@ class OfferFlowForm extends StatelessWidget {
             icon: Icons.camera_alt,
             onPressed: isBusy ? null : onCaptureScreenshot,
           ),
-          if (showManualEntryLink) ...[
-            const SizedBox(height: 8),
-            TextButton.icon(
-              onPressed: onManualEntry,
-              icon: const Icon(Icons.edit),
-              label: Text(l10n.manualEntryButton),
-            ),
-          ],
           const SizedBox(height: 16),
           if (showOverview) ...[
             ProfitabilityOverviewCard(
