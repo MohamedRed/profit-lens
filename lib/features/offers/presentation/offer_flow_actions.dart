@@ -54,7 +54,7 @@ Future<void> handleOfferAnalysis({
       OfferAnalysisStatus.verifyingRoute,
       OfferAnalysisStatus.calculatingProfit,
     ],
-    stepDelay: const Duration(milliseconds: 450),
+    stepDelay: const Duration(milliseconds: 700),
   );
   onUpdated();
   onLoadingChanged(OfferFlowLoadingAction.analyze);

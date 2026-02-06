@@ -41,7 +41,7 @@ Future<void> importOfferScreenshot({
       OfferAnalysisStatus.verifyingRoute,
       OfferAnalysisStatus.calculatingProfit,
     ],
-    stepDelay: const Duration(milliseconds: 450),
+    stepDelay: const Duration(milliseconds: 700),
   );
   onUpdated();
   onLoadingChanged(loadingAction);
