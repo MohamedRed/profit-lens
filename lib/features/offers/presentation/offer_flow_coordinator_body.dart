@@ -58,6 +58,9 @@ class _OfferFlowCoordinatorBodyState extends State<OfferFlowCoordinatorBody> {
   }
 
   void _setSelectedVehicle(String? value) {
+    if (value == _selectedVehicleId) {
+      return;
+    }
     setState(() {
       _controller.clearAnalysis();
       _selectedVehicleId = value;
