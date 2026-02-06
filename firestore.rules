@@ -19,6 +19,11 @@ service cloud.firestore {
       match /offers/{offerId} {
         allow read, write: if isOwner(uid);
       }
+
+      match /offerStats/{dayId} {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
     }
 
     match /defaults/{docId} {

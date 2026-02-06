@@ -2,41 +2,49 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/currency_format.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../domain/offer_record.dart';
+import '../../domain/offer_daily_stats.dart';
 
 class ProfitHistorySummary extends StatelessWidget {
-  final List<OfferRecord> offers;
+  final List<OfferDailyStats> stats;
 
   const ProfitHistorySummary({
     super.key,
-    required this.offers,
+    required this.stats,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (offers.isEmpty) {
+    if (stats.isEmpty) {
       return const SizedBox.shrink();
     }
     final l10n = AppLocalizations.of(context)!;
     final localeTag = Localizations.localeOf(context).toString();
-    final averageAll = _averageProfit(offers);
+    final totalCount = stats.fold<int>(0, (sum, stat) => sum + stat.count);
+    if (totalCount == 0) {
+      return const SizedBox.shrink();
+    }
+    final totalSum =
+        stats.fold<double>(0, (sum, stat) => sum + stat.netProfitSum);
+    final averageAll = totalSum / totalCount;
     final averageLabel = CurrencyFormat.euro(averageAll, localeTag);
 
     final now = DateTime.now();
     final startOfToday = DateTime(now.year, now.month, now.day);
-    final todayOffers =
-        offers.where((offer) => !offer.createdAt.isBefore(startOfToday)).toList();
-    final earlierOffers =
-        offers.where((offer) => offer.createdAt.isBefore(startOfToday)).toList();
+    final todayStats = stats
+        .where((stat) => !_isBeforeLocalDay(stat.dayStart, startOfToday))
+        .toList();
+    final earlierStats = stats
+        .where((stat) => _isBeforeLocalDay(stat.dayStart, startOfToday))
+        .toList();
 
     String headline;
-    if (todayOffers.isEmpty) {
+    if (todayStats.isEmpty) {
       headline = l10n.historySummaryNoToday;
-    } else if (earlierOffers.isEmpty) {
+    } else if (earlierStats.isEmpty) {
       headline = l10n.historySummaryNotEnoughHistory;
     } else {
-      final todayAverage = _averageProfit(todayOffers);
-      final earlierAverage = _averageProfit(earlierOffers);
+      final todayAverage = _averageProfit(todayStats);
+      final earlierAverage = _averageProfit(earlierStats);
       final delta = todayAverage - earlierAverage;
       if (delta.abs() < 0.01) {
         headline = l10n.historySummaryTodayEqual;
@@ -64,11 +72,20 @@ class ProfitHistorySummary extends StatelessWidget {
     );
   }
 
-  double _averageProfit(List<OfferRecord> entries) {
-    final total = entries.fold<double>(
-      0,
-      (sum, offer) => sum + offer.breakdown.netProfit,
-    );
-    return total / entries.length;
+  double _averageProfit(List<OfferDailyStats> entries) {
+    final totalCount =
+        entries.fold<int>(0, (sum, stat) => sum + stat.count);
+    if (totalCount == 0) {
+      return 0;
+    }
+    final totalSum =
+        entries.fold<double>(0, (sum, stat) => sum + stat.netProfitSum);
+    return totalSum / totalCount;
+  }
+
+  bool _isBeforeLocalDay(DateTime dayStartUtc, DateTime localDayStart) {
+    final localDay = dayStartUtc.toLocal();
+    final normalized = DateTime(localDay.year, localDay.month, localDay.day);
+    return normalized.isBefore(localDayStart);
   }
 }

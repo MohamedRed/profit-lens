@@ -7,20 +7,36 @@ import '../../domain/offer_record.dart';
 class OfferHistoryList extends StatelessWidget {
   final List<OfferRecord> offers;
   final ValueChanged<OfferRecord> onSelected;
+  final VoidCallback onLoadMore;
+  final bool hasMore;
+  final bool isLoadingMore;
 
   const OfferHistoryList({
     super.key,
     required this.offers,
     required this.onSelected,
+    required this.onLoadMore,
+    required this.hasMore,
+    required this.isLoadingMore,
   });
 
   @override
   Widget build(BuildContext context) {
     final localeTag = Localizations.localeOf(context).toString();
+    final itemCount = offers.length + (hasMore ? 1 : 0);
     return ListView.separated(
       key: const ValueKey('history_list'),
       padding: const EdgeInsets.all(24),
       itemBuilder: (context, index) {
+        if (index >= offers.length) {
+          if (!isLoadingMore) {
+            onLoadMore();
+          }
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
         final offer = offers[index];
         final profit = CurrencyFormat.euro(offer.breakdown.netProfit, localeTag);
         final payout = CurrencyFormat.euro(offer.offer.payoutEuro, localeTag);
@@ -79,7 +95,7 @@ class OfferHistoryList extends StatelessWidget {
         );
       },
       separatorBuilder: (context, index) => const SizedBox(height: 16),
-      itemCount: offers.length,
+      itemCount: itemCount,
     );
   }
 }

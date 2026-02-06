@@ -4,30 +4,30 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/currency_format.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../domain/offer_record.dart';
+import '../../domain/offer_daily_stats.dart';
 import 'profit_history_chart_canvas.dart';
 
 class ProfitHistoryChart extends StatelessWidget {
-  final List<OfferRecord> offers;
+  final List<OfferDailyStats> stats;
 
   const ProfitHistoryChart({
     super.key,
-    required this.offers,
+    required this.stats,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    if (offers.length < 2) {
+    if (stats.length < 2) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Text(l10n.historyChartEmptyMessage),
       );
     }
-    final sorted = [...offers]..sort(
-        (a, b) => a.createdAt.compareTo(b.createdAt),
+    final sorted = [...stats]..sort(
+        (a, b) => a.dayStart.compareTo(b.dayStart),
       );
-    final values = sorted.map((offer) => offer.breakdown.netProfit).toList();
+    final values = sorted.map((stat) => stat.averageProfit).toList();
     final minValue = values.reduce((a, b) => a < b ? a : b);
     final maxValue = values.reduce((a, b) => a > b ? a : b);
     final maxAbs =

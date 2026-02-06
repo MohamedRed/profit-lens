@@ -61,4 +61,31 @@ class FirestoreOfferRepository implements OfferRepository {
         .whereType<OfferRecord>()
         .toList();
   }
+
+  @override
+  Future<OfferPage> fetchOffersPage(
+    String uid, {
+    DocumentSnapshot<Map<String, dynamic>>? startAfter,
+    int limit = 30,
+  }) async {
+    _ensureConfigured();
+    Query<Map<String, dynamic>> query =
+        _collection(uid).orderBy('createdAt', descending: true).limit(limit);
+    if (startAfter != null) {
+      query = query.startAfterDocument(startAfter);
+    }
+    final snapshot = await query.get();
+    final offers = snapshot.docs
+        .map((doc) => _mapper.fromDocument(doc.id, doc.data()))
+        .whereType<OfferRecord>()
+        .toList();
+    final lastDocument =
+        snapshot.docs.isEmpty ? null : snapshot.docs.last;
+    final hasMore = snapshot.docs.length == limit;
+    return OfferPage(
+      offers: offers,
+      lastDocument: lastDocument,
+      hasMore: hasMore,
+    );
+  }
 }

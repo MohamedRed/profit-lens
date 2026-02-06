@@ -10,6 +10,7 @@ import { parseGeminiJson } from "./gemini_json";
 import { postprocessOfferExtraction } from "./offer_postprocess";
 export { verifyOfferRoute } from "./verify_offer_route";
 export { analyzeOffer } from "./analyze_offer";
+export { syncOfferDailyStats } from "./offer_stats";
 
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const geminiModel = defineString("GEMINI_MODEL", {

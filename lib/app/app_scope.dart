@@ -3,10 +3,12 @@ import 'package:flutter/widgets.dart';
 import '../features/auth/data/firebase_auth_repository.dart';
 import '../features/auth/domain/auth_repository.dart';
 import '../features/offers/data/firestore_offer_repository.dart';
+import '../features/offers/data/firestore_offer_stats_repository.dart';
 import '../features/offers/data/offer_analysis_service.dart';
 import '../features/offers/data/firebase_offer_analysis_service.dart';
 import '../features/offers/data/offer_image_picker_service.dart';
 import '../features/offers/data/offer_repository.dart';
+import '../features/offers/data/offer_stats_repository.dart';
 import '../features/profile/data/firestore_user_profile_repository.dart';
 import '../features/profile/data/user_profile_repository.dart';
 import '../features/vehicles/data/firebase_vehicle_model_lookup_service.dart';
@@ -22,6 +24,7 @@ class AppServices {
   final UserProfileRepository userProfileRepository;
   final VehicleRepository vehicleRepository;
   final OfferRepository offerRepository;
+  final OfferStatsRepository offerStatsRepository;
   final OfferImagePickerService offerImagePickerService;
   final OfferAnalysisService offerAnalysisService;
   final VehicleModelLookupService vehicleModelLookupService;
@@ -33,6 +36,7 @@ class AppServices {
     UserProfileRepository? userProfileRepository,
     VehicleRepository? vehicleRepository,
     OfferRepository? offerRepository,
+    OfferStatsRepository? offerStatsRepository,
     OfferImagePickerService? offerImagePickerService,
     OfferAnalysisService? offerAnalysisService,
     VehicleModelLookupService? vehicleModelLookupService,
@@ -43,6 +47,8 @@ class AppServices {
             userProfileRepository ?? FirestoreUserProfileRepository(),
         vehicleRepository = vehicleRepository ?? FirestoreVehicleRepository(),
         offerRepository = offerRepository ?? FirestoreOfferRepository(),
+        offerStatsRepository =
+            offerStatsRepository ?? FirestoreOfferStatsRepository(),
         offerImagePickerService =
             offerImagePickerService ?? DeviceOfferImagePickerService(),
         offerAnalysisService =
