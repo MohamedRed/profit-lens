@@ -52,6 +52,20 @@
   "importScreenshotButton": "Importer une capture",
   "analyzeButton": "Analyser la rentabilité",
   "profitabilityOverviewTitle": "Aperçu de la rentabilité",
+  "offerDecisionAccept": "Accepter",
+  "offerDecisionDecline": "Refuser",
+  "offerDecisionAbove": "{amount} au-dessus du seuil",
+  "@offerDecisionAbove": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "offerDecisionBelow": "{amount} en dessous du seuil",
+  "@offerDecisionBelow": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
   "viewProfitabilityDetailsButton": "Voir les détails",
   "resultTitle": "Rentabilité",
   "grossRevenueLabel": "Revenu brut",

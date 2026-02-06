@@ -412,6 +412,30 @@ abstract class AppLocalizations {
   /// **'Profitability overview'**
   String get profitabilityOverviewTitle;
 
+  /// No description provided for @offerDecisionAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get offerDecisionAccept;
+
+  /// No description provided for @offerDecisionDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get offerDecisionDecline;
+
+  /// No description provided for @offerDecisionAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} above break-even'**
+  String offerDecisionAbove(String amount);
+
+  /// No description provided for @offerDecisionBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} below break-even'**
+  String offerDecisionBelow(String amount);
+
   /// No description provided for @viewProfitabilityDetailsButton.
   ///
   /// In en, this message translates to:

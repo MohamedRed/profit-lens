@@ -166,6 +166,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profitabilityOverviewTitle => 'نظرة عامة على الربحية';
 
   @override
+  String get offerDecisionAccept => 'اقبل';
+
+  @override
+  String get offerDecisionDecline => 'ارفض';
+
+  @override
+  String offerDecisionAbove(String amount) {
+    return '$amount فوق نقطة التعادل';
+  }
+
+  @override
+  String offerDecisionBelow(String amount) {
+    return '$amount تحت نقطة التعادل';
+  }
+
+  @override
   String get viewProfitabilityDetailsButton => 'عرض التفاصيل';
 
   @override

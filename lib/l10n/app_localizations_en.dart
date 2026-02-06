@@ -166,6 +166,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profitabilityOverviewTitle => 'Profitability overview';
 
   @override
+  String get offerDecisionAccept => 'Accept';
+
+  @override
+  String get offerDecisionDecline => 'Decline';
+
+  @override
+  String offerDecisionAbove(String amount) {
+    return '$amount above break-even';
+  }
+
+  @override
+  String offerDecisionBelow(String amount) {
+    return '$amount below break-even';
+  }
+
+  @override
   String get viewProfitabilityDetailsButton => 'View details';
 
   @override

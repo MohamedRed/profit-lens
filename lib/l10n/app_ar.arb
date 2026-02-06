@@ -52,6 +52,20 @@
   "importScreenshotButton": "استيراد لقطة شاشة",
   "analyzeButton": "تحليل الربحية",
   "profitabilityOverviewTitle": "نظرة عامة على الربحية",
+  "offerDecisionAccept": "اقبل",
+  "offerDecisionDecline": "ارفض",
+  "offerDecisionAbove": "{amount} فوق نقطة التعادل",
+  "@offerDecisionAbove": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "offerDecisionBelow": "{amount} تحت نقطة التعادل",
+  "@offerDecisionBelow": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
   "viewProfitabilityDetailsButton": "عرض التفاصيل",
   "resultTitle": "الربحية",
   "grossRevenueLabel": "الإيراد الإجمالي",

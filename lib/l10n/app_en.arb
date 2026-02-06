@@ -52,6 +52,20 @@
   "importScreenshotButton": "Import screenshot",
   "analyzeButton": "Analyze profitability",
   "profitabilityOverviewTitle": "Profitability overview",
+  "offerDecisionAccept": "Accept",
+  "offerDecisionDecline": "Decline",
+  "offerDecisionAbove": "{amount} above break-even",
+  "@offerDecisionAbove": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "offerDecisionBelow": "{amount} below break-even",
+  "@offerDecisionBelow": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
   "viewProfitabilityDetailsButton": "View details",
   "resultTitle": "Profitability",
   "grossRevenueLabel": "Gross revenue",

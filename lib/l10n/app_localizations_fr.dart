@@ -167,6 +167,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profitabilityOverviewTitle => 'Aperçu de la rentabilité';
 
   @override
+  String get offerDecisionAccept => 'Accepter';
+
+  @override
+  String get offerDecisionDecline => 'Refuser';
+
+  @override
+  String offerDecisionAbove(String amount) {
+    return '$amount au-dessus du seuil';
+  }
+
+  @override
+  String offerDecisionBelow(String amount) {
+    return '$amount en dessous du seuil';
+  }
+
+  @override
   String get viewProfitabilityDetailsButton => 'Voir les détails';
 
   @override

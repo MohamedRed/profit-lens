@@ -20,9 +20,26 @@ class ProfitabilityOverviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final localeTag = Localizations.localeOf(context).toString();
-    final netColor = record.breakdown.netProfit >= 0
+    final netProfit = record.breakdown.netProfit;
+    final isAccept = netProfit >= 0;
+    final netColor = netProfit >= 0
         ? Theme.of(context).colorScheme.primary
         : Theme.of(context).colorScheme.error;
+    final decisionColor = isAccept
+        ? Theme.of(context).colorScheme.primary
+        : Theme.of(context).colorScheme.error;
+    final decisionBackground = isAccept
+        ? Theme.of(context).colorScheme.primary.withOpacity(0.12)
+        : Theme.of(context).colorScheme.error.withOpacity(0.12);
+    final decisionLabel =
+        isAccept ? l10n.offerDecisionAccept : l10n.offerDecisionDecline;
+    final decisionDetail = isAccept
+        ? l10n.offerDecisionAbove(
+            CurrencyFormat.euro(netProfit.abs(), localeTag),
+          )
+        : l10n.offerDecisionBelow(
+            CurrencyFormat.euro(netProfit.abs(), localeTag),
+          );
 
     return Card(
       child: Padding(
@@ -35,8 +52,28 @@ class ProfitabilityOverviewCard extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 12),
+            Row(
+              children: [
+                _DecisionBadge(
+                  label: decisionLabel,
+                  textColor: decisionColor,
+                  backgroundColor: decisionBackground,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    decisionDetail,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: decisionColor),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
             Text(
-              CurrencyFormat.euro(record.breakdown.netProfit, localeTag),
+              CurrencyFormat.euro(netProfit, localeTag),
               style: Theme.of(context)
                   .textTheme
                   .headlineMedium
@@ -86,6 +123,36 @@ class ProfitabilityOverviewCard extends StatelessWidget {
           Text(label),
           Text(value),
         ],
+      ),
+    );
+  }
+}
+
+class _DecisionBadge extends StatelessWidget {
+  final String label;
+  final Color textColor;
+  final Color backgroundColor;
+
+  const _DecisionBadge({
+    required this.label,
+    required this.textColor,
+    required this.backgroundColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: Theme.of(context)
+            .textTheme
+            .labelMedium
+            ?.copyWith(color: textColor, fontWeight: FontWeight.w600),
       ),
     );
   }
