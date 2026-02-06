@@ -170,13 +170,11 @@ class _DecisionSection extends StatelessWidget {
           color: textColor,
           fontWeight: FontWeight.w600,
         );
-    final minLabelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        );
-    final minValueStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Theme.of(context).colorScheme.onSurface,
+    final pillTextStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
+          color: textColor,
           fontWeight: FontWeight.w600,
         );
+    final pillBackground = textColor.withOpacity(0.12);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -191,15 +189,46 @@ class _DecisionSection extends StatelessWidget {
           const SizedBox(height: 6),
           Text(detail, style: detailStyle),
           const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
             children: [
-              Text(minLabel, style: minLabelStyle),
-              Text(minValue, style: minValueStyle),
+              _DecisionPill(
+                label: minLabel,
+                value: minValue,
+                backgroundColor: pillBackground,
+                textStyle: pillTextStyle,
+              ),
             ],
           ),
         ],
       ),
+    );
+  }
+}
+
+class _DecisionPill extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color backgroundColor;
+  final TextStyle? textStyle;
+
+  const _DecisionPill({
+    required this.label,
+    required this.value,
+    required this.backgroundColor,
+    required this.textStyle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text('$label: $value', style: textStyle),
     );
   }
 }
