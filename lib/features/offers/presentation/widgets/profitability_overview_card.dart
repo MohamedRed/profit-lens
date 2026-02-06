@@ -130,16 +130,11 @@ class ProfitabilityDecisionCard extends StatelessWidget {
             CurrencyFormat.euro(targetDelta.abs(), localeTag),
           );
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: _DecisionSection(
-          label: decisionLabel,
-          detail: decisionDetail,
-          textColor: decisionColor,
-          backgroundColor: decisionBackground,
-        ),
-      ),
+    return _DecisionSection(
+      label: decisionLabel,
+      detail: decisionDetail,
+      textColor: decisionColor,
+      backgroundColor: decisionBackground,
     );
   }
 }
