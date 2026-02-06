@@ -55,23 +55,13 @@ class ProfitabilityOverviewCard extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                _DecisionBadge(
-                  label: decisionLabel,
-                  textColor: decisionColor,
-                  backgroundColor: decisionBackground,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    decisionDetail,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-              ],
+            _DecisionSection(
+              label: decisionLabel,
+              detail: decisionDetail,
+              textColor: decisionColor,
+              backgroundColor: decisionBackground,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             Text(
               CurrencyFormat.euro(netProfit, localeTag),
               style: Theme.of(context)
@@ -132,31 +122,43 @@ class ProfitabilityOverviewCard extends StatelessWidget {
   }
 }
 
-class _DecisionBadge extends StatelessWidget {
+class _DecisionSection extends StatelessWidget {
   final String label;
+  final String detail;
   final Color textColor;
   final Color backgroundColor;
 
-  const _DecisionBadge({
+  const _DecisionSection({
     required this.label,
+    required this.detail,
     required this.textColor,
     required this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final titleStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
+          color: textColor,
+          fontWeight: FontWeight.w700,
+        );
+    final detailStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: textColor,
+          fontWeight: FontWeight.w600,
+        );
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: Text(
-        label,
-        style: Theme.of(context)
-            .textTheme
-            .labelMedium
-            ?.copyWith(color: textColor, fontWeight: FontWeight.w600),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: titleStyle),
+          const SizedBox(height: 4),
+          Text(detail, style: detailStyle),
+        ],
       ),
     );
   }
