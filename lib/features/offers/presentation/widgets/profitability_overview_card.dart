@@ -25,15 +25,13 @@ class ProfitabilityOverviewCard extends StatelessWidget {
     final netProfit = record.breakdown.netProfit;
     final targetDelta = netProfit - minProfitabilityEuro;
     final isAccept = targetDelta >= 0;
-    final netColor = netProfit >= 0
-        ? Theme.of(context).colorScheme.primary
-        : Theme.of(context).colorScheme.error;
     final decisionColor = isAccept
-        ? Theme.of(context).colorScheme.primary
+        ? Colors.green.shade600
         : Theme.of(context).colorScheme.error;
     final decisionBackground = isAccept
-        ? Theme.of(context).colorScheme.primary.withOpacity(0.12)
+        ? Colors.green.shade600.withOpacity(0.12)
         : Theme.of(context).colorScheme.error.withOpacity(0.12);
+    final netColor = decisionColor;
     final decisionLabel =
         isAccept ? l10n.offerDecisionAccept : l10n.offerDecisionDecline;
     final decisionDetail = isAccept
