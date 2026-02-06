@@ -26,8 +26,6 @@ class OfferFlowCoordinatorStream extends StatefulWidget {
   final OfferFlowLoadingAction? loadingAction;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
-  final bool showManualEntry;
-  final VoidCallback onManualEntry;
 
   const OfferFlowCoordinatorStream({
     super.key,
@@ -43,8 +41,6 @@ class OfferFlowCoordinatorStream extends StatefulWidget {
     required this.loadingAction,
     required this.onPickupSelected,
     required this.onDropoffSelected,
-    required this.showManualEntry,
-    required this.onManualEntry,
   });
 
   @override
@@ -55,7 +51,6 @@ class OfferFlowCoordinatorStream extends StatefulWidget {
 class _OfferFlowCoordinatorStreamState
     extends State<OfferFlowCoordinatorStream> {
   static const _emptyDelay = Duration(milliseconds: 600);
-  static const _loadingTopPadding = 24.0;
   Timer? _emptyStateTimer;
   bool _showEmptyState = false;
 
@@ -93,7 +88,13 @@ class _OfferFlowCoordinatorStreamState
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             !snapshot.hasData) {
-          return _buildLoadingScaffold();
+          return const Scaffold(
+            body: SafeArea(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
         }
         final vehicles = snapshot.data ?? [];
         if (vehicles.isEmpty) {
@@ -103,7 +104,13 @@ class _OfferFlowCoordinatorStreamState
             }
           });
           if (!_showEmptyState) {
-            return _buildLoadingScaffold();
+            return const Scaffold(
+              body: SafeArea(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
           }
         } else {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -148,24 +155,9 @@ class _OfferFlowCoordinatorStreamState
           previewRecord: previewRecord,
           onPickupSelected: widget.onPickupSelected,
           onDropoffSelected: widget.onDropoffSelected,
-          showManualEntry: widget.showManualEntry,
-          onManualEntry: widget.onManualEntry,
         );
       },
     );
   }
 
-  Widget _buildLoadingScaffold() {
-    return Scaffold(
-      body: SafeArea(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Padding(
-            padding: const EdgeInsets.only(top: _loadingTopPadding),
-            child: const CircularProgressIndicator(),
-          ),
-        ),
-      ),
-    );
-  }
 }

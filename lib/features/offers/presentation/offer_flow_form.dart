@@ -27,8 +27,6 @@ class OfferFlowForm extends StatelessWidget {
   final OfferRecord? previewRecord;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
-  final bool showManualEntry;
-  final VoidCallback onManualEntry;
 
   const OfferFlowForm({
     super.key,
@@ -45,8 +43,6 @@ class OfferFlowForm extends StatelessWidget {
     required this.previewRecord,
     required this.onPickupSelected,
     required this.onDropoffSelected,
-    required this.showManualEntry,
-    required this.onManualEntry,
   });
 
   @override
@@ -56,18 +52,8 @@ class OfferFlowForm extends StatelessWidget {
     final showOverview = !isBusy &&
         previewRecord != null &&
         controller.analysisStatus == OfferAnalysisStatus.completed;
-    final hasAnyInput = controller.payoutController.text.trim().isNotEmpty ||
-        controller.distanceController.text.trim().isNotEmpty ||
-        controller.durationController.text.trim().isNotEmpty ||
-        controller.pickupNameController.text.trim().isNotEmpty ||
-        controller.pickupAddressController.text.trim().isNotEmpty ||
-        controller.dropoffNameController.text.trim().isNotEmpty ||
-        controller.dropoffAddressController.text.trim().isNotEmpty;
-    final showDetailsSection = !showOverview &&
-        (controller.analysisStatus != OfferAnalysisStatus.idle ||
-            hasAnyInput ||
-            showManualEntry);
-    final showManualEntryLink = false;
+    final showDetailsSection =
+        !showOverview && controller.analysisStatus != OfferAnalysisStatus.idle;
     return Form(
       key: formKey,
       child: ListView(
