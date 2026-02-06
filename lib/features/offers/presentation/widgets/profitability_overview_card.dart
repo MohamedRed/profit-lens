@@ -31,7 +31,9 @@ class ProfitabilityOverviewCard extends StatelessWidget {
     final decisionBackground = isAccept
         ? Colors.green.shade600.withOpacity(0.12)
         : Theme.of(context).colorScheme.error.withOpacity(0.12);
-    final netColor = decisionColor;
+    final netColor = netProfit >= 0
+        ? Theme.of(context).colorScheme.primary
+        : Theme.of(context).colorScheme.error;
     final decisionLabel =
         isAccept ? l10n.offerDecisionAccept : l10n.offerDecisionDecline;
     final decisionDetail = isAccept
@@ -64,10 +66,7 @@ class ProfitabilityOverviewCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     decisionDetail,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: decisionColor),
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
               ],
