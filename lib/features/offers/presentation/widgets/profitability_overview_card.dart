@@ -129,10 +129,14 @@ class ProfitabilityDecisionCard extends StatelessWidget {
         : l10n.offerDecisionBelow(
             CurrencyFormat.euro(targetDelta.abs(), localeTag),
           );
+    final minLabel = l10n.minProfitabilityLabel;
+    final minValue = CurrencyFormat.euro(minProfitabilityEuro, localeTag);
 
     return _DecisionSection(
       label: decisionLabel,
       detail: decisionDetail,
+      minLabel: minLabel,
+      minValue: minValue,
       textColor: decisionColor,
       backgroundColor: decisionBackground,
     );
@@ -142,12 +146,16 @@ class ProfitabilityDecisionCard extends StatelessWidget {
 class _DecisionSection extends StatelessWidget {
   final String label;
   final String detail;
+  final String minLabel;
+  final String minValue;
   final Color textColor;
   final Color backgroundColor;
 
   const _DecisionSection({
     required this.label,
     required this.detail,
+    required this.minLabel,
+    required this.minValue,
     required this.textColor,
     required this.backgroundColor,
   });
@@ -162,9 +170,16 @@ class _DecisionSection extends StatelessWidget {
           color: textColor,
           fontWeight: FontWeight.w600,
         );
+    final minLabelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        );
+    final minValueStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurface,
+          fontWeight: FontWeight.w600,
+        );
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(16),
@@ -173,8 +188,16 @@ class _DecisionSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: titleStyle),
-          const SizedBox(height: 4),
+          const SizedBox(height: 6),
           Text(detail, style: detailStyle),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(minLabel, style: minLabelStyle),
+              Text(minValue, style: minValueStyle),
+            ],
+          ),
         ],
       ),
     );
