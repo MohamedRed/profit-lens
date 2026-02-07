@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../platform/document_language.dart';
+
 class AppLocaleController extends ChangeNotifier {
   Locale _locale = const Locale('fr');
 
@@ -10,6 +12,7 @@ class AppLocaleController extends ChangeNotifier {
       return;
     }
     _locale = locale;
+    setDocumentLanguage(locale.languageCode);
     notifyListeners();
   }
 

@@ -19,6 +19,20 @@ void _ensureBeforeInstallPromptListener() {
   });
 }
 
+html.Element _refreshPwaInstallElement(html.Element element) {
+  final parent = element.parent;
+  if (parent == null) {
+    return element;
+  }
+  final replacement = html.document.createElement('pwa-install');
+  element.attributes.forEach((key, value) {
+    replacement.setAttribute(key, value);
+  });
+  parent.insertBefore(replacement, element);
+  element.remove();
+  return replacement;
+}
+
 bool get isPwaInstallAvailable {
   _ensureBeforeInstallPromptListener();
   if (_isStandalone) {
@@ -41,11 +55,12 @@ Future<void> showPwaInstallDialog() async {
     html.window.console.warn('pwa-install element not found');
     return;
   }
+  final refreshedElement = _refreshPwaInstallElement(element);
   if (_deferredPromptEvent != null) {
     js_util.setProperty(html.window, 'defferedPromptEvent', _deferredPromptEvent);
   }
-  if (js_util.hasProperty(element, 'showDialog')) {
-    js_util.callMethod(element, 'showDialog', const []);
+  if (js_util.hasProperty(refreshedElement, 'showDialog')) {
+    js_util.callMethod(refreshedElement, 'showDialog', const []);
     return;
   }
   html.window.console.warn('pwa-install showDialog not available');
