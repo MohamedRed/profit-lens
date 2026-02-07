@@ -30,7 +30,6 @@ class OfferAddressFields extends StatefulWidget {
 }
 
 class _OfferAddressFieldsState extends State<OfferAddressFields> {
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -41,6 +40,19 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
     final showDropoffName = widget.dropoffNameController.text.trim().isNotEmpty;
     return Column(
       children: [
+        if (showPickupName) ...[
+          Text(
+            l10n.pickupNameLabel,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            key: OfferFlowKeys.pickupNameField,
+            controller: widget.pickupNameController,
+            decoration: const InputDecoration(),
+          ),
+          const SizedBox(height: 12),
+        ],
         if (showPickupAddress) ...[
           PlaceAutocompleteField(
             key: OfferFlowKeys.pickupAddressField,
@@ -50,16 +62,21 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
             onSelected: widget.onPickupSelected,
             onDropdownOpenChanged: (_) {},
           ),
-          if (showPickupName) ...[
-            const SizedBox(height: 8),
-            TextFormField(
-              key: OfferFlowKeys.pickupNameField,
-              controller: widget.pickupNameController,
-              decoration: InputDecoration(labelText: l10n.pickupNameLabel),
-            ),
-          ],
         ],
         if (showPickupAddress) const SizedBox(height: 12),
+        if (showDropoffName) ...[
+          Text(
+            l10n.dropoffNameLabel,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            key: OfferFlowKeys.dropoffNameField,
+            controller: widget.dropoffNameController,
+            decoration: const InputDecoration(),
+          ),
+          const SizedBox(height: 12),
+        ],
         PlaceAutocompleteField(
           key: OfferFlowKeys.dropoffAddressField,
           controller: widget.dropoffAddressController,
@@ -68,14 +85,6 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
           onSelected: widget.onDropoffSelected,
           onDropdownOpenChanged: (_) {},
         ),
-        if (showDropoffName) ...[
-          const SizedBox(height: 8),
-          TextFormField(
-            key: OfferFlowKeys.dropoffNameField,
-            controller: widget.dropoffNameController,
-            decoration: InputDecoration(labelText: l10n.dropoffNameLabel),
-          ),
-        ],
       ],
     );
   }
