@@ -4,6 +4,19 @@ import 'dart:js_util' as js_util;
 bool _listenerRegistered = false;
 dynamic _deferredPromptEvent;
 
+dynamic _getDeferredPromptEvent() {
+  if (_deferredPromptEvent != null) {
+    return _deferredPromptEvent;
+  }
+  if (js_util.hasProperty(html.window, 'defferedPromptEvent')) {
+    final event = js_util.getProperty(html.window, 'defferedPromptEvent');
+    if (event != null) {
+      _deferredPromptEvent = event;
+    }
+  }
+  return _deferredPromptEvent;
+}
+
 void _ensureBeforeInstallPromptListener() {
   if (_listenerRegistered) {
     return;
@@ -38,7 +51,15 @@ bool get isPwaInstallAvailable {
   if (_isStandalone) {
     return false;
   }
-  return html.document.querySelector('pwa-install') != null;
+  if (html.document.querySelector('pwa-install') == null) {
+    return false;
+  }
+  final hasBeforeInstallPrompt =
+      js_util.hasProperty(html.window, 'BeforeInstallPromptEvent');
+  if (hasBeforeInstallPrompt) {
+    return _getDeferredPromptEvent() != null;
+  }
+  return true;
 }
 
 Future<void> showPwaInstallDialog() async {
@@ -55,9 +76,16 @@ Future<void> showPwaInstallDialog() async {
     html.window.console.warn('pwa-install element not found');
     return;
   }
+  final hasBeforeInstallPrompt =
+      js_util.hasProperty(html.window, 'BeforeInstallPromptEvent');
+  if (hasBeforeInstallPrompt && _getDeferredPromptEvent() == null) {
+    html.window.console.warn('pwa-install prompt is not available yet');
+    return;
+  }
   final refreshedElement = _refreshPwaInstallElement(element);
-  if (_deferredPromptEvent != null) {
-    js_util.setProperty(html.window, 'defferedPromptEvent', _deferredPromptEvent);
+  final deferredEvent = _getDeferredPromptEvent();
+  if (deferredEvent != null) {
+    js_util.setProperty(html.window, 'defferedPromptEvent', deferredEvent);
   }
   if (js_util.hasProperty(refreshedElement, 'showDialog')) {
     js_util.callMethod(refreshedElement, 'showDialog', const []);
