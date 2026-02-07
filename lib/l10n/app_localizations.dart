@@ -916,6 +916,11 @@ abstract class AppLocalizations {
   /// **'Add ProfitLens to your home screen'**
   String get installAppSubtitle;
 
+  /// No description provided for @installAppCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Install'**
+  String get installAppCta;
 
   /// No description provided for @languageFrench.
   ///

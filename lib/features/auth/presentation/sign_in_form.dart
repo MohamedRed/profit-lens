@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/app_scope.dart';
 import '../../../core/design_system/shadcn_tokens.dart';
+import '../../../core/platform/pwa_install.dart';
 import '../../../l10n/app_localizations.dart';
 import 'register_screen.dart';
 import 'sign_in_fields.dart';
@@ -84,6 +85,8 @@ class _SignInFormState extends State<SignInForm> {
               ShadcnSpacing.section,
             ),
             children: [
+              const _PwaInstallBanner(),
+              const SizedBox(height: ShadcnSpacing.section),
               _AuthHero(
                 title: l10n.appTitle,
                 subtitle: l10n.signInSubtitle,
@@ -161,6 +164,85 @@ class _AuthHero extends StatelessWidget {
               ),
         ),
       ],
+    );
+  }
+}
+
+class _PwaInstallBanner extends StatelessWidget {
+  const _PwaInstallBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return ValueListenableBuilder<bool>(
+      valueListenable: pwaInstallAvailability,
+      builder: (context, available, _) {
+        final show = available || isAppleInstallManualAvailable;
+        if (!show) {
+          return const SizedBox.shrink();
+        }
+        final isApple = isAppleInstallManualAvailable;
+        return Container(
+          decoration: BoxDecoration(
+            color: ShadcnColors.surface,
+            borderRadius: BorderRadius.circular(ShadcnRadius.xl),
+            border: Border.all(color: ShadcnColors.outline),
+          ),
+          padding: const EdgeInsets.all(ShadcnSpacing.lg),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: ShadcnColors.surfaceElevated,
+                  borderRadius: BorderRadius.circular(ShadcnRadius.lg),
+                ),
+                child: Icon(
+                  isApple ? Icons.ios_share : Icons.add_to_home_screen,
+                  color: ShadcnColors.textPrimary,
+                ),
+              ),
+              const SizedBox(width: ShadcnSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.installAppTitle,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: ShadcnColors.textPrimary,
+                          ),
+                    ),
+                    const SizedBox(height: ShadcnSpacing.xs),
+                    Text(
+                      l10n.installAppSubtitle,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: ShadcnColors.textSecondary,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: ShadcnSpacing.md),
+              FilledButton(
+                onPressed: () => showPwaInstallDialog(),
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: ShadcnSpacing.md,
+                    vertical: ShadcnSpacing.sm,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(ShadcnRadius.md),
+                  ),
+                ),
+                child: Text(l10n.installAppCta),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

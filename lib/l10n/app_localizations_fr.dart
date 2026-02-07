@@ -443,6 +443,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get installAppSubtitle => 'Ajouter ProfitLens à l\'écran d\'accueil';
 
   @override
+  String get installAppCta => 'Installer';
+
+  @override
   String get languageFrench => 'Français';
 
   @override
