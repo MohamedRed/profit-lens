@@ -6,8 +6,8 @@ import '../../domain/offer_record.dart';
 
 class OfferHistoryList extends StatelessWidget {
   final List<OfferRecord> offers;
+  final ScrollController? controller;
   final ValueChanged<OfferRecord> onSelected;
-  final VoidCallback onLoadMore;
   final bool hasMore;
   final bool isLoadingMore;
   final bool hasError;
@@ -15,8 +15,8 @@ class OfferHistoryList extends StatelessWidget {
   const OfferHistoryList({
     super.key,
     required this.offers,
+    this.controller,
     required this.onSelected,
-    required this.onLoadMore,
     required this.hasMore,
     required this.isLoadingMore,
     required this.hasError,
@@ -25,20 +25,14 @@ class OfferHistoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localeTag = Localizations.localeOf(context).toString();
-    final itemCount = offers.length + (hasMore ? 1 : 0);
+    final itemCount =
+        offers.length + ((isLoadingMore && hasMore && !hasError) ? 1 : 0);
     return ListView.separated(
       key: const ValueKey('history_list'),
+      controller: controller,
       padding: const EdgeInsets.all(24),
       itemBuilder: (context, index) {
         if (index >= offers.length) {
-          if (hasError) {
-            return const SizedBox.shrink();
-          }
-          if (!isLoadingMore) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              onLoadMore();
-            });
-          }
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
             child: Center(child: CircularProgressIndicator()),

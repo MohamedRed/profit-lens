@@ -25,6 +25,7 @@ class OfferHistoryScreen extends StatefulWidget {
 class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
   HistoryViewMode _viewMode = HistoryViewMode.list;
   static const _pageSize = 30;
+  static const _loadMoreThreshold = 240.0;
 
   late OfferRepository _offerRepository;
   late OfferStatsRepository _offerStatsRepository;
@@ -36,6 +37,13 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
   OfferPage? _lastPage;
   bool _hasLoadMoreError = false;
   bool _initialized = false;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_handleScroll);
+  }
 
   @override
   void didChangeDependencies() {
@@ -48,6 +56,25 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
         _offerStatsRepository.watchDailyStats(widget.user.uid, limit: 90);
     _loadInitial();
     _initialized = true;
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_handleScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _handleScroll() {
+    if (_viewMode != HistoryViewMode.list) return;
+    if (!_scrollController.hasClients) return;
+    if (_isLoadingMore || !_hasMore || _hasLoadMoreError) return;
+    final position = _scrollController.position;
+    if (position.maxScrollExtent == 0) return;
+    final remaining = position.maxScrollExtent - position.pixels;
+    if (remaining <= _loadMoreThreshold) {
+      _loadMore();
+    }
   }
 
   Future<void> _loadInitial() async {
@@ -149,6 +176,9 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
                       selected: {_viewMode},
                       onSelectionChanged: (selection) {
                         setState(() => _viewMode = selection.first);
+                        if (_viewMode == HistoryViewMode.list) {
+                          _handleScroll();
+                        }
                       },
                     ),
                   ),
@@ -158,6 +188,7 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
                     duration: const Duration(milliseconds: 250),
                     child: _viewMode == HistoryViewMode.list
                         ? OfferHistoryList(
+                            controller: _scrollController,
                             offers: _offers,
                             onSelected: (offer) {
                               Navigator.of(context).push(
@@ -169,7 +200,6 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
                                 ),
                               );
                             },
-                            onLoadMore: _loadMore,
                             hasMore: _hasMore,
                             isLoadingMore: _isLoadingMore,
                             hasError: _hasLoadMoreError,
