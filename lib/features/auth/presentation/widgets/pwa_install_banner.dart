@@ -22,6 +22,7 @@ class PwaInstallBanner extends StatelessWidget {
           builder: (context, constraints) {
             final isCompact = constraints.maxWidth < 360;
             return Container(
+              width: double.infinity,
               decoration: BoxDecoration(
                 color: ShadcnColors.surface,
                 borderRadius: BorderRadius.circular(ShadcnRadius.xl),
@@ -65,6 +66,7 @@ class _InstallBannerWide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.max,
       children: [
         _InstallBannerIcon(isApple: isApple),
         const SizedBox(width: ShadcnSpacing.md),
@@ -97,9 +99,10 @@ class _InstallBannerCompact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
+          mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _InstallBannerIcon(isApple: isApple),
@@ -160,6 +163,8 @@ class _InstallBannerText extends StatelessWidget {
       children: [
         Text(
           title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w700,
                 color: ShadcnColors.textPrimary,
@@ -168,6 +173,8 @@ class _InstallBannerText extends StatelessWidget {
         const SizedBox(height: ShadcnSpacing.xs),
         Text(
           subtitle,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: ShadcnColors.textSecondary,
               ),
