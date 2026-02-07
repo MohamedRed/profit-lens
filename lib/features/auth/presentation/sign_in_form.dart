@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/app_scope.dart';
 import '../../../core/design_system/shadcn_tokens.dart';
+import '../../../core/platform/pwa_install.dart';
 import '../../../l10n/app_localizations.dart';
 import 'register_screen.dart';
 import 'sign_in_fields.dart';
@@ -76,38 +77,58 @@ class _SignInFormState extends State<SignInForm> {
             ShadcnSpacing.lg,
             (maxWidth - 420) / 2,
           );
-          return ListView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: EdgeInsets.fromLTRB(
-              horizontalPadding,
-              ShadcnSpacing.section,
-              horizontalPadding,
-              ShadcnSpacing.section,
-            ),
-            children: [
-              const PwaInstallBanner(),
-              const SizedBox(height: ShadcnSpacing.section),
-              _AuthHero(
-                title: l10n.appTitle,
-                subtitle: l10n.signInSubtitle,
-              ),
-              const SizedBox(height: ShadcnSpacing.section),
-              Container(
-                decoration: BoxDecoration(
-                  color: ShadcnColors.surface,
-                  borderRadius: BorderRadius.circular(ShadcnRadius.xl),
-                  border: Border.all(color: ShadcnColors.outline),
+          return ValueListenableBuilder<bool>(
+            valueListenable: pwaInstallAvailability,
+            builder: (context, _, __) {
+              if (!isPwaInstalled) {
+                return ListView(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: EdgeInsets.fromLTRB(
+                    horizontalPadding,
+                    ShadcnSpacing.section,
+                    horizontalPadding,
+                    ShadcnSpacing.section,
+                  ),
+                  children: const [
+                    PwaInstallBanner(),
+                  ],
+                );
+              }
+
+              return ListView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: EdgeInsets.fromLTRB(
+                  horizontalPadding,
+                  ShadcnSpacing.section,
+                  horizontalPadding,
+                  ShadcnSpacing.section,
                 ),
-                padding: const EdgeInsets.all(ShadcnSpacing.xxl),
-                child: SignInFields(
-                  emailController: _emailController,
-                  passwordController: _passwordController,
-                  isLoading: _isLoading,
-                  onSubmit: _submit,
-                  onCreateAccount: _openRegister,
-                ),
-              ),
-            ],
+                children: [
+                  _AuthHero(
+                    title: l10n.appTitle,
+                    subtitle: l10n.signInSubtitle,
+                  ),
+                  const SizedBox(height: ShadcnSpacing.section),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: ShadcnColors.surface,
+                      borderRadius: BorderRadius.circular(ShadcnRadius.xl),
+                      border: Border.all(color: ShadcnColors.outline),
+                    ),
+                    padding: const EdgeInsets.all(ShadcnSpacing.xxl),
+                    child: SignInFields(
+                      emailController: _emailController,
+                      passwordController: _passwordController,
+                      isLoading: _isLoading,
+                      onSubmit: _submit,
+                      onCreateAccount: _openRegister,
+                    ),
+                  ),
+                ],
+              );
+            },
           );
         },
       ),
