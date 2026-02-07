@@ -12,6 +12,7 @@ import 'offer_details_summary.dart';
 class OfferDetailsSection extends StatefulWidget {
   final OfferFlowController controller;
   final bool requiresDuration;
+  final bool showAllAddressFields;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
 
@@ -19,6 +20,7 @@ class OfferDetailsSection extends StatefulWidget {
     super.key,
     required this.controller,
     required this.requiresDuration,
+    required this.showAllAddressFields,
     required this.onPickupSelected,
     required this.onDropoffSelected,
   });
@@ -102,6 +104,7 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
       children: [
         OfferDetailsFormFields(
           payoutController: widget.controller.payoutController,
+          showAllAddressFields: widget.showAllAddressFields,
           pickupNameController: widget.controller.pickupNameController,
           pickupAddressController: widget.controller.pickupAddressController,
           dropoffNameController: widget.controller.dropoffNameController,

@@ -7,6 +7,7 @@ import '../offer_flow_keys.dart';
 
 class OfferDetailsFormFields extends StatelessWidget {
   final TextEditingController payoutController;
+  final bool showAllAddressFields;
   final TextEditingController pickupNameController;
   final TextEditingController pickupAddressController;
   final ValueChanged<PlaceSelection>? onPickupSelected;
@@ -17,6 +18,7 @@ class OfferDetailsFormFields extends StatelessWidget {
   const OfferDetailsFormFields({
     super.key,
     required this.payoutController,
+    required this.showAllAddressFields,
     required this.pickupNameController,
     required this.pickupAddressController,
     required this.onPickupSelected,
@@ -44,6 +46,7 @@ class OfferDetailsFormFields extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         OfferAddressFields(
+          showAllFields: showAllAddressFields,
           pickupNameController: pickupNameController,
           pickupAddressController: pickupAddressController,
           onPickupSelected: onPickupSelected,

@@ -6,6 +6,7 @@ import '../widgets/place_autocomplete_field.dart';
 import '../offer_flow_keys.dart';
 
 class OfferAddressFields extends StatefulWidget {
+  final bool showAllFields;
   final TextEditingController pickupNameController;
   final TextEditingController pickupAddressController;
   final ValueChanged<PlaceSelection>? onPickupSelected;
@@ -15,6 +16,7 @@ class OfferAddressFields extends StatefulWidget {
 
   const OfferAddressFields({
     super.key,
+    required this.showAllFields,
     required this.pickupNameController,
     required this.pickupAddressController,
     required this.onPickupSelected,
@@ -37,10 +39,13 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
     final hidePickup = _dropoffDropdownOpen;
     final hideDropoff = _pickupDropdownOpen;
     final showPickupName =
+        widget.showAllFields ||
         widget.pickupNameController.text.trim().isNotEmpty;
     final showPickupAddress =
+        widget.showAllFields ||
         widget.pickupAddressController.text.trim().isNotEmpty;
     final showDropoffName =
+        widget.showAllFields ||
         widget.dropoffNameController.text.trim().isNotEmpty;
     return Column(
       children: [
