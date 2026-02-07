@@ -60,19 +60,21 @@ class _InstallBannerContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _InstallBannerIcon(isApple: isApple),
-            const SizedBox(width: ShadcnSpacing.md),
-            Expanded(
-              child: _InstallBannerText(
-                title: title,
-                subtitle: subtitle,
+        SizedBox(
+          width: double.infinity,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _InstallBannerIcon(isApple: isApple),
+              const SizedBox(width: ShadcnSpacing.md),
+              Expanded(
+                child: _InstallBannerText(
+                  title: title,
+                  subtitle: subtitle,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         const SizedBox(height: ShadcnSpacing.md),
         Align(
@@ -125,8 +127,8 @@ class _InstallBannerText extends StatelessWidget {
       children: [
         Text(
           title,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
+          softWrap: true,
+          textAlign: TextAlign.left,
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w700,
                 color: ShadcnColors.textPrimary,
@@ -135,8 +137,8 @@ class _InstallBannerText extends StatelessWidget {
         const SizedBox(height: ShadcnSpacing.xs),
         Text(
           subtitle,
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
+          softWrap: true,
+          textAlign: TextAlign.left,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: ShadcnColors.textSecondary,
               ),
