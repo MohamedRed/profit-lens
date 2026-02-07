@@ -85,6 +85,7 @@ Future<void> showPwaInstallDialog() async {
   final refreshedElement = _refreshPwaInstallElement(element);
   final deferredEvent = _getDeferredPromptEvent();
   if (deferredEvent != null) {
+    js_util.setProperty(refreshedElement, 'externalPromptEvent', deferredEvent);
     js_util.setProperty(html.window, 'defferedPromptEvent', deferredEvent);
   }
   if (js_util.hasProperty(refreshedElement, 'showDialog')) {
