@@ -129,17 +129,14 @@ bool get _isStandalone {
   if (isBrowserMode) {
     return false;
   }
-  final mediaQuery =
-      html.window.matchMedia('(display-mode: standalone)').matches;
   if (_isIosDevice) {
-    if (mediaQuery) {
-      return true;
-    }
     if (js_util.hasProperty(html.window.navigator, 'standalone')) {
       return js_util.getProperty(html.window.navigator, 'standalone') == true;
     }
     return false;
   }
+  final mediaQuery =
+      html.window.matchMedia('(display-mode: standalone)').matches;
   if (mediaQuery) {
     return true;
   }
