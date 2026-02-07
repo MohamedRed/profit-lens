@@ -133,6 +133,10 @@
     </div>
   </div>
   <script>
+    window.addEventListener("beforeinstallprompt", function (event) {
+      event.preventDefault();
+      window.defferedPromptEvent = event;
+    });
     window.addEventListener("flutter-first-frame", function () {
       var splash = document.getElementById("splash");
       if (!splash) return;
