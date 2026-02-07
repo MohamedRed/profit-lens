@@ -377,7 +377,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickupAddressPlaceholder => 'Enter pickup address';
 
   @override
-  String get dropoffNameLabel => 'Drop-off name (optional)';
+  String get dropoffNameLabel => 'Drop-off name';
 
   @override
   String get dropoffAddressLabel => 'Drop-off address';

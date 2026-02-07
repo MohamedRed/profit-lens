@@ -375,7 +375,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pickupAddressPlaceholder => 'أدخل عنوان الاستلام';
 
   @override
-  String get dropoffNameLabel => 'اسم المستلم (اختياري)';
+  String get dropoffNameLabel => 'اسم المستلم';
 
   @override
   String get dropoffAddressLabel => 'عنوان التسليم';

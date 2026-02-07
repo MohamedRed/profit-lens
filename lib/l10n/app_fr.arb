@@ -141,7 +141,7 @@
   "pickupNameLabel": "Nom du retrait",
   "pickupAddressLabel": "Adresse de retrait",
   "pickupAddressPlaceholder": "Saisir l’adresse de retrait",
-  "dropoffNameLabel": "Nom du destinataire (optionnel)",
+  "dropoffNameLabel": "Nom du destinataire",
   "dropoffAddressLabel": "Adresse de livraison",
   "dropoffAddressPlaceholder": "Saisir l’adresse de livraison",
   "pickupAddressMissingHint": "Cette capture ne fournit que le nom du restaurant et l’adresse du client. L’adresse de retrait peut rester vide.",

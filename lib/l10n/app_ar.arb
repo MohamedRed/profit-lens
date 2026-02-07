@@ -141,7 +141,7 @@
   "pickupNameLabel": "اسم الاستلام",
   "pickupAddressLabel": "عنوان الاستلام",
   "pickupAddressPlaceholder": "أدخل عنوان الاستلام",
-  "dropoffNameLabel": "اسم المستلم (اختياري)",
+  "dropoffNameLabel": "اسم المستلم",
   "dropoffAddressLabel": "عنوان التسليم",
   "dropoffAddressPlaceholder": "أدخل عنوان التسليم",
   "pickupAddressMissingHint": "هذه اللقطة تعرض فقط اسم المطعم وعنوان العميل. يمكن ترك عنوان الاستلام فارغًا.",

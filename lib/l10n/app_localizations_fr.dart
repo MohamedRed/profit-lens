@@ -380,7 +380,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pickupAddressPlaceholder => 'Saisir l’adresse de retrait';
 
   @override
-  String get dropoffNameLabel => 'Nom du destinataire (optionnel)';
+  String get dropoffNameLabel => 'Nom du destinataire';
 
   @override
   String get dropoffAddressLabel => 'Adresse de livraison';
