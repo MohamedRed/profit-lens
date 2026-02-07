@@ -22,10 +22,11 @@ class PlaceAutocompleteField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasLabel = label.trim().isNotEmpty;
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
-        labelText: label,
+        labelText: hasLabel ? label : null,
         hintText: placeholder,
       ),
     );

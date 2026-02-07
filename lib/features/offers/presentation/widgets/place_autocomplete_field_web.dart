@@ -159,6 +159,7 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final hasLabel = widget.label.trim().isNotEmpty;
     if (_loadFailed) {
       final errorStyle = TextStyle(color: Theme.of(context).colorScheme.error);
       return Column(
@@ -182,8 +183,10 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.label, style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: 8),
+          if (hasLabel) ...[
+            Text(widget.label, style: Theme.of(context).textTheme.bodyMedium),
+            const SizedBox(height: 8),
+          ],
           TextFormField(
             controller: widget.controller,
             readOnly: true,
@@ -201,8 +204,10 @@ class _PlaceAutocompleteFieldState extends State<PlaceAutocompleteField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.label, style: Theme.of(context).textTheme.bodyMedium),
-        const SizedBox(height: 8),
+        if (hasLabel) ...[
+          Text(widget.label, style: Theme.of(context).textTheme.bodyMedium),
+          const SizedBox(height: 8),
+        ],
         SizedBox(
           height: _inputHeight,
           child: HtmlElementView(viewType: _viewType),

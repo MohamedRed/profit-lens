@@ -41,6 +41,11 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
     return Column(
       children: [
         if (showPickupAddress) ...[
+          Text(
+            l10n.pickupAddressLabel,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 8),
           if (showPickupName) ...[
             TextFormField(
               key: OfferFlowKeys.pickupNameField,
@@ -52,13 +57,18 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
           PlaceAutocompleteField(
             key: OfferFlowKeys.pickupAddressField,
             controller: widget.pickupAddressController,
-            label: l10n.pickupAddressLabel,
+            label: '',
             placeholder: l10n.pickupAddressPlaceholder,
             onSelected: widget.onPickupSelected,
             onDropdownOpenChanged: (_) {},
           ),
         ],
         if (showPickupAddress) const SizedBox(height: 12),
+        Text(
+          l10n.dropoffAddressLabel,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 8),
         if (showDropoffName) ...[
           TextFormField(
             key: OfferFlowKeys.dropoffNameField,
@@ -70,7 +80,7 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
         PlaceAutocompleteField(
           key: OfferFlowKeys.dropoffAddressField,
           controller: widget.dropoffAddressController,
-          label: l10n.dropoffAddressLabel,
+          label: '',
           placeholder: l10n.dropoffAddressPlaceholder,
           onSelected: widget.onDropoffSelected,
           onDropdownOpenChanged: (_) {},

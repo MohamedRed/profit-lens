@@ -79,6 +79,9 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
         hasDropoff &&
         hasDistance &&
         (!widget.requiresDuration || hasDuration);
+    final hasReadyForAnalyze = widget.showAnalyzeAction
+        ? hasPayout && hasPickup && hasDropoff
+        : hasRequired;
     final analysisStatus = widget.controller.analysisStatus;
     _syncEditingState(analysisStatus, hasRequired);
     if (analysisStatus.isAnalyzing) {
@@ -121,7 +124,7 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
           const SizedBox(height: 16),
           PrimaryButton(
             label: l10n.analyzeOfferButton,
-            onPressed: hasRequired ? widget.onAnalyze : null,
+            onPressed: hasReadyForAnalyze ? widget.onAnalyze : null,
           ),
         ],
       ],
