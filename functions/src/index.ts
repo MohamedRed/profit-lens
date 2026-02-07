@@ -11,6 +11,7 @@ import { postprocessOfferExtraction } from "./offer_postprocess";
 export { verifyOfferRoute } from "./verify_offer_route";
 export { analyzeOffer } from "./analyze_offer";
 export { syncOfferDailyStats } from "./offer_stats";
+export { backfillOfferStats } from "./offer_stats_backfill";
 
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const geminiModel = defineString("GEMINI_MODEL", {
