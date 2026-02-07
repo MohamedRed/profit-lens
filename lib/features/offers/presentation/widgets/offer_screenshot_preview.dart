@@ -13,38 +13,72 @@ class OfferScreenshotPreview extends StatelessWidget {
     required this.thumbnail,
   });
 
+  void _openPreview(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.all(ShadcnSpacing.lg),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(ShadcnRadius.lg),
+          child: InteractiveViewer(
+            minScale: 0.8,
+            maxScale: 4,
+            child: Image.memory(
+              thumbnail,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Container(
-      decoration: BoxDecoration(
-        color: ShadcnColors.surface,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _openPreview(context),
         borderRadius: BorderRadius.circular(ShadcnRadius.xl),
-        border: Border.all(color: ShadcnColors.outline),
-      ),
-      padding: const EdgeInsets.all(ShadcnSpacing.lg),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(ShadcnRadius.lg),
-            child: Image.memory(
-              thumbnail,
-              width: 64,
-              height: 64,
-              fit: BoxFit.cover,
-              cacheWidth: 128,
-            ),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: ShadcnColors.surface,
+            borderRadius: BorderRadius.circular(ShadcnRadius.xl),
+            border: Border.all(color: ShadcnColors.outline),
           ),
-          const SizedBox(width: ShadcnSpacing.md),
-          Expanded(
-            child: Text(
-              l10n.importedScreenshotTitle,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
+          padding: const EdgeInsets.all(ShadcnSpacing.lg),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(ShadcnRadius.lg),
+                child: Image.memory(
+                  thumbnail,
+                  width: 64,
+                  height: 64,
+                  fit: BoxFit.cover,
+                  cacheWidth: 128,
+                ),
+              ),
+              const SizedBox(width: ShadcnSpacing.md),
+              Expanded(
+                child: Text(
+                  l10n.importedScreenshotTitle,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ),
+              const SizedBox(width: ShadcnSpacing.sm),
+              const Icon(
+                Icons.open_in_full,
+                color: ShadcnColors.textSecondary,
+                size: 18,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
