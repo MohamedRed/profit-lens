@@ -13,11 +13,12 @@ class PwaInstallBanner extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: pwaInstallAvailability,
       builder: (context, available, _) {
-        final show = available || isAppleInstallManualAvailable;
+        final isApple = isAppleInstallManualAvailable;
+        final isEnabled = available || isApple;
+        final show = !isPwaInstalled || isEnabled;
         if (!show) {
           return const SizedBox.shrink();
         }
-        final isApple = isAppleInstallManualAvailable;
         final isCompact = MediaQuery.of(context).size.width < 480;
         return Container(
           width: double.infinity,
@@ -33,6 +34,7 @@ class PwaInstallBanner extends StatelessWidget {
             subtitle: l10n.installAppSubtitle,
             ctaLabel: l10n.installAppCta,
             isCompact: isCompact,
+            isEnabled: isEnabled,
           ),
         );
       },
@@ -46,6 +48,7 @@ class _InstallBannerContent extends StatelessWidget {
   final String subtitle;
   final String ctaLabel;
   final bool isCompact;
+  final bool isEnabled;
 
   const _InstallBannerContent({
     required this.isApple,
@@ -53,6 +56,7 @@ class _InstallBannerContent extends StatelessWidget {
     required this.subtitle,
     required this.ctaLabel,
     required this.isCompact,
+    required this.isEnabled,
   });
 
   @override
@@ -81,7 +85,10 @@ class _InstallBannerContent extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: SizedBox(
             width: isCompact ? double.infinity : null,
-            child: _InstallBannerButton(label: ctaLabel),
+            child: _InstallBannerButton(
+              label: ctaLabel,
+              isEnabled: isEnabled,
+            ),
           ),
         ),
       ],
@@ -150,13 +157,17 @@ class _InstallBannerText extends StatelessWidget {
 
 class _InstallBannerButton extends StatelessWidget {
   final String label;
+  final bool isEnabled;
 
-  const _InstallBannerButton({required this.label});
+  const _InstallBannerButton({
+    required this.label,
+    required this.isEnabled,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FilledButton(
-      onPressed: () => showPwaInstallDialog(),
+      onPressed: isEnabled ? () => showPwaInstallDialog() : null,
       style: FilledButton.styleFrom(
         padding: const EdgeInsets.symmetric(
           horizontal: ShadcnSpacing.md,
