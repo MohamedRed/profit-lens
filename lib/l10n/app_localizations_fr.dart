@@ -450,6 +450,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'Dans Safari, appuyez sur Partager puis « Sur l\'écran d\'accueil ».';
 
   @override
+  String get installAppIosStepShare => 'Dans Safari, appuyez sur Partager.';
+
+  @override
+  String get installAppIosStepAddHome =>
+      'Sélectionnez « Sur l\'écran d\'accueil ».';
+
+  @override
+  String get installAppIosStepConfirm => 'Appuyez sur Ajouter pour confirmer.';
+
+  @override
   String get languageFrench => 'Français';
 
   @override

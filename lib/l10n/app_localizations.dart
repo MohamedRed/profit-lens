@@ -925,8 +925,26 @@ abstract class AppLocalizations {
   /// No description provided for @installAppIosSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Open Share in Safari, then "Add to Home Screen".'**
+  /// **'Open Share in Safari, then \"Add to Home Screen\".'**
   String get installAppIosSubtitle;
+
+  /// No description provided for @installAppIosStepShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the Share button in Safari.'**
+  String get installAppIosStepShare;
+
+  /// No description provided for @installAppIosStepAddHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Select \"Add to Home Screen\".'**
+  String get installAppIosStepAddHome;
+
+  /// No description provided for @installAppIosStepConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Add to confirm.'**
+  String get installAppIosStepConfirm;
 
   /// No description provided for @languageFrench.
   ///

@@ -445,6 +445,15 @@ class AppLocalizationsAr extends AppLocalizations {
       'افتح زر المشاركة في Safari ثم «إضافة إلى الشاشة الرئيسية».';
 
   @override
+  String get installAppIosStepShare => 'اضغط زر المشاركة في Safari.';
+
+  @override
+  String get installAppIosStepAddHome => 'اختر «إضافة إلى الشاشة الرئيسية».';
+
+  @override
+  String get installAppIosStepConfirm => 'اضغط إضافة للتأكيد.';
+
+  @override
   String get languageFrench => 'الفرنسية';
 
   @override
