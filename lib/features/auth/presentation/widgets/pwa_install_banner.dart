@@ -18,82 +18,41 @@ class PwaInstallBanner extends StatelessWidget {
           return const SizedBox.shrink();
         }
         final isApple = isAppleInstallManualAvailable;
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            final isCompact = constraints.maxWidth < 360;
-            return Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: ShadcnColors.surface,
-                borderRadius: BorderRadius.circular(ShadcnRadius.xl),
-                border: Border.all(color: ShadcnColors.outline),
-              ),
-              padding: const EdgeInsets.all(ShadcnSpacing.lg),
-              child: isCompact
-                  ? _InstallBannerCompact(
-                      isApple: isApple,
-                      title: l10n.installAppTitle,
-                      subtitle: l10n.installAppSubtitle,
-                      ctaLabel: l10n.installAppCta,
-                    )
-                  : _InstallBannerWide(
-                      isApple: isApple,
-                      title: l10n.installAppTitle,
-                      subtitle: l10n.installAppSubtitle,
-                      ctaLabel: l10n.installAppCta,
-                    ),
-            );
-          },
+        final isCompact = MediaQuery.of(context).size.width < 480;
+        return Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: ShadcnColors.surface,
+            borderRadius: BorderRadius.circular(ShadcnRadius.xl),
+            border: Border.all(color: ShadcnColors.outline),
+          ),
+          padding: const EdgeInsets.all(ShadcnSpacing.lg),
+          child: _InstallBannerContent(
+            isApple: isApple,
+            title: l10n.installAppTitle,
+            subtitle: l10n.installAppSubtitle,
+            ctaLabel: l10n.installAppCta,
+            isCompact: isCompact,
+          ),
         );
       },
     );
   }
 }
 
-class _InstallBannerWide extends StatelessWidget {
+class _InstallBannerContent extends StatelessWidget {
   final bool isApple;
   final String title;
   final String subtitle;
   final String ctaLabel;
+  final bool isCompact;
 
-  const _InstallBannerWide({
+  const _InstallBannerContent({
     required this.isApple,
     required this.title,
     required this.subtitle,
     required this.ctaLabel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        _InstallBannerIcon(isApple: isApple),
-        const SizedBox(width: ShadcnSpacing.md),
-        Expanded(
-          child: _InstallBannerText(
-            title: title,
-            subtitle: subtitle,
-          ),
-        ),
-        const SizedBox(width: ShadcnSpacing.md),
-        _InstallBannerButton(label: ctaLabel),
-      ],
-    );
-  }
-}
-
-class _InstallBannerCompact extends StatelessWidget {
-  final bool isApple;
-  final String title;
-  final String subtitle;
-  final String ctaLabel;
-
-  const _InstallBannerCompact({
-    required this.isApple,
-    required this.title,
-    required this.subtitle,
-    required this.ctaLabel,
+    required this.isCompact,
   });
 
   @override
@@ -116,9 +75,12 @@ class _InstallBannerCompact extends StatelessWidget {
           ],
         ),
         const SizedBox(height: ShadcnSpacing.md),
-        SizedBox(
-          width: double.infinity,
-          child: _InstallBannerButton(label: ctaLabel),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: SizedBox(
+            width: isCompact ? double.infinity : null,
+            child: _InstallBannerButton(label: ctaLabel),
+          ),
         ),
       ],
     );
