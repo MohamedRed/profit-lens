@@ -35,7 +35,9 @@ class OfferHistoryList extends StatelessWidget {
             return const SizedBox.shrink();
           }
           if (!isLoadingMore) {
-            onLoadMore();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              onLoadMore();
+            });
           }
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
