@@ -41,6 +41,14 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
     return Column(
       children: [
         if (showPickupAddress) ...[
+          if (showPickupName) ...[
+            TextFormField(
+              key: OfferFlowKeys.pickupNameField,
+              controller: widget.pickupNameController,
+              decoration: const InputDecoration(),
+            ),
+            const SizedBox(height: 8),
+          ],
           PlaceAutocompleteField(
             key: OfferFlowKeys.pickupAddressField,
             controller: widget.pickupAddressController,
@@ -49,16 +57,16 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
             onSelected: widget.onPickupSelected,
             onDropdownOpenChanged: (_) {},
           ),
-          if (showPickupName) ...[
-            const SizedBox(height: 8),
-            TextFormField(
-              key: OfferFlowKeys.pickupNameField,
-              controller: widget.pickupNameController,
-              decoration: const InputDecoration(),
-            ),
-          ],
         ],
         if (showPickupAddress) const SizedBox(height: 12),
+        if (showDropoffName) ...[
+          TextFormField(
+            key: OfferFlowKeys.dropoffNameField,
+            controller: widget.dropoffNameController,
+            decoration: const InputDecoration(),
+          ),
+          const SizedBox(height: 8),
+        ],
         PlaceAutocompleteField(
           key: OfferFlowKeys.dropoffAddressField,
           controller: widget.dropoffAddressController,
@@ -67,14 +75,6 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
           onSelected: widget.onDropoffSelected,
           onDropdownOpenChanged: (_) {},
         ),
-        if (showDropoffName) ...[
-          const SizedBox(height: 8),
-          TextFormField(
-            key: OfferFlowKeys.dropoffNameField,
-            controller: widget.dropoffNameController,
-            decoration: const InputDecoration(),
-          ),
-        ],
       ],
     );
   }
