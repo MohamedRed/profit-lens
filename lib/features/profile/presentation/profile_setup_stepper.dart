@@ -18,7 +18,6 @@ import '../../vehicles/presentation/widgets/vehicle_energy_section.dart';
 import 'controllers/business_profile_controller.dart';
 import 'sections/business_fixed_costs_section.dart';
 import 'sections/business_taxes_setup_section.dart';
-import 'sections/profitability_target_section.dart';
 
 class ProfileSetupStepper extends StatefulWidget {
   final BusinessProfileController businessController;
@@ -192,11 +191,6 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
                   businessController.monthlyDeliveriesController,
               allocation: businessController.allocation,
               onAllocationChanged: widget.onAllocationChanged,
-            ),
-            const SizedBox(height: 12),
-            ProfitabilityTargetSection(
-              minProfitabilityController:
-                  businessController.minProfitabilityController,
             ),
           ],
         ),
