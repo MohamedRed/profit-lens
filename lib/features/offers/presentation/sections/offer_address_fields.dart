@@ -39,13 +39,13 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
     final hidePickup = _dropoffDropdownOpen;
     final hideDropoff = _pickupDropdownOpen;
     final showPickupName =
-        widget.showAllFields ||
+        !widget.showAllFields &&
         widget.pickupNameController.text.trim().isNotEmpty;
     final showPickupAddress =
         widget.showAllFields ||
         widget.pickupAddressController.text.trim().isNotEmpty;
     final showDropoffName =
-        widget.showAllFields ||
+        !widget.showAllFields &&
         widget.dropoffNameController.text.trim().isNotEmpty;
     return Column(
       children: [
