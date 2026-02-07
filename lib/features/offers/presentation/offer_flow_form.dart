@@ -12,6 +12,7 @@ import 'widgets/profitability_overview_card.dart';
 import 'offer_flow_keys.dart';
 import 'offer_flow_loading_action.dart';
 import 'offer_analysis_status.dart';
+import 'offer_flow_feature_flags.dart';
 
 class OfferFlowForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -61,13 +62,14 @@ class OfferFlowForm extends StatelessWidget {
         !isBusy &&
         previewRecord != null &&
         controller.analysisStatus == OfferAnalysisStatus.completed;
-    // Temporarily hidden per product decision.
-    final showCaptureCta = false;
+    final showCaptureCta = enableCaptureCta;
+    final allowManualEntry = enableManualEntry;
     final showDetailsSection =
         !showOverview &&
-        (isManualEntryRequested ||
+        ((allowManualEntry && isManualEntryRequested) ||
             controller.analysisStatus != OfferAnalysisStatus.idle);
-    final showManualEntryCta = !showOverview && !showDetailsSection;
+    final showManualEntryCta =
+        allowManualEntry && !showOverview && !showDetailsSection;
     return Form(
       key: formKey,
       child: ListView(
@@ -121,8 +123,8 @@ class OfferFlowForm extends StatelessWidget {
             OfferDetailsSection(
               controller: controller,
               requiresDuration: requiresDuration,
-              showAllAddressFields: isManualEntryRequested,
-              showAnalyzeAction: isManualEntryRequested,
+              showAllAddressFields: allowManualEntry && isManualEntryRequested,
+              showAnalyzeAction: allowManualEntry && isManualEntryRequested,
               onAnalyze: onAnalyzeManual,
               onPickupSelected: onPickupSelected,
               onDropoffSelected: onDropoffSelected,

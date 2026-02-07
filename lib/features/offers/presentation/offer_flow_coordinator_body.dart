@@ -5,6 +5,7 @@ import 'controllers/offer_flow_controller.dart';
 import 'offer_flow_controller_listeners.dart';
 import 'offer_flow_coordinator_stream.dart';
 import 'offer_flow_loading_action.dart';
+import 'offer_flow_feature_flags.dart';
 
 class OfferFlowCoordinatorBody extends StatefulWidget {
   final AuthUser user;
@@ -70,6 +71,9 @@ class _OfferFlowCoordinatorBodyState extends State<OfferFlowCoordinatorBody> {
   }
 
   void _setManualEntryRequested() {
+    if (!enableManualEntry) {
+      return;
+    }
     setState(() {
       _controller.clearAnalysis();
       _isManualEntryRequested = true;
