@@ -124,12 +124,6 @@ Future<bool> _showAppleInstallDialog() async {
 }
 
 bool get _isStandalone {
-  if (_isIosDevice) {
-    if (js_util.hasProperty(html.window.navigator, 'standalone')) {
-      return js_util.getProperty(html.window.navigator, 'standalone') == true;
-    }
-    return false;
-  }
   final isBrowserMode =
       html.window.matchMedia('(display-mode: browser)').matches;
   if (isBrowserMode) {
@@ -137,6 +131,15 @@ bool get _isStandalone {
   }
   final mediaQuery =
       html.window.matchMedia('(display-mode: standalone)').matches;
+  if (_isIosDevice) {
+    if (mediaQuery) {
+      return true;
+    }
+    if (js_util.hasProperty(html.window.navigator, 'standalone')) {
+      return js_util.getProperty(html.window.navigator, 'standalone') == true;
+    }
+    return false;
+  }
   if (mediaQuery) {
     return true;
   }
