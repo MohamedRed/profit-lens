@@ -334,6 +334,12 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get updateAvailableTitle => 'يتوفر تحديث جديد.';
+
+  @override
+  String get updateAvailableCta => 'إعادة التحميل';
+
+  @override
   String get historySummaryTodayEqual =>
       'عروض اليوم مشابهة تقريبًا لربحية العروض السابقة.';
 

@@ -119,6 +119,8 @@
     }
   },
   "historySummaryTodayLess": "عروض اليوم أقل ربحية من السابقة بمقدار {amount}.",
+  "updateAvailableTitle": "يتوفر تحديث جديد.",
+  "updateAvailableCta": "إعادة التحميل",
   "@historySummaryTodayLess": {
     "placeholders": {
       "amount": {}

@@ -338,6 +338,12 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get updateAvailableTitle => 'Une mise à jour est disponible.';
+
+  @override
+  String get updateAvailableCta => 'Recharger';
+
+  @override
   String get historySummaryTodayEqual =>
       'Les offres d’aujourd’hui sont à peu près aussi rentables que les précédentes.';
 

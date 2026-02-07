@@ -119,6 +119,8 @@
     }
   },
   "historySummaryTodayLess": "Les offres d’aujourd’hui sont moins rentables que les précédentes de {amount}.",
+  "updateAvailableTitle": "Une mise à jour est disponible.",
+  "updateAvailableCta": "Recharger",
   "@historySummaryTodayLess": {
     "placeholders": {
       "amount": {}

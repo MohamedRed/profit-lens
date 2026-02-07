@@ -724,6 +724,18 @@ abstract class AppLocalizations {
   /// **'Today\'s offers are less profitable than earlier ones by {amount}.'**
   String historySummaryTodayLess(Object amount);
 
+  /// No description provided for @updateAvailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An update is available.'**
+  String get updateAvailableTitle;
+
+  /// No description provided for @updateAvailableCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload'**
+  String get updateAvailableCta;
+
   /// No description provided for @historySummaryTodayEqual.
   ///
   /// In en, this message translates to:

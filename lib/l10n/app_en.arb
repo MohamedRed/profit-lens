@@ -119,6 +119,8 @@
     }
   },
   "historySummaryTodayLess": "Today's offers are less profitable than earlier ones by {amount}.",
+  "updateAvailableTitle": "An update is available.",
+  "updateAvailableCta": "Reload",
   "@historySummaryTodayLess": {
     "placeholders": {
       "amount": {}

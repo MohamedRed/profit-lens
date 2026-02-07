@@ -335,6 +335,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get updateAvailableTitle => 'An update is available.';
+
+  @override
+  String get updateAvailableCta => 'Reload';
+
+  @override
   String get historySummaryTodayEqual =>
       'Today\'s offers are about as profitable as earlier ones.';
 
