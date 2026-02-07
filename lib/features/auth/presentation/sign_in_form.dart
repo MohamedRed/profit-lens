@@ -79,8 +79,10 @@ class _SignInFormState extends State<SignInForm> {
           );
           return ValueListenableBuilder<bool>(
             valueListenable: pwaInstallAvailability,
-            builder: (context, _, __) {
-              if (!isPwaInstalled) {
+            builder: (context, available, __) {
+              final shouldGate =
+                  !isPwaInstalled || available || isAppleInstallManualAvailable;
+              if (shouldGate) {
                 return ListView(
                   keyboardDismissBehavior:
                       ScrollViewKeyboardDismissBehavior.onDrag,

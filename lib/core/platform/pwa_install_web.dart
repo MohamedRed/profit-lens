@@ -130,6 +130,11 @@ bool get _isStandalone {
     }
     return false;
   }
+  final isBrowserMode =
+      html.window.matchMedia('(display-mode: browser)').matches;
+  if (isBrowserMode) {
+    return false;
+  }
   final mediaQuery =
       html.window.matchMedia('(display-mode: standalone)').matches;
   if (mediaQuery) {
