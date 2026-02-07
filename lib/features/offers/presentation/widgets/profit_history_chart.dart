@@ -18,7 +18,7 @@ class ProfitHistoryChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    if (stats.length < 2) {
+    if (stats.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Text(l10n.historyChartEmptyMessage),
