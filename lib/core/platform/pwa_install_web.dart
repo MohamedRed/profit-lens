@@ -1,8 +1,26 @@
+import 'dart:async';
 import 'dart:html' as html;
 import 'dart:js_util' as js_util;
 
+import 'package:flutter/foundation.dart';
+
 bool _listenerRegistered = false;
 dynamic _deferredPromptEvent;
+
+final ValueNotifier<bool> _pwaInstallAvailability = ValueNotifier(false);
+
+ValueListenable<bool> get pwaInstallAvailability {
+  _ensureBeforeInstallPromptListener();
+  final deferredEvent = _getDeferredPromptEvent();
+  if (!_isStandalone && deferredEvent != null && !_pwaInstallAvailability.value) {
+    scheduleMicrotask(() {
+      if (!_pwaInstallAvailability.value) {
+        _pwaInstallAvailability.value = true;
+      }
+    });
+  }
+  return _pwaInstallAvailability;
+}
 
 void _ensureBeforeInstallPromptListener() {
   if (_listenerRegistered) {
@@ -16,6 +34,12 @@ void _ensureBeforeInstallPromptListener() {
     }
     _deferredPromptEvent = jsEvent;
     js_util.setProperty(html.window, 'defferedPromptEvent', jsEvent);
+    _pwaInstallAvailability.value = !_isStandalone;
+  });
+  html.window.addEventListener('appinstalled', (_) {
+    _deferredPromptEvent = null;
+    js_util.setProperty(html.window, 'defferedPromptEvent', null);
+    _pwaInstallAvailability.value = false;
   });
 }
 
@@ -37,15 +61,15 @@ bool get isPwaInstallAvailable {
   if (_isStandalone) {
     return false;
   }
-  return _getDeferredPromptEvent() != null;
+  return _pwaInstallAvailability.value;
 }
 
-Future<void> showPwaInstallDialog() async {
+Future<bool> showPwaInstallDialog() async {
   _ensureBeforeInstallPromptListener();
   final deferredEvent = _getDeferredPromptEvent();
   if (deferredEvent == null) {
     html.window.console.warn('beforeinstallprompt not available');
-    return;
+    return false;
   }
   if (js_util.hasProperty(deferredEvent, 'prompt')) {
     js_util.callMethod(deferredEvent, 'prompt', const []);
@@ -59,6 +83,8 @@ Future<void> showPwaInstallDialog() async {
   }
   _deferredPromptEvent = null;
   js_util.setProperty(html.window, 'defferedPromptEvent', null);
+  _pwaInstallAvailability.value = false;
+  return true;
 }
 
 bool get _isStandalone {
