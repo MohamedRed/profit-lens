@@ -24,6 +24,7 @@ Future<void> handleOfferAnalysis({
   required String? selectedVehicleId,
   required ValueChanged<OfferFlowLoadingAction?> onLoadingChanged,
   required VoidCallback onUpdated,
+  bool navigateToDetails = true,
 }) async {
   if (!(formKey.currentState?.validate() ?? false)) {
     return;
@@ -121,12 +122,14 @@ Future<void> handleOfferAnalysis({
   if (!controller.isCurrentAnalysis(runId)) {
     return;
   }
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (context) => OfferResultScreen(
-        user: user,
-        record: record!,
+  if (navigateToDetails) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => OfferResultScreen(
+          user: user,
+          record: record!,
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

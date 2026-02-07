@@ -23,6 +23,7 @@ class OfferFlowForm extends StatelessWidget {
   final VoidCallback onImportScreenshot;
   final VoidCallback onCaptureScreenshot;
   final VoidCallback onEnterManually;
+  final VoidCallback onAnalyzeManual;
   final VoidCallback onViewDetails;
   final OfferFlowLoadingAction? loadingAction;
   final OfferRecord? previewRecord;
@@ -42,6 +43,7 @@ class OfferFlowForm extends StatelessWidget {
     required this.onImportScreenshot,
     required this.onCaptureScreenshot,
     required this.onEnterManually,
+    required this.onAnalyzeManual,
     required this.onViewDetails,
     required this.loadingAction,
     required this.previewRecord,
@@ -117,7 +119,7 @@ class OfferFlowForm extends StatelessWidget {
               requiresDuration: requiresDuration,
               showAllAddressFields: isManualEntryRequested,
               showAnalyzeAction: isManualEntryRequested,
-              onAnalyze: onViewDetails,
+              onAnalyze: onAnalyzeManual,
               onPickupSelected: onPickupSelected,
               onDropoffSelected: onDropoffSelected,
             ),

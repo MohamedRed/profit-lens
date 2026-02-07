@@ -16,11 +16,13 @@ import 'offer_flow_loading_action.dart';
 class OfferFlowCallbacks {
   final VoidCallback onImportScreenshot;
   final VoidCallback onCaptureScreenshot;
+  final VoidCallback onAnalyzeManual;
   final VoidCallback onViewDetails;
 
   const OfferFlowCallbacks({
     required this.onImportScreenshot,
     required this.onCaptureScreenshot,
+    required this.onAnalyzeManual,
     required this.onViewDetails,
   });
 }
@@ -59,6 +61,23 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
       loadingAction: OfferFlowLoadingAction.captureScreenshot,
       onUpdated: onUpdated,
     ),
+    onAnalyzeManual: () async {
+      if (controller.analysisRecord == null) {
+        controller.source = OfferSource.manual;
+      }
+      await handleOfferAnalysis(
+        context: context,
+        formKey: formKey,
+        controller: controller,
+        profile: profile,
+        user: user,
+        vehicles: vehicles,
+        selectedVehicleId: selectedVehicleId,
+        onLoadingChanged: onLoadingChanged,
+        onUpdated: onUpdated,
+        navigateToDetails: false,
+      );
+    },
     onViewDetails: () async {
       if (controller.analysisRecord == null) {
         controller.source = OfferSource.manual;
@@ -86,6 +105,7 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
         selectedVehicleId: selectedVehicleId,
         onLoadingChanged: onLoadingChanged,
         onUpdated: onUpdated,
+        navigateToDetails: true,
       );
     },
   );

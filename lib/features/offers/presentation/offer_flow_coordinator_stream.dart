@@ -149,6 +149,7 @@ class _OfferFlowCoordinatorStreamState
           onImportScreenshot: callbacks.onImportScreenshot,
           onCaptureScreenshot: callbacks.onCaptureScreenshot,
           onEnterManually: widget.onEnterManually,
+          onAnalyzeManual: callbacks.onAnalyzeManual,
           onViewDetails: callbacks.onViewDetails,
           loadingAction: widget.loadingAction,
           previewRecord: previewRecord,
