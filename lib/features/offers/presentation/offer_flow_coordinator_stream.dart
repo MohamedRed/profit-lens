@@ -21,9 +21,11 @@ class OfferFlowCoordinatorStream extends StatefulWidget {
   final String? selectedVehicleId;
   final ValueChanged<String?> onVehicleResolved;
   final ValueChanged<String?> onVehicleChanged;
+  final VoidCallback onEnterManually;
   final ValueChanged<OfferFlowLoadingAction?> onLoadingChanged;
   final VoidCallback onUpdated;
   final OfferFlowLoadingAction? loadingAction;
+  final bool isManualEntryRequested;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
 
@@ -36,9 +38,11 @@ class OfferFlowCoordinatorStream extends StatefulWidget {
     required this.selectedVehicleId,
     required this.onVehicleResolved,
     required this.onVehicleChanged,
+    required this.onEnterManually,
     required this.onLoadingChanged,
     required this.onUpdated,
     required this.loadingAction,
+    required this.isManualEntryRequested,
     required this.onPickupSelected,
     required this.onDropoffSelected,
   });
@@ -84,16 +88,14 @@ class _OfferFlowCoordinatorStreamState
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<VehicleProfile>>(
-      stream: AppScope.of(context).vehicleRepository.watchVehicles(widget.user.uid),
+      stream: AppScope.of(
+        context,
+      ).vehicleRepository.watchVehicles(widget.user.uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             !snapshot.hasData) {
           return const Scaffold(
-            body: SafeArea(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
+            body: SafeArea(child: Center(child: CircularProgressIndicator())),
           );
         }
         final vehicles = snapshot.data ?? [];
@@ -105,11 +107,7 @@ class _OfferFlowCoordinatorStreamState
           });
           if (!_showEmptyState) {
             return const Scaffold(
-              body: SafeArea(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
+              body: SafeArea(child: Center(child: CircularProgressIndicator())),
             );
           }
         } else {
@@ -150,9 +148,11 @@ class _OfferFlowCoordinatorStreamState
           onVehicleChanged: widget.onVehicleChanged,
           onImportScreenshot: callbacks.onImportScreenshot,
           onCaptureScreenshot: callbacks.onCaptureScreenshot,
+          onEnterManually: widget.onEnterManually,
           onViewDetails: callbacks.onViewDetails,
           loadingAction: widget.loadingAction,
           previewRecord: previewRecord,
+          isManualEntryRequested: widget.isManualEntryRequested,
           onPickupSelected: widget.onPickupSelected,
           onDropoffSelected: widget.onDropoffSelected,
           minProfitabilityEuro: widget.profile.minProfitabilityEuro,
@@ -160,5 +160,4 @@ class _OfferFlowCoordinatorStreamState
       },
     );
   }
-
 }

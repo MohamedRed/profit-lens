@@ -10,5 +10,6 @@ class OfferFlowKeys {
   static const dropoffAddressField = ValueKey('offer_dropoff_address');
   static const importScreenshotButton = ValueKey('offer_import_screenshot');
   static const captureScreenshotButton = ValueKey('offer_capture_screenshot');
+  static const manualEntryButton = ValueKey('offer_manual_entry');
   static const viewDetailsButton = ValueKey('offer_view_details');
 }

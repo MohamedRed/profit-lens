@@ -22,9 +22,11 @@ class OfferFlowForm extends StatelessWidget {
   final bool requiresDuration;
   final VoidCallback onImportScreenshot;
   final VoidCallback onCaptureScreenshot;
+  final VoidCallback onEnterManually;
   final VoidCallback onViewDetails;
   final OfferFlowLoadingAction? loadingAction;
   final OfferRecord? previewRecord;
+  final bool isManualEntryRequested;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
   final double minProfitabilityEuro;
@@ -39,9 +41,11 @@ class OfferFlowForm extends StatelessWidget {
     required this.requiresDuration,
     required this.onImportScreenshot,
     required this.onCaptureScreenshot,
+    required this.onEnterManually,
     required this.onViewDetails,
     required this.loadingAction,
     required this.previewRecord,
+    required this.isManualEntryRequested,
     required this.onPickupSelected,
     required this.onDropoffSelected,
     required this.minProfitabilityEuro,
@@ -51,11 +55,15 @@ class OfferFlowForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isBusy = loadingAction != null;
-    final showOverview = !isBusy &&
+    final showOverview =
+        !isBusy &&
         previewRecord != null &&
         controller.analysisStatus == OfferAnalysisStatus.completed;
     final showDetailsSection =
-        !showOverview && controller.analysisStatus != OfferAnalysisStatus.idle;
+        !showOverview &&
+        (isManualEntryRequested ||
+            controller.analysisStatus != OfferAnalysisStatus.idle);
+    final showManualEntryCta = !showOverview && !showDetailsSection;
     return Form(
       key: formKey,
       child: ListView(
@@ -73,6 +81,15 @@ class OfferFlowForm extends StatelessWidget {
             icon: Icons.upload_file,
             onPressed: isBusy ? null : onImportScreenshot,
           ),
+          if (showManualEntryCta) ...[
+            const SizedBox(height: 12),
+            PrimaryButton(
+              key: OfferFlowKeys.manualEntryButton,
+              label: l10n.manualEntryButton,
+              icon: Icons.edit,
+              onPressed: isBusy ? null : onEnterManually,
+            ),
+          ],
           const SizedBox(height: 16),
           if (showOverview) ...[
             ProfitabilityDecisionCard(

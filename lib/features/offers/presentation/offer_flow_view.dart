@@ -19,9 +19,11 @@ class OfferFlowView extends StatelessWidget {
   final ValueChanged<String?> onVehicleChanged;
   final VoidCallback onImportScreenshot;
   final VoidCallback onCaptureScreenshot;
+  final VoidCallback onEnterManually;
   final VoidCallback onViewDetails;
   final OfferFlowLoadingAction? loadingAction;
   final OfferRecord? previewRecord;
+  final bool isManualEntryRequested;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
   final double minProfitabilityEuro;
@@ -37,9 +39,11 @@ class OfferFlowView extends StatelessWidget {
     required this.onVehicleChanged,
     required this.onImportScreenshot,
     required this.onCaptureScreenshot,
+    required this.onEnterManually,
     required this.onViewDetails,
     required this.loadingAction,
     required this.previewRecord,
+    required this.isManualEntryRequested,
     required this.onPickupSelected,
     required this.onDropoffSelected,
     required this.minProfitabilityEuro,
@@ -61,9 +65,11 @@ class OfferFlowView extends StatelessWidget {
                 onVehicleChanged: onVehicleChanged,
                 onImportScreenshot: onImportScreenshot,
                 onCaptureScreenshot: onCaptureScreenshot,
+                onEnterManually: onEnterManually,
                 onViewDetails: onViewDetails,
                 loadingAction: loadingAction,
                 previewRecord: previewRecord,
+                isManualEntryRequested: isManualEntryRequested,
                 onPickupSelected: onPickupSelected,
                 onDropoffSelected: onDropoffSelected,
                 minProfitabilityEuro: minProfitabilityEuro,

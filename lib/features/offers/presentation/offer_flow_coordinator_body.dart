@@ -26,6 +26,7 @@ class _OfferFlowCoordinatorBodyState extends State<OfferFlowCoordinatorBody> {
   late final OfferFlowController _controller;
   String? _selectedVehicleId;
   OfferFlowLoadingAction? _loadingAction;
+  bool _isManualEntryRequested = false;
 
   @override
   void initState() {
@@ -63,7 +64,15 @@ class _OfferFlowCoordinatorBodyState extends State<OfferFlowCoordinatorBody> {
     }
     setState(() {
       _controller.clearAnalysis();
+      _isManualEntryRequested = false;
       _selectedVehicleId = value;
+    });
+  }
+
+  void _setManualEntryRequested() {
+    setState(() {
+      _controller.clearAnalysis();
+      _isManualEntryRequested = true;
     });
   }
 
@@ -81,9 +90,11 @@ class _OfferFlowCoordinatorBodyState extends State<OfferFlowCoordinatorBody> {
       selectedVehicleId: _selectedVehicleId,
       onVehicleResolved: _resolveSelectedVehicle,
       onVehicleChanged: _setSelectedVehicle,
+      onEnterManually: _setManualEntryRequested,
       onLoadingChanged: _setLoading,
       onUpdated: _refresh,
       loadingAction: _loadingAction,
+      isManualEntryRequested: _isManualEntryRequested,
       onPickupSelected: _controller.applyPickupSelection,
       onDropoffSelected: _controller.applyDropoffSelection,
     );
