@@ -6,6 +6,7 @@ import '../../auth/domain/auth_user.dart';
 import '../../profile/domain/user_profile.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
 import 'controllers/offer_flow_controller.dart';
+import '../domain/offer_source.dart';
 import 'offer_flow_actions.dart';
 import 'offer_flow_import.dart';
 import 'offer_analysis_status.dart';
@@ -59,6 +60,9 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
       onUpdated: onUpdated,
     ),
     onViewDetails: () async {
+      if (controller.analysisRecord == null) {
+        controller.source = OfferSource.manual;
+      }
       final record = controller.analysisRecord;
       if (record != null &&
           controller.analysisStatus == OfferAnalysisStatus.completed) {
