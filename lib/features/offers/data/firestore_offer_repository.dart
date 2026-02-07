@@ -81,7 +81,7 @@ class FirestoreOfferRepository implements OfferRepository {
         .toList();
     final lastDocument =
         snapshot.docs.isEmpty ? null : snapshot.docs.last;
-    final hasMore = snapshot.docs.length == limit;
+    final hasMore = snapshot.docs.length == limit && offers.isNotEmpty;
     return OfferPage(
       offers: offers,
       lastDocument: lastDocument,

@@ -80,11 +80,18 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
         limit: _pageSize,
       );
       if (!mounted) return;
+      final sameCursor =
+          page.lastDocument != null &&
+          _lastPage?.lastDocument?.id == page.lastDocument?.id;
+      final noProgress = page.offers.isEmpty || sameCursor;
       setState(() {
-        _offers = [..._offers, ...page.offers];
-        _lastPage = page;
-        _hasMore = page.hasMore;
+        if (!noProgress) {
+          _offers = [..._offers, ...page.offers];
+          _lastPage = page;
+        }
+        _hasMore = page.hasMore && !noProgress;
         _isLoadingMore = false;
+        _hasLoadMoreError = noProgress;
       });
     } catch (_) {
       if (!mounted) return;
