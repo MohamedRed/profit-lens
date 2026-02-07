@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/design_system/shadcn_tokens.dart';
-import '../../../core/platform/pwa_install.dart';
-import '../../../l10n/app_localizations.dart';
+import '../../../../core/design_system/shadcn_tokens.dart';
+import '../../../../core/platform/pwa_install.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class PwaInstallBanner extends StatelessWidget {
   const PwaInstallBanner({super.key});
