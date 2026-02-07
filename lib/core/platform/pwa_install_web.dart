@@ -21,8 +21,12 @@ Future<void> showPwaInstallDialog() async {
     html.window.console.warn('pwa-install element not found');
     return;
   }
+  if (js_util.hasProperty(element, 'install')) {
+    js_util.callMethod(element, 'install', const []);
+    return;
+  }
   if (js_util.hasProperty(element, 'showDialog')) {
-    js_util.callMethod(element, 'showDialog', [true]);
+    js_util.callMethod(element, 'showDialog', const []);
     return;
   }
   html.window.console.warn('pwa-install showDialog not available');
