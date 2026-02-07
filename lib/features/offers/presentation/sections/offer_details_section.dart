@@ -15,7 +15,7 @@ class OfferDetailsSection extends StatefulWidget {
   final bool requiresDuration;
   final bool showAllAddressFields;
   final bool showAnalyzeAction;
-  final VoidCallback? onAnalyze;
+  final VoidCallback onAnalyze;
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
 
@@ -24,8 +24,8 @@ class OfferDetailsSection extends StatefulWidget {
     required this.controller,
     required this.requiresDuration,
     required this.showAllAddressFields,
-    this.showAnalyzeAction = false,
-    this.onAnalyze,
+    required this.showAnalyzeAction,
+    required this.onAnalyze,
     required this.onPickupSelected,
     required this.onDropoffSelected,
   });
@@ -117,7 +117,7 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
           onPickupSelected: widget.onPickupSelected,
           onDropoffSelected: widget.onDropoffSelected,
         ),
-        if (widget.showAnalyzeAction && widget.onAnalyze != null) ...[
+        if (widget.showAnalyzeAction) ...[
           const SizedBox(height: 16),
           PrimaryButton(
             label: l10n.analyzeOfferButton,
