@@ -61,6 +61,8 @@ class OfferFlowForm extends StatelessWidget {
         !isBusy &&
         previewRecord != null &&
         controller.analysisStatus == OfferAnalysisStatus.completed;
+    // Temporarily hidden per product decision.
+    final showCaptureCta = false;
     final showDetailsSection =
         !showOverview &&
         (isManualEntryRequested ||
@@ -84,14 +86,16 @@ class OfferFlowForm extends StatelessWidget {
             onPressed: isBusy ? null : onImportScreenshot,
           ),
           const SizedBox(height: 12),
-          PrimaryButton(
-            key: OfferFlowKeys.captureScreenshotButton,
-            label: l10n.captureScreenshotButton,
-            icon: Icons.photo_camera_outlined,
-            onPressed: isBusy ? null : onCaptureScreenshot,
-          ),
-          if (showManualEntryCta) ...[
+          if (showCaptureCta) ...[
+            PrimaryButton(
+              key: OfferFlowKeys.captureScreenshotButton,
+              label: l10n.captureScreenshotButton,
+              icon: Icons.photo_camera_outlined,
+              onPressed: isBusy ? null : onCaptureScreenshot,
+            ),
             const SizedBox(height: 12),
+          ],
+          if (showManualEntryCta) ...[
             PrimaryButton(
               key: OfferFlowKeys.manualEntryButton,
               label: l10n.manualEntryButton,
