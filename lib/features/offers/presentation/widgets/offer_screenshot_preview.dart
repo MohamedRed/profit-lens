@@ -21,13 +21,29 @@ class OfferScreenshotPreview extends StatelessWidget {
         insetPadding: const EdgeInsets.all(ShadcnSpacing.lg),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(ShadcnRadius.lg),
-          child: InteractiveViewer(
-            minScale: 0.8,
-            maxScale: 4,
-            child: Image.memory(
-              thumbnail,
-              fit: BoxFit.contain,
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+              Flexible(
+                child: InteractiveViewer(
+                  minScale: 0.8,
+                  maxScale: 4,
+                  child: Image.memory(
+                    thumbnail,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              const SizedBox(height: ShadcnSpacing.sm),
+            ],
           ),
         ),
       ),
