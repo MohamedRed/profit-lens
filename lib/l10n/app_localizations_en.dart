@@ -440,22 +440,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get installAppSubtitle => 'Add ProfitLens to your home screen';
 
   @override
-  String get installAppIosTitle => 'Install on iPhone/iPad';
-
-  @override
-  String get installAppIosSubtitle =>
-      'Open Share in Safari, then \"Add to Home Screen\".';
-
-  @override
-  String get installAppIosStepShare => 'Tap the Share button in Safari.';
-
-  @override
-  String get installAppIosStepAddHome => 'Select \"Add to Home Screen\".';
-
-  @override
-  String get installAppIosStepConfirm => 'Tap Add to confirm.';
-
-  @override
   String get languageFrench => 'French';
 
   @override

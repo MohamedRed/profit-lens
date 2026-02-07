@@ -438,22 +438,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get installAppSubtitle => 'أضف ProfitLens إلى الشاشة الرئيسية';
 
   @override
-  String get installAppIosTitle => 'التثبيت على iPhone/iPad';
-
-  @override
-  String get installAppIosSubtitle =>
-      'افتح زر المشاركة في Safari ثم «إضافة إلى الشاشة الرئيسية».';
-
-  @override
-  String get installAppIosStepShare => 'اضغط زر المشاركة في Safari.';
-
-  @override
-  String get installAppIosStepAddHome => 'اختر «إضافة إلى الشاشة الرئيسية».';
-
-  @override
-  String get installAppIosStepConfirm => 'اضغط إضافة للتأكيد.';
-
-  @override
   String get languageFrench => 'الفرنسية';
 
   @override

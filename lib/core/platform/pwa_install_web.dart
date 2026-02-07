@@ -61,6 +61,9 @@ bool get isPwaInstallAvailable {
   if (_isStandalone) {
     return false;
   }
+  if (_isIosDevice) {
+    return true;
+  }
   return _pwaInstallAvailability.value;
 }
 
@@ -73,6 +76,9 @@ bool get isAppleInstallManualAvailable {
 
 Future<bool> showPwaInstallDialog() async {
   _ensureBeforeInstallPromptListener();
+  if (_isIosDevice) {
+    return _showAppleInstallDialog();
+  }
   final deferredEvent = _getDeferredPromptEvent();
   if (deferredEvent == null) {
     html.window.console.warn('beforeinstallprompt not available');
@@ -92,6 +98,27 @@ Future<bool> showPwaInstallDialog() async {
   js_util.setProperty(html.window, 'defferedPromptEvent', null);
   _pwaInstallAvailability.value = false;
   return true;
+}
+
+Future<bool> _showAppleInstallDialog() async {
+  final customElements = js_util.getProperty(html.window, 'customElements');
+  if (customElements != null &&
+      js_util.hasProperty(customElements, 'whenDefined')) {
+    await js_util.promiseToFuture(
+      js_util.callMethod(customElements, 'whenDefined', ['pwa-install']),
+    );
+  }
+  final element = html.document.querySelector('pwa-install');
+  if (element == null) {
+    html.window.console.warn('pwa-install element not found');
+    return false;
+  }
+  if (js_util.hasProperty(element, 'showDialog')) {
+    js_util.callMethod(element, 'showDialog', const []);
+    return true;
+  }
+  html.window.console.warn('pwa-install showDialog not available');
+  return false;
 }
 
 bool get _isStandalone {
