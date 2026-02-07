@@ -81,6 +81,13 @@ class OfferFlowForm extends StatelessWidget {
             icon: Icons.upload_file,
             onPressed: isBusy ? null : onImportScreenshot,
           ),
+          const SizedBox(height: 12),
+          PrimaryButton(
+            key: OfferFlowKeys.captureScreenshotButton,
+            label: l10n.captureScreenshotButton,
+            icon: Icons.photo_camera_outlined,
+            onPressed: isBusy ? null : onCaptureScreenshot,
+          ),
           if (showManualEntryCta) ...[
             const SizedBox(height: 12),
             PrimaryButton(
