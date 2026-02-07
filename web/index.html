@@ -148,6 +148,40 @@
       }, 350);
     });
   </script>
+  <script>
+    (function () {
+      if (!("serviceWorker" in navigator)) return;
+
+      var isReloading = false;
+      navigator.serviceWorker.addEventListener("controllerchange", function () {
+        if (isReloading) return;
+        isReloading = true;
+        window.location.reload();
+      });
+
+      navigator.serviceWorker.ready
+        .then(function (registration) {
+          if (!registration) return;
+          registration.update();
+          if (registration.waiting) {
+            registration.waiting.postMessage("skipWaiting");
+          }
+          registration.addEventListener("updatefound", function () {
+            var newWorker = registration.installing;
+            if (!newWorker) return;
+            newWorker.addEventListener("statechange", function () {
+              if (
+                newWorker.state === "installed" &&
+                navigator.serviceWorker.controller
+              ) {
+                newWorker.postMessage("skipWaiting");
+              }
+            });
+          });
+        })
+        .catch(function () {});
+    })();
+  </script>
   <pwa-install manual-apple disable-chrome></pwa-install>
   <script src="flutter_bootstrap.js" async></script>
 </body>
