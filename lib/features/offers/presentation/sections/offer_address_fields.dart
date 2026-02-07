@@ -41,11 +41,6 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
     return Column(
       children: [
         if (showPickupName) ...[
-          Text(
-            l10n.pickupNameLabel,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 8),
           TextFormField(
             key: OfferFlowKeys.pickupNameField,
             controller: widget.pickupNameController,
@@ -65,11 +60,6 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
         ],
         if (showPickupAddress) const SizedBox(height: 12),
         if (showDropoffName) ...[
-          Text(
-            l10n.dropoffNameLabel,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 8),
           TextFormField(
             key: OfferFlowKeys.dropoffNameField,
             controller: widget.dropoffNameController,
