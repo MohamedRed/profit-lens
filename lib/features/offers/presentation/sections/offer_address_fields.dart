@@ -38,15 +38,11 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
     final l10n = AppLocalizations.of(context)!;
     final hidePickup = _dropoffDropdownOpen;
     final hideDropoff = _pickupDropdownOpen;
-    final showPickupName =
-        !widget.showAllFields &&
-        widget.pickupNameController.text.trim().isNotEmpty;
+    final showPickupName = widget.pickupNameController.text.trim().isNotEmpty;
     final showPickupAddress =
         widget.showAllFields ||
         widget.pickupAddressController.text.trim().isNotEmpty;
-    final showDropoffName =
-        !widget.showAllFields &&
-        widget.dropoffNameController.text.trim().isNotEmpty;
+    final showDropoffName = widget.dropoffNameController.text.trim().isNotEmpty;
     return Column(
       children: [
         if (!hidePickup) ...[
