@@ -64,6 +64,13 @@ bool get isPwaInstallAvailable {
   return _pwaInstallAvailability.value;
 }
 
+bool get isAppleInstallManualAvailable {
+  if (_isStandalone) {
+    return false;
+  }
+  return _isIosDevice;
+}
+
 Future<bool> showPwaInstallDialog() async {
   _ensureBeforeInstallPromptListener();
   final deferredEvent = _getDeferredPromptEvent();
@@ -95,6 +102,24 @@ bool get _isStandalone {
   }
   if (js_util.hasProperty(html.window.navigator, 'standalone')) {
     return js_util.getProperty(html.window.navigator, 'standalone') == true;
+  }
+  return false;
+}
+
+bool get _isIosDevice {
+  final userAgent = html.window.navigator.userAgent.toLowerCase();
+  if (userAgent.contains('iphone') ||
+      userAgent.contains('ipad') ||
+      userAgent.contains('ipod')) {
+    return true;
+  }
+  final platform = html.window.navigator.platform?.toLowerCase();
+  if (platform != null && platform.contains('mac')) {
+    final maxTouchPoints =
+        js_util.getProperty(html.window.navigator, 'maxTouchPoints');
+    if (maxTouchPoints is num && maxTouchPoints > 1) {
+      return true;
+    }
   }
   return false;
 }

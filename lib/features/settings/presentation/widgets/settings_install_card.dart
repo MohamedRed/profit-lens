@@ -12,6 +12,15 @@ class SettingsInstallCard extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: pwaInstallAvailability,
       builder: (context, available, _) {
+        if (isAppleInstallManualAvailable) {
+          return Card(
+            child: ListTile(
+              leading: const Icon(Icons.ios_share),
+              title: Text(l10n.installAppIosTitle),
+              subtitle: Text(l10n.installAppIosSubtitle),
+            ),
+          );
+        }
         if (!available) {
           return const SizedBox.shrink();
         }

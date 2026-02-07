@@ -161,6 +161,8 @@
   "languageSectionTitle": "اللغة",
   "installAppTitle": "تثبيت التطبيق",
   "installAppSubtitle": "أضف ProfitLens إلى الشاشة الرئيسية",
+  "installAppIosTitle": "التثبيت على iPhone/iPad",
+  "installAppIosSubtitle": "افتح زر المشاركة في Safari ثم «إضافة إلى الشاشة الرئيسية».",
   "languageFrench": "الفرنسية",
   "languageEnglish": "الإنجليزية",
   "languageArabic": "العربية",

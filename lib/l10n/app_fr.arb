@@ -161,6 +161,8 @@
   "languageSectionTitle": "Langue",
   "installAppTitle": "Installer l'application",
   "installAppSubtitle": "Ajouter ProfitLens à l'écran d'accueil",
+  "installAppIosTitle": "Installer sur iPhone/iPad",
+  "installAppIosSubtitle": "Dans Safari, appuyez sur Partager puis « Sur l'écran d'accueil ».",
   "languageFrench": "Français",
   "languageEnglish": "Anglais",
   "languageArabic": "Arabe",

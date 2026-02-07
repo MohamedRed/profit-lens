@@ -916,6 +916,18 @@ abstract class AppLocalizations {
   /// **'Add ProfitLens to your home screen'**
   String get installAppSubtitle;
 
+  /// No description provided for @installAppIosTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Install on iPhone/iPad'**
+  String get installAppIosTitle;
+
+  /// No description provided for @installAppIosSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Share in Safari, then "Add to Home Screen".'**
+  String get installAppIosSubtitle;
+
   /// No description provided for @languageFrench.
   ///
   /// In en, this message translates to:

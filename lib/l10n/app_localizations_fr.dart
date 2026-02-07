@@ -443,6 +443,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get installAppSubtitle => 'Ajouter ProfitLens à l\'écran d\'accueil';
 
   @override
+  String get installAppIosTitle => 'Installer sur iPhone/iPad';
+
+  @override
+  String get installAppIosSubtitle =>
+      'Dans Safari, appuyez sur Partager puis « Sur l\'écran d\'accueil ».';
+
+  @override
   String get languageFrench => 'Français';
 
   @override
