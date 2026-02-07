@@ -41,15 +41,7 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
     final showDropoffName = widget.dropoffNameController.text.trim().isNotEmpty;
     return Column(
       children: [
-        if (showPickupName) ...[
-          TextFormField(
-            key: OfferFlowKeys.pickupNameField,
-            controller: widget.pickupNameController,
-            decoration: InputDecoration(labelText: l10n.pickupNameLabel),
-          ),
-          if (showPickupAddress) const SizedBox(height: 12),
-        ],
-        if (showPickupAddress)
+        if (showPickupAddress) ...[
           PlaceAutocompleteField(
             key: OfferFlowKeys.pickupAddressField,
             controller: widget.pickupAddressController,
@@ -58,15 +50,16 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
             onSelected: widget.onPickupSelected,
             onDropdownOpenChanged: (_) {},
           ),
-        const SizedBox(height: 12),
-        if (showDropoffName) ...[
-          TextFormField(
-            key: OfferFlowKeys.dropoffNameField,
-            controller: widget.dropoffNameController,
-            decoration: InputDecoration(labelText: l10n.dropoffNameLabel),
-          ),
-          const SizedBox(height: 12),
+          if (showPickupName) ...[
+            const SizedBox(height: 8),
+            TextFormField(
+              key: OfferFlowKeys.pickupNameField,
+              controller: widget.pickupNameController,
+              decoration: InputDecoration(labelText: l10n.pickupNameLabel),
+            ),
+          ],
         ],
+        if (showPickupAddress) const SizedBox(height: 12),
         PlaceAutocompleteField(
           key: OfferFlowKeys.dropoffAddressField,
           controller: widget.dropoffAddressController,
@@ -75,6 +68,14 @@ class _OfferAddressFieldsState extends State<OfferAddressFields> {
           onSelected: widget.onDropoffSelected,
           onDropdownOpenChanged: (_) {},
         ),
+        if (showDropoffName) ...[
+          const SizedBox(height: 8),
+          TextFormField(
+            key: OfferFlowKeys.dropoffNameField,
+            controller: widget.dropoffNameController,
+            decoration: InputDecoration(labelText: l10n.dropoffNameLabel),
+          ),
+        ],
       ],
     );
   }
