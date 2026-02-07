@@ -65,6 +65,7 @@ class _OfferFlowCoordinatorBodyState extends State<OfferFlowCoordinatorBody> {
     }
     setState(() {
       _controller.clearAnalysis();
+      _controller.clearScreenshotThumbnail();
       _isManualEntryRequested = false;
       _selectedVehicleId = value;
     });

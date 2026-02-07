@@ -50,6 +50,7 @@
   "sourceOpenButton": "Ouvrir la source",
   "sourceOpenError": "Impossible d'ouvrir le lien.",
   "importScreenshotButton": "Importer une capture",
+  "importedScreenshotTitle": "Capture importée",
   "analyzeButton": "Analyser la rentabilité",
   "profitabilityOverviewTitle": "Aperçu de la rentabilité",
   "offerDecisionAccept": "Accepter",

@@ -160,6 +160,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importScreenshotButton => 'Import screenshot';
 
   @override
+  String get importedScreenshotTitle => 'Imported screenshot';
+
+  @override
   String get analyzeButton => 'Analyze profitability';
 
   @override

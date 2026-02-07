@@ -13,6 +13,7 @@ import 'offer_flow_keys.dart';
 import 'offer_flow_loading_action.dart';
 import 'offer_analysis_status.dart';
 import 'offer_flow_feature_flags.dart';
+import 'widgets/offer_screenshot_preview.dart';
 
 class OfferFlowForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -106,6 +107,12 @@ class OfferFlowForm extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 16),
+          if (controller.screenshotThumbnail != null) ...[
+            OfferScreenshotPreview(
+              thumbnail: controller.screenshotThumbnail!,
+            ),
+            const SizedBox(height: 16),
+          ],
           if (showOverview) ...[
             ProfitabilityDecisionCard(
               record: previewRecord!,

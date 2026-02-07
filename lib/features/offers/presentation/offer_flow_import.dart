@@ -28,6 +28,9 @@ Future<void> importOfferScreenshot({
   if (image == null) {
     return;
   }
+  final thumbnailBytes = await image.readAsBytes();
+  controller.setScreenshotThumbnail(thumbnailBytes);
+  onUpdated();
   if (!context.mounted) {
     return;
   }

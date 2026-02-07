@@ -400,6 +400,12 @@ abstract class AppLocalizations {
   /// **'Import screenshot'**
   String get importScreenshotButton;
 
+  /// No description provided for @importedScreenshotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported screenshot'**
+  String get importedScreenshotTitle;
+
   /// No description provided for @analyzeButton.
   ///
   /// In en, this message translates to:

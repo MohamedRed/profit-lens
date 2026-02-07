@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/number_parsing.dart';
@@ -26,6 +28,7 @@ class OfferFlowController {
   PlaceSelection? dropoffSelection;
   RouteVerification? routeVerification;
   OfferRecord? analysisRecord;
+  Uint8List? screenshotThumbnail;
   OfferAnalysisStatus analysisStatus = OfferAnalysisStatus.idle;
   String? analysisErrorMessage;
 
@@ -120,7 +123,16 @@ class OfferFlowController {
     dropoffSelection = null;
     extraction = null;
     source = OfferSource.manual;
+    screenshotThumbnail = null;
     clearAnalysis();
+  }
+
+  void setScreenshotThumbnail(Uint8List bytes) {
+    screenshotThumbnail = bytes;
+  }
+
+  void clearScreenshotThumbnail() {
+    screenshotThumbnail = null;
   }
 
   int startAnalysis(OfferAnalysisStatus status) {

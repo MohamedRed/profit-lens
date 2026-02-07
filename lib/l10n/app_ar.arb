@@ -50,6 +50,7 @@
   "sourceOpenButton": "فتح المصدر",
   "sourceOpenError": "تعذر فتح الرابط.",
   "importScreenshotButton": "استيراد لقطة شاشة",
+  "importedScreenshotTitle": "لقطة شاشة مستوردة",
   "analyzeButton": "تحليل الربحية",
   "profitabilityOverviewTitle": "نظرة عامة على الربحية",
   "offerDecisionAccept": "اقبل",

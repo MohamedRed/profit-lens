@@ -50,6 +50,7 @@
   "sourceOpenButton": "Open source",
   "sourceOpenError": "Unable to open link.",
   "importScreenshotButton": "Import screenshot",
+  "importedScreenshotTitle": "Imported screenshot",
   "analyzeButton": "Analyze profitability",
   "profitabilityOverviewTitle": "Profitability overview",
   "offerDecisionAccept": "Accept",

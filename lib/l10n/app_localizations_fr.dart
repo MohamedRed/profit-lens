@@ -161,6 +161,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get importScreenshotButton => 'Importer une capture';
 
   @override
+  String get importedScreenshotTitle => 'Capture importée';
+
+  @override
   String get analyzeButton => 'Analyser la rentabilité';
 
   @override

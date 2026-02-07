@@ -160,6 +160,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get importScreenshotButton => 'استيراد لقطة شاشة';
 
   @override
+  String get importedScreenshotTitle => 'لقطة شاشة مستوردة';
+
+  @override
   String get analyzeButton => 'تحليل الربحية';
 
   @override
