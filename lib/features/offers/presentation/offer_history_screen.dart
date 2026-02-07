@@ -34,6 +34,7 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
   bool _isLoadingMore = false;
   bool _hasMore = true;
   OfferPage? _lastPage;
+  bool _hasLoadMoreError = false;
   bool _initialized = false;
 
   @override
@@ -70,19 +71,29 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
     if (_isLoadingMore || !_hasMore) return;
     setState(() {
       _isLoadingMore = true;
+      _hasLoadMoreError = false;
     });
-    final page = await _offerRepository.fetchOffersPage(
-      widget.user.uid,
-      startAfter: _lastPage?.lastDocument,
-      limit: _pageSize,
-    );
-    if (!mounted) return;
-    setState(() {
-      _offers = [..._offers, ...page.offers];
-      _lastPage = page;
-      _hasMore = page.hasMore;
-      _isLoadingMore = false;
-    });
+    try {
+      final page = await _offerRepository.fetchOffersPage(
+        widget.user.uid,
+        startAfter: _lastPage?.lastDocument,
+        limit: _pageSize,
+      );
+      if (!mounted) return;
+      setState(() {
+        _offers = [..._offers, ...page.offers];
+        _lastPage = page;
+        _hasMore = page.hasMore;
+        _isLoadingMore = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isLoadingMore = false;
+        _hasMore = false;
+        _hasLoadMoreError = true;
+      });
+    }
   }
 
   @override
@@ -154,6 +165,7 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
                             onLoadMore: _loadMore,
                             hasMore: _hasMore,
                             isLoadingMore: _isLoadingMore,
+                            hasError: _hasLoadMoreError,
                           )
                         : OfferHistoryCharts(stats: stats),
                   ),

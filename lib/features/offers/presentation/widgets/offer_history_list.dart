@@ -10,6 +10,7 @@ class OfferHistoryList extends StatelessWidget {
   final VoidCallback onLoadMore;
   final bool hasMore;
   final bool isLoadingMore;
+  final bool hasError;
 
   const OfferHistoryList({
     super.key,
@@ -18,6 +19,7 @@ class OfferHistoryList extends StatelessWidget {
     required this.onLoadMore,
     required this.hasMore,
     required this.isLoadingMore,
+    required this.hasError,
   });
 
   @override
@@ -29,6 +31,9 @@ class OfferHistoryList extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       itemBuilder: (context, index) {
         if (index >= offers.length) {
+          if (hasError) {
+            return const SizedBox.shrink();
+          }
           if (!isLoadingMore) {
             onLoadMore();
           }
