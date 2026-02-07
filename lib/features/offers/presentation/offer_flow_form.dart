@@ -7,6 +7,7 @@ import '../domain/place_selection.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
 import 'controllers/offer_flow_controller.dart';
 import 'sections/offer_details_section.dart';
+import 'sections/offer_profitability_target_section.dart';
 import 'sections/vehicle_picker_section.dart';
 import 'widgets/profitability_overview_card.dart';
 import 'offer_flow_keys.dart';
@@ -33,6 +34,7 @@ class OfferFlowForm extends StatelessWidget {
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
   final double minProfitabilityEuro;
+  final ValueChanged<double> onMinProfitabilityChanged;
 
   const OfferFlowForm({
     super.key,
@@ -53,6 +55,7 @@ class OfferFlowForm extends StatelessWidget {
     required this.onPickupSelected,
     required this.onDropoffSelected,
     required this.minProfitabilityEuro,
+    required this.onMinProfitabilityChanged,
   });
 
   @override
@@ -80,6 +83,11 @@ class OfferFlowForm extends StatelessWidget {
             vehicles: vehicles,
             selectedVehicleId: selectedVehicleId,
             onChanged: onVehicleChanged,
+          ),
+          const SizedBox(height: 16),
+          OfferProfitabilityTargetSection(
+            minProfitabilityEuro: minProfitabilityEuro,
+            onSaved: onMinProfitabilityChanged,
           ),
           const SizedBox(height: 16),
           PrimaryButton(

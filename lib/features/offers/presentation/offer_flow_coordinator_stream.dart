@@ -137,6 +137,15 @@ class _OfferFlowCoordinatorStreamState
           onUpdated: widget.onUpdated,
         );
         final previewRecord = widget.controller.analysisRecord;
+        Future<void> updateMinProfitability(double value) async {
+          if (value <= 0) {
+            return;
+          }
+          final updated = widget.profile.copyWith(
+            minProfitabilityEuro: value,
+          );
+          await AppScope.of(context).userProfileRepository.saveProfile(updated);
+        }
         return OfferFlowCoordinatorView(
           user: widget.user,
           formKey: widget.formKey,
@@ -157,6 +166,7 @@ class _OfferFlowCoordinatorStreamState
           onPickupSelected: widget.onPickupSelected,
           onDropoffSelected: widget.onDropoffSelected,
           minProfitabilityEuro: widget.profile.minProfitabilityEuro,
+          onMinProfitabilityChanged: updateMinProfitability,
         );
       },
     );

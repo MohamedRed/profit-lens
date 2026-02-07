@@ -27,6 +27,7 @@ class OfferFlowCoordinatorView extends StatelessWidget {
   final ValueChanged<PlaceSelection>? onPickupSelected;
   final ValueChanged<PlaceSelection>? onDropoffSelected;
   final double minProfitabilityEuro;
+  final ValueChanged<double> onMinProfitabilityChanged;
 
   const OfferFlowCoordinatorView({
     super.key,
@@ -48,6 +49,7 @@ class OfferFlowCoordinatorView extends StatelessWidget {
     required this.onPickupSelected,
     required this.onDropoffSelected,
     required this.minProfitabilityEuro,
+    required this.onMinProfitabilityChanged,
   });
 
   @override
@@ -71,6 +73,7 @@ class OfferFlowCoordinatorView extends StatelessWidget {
       onPickupSelected: onPickupSelected,
       onDropoffSelected: onDropoffSelected,
       minProfitabilityEuro: minProfitabilityEuro,
+      onMinProfitabilityChanged: onMinProfitabilityChanged,
     );
   }
 }
