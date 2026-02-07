@@ -124,6 +124,12 @@ Future<bool> _showAppleInstallDialog() async {
 }
 
 bool get _isStandalone {
+  if (_isIosDevice) {
+    if (js_util.hasProperty(html.window.navigator, 'standalone')) {
+      return js_util.getProperty(html.window.navigator, 'standalone') == true;
+    }
+    return false;
+  }
   final mediaQuery =
       html.window.matchMedia('(display-mode: standalone)').matches;
   if (mediaQuery) {
