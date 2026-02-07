@@ -362,6 +362,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get useSelectedPlaceButton => 'Use selected place';
 
   @override
+  String get analyzeOfferButton => 'Analyze offer';
+
+  @override
   String get vehicleSelectLabel => 'Select vehicle';
 
   @override

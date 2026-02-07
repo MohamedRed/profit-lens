@@ -136,6 +136,7 @@
   "captureScreenshotButton": "Prendre une capture",
   "mapsAutocompleteUnavailableMessage": "L’autocomplétion d’adresse est indisponible. Vérifiez la clé Google Maps API et la configuration de Places UI Kit.",
   "useSelectedPlaceButton": "Utiliser le lieu sélectionné",
+  "analyzeOfferButton": "Analyser l’offre",
   "vehicleSelectLabel": "Choisir un véhicule",
   "durationMinutesLabel": "Temps estimé (minutes)",
   "pickupNameLabel": "Nom du retrait",

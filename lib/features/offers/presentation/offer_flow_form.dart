@@ -116,6 +116,8 @@ class OfferFlowForm extends StatelessWidget {
               controller: controller,
               requiresDuration: requiresDuration,
               showAllAddressFields: isManualEntryRequested,
+              showAnalyzeAction: isManualEntryRequested,
+              onAnalyze: onViewDetails,
               onPickupSelected: onPickupSelected,
               onDropoffSelected: onDropoffSelected,
             ),

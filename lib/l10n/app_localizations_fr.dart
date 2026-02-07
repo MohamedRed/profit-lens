@@ -365,6 +365,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get useSelectedPlaceButton => 'Utiliser le lieu sélectionné';
 
   @override
+  String get analyzeOfferButton => 'Analyser l’offre';
+
+  @override
   String get vehicleSelectLabel => 'Choisir un véhicule';
 
   @override

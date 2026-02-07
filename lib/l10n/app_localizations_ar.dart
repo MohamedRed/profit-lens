@@ -360,6 +360,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get useSelectedPlaceButton => 'استخدام المكان المحدد';
 
   @override
+  String get analyzeOfferButton => 'حلّل العرض';
+
+  @override
   String get vehicleSelectLabel => 'اختر مركبة';
 
   @override

@@ -766,6 +766,12 @@ abstract class AppLocalizations {
   /// **'Use selected place'**
   String get useSelectedPlaceButton;
 
+  /// No description provided for @analyzeOfferButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze offer'**
+  String get analyzeOfferButton;
+
   /// No description provided for @vehicleSelectLabel.
   ///
   /// In en, this message translates to:
@@ -799,7 +805,7 @@ abstract class AppLocalizations {
   /// No description provided for @dropoffNameLabel.
   ///
   /// In en, this message translates to:
-  /// **'Drop-off name (optional)'**
+  /// **'Drop-off name'**
   String get dropoffNameLabel;
 
   /// No description provided for @dropoffAddressLabel.
