@@ -272,5 +272,55 @@
   "deviceReplaceAction": "Remplacer",
   "deviceLastSeenPrefix": "Dernière utilisation",
   "deviceRegisterFailedTitle": "Impossible d’enregistrer l’appareil",
-  "retryButtonLabel": "Réessayer"
+  "retryButtonLabel": "Réessayer",
+  "helpTabLabel": "Aide",
+  "helpIntroTitle": "Obtenir de l’aide rapidement",
+  "helpIntroBody": "Signalez des bugs ou des problèmes avec des captures d’écran ou une note audio. Un agent IA de développement les analysera et vous tiendra informé.",
+  "helpFormTitle": "Soumettre un ticket",
+  "helpTitleLabel": "Titre",
+  "helpTitleHint": "Résumé court du problème",
+  "helpDescriptionLabel": "Décrivez le problème",
+  "helpDescriptionHint": "Étapes, résultat attendu et ce qui s’est passé",
+  "helpDescriptionRequired": "Ajoutez une courte description ou enregistrez une note audio.",
+  "helpAttachmentTitle": "Captures d’écran",
+  "helpAttachmentSubtitle": "Ajoutez des captures pour accélérer le diagnostic.",
+  "helpAttachmentCameraButton": "Caméra",
+  "helpAttachmentGalleryButton": "Galerie",
+  "helpAttachmentLimitReached": "Limite de captures atteinte.",
+  "helpAttachmentLimitTrimmed": "Ajouté {count} captures. Supprimez-en une pour en ajouter.",
+  "@helpAttachmentLimitTrimmed": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "removeAttachmentTooltip": "Supprimer la pièce jointe",
+  "helpAudioTitle": "Note audio",
+  "helpAudioSubtitle": "Enregistrez une note vocale quand vous êtes en déplacement.",
+  "helpAudioRecordButton": "Enregistrer",
+  "helpAudioStopButton": "Arrêter",
+  "helpAudioRecordingLabel": "Enregistrement",
+  "helpAudioRecordedLabel": "Note audio",
+  "helpAudioRecordAgainButton": "Réenregistrer",
+  "helpAudioRemoveTooltip": "Supprimer la note audio",
+  "helpAudioPermissionDenied": "L’accès au micro est requis pour enregistrer.",
+  "helpAudioFailed": "Impossible d’enregistrer la note audio. Réessayez.",
+  "helpSubmittingLabel": "Envoi…",
+  "helpSubmitButton": "Envoyer le ticket",
+  "helpTicketSubmitted": "Ticket envoyé. Nous vous tiendrons informé.",
+  "helpSubmissionFailed": "Impossible d’envoyer le ticket. Réessayez.",
+  "helpRecentTicketsTitle": "Tickets récents",
+  "helpNoTicketsMessage": "Aucun ticket pour le moment.",
+  "helpStatusOpen": "Ouvert",
+  "helpStatusTriaging": "Analyse",
+  "helpStatusInProgress": "En cours",
+  "helpStatusAwaitingResponse": "En attente de vous",
+  "helpStatusResolved": "Résolu",
+  "helpStatusClosed": "Clos",
+  "helpStatusUpdatedLabel": "Statut mis à jour",
+  "helpTitleTooLong": "Le titre doit contenir au maximum {max} caractères.",
+  "@helpTitleTooLong": {
+    "placeholders": {
+      "max": {}
+    }
+  }
 }

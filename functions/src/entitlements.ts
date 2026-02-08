@@ -212,14 +212,68 @@ export async function syncStripeEntitlement(params: {
     });
     return;
   }
+  await updateEntitlementDoc({
+    docRef,
+    planId: plan.planId,
+    offerLimit: plan.offerLimit,
+    customerId: params.customerId,
+    subscriptionId: params.subscriptionId,
+    priceId: params.priceId,
+    status: params.status,
+    periodStartSec: params.periodStartSec,
+    periodEndSec: params.periodEndSec,
+  });
+}
+
+export async function syncStripeEntitlementForUid(params: {
+  uid: string;
+  customerId: string;
+  subscriptionId: string;
+  priceId: string;
+  status: string;
+  periodStartSec: number;
+  periodEndSec: number;
+}) {
+  const plan = getPlanByPriceId(params.priceId);
+  if (!plan) {
+    logger.warn("Stripe price ID not mapped to plan", {
+      priceId: params.priceId,
+    });
+    return;
+  }
+  const docRef = entitlementDocRef(params.uid);
+  await updateEntitlementDoc({
+    docRef,
+    planId: plan.planId,
+    offerLimit: plan.offerLimit,
+    customerId: params.customerId,
+    subscriptionId: params.subscriptionId,
+    priceId: params.priceId,
+    status: params.status,
+    periodStartSec: params.periodStartSec,
+    periodEndSec: params.periodEndSec,
+  });
+}
+
+async function updateEntitlementDoc(params: {
+  docRef: FirebaseFirestore.DocumentReference;
+  planId: string;
+  offerLimit: number | null;
+  customerId: string;
+  subscriptionId: string;
+  priceId: string;
+  status: string;
+  periodStartSec: number;
+  periodEndSec: number;
+}) {
   const { periodStart, periodEnd, periodKey } = buildStripePeriod(
     params.periodStartSec,
     params.periodEndSec
   );
   const payload = buildStripeEntitlement({
-    planId: plan.planId,
+    planId: params.planId,
     status: params.status,
-    offerLimit: plan.offerLimit,
+    offerLimit: params.offerLimit,
     periodStart,
     periodEnd,
     periodKey,
@@ -227,7 +281,7 @@ export async function syncStripeEntitlement(params: {
     stripeSubscriptionId: params.subscriptionId,
     stripePriceId: params.priceId,
   });
-  await docRef.set(payload, { merge: true });
+  await params.docRef.set(payload, { merge: true });
 }
 
 function parseEntitlement(data?: DocumentData | null) {

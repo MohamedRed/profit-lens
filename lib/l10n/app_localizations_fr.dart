@@ -744,4 +744,137 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get retryButtonLabel => 'Réessayer';
+
+  @override
+  String get helpTabLabel => 'Aide';
+
+  @override
+  String get helpIntroTitle => 'Obtenir de l’aide rapidement';
+
+  @override
+  String get helpIntroBody =>
+      'Signalez des bugs ou des problèmes avec des captures d’écran ou une note audio. Un agent IA de développement les analysera et vous tiendra informé.';
+
+  @override
+  String get helpFormTitle => 'Soumettre un ticket';
+
+  @override
+  String get helpTitleLabel => 'Titre';
+
+  @override
+  String get helpTitleHint => 'Résumé court du problème';
+
+  @override
+  String get helpDescriptionLabel => 'Décrivez le problème';
+
+  @override
+  String get helpDescriptionHint =>
+      'Étapes, résultat attendu et ce qui s’est passé';
+
+  @override
+  String get helpDescriptionRequired =>
+      'Ajoutez une courte description ou enregistrez une note audio.';
+
+  @override
+  String get helpAttachmentTitle => 'Captures d’écran';
+
+  @override
+  String get helpAttachmentSubtitle =>
+      'Ajoutez des captures pour accélérer le diagnostic.';
+
+  @override
+  String get helpAttachmentCameraButton => 'Caméra';
+
+  @override
+  String get helpAttachmentGalleryButton => 'Galerie';
+
+  @override
+  String get helpAttachmentLimitReached => 'Limite de captures atteinte.';
+
+  @override
+  String helpAttachmentLimitTrimmed(Object count) {
+    return 'Ajouté $count captures. Supprimez-en une pour en ajouter.';
+  }
+
+  @override
+  String get removeAttachmentTooltip => 'Supprimer la pièce jointe';
+
+  @override
+  String get helpAudioTitle => 'Note audio';
+
+  @override
+  String get helpAudioSubtitle =>
+      'Enregistrez une note vocale quand vous êtes en déplacement.';
+
+  @override
+  String get helpAudioRecordButton => 'Enregistrer';
+
+  @override
+  String get helpAudioStopButton => 'Arrêter';
+
+  @override
+  String get helpAudioRecordingLabel => 'Enregistrement';
+
+  @override
+  String get helpAudioRecordedLabel => 'Note audio';
+
+  @override
+  String get helpAudioRecordAgainButton => 'Réenregistrer';
+
+  @override
+  String get helpAudioRemoveTooltip => 'Supprimer la note audio';
+
+  @override
+  String get helpAudioPermissionDenied =>
+      'L’accès au micro est requis pour enregistrer.';
+
+  @override
+  String get helpAudioFailed =>
+      'Impossible d’enregistrer la note audio. Réessayez.';
+
+  @override
+  String get helpSubmittingLabel => 'Envoi…';
+
+  @override
+  String get helpSubmitButton => 'Envoyer le ticket';
+
+  @override
+  String get helpTicketSubmitted =>
+      'Ticket envoyé. Nous vous tiendrons informé.';
+
+  @override
+  String get helpSubmissionFailed =>
+      'Impossible d’envoyer le ticket. Réessayez.';
+
+  @override
+  String get helpRecentTicketsTitle => 'Tickets récents';
+
+  @override
+  String get helpNoTicketsMessage => 'Aucun ticket pour le moment.';
+
+  @override
+  String get helpStatusOpen => 'Ouvert';
+
+  @override
+  String get helpStatusTriaging => 'Analyse';
+
+  @override
+  String get helpStatusInProgress => 'En cours';
+
+  @override
+  String get helpStatusAwaitingResponse => 'En attente de vous';
+
+  @override
+  String get helpStatusResolved => 'Résolu';
+
+  @override
+  String get helpStatusClosed => 'Clos';
+
+  @override
+  String get helpStatusUpdatedLabel => 'Statut mis à jour';
+
+  @override
+  String helpTitleTooLong(Object max) {
+    return 'Le titre doit contenir au maximum $max caractères.';
+  }
 }

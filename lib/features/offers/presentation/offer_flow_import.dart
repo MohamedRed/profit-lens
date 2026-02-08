@@ -26,6 +26,10 @@ Future<void> importOfferScreenshot({
   required VoidCallback onUpdated,
 }) async {
   final l10n = AppLocalizations.of(context)!;
+  final withinLimit = await ensureWithinOfferLimit(context, userId);
+  if (!withinLimit) {
+    return;
+  }
   final image = await picker.pickImage(source: source);
   if (image == null) {
     return;
@@ -34,10 +38,6 @@ Future<void> importOfferScreenshot({
   controller.setScreenshotThumbnail(thumbnailBytes);
   onUpdated();
   if (!context.mounted) {
-    return;
-  }
-  final withinLimit = await ensureWithinOfferLimit(context, userId);
-  if (!withinLimit) {
     return;
   }
   final runId = controller.startAnalysis(OfferAnalysisStatus.extracting);

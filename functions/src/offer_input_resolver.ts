@@ -26,7 +26,10 @@ export async function resolveOfferInput(
       mimeType: payload.mimeType,
     });
     if (!extracted.offer) {
-      throw new HttpsError("internal", "Gemini extraction returned no offer.");
+      throw new HttpsError(
+        "failed-precondition",
+        "No offer found in screenshot."
+      );
     }
     return {
       offer: mergeOfferInputs(extracted.offer, baseOffer),

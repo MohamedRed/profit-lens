@@ -736,4 +736,135 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retryButtonLabel => 'Retry';
+
+  @override
+  String get helpTabLabel => 'Help';
+
+  @override
+  String get helpIntroTitle => 'Get help fast';
+
+  @override
+  String get helpIntroBody =>
+      'Report bugs or issues with screenshots or an audio note. A coding AI agent will triage and keep you updated.';
+
+  @override
+  String get helpFormTitle => 'Submit a ticket';
+
+  @override
+  String get helpTitleLabel => 'Title';
+
+  @override
+  String get helpTitleHint => 'Short summary of the issue';
+
+  @override
+  String get helpDescriptionLabel => 'Describe the issue';
+
+  @override
+  String get helpDescriptionHint =>
+      'Steps, expected result, and what actually happened';
+
+  @override
+  String get helpDescriptionRequired =>
+      'Add a short description or record an audio note.';
+
+  @override
+  String get helpAttachmentTitle => 'Screenshots';
+
+  @override
+  String get helpAttachmentSubtitle =>
+      'Add screenshots to speed up troubleshooting.';
+
+  @override
+  String get helpAttachmentCameraButton => 'Camera';
+
+  @override
+  String get helpAttachmentGalleryButton => 'Gallery';
+
+  @override
+  String get helpAttachmentLimitReached => 'Screenshot limit reached.';
+
+  @override
+  String helpAttachmentLimitTrimmed(Object count) {
+    return 'Added $count screenshots. Remove one to add more.';
+  }
+
+  @override
+  String get removeAttachmentTooltip => 'Remove attachment';
+
+  @override
+  String get helpAudioTitle => 'Audio note';
+
+  @override
+  String get helpAudioSubtitle =>
+      'Record a quick voice note if you’re on the go.';
+
+  @override
+  String get helpAudioRecordButton => 'Record';
+
+  @override
+  String get helpAudioStopButton => 'Stop';
+
+  @override
+  String get helpAudioRecordingLabel => 'Recording';
+
+  @override
+  String get helpAudioRecordedLabel => 'Audio note';
+
+  @override
+  String get helpAudioRecordAgainButton => 'Record again';
+
+  @override
+  String get helpAudioRemoveTooltip => 'Remove audio note';
+
+  @override
+  String get helpAudioPermissionDenied =>
+      'Microphone permission is required to record.';
+
+  @override
+  String get helpAudioFailed => 'We couldn\'t save that audio note. Try again.';
+
+  @override
+  String get helpSubmittingLabel => 'Submitting...';
+
+  @override
+  String get helpSubmitButton => 'Submit ticket';
+
+  @override
+  String get helpTicketSubmitted => 'Ticket submitted. We’ll keep you posted.';
+
+  @override
+  String get helpSubmissionFailed =>
+      'Unable to submit ticket. Please try again.';
+
+  @override
+  String get helpRecentTicketsTitle => 'Recent tickets';
+
+  @override
+  String get helpNoTicketsMessage => 'No tickets yet.';
+
+  @override
+  String get helpStatusOpen => 'Open';
+
+  @override
+  String get helpStatusTriaging => 'Triaging';
+
+  @override
+  String get helpStatusInProgress => 'In progress';
+
+  @override
+  String get helpStatusAwaitingResponse => 'Awaiting you';
+
+  @override
+  String get helpStatusResolved => 'Resolved';
+
+  @override
+  String get helpStatusClosed => 'Closed';
+
+  @override
+  String get helpStatusUpdatedLabel => 'Status updated';
+
+  @override
+  String helpTitleTooLong(Object max) {
+    return 'Title must be $max characters or less.';
+  }
 }

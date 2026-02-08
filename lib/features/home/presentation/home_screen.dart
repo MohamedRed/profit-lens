@@ -5,6 +5,7 @@ import '../../offers/presentation/offer_flow_screen.dart';
 import '../../offers/presentation/offer_history_screen.dart';
 import '../../profile/domain/user_profile.dart';
 import '../../settings/presentation/settings_screen.dart';
+import '../../help/presentation/help_screen.dart';
 import '../../../core/widgets/mobile_pill_nav.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/platform/google_maps_preloader.dart';
@@ -45,6 +46,11 @@ class _HomeScreenState extends State<HomeScreen> {
         labelBuilder: (l10n) => l10n.historyTabLabel,
         icon: Icons.history,
         page: OfferHistoryScreen(user: widget.user),
+      ),
+      _HomeTab(
+        labelBuilder: (l10n) => l10n.helpTabLabel,
+        icon: Icons.support_agent,
+        page: HelpScreen(user: widget.user),
       ),
       _HomeTab(
         labelBuilder: (l10n) => l10n.settingsTabLabel,

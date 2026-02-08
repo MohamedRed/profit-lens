@@ -21,6 +21,9 @@ import '../features/offers/data/offer_repository.dart';
 import '../features/offers/data/offer_stats_repository.dart';
 import '../features/profile/data/firestore_user_profile_repository.dart';
 import '../features/profile/data/user_profile_repository.dart';
+import '../features/help/data/firestore_help_ticket_repository.dart';
+import '../features/help/data/help_attachment_picker_service.dart';
+import '../features/help/data/help_ticket_repository.dart';
 import '../features/vehicles/data/firebase_vehicle_model_lookup_service.dart';
 import '../features/vehicles/data/firebase_vehicle_plate_lookup_service.dart';
 import '../features/vehicles/data/vehicle_model_lookup_service.dart';
@@ -44,6 +47,8 @@ class AppServices {
   final OfferStatsRepository offerStatsRepository;
   final OfferImagePickerService offerImagePickerService;
   final OfferAnalysisService offerAnalysisService;
+  final HelpTicketRepository helpTicketRepository;
+  final HelpAttachmentPickerService helpAttachmentPickerService;
   final VehicleModelLookupService vehicleModelLookupService;
   final VehiclePlateLookupService vehiclePlateLookupService;
   final AppLocaleController localeController;
@@ -62,6 +67,8 @@ class AppServices {
     OfferStatsRepository? offerStatsRepository,
     OfferImagePickerService? offerImagePickerService,
     OfferAnalysisService? offerAnalysisService,
+    HelpTicketRepository? helpTicketRepository,
+    HelpAttachmentPickerService? helpAttachmentPickerService,
     VehicleModelLookupService? vehicleModelLookupService,
     VehiclePlateLookupService? vehiclePlateLookupService,
     AppLocaleController? localeController,
@@ -84,6 +91,10 @@ class AppServices {
             offerImagePickerService ?? DeviceOfferImagePickerService(),
         offerAnalysisService =
             offerAnalysisService ?? FirebaseOfferAnalysisService(),
+        helpTicketRepository =
+            helpTicketRepository ?? FirestoreHelpTicketRepository(),
+        helpAttachmentPickerService =
+            helpAttachmentPickerService ?? DeviceHelpAttachmentPickerService(),
         vehicleModelLookupService = vehicleModelLookupService ??
             FirebaseVehicleModelLookupService(),
         vehiclePlateLookupService = vehiclePlateLookupService ??

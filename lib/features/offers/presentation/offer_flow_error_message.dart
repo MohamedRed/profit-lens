@@ -10,6 +10,14 @@ String resolveAnalysisErrorMessage(
     if (error.code == 'resource-exhausted') {
       return l10n.offerLimitReachedMessage;
     }
+    if (error.code == 'failed-precondition') {
+      final message = error.message?.trim();
+      if (message != null && message.isNotEmpty) {
+        if (_isScreenshotExtractionFailure(message)) {
+          return l10n.analysisFailedScreenshotBody;
+        }
+      }
+    }
     final message = error.message?.trim();
     if (message != null && message.isNotEmpty) {
       if (_isScreenshotExtractionFailure(message)) {
@@ -25,5 +33,7 @@ bool _isScreenshotExtractionFailure(String message) {
   final normalized = message.toLowerCase();
   return normalized.contains('gemini') ||
       normalized.contains('extraction') ||
-      normalized.contains('no offer');
+      normalized.contains('no offer') ||
+      normalized.contains('no offer found') ||
+      normalized.contains('screenshot');
 }

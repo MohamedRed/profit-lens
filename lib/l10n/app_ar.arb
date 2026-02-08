@@ -272,5 +272,55 @@
   "deviceReplaceAction": "استبدال",
   "deviceLastSeenPrefix": "آخر ظهور",
   "deviceRegisterFailedTitle": "تعذر تسجيل الجهاز",
-  "retryButtonLabel": "إعادة المحاولة"
+  "retryButtonLabel": "إعادة المحاولة",
+  "helpTabLabel": "المساعدة",
+  "helpIntroTitle": "احصل على الدعم بسرعة",
+  "helpIntroBody": "أبلغ عن الأخطاء أو المشكلات مع لقطات شاشة أو ملاحظة صوتية. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.",
+  "helpFormTitle": "إرسال تذكرة",
+  "helpTitleLabel": "العنوان",
+  "helpTitleHint": "ملخص قصير للمشكلة",
+  "helpDescriptionLabel": "صف المشكلة",
+  "helpDescriptionHint": "الخطوات، النتيجة المتوقعة، وما حدث فعليًا",
+  "helpDescriptionRequired": "أضف وصفًا مختصرًا أو سجّل ملاحظة صوتية.",
+  "helpAttachmentTitle": "لقطات الشاشة",
+  "helpAttachmentSubtitle": "أضف لقطات شاشة لتسريع التشخيص.",
+  "helpAttachmentCameraButton": "الكاميرا",
+  "helpAttachmentGalleryButton": "المعرض",
+  "helpAttachmentLimitReached": "تم الوصول إلى حد لقطات الشاشة.",
+  "helpAttachmentLimitTrimmed": "تمت إضافة {count} لقطات. احذف واحدة لإضافة المزيد.",
+  "@helpAttachmentLimitTrimmed": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "removeAttachmentTooltip": "إزالة المرفق",
+  "helpAudioTitle": "ملاحظة صوتية",
+  "helpAudioSubtitle": "سجّل ملاحظة صوتية سريعة عندما تكون في الطريق.",
+  "helpAudioRecordButton": "تسجيل",
+  "helpAudioStopButton": "إيقاف",
+  "helpAudioRecordingLabel": "جارٍ التسجيل",
+  "helpAudioRecordedLabel": "ملاحظة صوتية",
+  "helpAudioRecordAgainButton": "إعادة التسجيل",
+  "helpAudioRemoveTooltip": "إزالة الملاحظة الصوتية",
+  "helpAudioPermissionDenied": "يلزم إذن الميكروفون للتسجيل.",
+  "helpAudioFailed": "تعذر حفظ الملاحظة الصوتية. حاول مرة أخرى.",
+  "helpSubmittingLabel": "جارٍ الإرسال...",
+  "helpSubmitButton": "إرسال التذكرة",
+  "helpTicketSubmitted": "تم إرسال التذكرة. سنوافيك بالتحديثات.",
+  "helpSubmissionFailed": "تعذر إرسال التذكرة. حاول مرة أخرى.",
+  "helpRecentTicketsTitle": "أحدث التذاكر",
+  "helpNoTicketsMessage": "لا توجد تذاكر بعد.",
+  "helpStatusOpen": "مفتوحة",
+  "helpStatusTriaging": "قيد الفرز",
+  "helpStatusInProgress": "قيد العمل",
+  "helpStatusAwaitingResponse": "بانتظارك",
+  "helpStatusResolved": "تم الحل",
+  "helpStatusClosed": "مغلقة",
+  "helpStatusUpdatedLabel": "تم تحديث الحالة",
+  "helpTitleTooLong": "يجب ألا يتجاوز العنوان {max} حرفًا.",
+  "@helpTitleTooLong": {
+    "placeholders": {
+      "max": {}
+    }
+  }
 }

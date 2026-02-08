@@ -9,7 +9,7 @@ import { ensureEntitlement } from "./entitlements";
 import { AnalyzeOfferPayload } from "./offer_analysis_types";
 import { resolveOfferInput } from "./offer_input_resolver";
 import { buildRouteVerification } from "./route_verification_builder";
-import { saveOfferWithUsage } from "./offer_usage";
+import { assertOfferLimitAvailable, saveOfferWithUsage } from "./offer_usage";
 import { assertDeviceActive } from "./device_registry";
 
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
@@ -40,6 +40,7 @@ export const analyzeOffer = onCall(
     }
     await assertDeviceActive(uid, deviceId);
     const entitlement = await ensureEntitlement(uid);
+    await assertOfferLimitAvailable({ uid, entitlement });
     const resolved = await resolveOfferInput(payload, {
       apiKey: geminiApiKey.value(),
       model: geminiModel.value(),

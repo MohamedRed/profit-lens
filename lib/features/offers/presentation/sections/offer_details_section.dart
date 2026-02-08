@@ -6,6 +6,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/place_selection.dart';
 import '../controllers/offer_flow_controller.dart';
 import '../offer_analysis_status.dart';
+import '../../domain/offer_source.dart';
 import 'offer_analysis_progress_card.dart';
 import 'offer_details_form_fields.dart';
 import 'offer_details_summary.dart';
@@ -103,6 +104,7 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
         controller: widget.controller,
         onEdit: () => setState(() => _isEditing = true),
         onReset: _resetOffer,
+        showEditAction: widget.controller.source == OfferSource.manual,
       );
     }
     return SectionCard(

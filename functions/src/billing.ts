@@ -3,7 +3,13 @@ import { defineSecret } from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
 import Stripe from "stripe";
 import { Timestamp } from "firebase-admin/firestore";
-import { entitlementDocRef, ensureEntitlement, getPlanByPriceId, syncStripeEntitlement } from "./entitlements";
+import {
+  entitlementDocRef,
+  ensureEntitlement,
+  getPlanByPriceId,
+  syncStripeEntitlement,
+  syncStripeEntitlementForUid,
+} from "./entitlements";
 
 const stripeSecretKey = defineSecret("STRIPE_SECRET_KEY");
 const stripeWebhookSecret = defineSecret("STRIPE_WEBHOOK_SECRET");
@@ -49,6 +55,12 @@ export const createCheckoutSession = onCall(
       mode: "subscription",
       customer: customerId,
       line_items: [{ price: priceId, quantity: 1 }],
+      subscription_data: {
+        metadata: {
+          uid,
+          planId: plan.planId,
+        },
+      },
       success_url: `${origin}/`,
       cancel_url: `${origin}/`,
       client_reference_id: uid,
@@ -135,7 +147,7 @@ export const stripeWebhook = onRequest(
         }
         case "checkout.session.completed": {
           const session = event.data.object as Stripe.Checkout.Session;
-          await syncCheckoutSession(session);
+          await syncCheckoutSession(session, stripe);
           break;
         }
         default:
@@ -175,10 +187,23 @@ async function syncSubscription(subscription: Stripe.Subscription) {
     typeof subscription.customer === "string"
       ? subscription.customer
       : subscription.customer.id;
+  const uid = subscription.metadata?.uid?.trim();
   const item = subscription.items.data[0];
   const priceId = item?.price?.id;
   if (!priceId) {
     logger.warn("Subscription missing price", { subscriptionId: subscription.id });
+    return;
+  }
+  if (uid) {
+    await syncStripeEntitlementForUid({
+      uid,
+      customerId,
+      subscriptionId: subscription.id,
+      priceId,
+      status: subscription.status,
+      periodStartSec: subscription.current_period_start,
+      periodEndSec: subscription.current_period_end,
+    });
     return;
   }
   await syncStripeEntitlement({
@@ -191,7 +216,10 @@ async function syncSubscription(subscription: Stripe.Subscription) {
   });
 }
 
-async function syncCheckoutSession(session: Stripe.Checkout.Session) {
+async function syncCheckoutSession(
+  session: Stripe.Checkout.Session,
+  stripe: Stripe
+) {
   if (!session.customer || typeof session.customer !== "string") {
     return;
   }
@@ -207,4 +235,28 @@ async function syncCheckoutSession(session: Stripe.Checkout.Session) {
     },
     { merge: true }
   );
+  if (!session.subscription || typeof session.subscription !== "string") {
+    return;
+  }
+  const subscription = await stripe.subscriptions.retrieve(
+    session.subscription
+  );
+  const item = subscription.items.data[0];
+  const priceId = item?.price?.id;
+  if (!priceId) {
+    logger.warn("Checkout session missing price", {
+      subscriptionId: subscription.id,
+      sessionId: session.id,
+    });
+    return;
+  }
+  await syncStripeEntitlementForUid({
+    uid,
+    customerId: session.customer,
+    subscriptionId: subscription.id,
+    priceId,
+    status: subscription.status,
+    periodStartSec: subscription.current_period_start,
+    periodEndSec: subscription.current_period_end,
+  });
 }

@@ -272,5 +272,55 @@
   "deviceReplaceAction": "Replace",
   "deviceLastSeenPrefix": "Last seen",
   "deviceRegisterFailedTitle": "Unable to register device",
-  "retryButtonLabel": "Retry"
+  "retryButtonLabel": "Retry",
+  "helpTabLabel": "Help",
+  "helpIntroTitle": "Get help fast",
+  "helpIntroBody": "Report bugs or issues with screenshots or an audio note. A coding AI agent will triage and keep you updated.",
+  "helpFormTitle": "Submit a ticket",
+  "helpTitleLabel": "Title",
+  "helpTitleHint": "Short summary of the issue",
+  "helpDescriptionLabel": "Describe the issue",
+  "helpDescriptionHint": "Steps, expected result, and what actually happened",
+  "helpDescriptionRequired": "Add a short description or record an audio note.",
+  "helpAttachmentTitle": "Screenshots",
+  "helpAttachmentSubtitle": "Add screenshots to speed up troubleshooting.",
+  "helpAttachmentCameraButton": "Camera",
+  "helpAttachmentGalleryButton": "Gallery",
+  "helpAttachmentLimitReached": "Screenshot limit reached.",
+  "helpAttachmentLimitTrimmed": "Added {count} screenshots. Remove one to add more.",
+  "@helpAttachmentLimitTrimmed": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "removeAttachmentTooltip": "Remove attachment",
+  "helpAudioTitle": "Audio note",
+  "helpAudioSubtitle": "Record a quick voice note if you’re on the go.",
+  "helpAudioRecordButton": "Record",
+  "helpAudioStopButton": "Stop",
+  "helpAudioRecordingLabel": "Recording",
+  "helpAudioRecordedLabel": "Audio note",
+  "helpAudioRecordAgainButton": "Record again",
+  "helpAudioRemoveTooltip": "Remove audio note",
+  "helpAudioPermissionDenied": "Microphone permission is required to record.",
+  "helpAudioFailed": "We couldn't save that audio note. Try again.",
+  "helpSubmittingLabel": "Submitting...",
+  "helpSubmitButton": "Submit ticket",
+  "helpTicketSubmitted": "Ticket submitted. We’ll keep you posted.",
+  "helpSubmissionFailed": "Unable to submit ticket. Please try again.",
+  "helpRecentTicketsTitle": "Recent tickets",
+  "helpNoTicketsMessage": "No tickets yet.",
+  "helpStatusOpen": "Open",
+  "helpStatusTriaging": "Triaging",
+  "helpStatusInProgress": "In progress",
+  "helpStatusAwaitingResponse": "Awaiting you",
+  "helpStatusResolved": "Resolved",
+  "helpStatusClosed": "Closed",
+  "helpStatusUpdatedLabel": "Status updated",
+  "helpTitleTooLong": "Title must be {max} characters or less.",
+  "@helpTitleTooLong": {
+    "placeholders": {
+      "max": {}
+    }
+  }
 }

@@ -730,4 +730,131 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get retryButtonLabel => 'إعادة المحاولة';
+
+  @override
+  String get helpTabLabel => 'المساعدة';
+
+  @override
+  String get helpIntroTitle => 'احصل على الدعم بسرعة';
+
+  @override
+  String get helpIntroBody =>
+      'أبلغ عن الأخطاء أو المشكلات مع لقطات شاشة أو ملاحظة صوتية. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.';
+
+  @override
+  String get helpFormTitle => 'إرسال تذكرة';
+
+  @override
+  String get helpTitleLabel => 'العنوان';
+
+  @override
+  String get helpTitleHint => 'ملخص قصير للمشكلة';
+
+  @override
+  String get helpDescriptionLabel => 'صف المشكلة';
+
+  @override
+  String get helpDescriptionHint => 'الخطوات، النتيجة المتوقعة، وما حدث فعليًا';
+
+  @override
+  String get helpDescriptionRequired =>
+      'أضف وصفًا مختصرًا أو سجّل ملاحظة صوتية.';
+
+  @override
+  String get helpAttachmentTitle => 'لقطات الشاشة';
+
+  @override
+  String get helpAttachmentSubtitle => 'أضف لقطات شاشة لتسريع التشخيص.';
+
+  @override
+  String get helpAttachmentCameraButton => 'الكاميرا';
+
+  @override
+  String get helpAttachmentGalleryButton => 'المعرض';
+
+  @override
+  String get helpAttachmentLimitReached => 'تم الوصول إلى حد لقطات الشاشة.';
+
+  @override
+  String helpAttachmentLimitTrimmed(Object count) {
+    return 'تمت إضافة $count لقطات. احذف واحدة لإضافة المزيد.';
+  }
+
+  @override
+  String get removeAttachmentTooltip => 'إزالة المرفق';
+
+  @override
+  String get helpAudioTitle => 'ملاحظة صوتية';
+
+  @override
+  String get helpAudioSubtitle =>
+      'سجّل ملاحظة صوتية سريعة عندما تكون في الطريق.';
+
+  @override
+  String get helpAudioRecordButton => 'تسجيل';
+
+  @override
+  String get helpAudioStopButton => 'إيقاف';
+
+  @override
+  String get helpAudioRecordingLabel => 'جارٍ التسجيل';
+
+  @override
+  String get helpAudioRecordedLabel => 'ملاحظة صوتية';
+
+  @override
+  String get helpAudioRecordAgainButton => 'إعادة التسجيل';
+
+  @override
+  String get helpAudioRemoveTooltip => 'إزالة الملاحظة الصوتية';
+
+  @override
+  String get helpAudioPermissionDenied => 'يلزم إذن الميكروفون للتسجيل.';
+
+  @override
+  String get helpAudioFailed => 'تعذر حفظ الملاحظة الصوتية. حاول مرة أخرى.';
+
+  @override
+  String get helpSubmittingLabel => 'جارٍ الإرسال...';
+
+  @override
+  String get helpSubmitButton => 'إرسال التذكرة';
+
+  @override
+  String get helpTicketSubmitted => 'تم إرسال التذكرة. سنوافيك بالتحديثات.';
+
+  @override
+  String get helpSubmissionFailed => 'تعذر إرسال التذكرة. حاول مرة أخرى.';
+
+  @override
+  String get helpRecentTicketsTitle => 'أحدث التذاكر';
+
+  @override
+  String get helpNoTicketsMessage => 'لا توجد تذاكر بعد.';
+
+  @override
+  String get helpStatusOpen => 'مفتوحة';
+
+  @override
+  String get helpStatusTriaging => 'قيد الفرز';
+
+  @override
+  String get helpStatusInProgress => 'قيد العمل';
+
+  @override
+  String get helpStatusAwaitingResponse => 'بانتظارك';
+
+  @override
+  String get helpStatusResolved => 'تم الحل';
+
+  @override
+  String get helpStatusClosed => 'مغلقة';
+
+  @override
+  String get helpStatusUpdatedLabel => 'تم تحديث الحالة';
+
+  @override
+  String helpTitleTooLong(Object max) {
+    return 'يجب ألا يتجاوز العنوان $max حرفًا.';
+  }
 }

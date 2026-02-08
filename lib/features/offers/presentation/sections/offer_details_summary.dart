@@ -8,12 +8,14 @@ class OfferDetailsSummary extends StatelessWidget {
   final OfferFlowController controller;
   final VoidCallback onEdit;
   final VoidCallback onReset;
+  final bool showEditAction;
 
   const OfferDetailsSummary({
     super.key,
     required this.controller,
     required this.onEdit,
     required this.onReset,
+    required this.showEditAction,
   });
 
   @override
@@ -74,10 +76,11 @@ class OfferDetailsSummary extends StatelessWidget {
           if (dropoffAddress.isNotEmpty)
             Text('${l10n.dropoffAddressLabel}: $dropoffAddress'),
           const SizedBox(height: 8),
-          TextButton(
-            onPressed: onEdit,
-            child: Text(l10n.editOfferDetailsButton),
-          ),
+          if (showEditAction)
+            TextButton(
+              onPressed: onEdit,
+              child: Text(l10n.editOfferDetailsButton),
+            ),
         ],
       ),
     );

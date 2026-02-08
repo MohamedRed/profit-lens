@@ -40,3 +40,24 @@ export async function saveOfferWithUsage(params: {
     tx.set(docRef, document, { merge: true });
   });
 }
+
+export async function assertOfferLimitAvailable(params: {
+  uid: string;
+  entitlement: EntitlementSnapshot;
+}) {
+  const { uid, entitlement } = params;
+  if (entitlement.offerLimit == null) {
+    return;
+  }
+  const usageRef = usageDocRef(uid, entitlement.periodKey);
+  const usageSnapshot = await usageRef.get();
+  const currentCount = usageSnapshot.exists
+    ? Number(usageSnapshot.data()?.offerCount ?? 0)
+    : 0;
+  if (currentCount >= entitlement.offerLimit) {
+    throw new HttpsError("resource-exhausted", "Offer limit reached.", {
+      offerLimit: entitlement.offerLimit,
+      used: currentCount,
+    });
+  }
+}

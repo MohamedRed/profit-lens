@@ -1467,6 +1467,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retryButtonLabel;
+
+  /// No description provided for @helpTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get helpTabLabel;
+
+  /// No description provided for @helpIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get help fast'**
+  String get helpIntroTitle;
+
+  /// No description provided for @helpIntroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Report bugs or issues with screenshots or an audio note. A coding AI agent will triage and keep you updated.'**
+  String get helpIntroBody;
+
+  /// No description provided for @helpFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit a ticket'**
+  String get helpFormTitle;
+
+  /// No description provided for @helpTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get helpTitleLabel;
+
+  /// No description provided for @helpTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Short summary of the issue'**
+  String get helpTitleHint;
+
+  /// No description provided for @helpDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the issue'**
+  String get helpDescriptionLabel;
+
+  /// No description provided for @helpDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Steps, expected result, and what actually happened'**
+  String get helpDescriptionHint;
+
+  /// No description provided for @helpDescriptionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a short description or record an audio note.'**
+  String get helpDescriptionRequired;
+
+  /// No description provided for @helpAttachmentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshots'**
+  String get helpAttachmentTitle;
+
+  /// No description provided for @helpAttachmentSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add screenshots to speed up troubleshooting.'**
+  String get helpAttachmentSubtitle;
+
+  /// No description provided for @helpAttachmentCameraButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get helpAttachmentCameraButton;
+
+  /// No description provided for @helpAttachmentGalleryButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get helpAttachmentGalleryButton;
+
+  /// No description provided for @helpAttachmentLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshot limit reached.'**
+  String get helpAttachmentLimitReached;
+
+  /// No description provided for @helpAttachmentLimitTrimmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {count} screenshots. Remove one to add more.'**
+  String helpAttachmentLimitTrimmed(Object count);
+
+  /// No description provided for @removeAttachmentTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove attachment'**
+  String get removeAttachmentTooltip;
+
+  /// No description provided for @helpAudioTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio note'**
+  String get helpAudioTitle;
+
+  /// No description provided for @helpAudioSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record a quick voice note if you’re on the go.'**
+  String get helpAudioSubtitle;
+
+  /// No description provided for @helpAudioRecordButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Record'**
+  String get helpAudioRecordButton;
+
+  /// No description provided for @helpAudioStopButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get helpAudioStopButton;
+
+  /// No description provided for @helpAudioRecordingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording'**
+  String get helpAudioRecordingLabel;
+
+  /// No description provided for @helpAudioRecordedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio note'**
+  String get helpAudioRecordedLabel;
+
+  /// No description provided for @helpAudioRecordAgainButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Record again'**
+  String get helpAudioRecordAgainButton;
+
+  /// No description provided for @helpAudioRemoveTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove audio note'**
+  String get helpAudioRemoveTooltip;
+
+  /// No description provided for @helpAudioPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission is required to record.'**
+  String get helpAudioPermissionDenied;
+
+  /// No description provided for @helpAudioFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t save that audio note. Try again.'**
+  String get helpAudioFailed;
+
+  /// No description provided for @helpSubmittingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting...'**
+  String get helpSubmittingLabel;
+
+  /// No description provided for @helpSubmitButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit ticket'**
+  String get helpSubmitButton;
+
+  /// No description provided for @helpTicketSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket submitted. We’ll keep you posted.'**
+  String get helpTicketSubmitted;
+
+  /// No description provided for @helpSubmissionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to submit ticket. Please try again.'**
+  String get helpSubmissionFailed;
+
+  /// No description provided for @helpRecentTicketsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent tickets'**
+  String get helpRecentTicketsTitle;
+
+  /// No description provided for @helpNoTicketsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No tickets yet.'**
+  String get helpNoTicketsMessage;
+
+  /// No description provided for @helpStatusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get helpStatusOpen;
+
+  /// No description provided for @helpStatusTriaging.
+  ///
+  /// In en, this message translates to:
+  /// **'Triaging'**
+  String get helpStatusTriaging;
+
+  /// No description provided for @helpStatusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get helpStatusInProgress;
+
+  /// No description provided for @helpStatusAwaitingResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting you'**
+  String get helpStatusAwaitingResponse;
+
+  /// No description provided for @helpStatusResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get helpStatusResolved;
+
+  /// No description provided for @helpStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get helpStatusClosed;
+
+  /// No description provided for @helpStatusUpdatedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status updated'**
+  String get helpStatusUpdatedLabel;
+
+  /// No description provided for @helpTitleTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Title must be {max} characters or less.'**
+  String helpTitleTooLong(Object max);
 }
 
 class _AppLocalizationsDelegate
