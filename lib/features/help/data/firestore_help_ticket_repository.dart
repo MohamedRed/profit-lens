@@ -1,0 +1,129 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../core/config/app_config.dart';
+import '../domain/help_ticket.dart';
+import '../domain/help_ticket_attachment.dart';
+import '../domain/help_ticket_attachment_type.dart';
+import '../domain/help_ticket_draft.dart';
+import '../domain/help_ticket_status.dart';
+import 'help_ticket_mapper.dart';
+import 'help_ticket_repository.dart';
+import 'help_ticket_storage.dart';
+
+class FirestoreHelpTicketRepository implements HelpTicketRepository {
+  final FirebaseFirestore _firestore;
+  final HelpTicketMapper _mapper;
+  final HelpTicketStorage _storage;
+  FirestoreHelpTicketRepository({
+    FirebaseFirestore? firestore,
+    HelpTicketMapper? mapper,
+    HelpTicketStorage? storage,
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _mapper = mapper ?? HelpTicketMapper(),
+       _storage = storage ?? FirebaseHelpTicketStorage();
+
+  void _ensureConfigured() {
+    if (!AppConfig.firebaseConfigured) {
+      throw StateError('Firebase is not configured.');
+    }
+  }
+
+  CollectionReference<Map<String, dynamic>> _collection(String uid) {
+    return _firestore.collection('users').doc(uid).collection('helpTickets');
+  }
+
+  @override
+  Stream<List<HelpTicket>> watchTickets(String uid) {
+    _ensureConfigured();
+    return _collection(uid)
+        .orderBy('updatedAt', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => _mapper.fromDocument(doc.id, doc.data()))
+              .whereType<HelpTicket>()
+              .toList(),
+        );
+  }
+
+  @override
+  Future<HelpTicket> createTicket({
+    required String uid,
+    required HelpTicketDraft draft,
+    required List<HelpTicketAttachmentDraft> attachments,
+  }) async {
+    _ensureConfigured();
+    final ticketRef = _collection(uid).doc();
+    final ticketId = ticketRef.id;
+    final uploaded = await _uploadAttachments(
+      uid: uid,
+      ticketId: ticketId,
+      attachments: attachments,
+    );
+
+    final imageCount = uploaded
+        .where((item) => item.type == HelpTicketAttachmentType.image)
+        .length;
+    final audioCount = uploaded
+        .where((item) => item.type == HelpTicketAttachmentType.audio)
+        .length;
+
+    final batch = _firestore.batch();
+    batch.set(ticketRef, {
+      'title': draft.title,
+      'description': draft.description,
+      'status': helpTicketStatusToString(HelpTicketStatus.open),
+      'deviceId': draft.deviceId,
+      'platform': draft.platform,
+      'locale': draft.locale,
+      'imageCount': imageCount,
+      'audioCount': audioCount,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+
+    final attachmentsRef = ticketRef.collection('attachments');
+    for (final attachment in uploaded) {
+      batch.set(attachmentsRef.doc(attachment.id), {
+        'type': helpTicketAttachmentTypeToString(attachment.type),
+        'url': attachment.url,
+        'filename': attachment.filename,
+        'contentType': attachment.contentType,
+        'sizeBytes': attachment.sizeBytes,
+        'durationSeconds': attachment.durationSeconds,
+        'uploadedAt': FieldValue.serverTimestamp(),
+      });
+    }
+    await batch.commit();
+
+    return HelpTicket(
+      id: ticketId,
+      title: draft.title,
+      description: draft.description,
+      status: HelpTicketStatus.open,
+      statusMessage: null,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      imageCount: imageCount,
+      audioCount: audioCount,
+    );
+  }
+
+  Future<List<HelpTicketAttachment>> _uploadAttachments({
+    required String uid,
+    required String ticketId,
+    required List<HelpTicketAttachmentDraft> attachments,
+  }) async {
+    if (attachments.isEmpty) {
+      return [];
+    }
+    return Future.wait(
+      attachments.map(
+        (attachment) => _storage.uploadAttachment(
+          uid: uid,
+          ticketId: ticketId,
+          attachment: attachment,
+        ),
+      ),
+    );
+  }
+}

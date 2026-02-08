@@ -7,8 +7,10 @@ import 'package:profit_lens/features/profile/data/user_profile_repository.dart';
 import 'package:profit_lens/features/vehicles/data/vehicle_model_lookup_service.dart';
 import 'package:profit_lens/features/vehicles/data/vehicle_plate_lookup_service.dart';
 import 'package:profit_lens/features/vehicles/data/vehicle_repository.dart';
+import 'package:profit_lens/features/help/data/help_ticket_repository.dart';
 
 import 'fakes/auth_repository_fake.dart';
+import 'fakes/help_ticket_repository_fake.dart';
 import 'fakes/offer_image_picker_service_fake.dart';
 import 'fakes/offer_repository_fake.dart';
 import 'fakes/user_profile_repository_fake.dart';
@@ -26,19 +28,21 @@ class TestAppServices extends AppServices {
     OfferAnalysisService? offerAnalysisService,
     VehicleModelLookupService? vehicleModelLookupService,
     VehiclePlateLookupService? vehiclePlateLookupService,
+    HelpTicketRepository? helpTicketRepository,
   }) : super(
-          authRepository: authRepository ?? InMemoryAuthRepository(),
-          userProfileRepository:
-              userProfileRepository ?? InMemoryUserProfileRepository(),
-          vehicleRepository:
-              vehicleRepository ?? InMemoryVehicleRepository(),
-          offerRepository: offerRepository ?? InMemoryOfferRepository(),
-          offerImagePickerService:
-              offerImagePickerService ?? const ThrowingOfferImagePickerService(),
-          offerAnalysisService: offerAnalysisService,
-          vehicleModelLookupService:
-              vehicleModelLookupService ?? const StubVehicleModelLookupService(),
-          vehiclePlateLookupService: vehiclePlateLookupService ??
-              const StubVehiclePlateLookupService(),
-        );
+         authRepository: authRepository ?? InMemoryAuthRepository(),
+         userProfileRepository:
+             userProfileRepository ?? InMemoryUserProfileRepository(),
+         vehicleRepository: vehicleRepository ?? InMemoryVehicleRepository(),
+         offerRepository: offerRepository ?? InMemoryOfferRepository(),
+         offerImagePickerService:
+             offerImagePickerService ?? const ThrowingOfferImagePickerService(),
+         offerAnalysisService: offerAnalysisService,
+         vehicleModelLookupService:
+             vehicleModelLookupService ?? const StubVehicleModelLookupService(),
+         vehiclePlateLookupService:
+             vehiclePlateLookupService ?? const StubVehiclePlateLookupService(),
+         helpTicketRepository:
+             helpTicketRepository ?? InMemoryHelpTicketRepository(),
+       );
 }
