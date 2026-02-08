@@ -36,6 +36,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Install functions dependencies
+        run: npm --prefix functions install
+
+      - name: Run functions unit tests
+        run: npm --prefix functions run test
+
       - name: Run web integration tests
         env:
           CI: "true"

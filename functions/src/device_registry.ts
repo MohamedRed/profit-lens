@@ -31,90 +31,101 @@ export const registerDevice = onCall(
       throw new HttpsError("unauthenticated", "Authentication required.");
     }
     const payload = request.data as DevicePayload;
-    const deviceId = payload?.deviceId?.trim();
-    if (!deviceId) {
-      throw new HttpsError("invalid-argument", "Missing deviceId.");
-    }
-    const platform = payload?.platform?.trim() ?? "";
-    const userAgent = payload?.userAgent?.trim() ?? "";
-    const replaceDeviceId = payload?.replaceDeviceId?.trim();
-    const entitlement = await ensureEntitlement(uid);
-    const deviceLimit = entitlement.deviceLimit ?? 1;
-    const devicesRef = db.collection("users").doc(uid).collection("devices");
-    const activeQuery = devicesRef.where("active", "==", true);
-    const now = Timestamp.now();
-
-    await db.runTransaction(async (tx) => {
-      const activeSnapshot = await tx.get(activeQuery);
-      const activeDocs = activeSnapshot.docs;
-      const activeIds = new Set(activeDocs.map((doc) => doc.id));
-      const deviceRef = devicesRef.doc(deviceId);
-      if (activeIds.has(deviceId)) {
-        tx.set(
-          deviceRef,
-          {
-            platform,
-            userAgent,
-            lastSeen: now,
-            active: true,
-            updatedAt: now,
-          },
-          { merge: true }
-        );
-        return;
-      }
-      if (activeDocs.length < deviceLimit) {
-        tx.set(
-          deviceRef,
-          {
-            platform,
-            userAgent,
-            firstSeen: now,
-            lastSeen: now,
-            active: true,
-            updatedAt: now,
-          },
-          { merge: true }
-        );
-        return;
-      }
-      if (replaceDeviceId) {
-        const replaceRef = devicesRef.doc(replaceDeviceId);
-        tx.set(
-          replaceRef,
-          {
-            active: false,
-            updatedAt: now,
-          },
-          { merge: true }
-        );
-        tx.set(
-          deviceRef,
-          {
-            platform,
-            userAgent,
-            firstSeen: now,
-            lastSeen: now,
-            active: true,
-            updatedAt: now,
-          },
-          { merge: true }
-        );
-        return;
-      }
-      throw new HttpsError("resource-exhausted", "Device limit reached.", {
-        deviceLimit,
-        activeDevices: activeDocs.map((doc) => serializeDevice(doc)),
-      });
-    });
-
-    const updatedSnapshot = await activeQuery.get();
-    return {
-      deviceLimit,
-      activeDevices: updatedSnapshot.docs.map((doc) => serializeDevice(doc)),
-    };
+    return registerDeviceCore({ uid, payload });
   }
 );
+
+export async function registerDeviceCore(params: {
+  uid: string;
+  payload: DevicePayload;
+}) {
+  const deviceId = params.payload?.deviceId?.trim();
+  if (!deviceId) {
+    throw new HttpsError("invalid-argument", "Missing deviceId.");
+  }
+  const platform = params.payload?.platform?.trim() ?? "";
+  const userAgent = params.payload?.userAgent?.trim() ?? "";
+  const replaceDeviceId = params.payload?.replaceDeviceId?.trim();
+  const entitlement = await ensureEntitlement(params.uid);
+  const deviceLimit = entitlement.deviceLimit ?? 1;
+  const devicesRef = db.collection("users").doc(params.uid).collection("devices");
+  const activeQuery = devicesRef.where("active", "==", true);
+  const now = Timestamp.now();
+
+  await db.runTransaction(async (tx) => {
+    const activeSnapshot = await tx.get(activeQuery);
+    const activeDocs = activeSnapshot.docs ?? [];
+    const activeIds = new Set(activeDocs.map((doc) => doc.id));
+    const deviceRef = devicesRef.doc(deviceId);
+    if (activeIds.has(deviceId)) {
+      tx.set(
+        deviceRef,
+        {
+          deviceId,
+          platform,
+          userAgent,
+          lastSeen: now,
+          active: true,
+          updatedAt: now,
+        },
+        { merge: true }
+      );
+      return;
+    }
+    if (activeDocs.length < deviceLimit) {
+      tx.set(
+        deviceRef,
+        {
+          deviceId,
+          platform,
+          userAgent,
+          firstSeen: now,
+          lastSeen: now,
+          active: true,
+          updatedAt: now,
+        },
+        { merge: true }
+      );
+      return;
+    }
+    if (replaceDeviceId) {
+      const replaceRef = devicesRef.doc(replaceDeviceId);
+      tx.set(
+        replaceRef,
+        {
+          deviceId: replaceDeviceId,
+          active: false,
+          updatedAt: now,
+        },
+        { merge: true }
+      );
+      tx.set(
+        deviceRef,
+        {
+          deviceId,
+          platform,
+          userAgent,
+          firstSeen: now,
+          lastSeen: now,
+          active: true,
+          updatedAt: now,
+        },
+        { merge: true }
+      );
+      return;
+    }
+    throw new HttpsError("resource-exhausted", "Device limit reached.", {
+      deviceLimit,
+      activeDevices: activeDocs.map((doc) => serializeDevice(doc)),
+    });
+  });
+
+  const updatedSnapshot = await activeQuery.get();
+  return {
+    deviceLimit,
+    activeDevices: updatedSnapshot.docs.map((doc) => serializeDevice(doc)),
+  };
+}
 
 export const revokeDevice = onCall(
   {
@@ -140,6 +151,7 @@ export const revokeDevice = onCall(
       .doc(deviceId);
     await deviceRef.set(
       {
+        deviceId,
         active: false,
         updatedAt: Timestamp.now(),
       },
