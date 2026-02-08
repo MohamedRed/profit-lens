@@ -11,10 +11,7 @@ import '../../../billing/presentation/subscription_plans_sheet.dart';
 class OfferUsageCard extends StatelessWidget {
   final String uid;
 
-  const OfferUsageCard({
-    super.key,
-    required this.uid,
-  });
+  const OfferUsageCard({super.key, required this.uid});
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +67,7 @@ class _OfferUsageContent extends StatelessWidget {
   final Entitlement entitlement;
   final OfferUsage? usage;
   final VoidCallback onUpgrade;
-  final VoidCallback onManage;
+  final Future<void> Function() onManage;
 
   const _OfferUsageContent({
     required this.entitlement,
@@ -84,7 +81,9 @@ class _OfferUsageContent extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final offerLimit = entitlement.offerLimit;
     final used = usage?.offerCount ?? 0;
-    final remaining = offerLimit == null ? null : (offerLimit - used).clamp(0, offerLimit);
+    final remaining = offerLimit == null
+        ? null
+        : (offerLimit - used).clamp(0, offerLimit);
     final label = remaining == null
         ? l10n.offersRemainingUnlimited
         : l10n.offersRemainingValue(remaining);
@@ -92,10 +91,7 @@ class _OfferUsageContent extends StatelessWidget {
     return SectionCard(
       title: l10n.offersRemainingTitle,
       children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
+        Text(label, style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 6),
         Text(
           '${l10n.subscriptionStatusLabel}: $statusLabel',
@@ -108,10 +104,7 @@ class _OfferUsageContent extends StatelessWidget {
             child: Text(l10n.upgradePlanButton),
           )
         else
-          FilledButton(
-            onPressed: onManage,
-            child: Text(l10n.managePlanButton),
-          ),
+          _ManagePlanButton(onManage: onManage),
       ],
     );
   }
@@ -124,10 +117,9 @@ class _OfferUsageContent extends StatelessWidget {
     final status = entitlement.status.toLowerCase();
     if (entitlement.cancelAtPeriodEnd &&
         (status == 'active' || status == 'trialing' || status == 'past_due')) {
-      final formattedDate =
-          MaterialLocalizations.of(context).formatMediumDate(
-        entitlement.periodEnd,
-      );
+      final formattedDate = MaterialLocalizations.of(
+        context,
+      ).formatMediumDate(entitlement.periodEnd);
       return l10n.subscriptionStatusCanceling(formattedDate);
     }
     switch (status) {
@@ -150,5 +142,62 @@ class _OfferUsageContent extends StatelessWidget {
       default:
         return l10n.subscriptionStatusUnknown;
     }
+  }
+}
+
+class _ManagePlanButton extends StatefulWidget {
+  final Future<void> Function() onManage;
+
+  const _ManagePlanButton({required this.onManage});
+
+  @override
+  State<_ManagePlanButton> createState() => _ManagePlanButtonState();
+}
+
+class _ManagePlanButtonState extends State<_ManagePlanButton> {
+  bool _openingPortal = false;
+
+  Future<void> _handlePress() async {
+    if (_openingPortal) {
+      return;
+    }
+    setState(() => _openingPortal = true);
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await widget.onManage();
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.sourceOpenError)));
+    }
+    if (!mounted) {
+      return;
+    }
+    setState(() => _openingPortal = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return FilledButton(
+      onPressed: _openingPortal ? null : _handlePress,
+      child: _openingPortal
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                const SizedBox(width: 12),
+                Text(l10n.loadingLabel),
+              ],
+            )
+          : Text(l10n.managePlanButton),
+    );
   }
 }
