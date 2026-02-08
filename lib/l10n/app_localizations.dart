@@ -1360,6 +1360,12 @@ abstract class AppLocalizations {
   /// **'Unknown'**
   String get subscriptionStatusUnknown;
 
+  /// No description provided for @subscriptionStatusCanceling.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancels on {date}'**
+  String subscriptionStatusCanceling(Object date);
+
   /// No description provided for @upgradePlanButton.
   ///
   /// In en, this message translates to:

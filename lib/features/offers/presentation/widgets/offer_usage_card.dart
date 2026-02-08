@@ -88,7 +88,7 @@ class _OfferUsageContent extends StatelessWidget {
     final label = remaining == null
         ? l10n.offersRemainingUnlimited
         : l10n.offersRemainingValue(remaining);
-    final statusLabel = _resolveStatusLabel(l10n, entitlement);
+    final statusLabel = _resolveStatusLabel(context, l10n, entitlement);
     return SectionCard(
       title: l10n.offersRemainingTitle,
       children: [
@@ -116,8 +116,20 @@ class _OfferUsageContent extends StatelessWidget {
     );
   }
 
-  String _resolveStatusLabel(AppLocalizations l10n, Entitlement entitlement) {
+  String _resolveStatusLabel(
+    BuildContext context,
+    AppLocalizations l10n,
+    Entitlement entitlement,
+  ) {
     final status = entitlement.status.toLowerCase();
+    if (entitlement.cancelAtPeriodEnd &&
+        (status == 'active' || status == 'trialing' || status == 'past_due')) {
+      final formattedDate =
+          MaterialLocalizations.of(context).formatMediumDate(
+        entitlement.periodEnd,
+      );
+      return l10n.subscriptionStatusCanceling(formattedDate);
+    }
     switch (status) {
       case 'free':
         return l10n.subscriptionStatusFree;

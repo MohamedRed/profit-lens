@@ -670,6 +670,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get subscriptionStatusUnknown => 'غير معروف';
 
   @override
+  String subscriptionStatusCanceling(Object date) {
+    return 'ينتهي في $date';
+  }
+
+  @override
   String get upgradePlanButton => 'ترقية الخطة';
 
   @override

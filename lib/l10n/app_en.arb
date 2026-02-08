@@ -240,6 +240,12 @@
   "subscriptionStatusIncomplete": "Incomplete",
   "subscriptionStatusUnpaid": "Unpaid",
   "subscriptionStatusUnknown": "Unknown",
+  "subscriptionStatusCanceling": "Cancels on {date}",
+  "@subscriptionStatusCanceling": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "upgradePlanButton": "Upgrade plan",
   "managePlanButton": "Manage plan",
   "offerLimitReachedMessage": "You have reached your monthly offer limit. Upgrade to continue.",

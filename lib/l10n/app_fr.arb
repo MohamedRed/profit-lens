@@ -240,6 +240,12 @@
   "subscriptionStatusIncomplete": "Incomplet",
   "subscriptionStatusUnpaid": "Impayé",
   "subscriptionStatusUnknown": "Inconnu",
+  "subscriptionStatusCanceling": "Se termine le {date}",
+  "@subscriptionStatusCanceling": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "upgradePlanButton": "Passer à un forfait supérieur",
   "managePlanButton": "Gérer l’abonnement",
   "offerLimitReachedMessage": "Vous avez atteint votre limite mensuelle. Passez à un forfait supérieur pour continuer.",

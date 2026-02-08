@@ -240,6 +240,12 @@
   "subscriptionStatusIncomplete": "غير مكتمل",
   "subscriptionStatusUnpaid": "غير مدفوع",
   "subscriptionStatusUnknown": "غير معروف",
+  "subscriptionStatusCanceling": "ينتهي في {date}",
+  "@subscriptionStatusCanceling": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "upgradePlanButton": "ترقية الخطة",
   "managePlanButton": "إدارة الخطة",
   "offerLimitReachedMessage": "لقد بلغت الحد الشهري للعروض. قم بالترقية للمتابعة.",

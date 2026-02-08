@@ -203,6 +203,8 @@ async function syncSubscription(subscription: Stripe.Subscription) {
       status: subscription.status,
       periodStartSec: subscription.current_period_start,
       periodEndSec: subscription.current_period_end,
+      cancelAtPeriodEnd: subscription.cancel_at_period_end,
+      canceledAtSec: subscription.canceled_at,
     });
     return;
   }
@@ -213,6 +215,8 @@ async function syncSubscription(subscription: Stripe.Subscription) {
     status: subscription.status,
     periodStartSec: subscription.current_period_start,
     periodEndSec: subscription.current_period_end,
+    cancelAtPeriodEnd: subscription.cancel_at_period_end,
+    canceledAtSec: subscription.canceled_at,
   });
 }
 
@@ -258,5 +262,7 @@ async function syncCheckoutSession(
     status: subscription.status,
     periodStartSec: subscription.current_period_start,
     periodEndSec: subscription.current_period_end,
+    cancelAtPeriodEnd: subscription.cancel_at_period_end,
+    canceledAtSec: subscription.canceled_at,
   });
 }

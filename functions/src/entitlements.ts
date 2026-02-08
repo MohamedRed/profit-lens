@@ -18,6 +18,8 @@ export type EntitlementSnapshot = {
   periodEnd: Date;
   periodKey: string;
   source: "stripe" | "free";
+  cancelAtPeriodEnd: boolean;
+  canceledAt?: Date | null;
   stripeCustomerId?: string | null;
   stripeSubscriptionId?: string | null;
   stripePriceId?: string | null;
@@ -133,6 +135,8 @@ export function buildStripeEntitlement(params: {
   periodStart: Date;
   periodEnd: Date;
   periodKey: string;
+  cancelAtPeriodEnd: boolean;
+  canceledAt?: Date | null;
   stripeCustomerId: string;
   stripeSubscriptionId: string;
   stripePriceId: string;
@@ -146,6 +150,8 @@ export function buildStripeEntitlement(params: {
     periodEnd: Timestamp.fromDate(params.periodEnd),
     periodKey: params.periodKey,
     source: "stripe",
+    cancelAtPeriodEnd: params.cancelAtPeriodEnd,
+    canceledAt: params.canceledAt ? Timestamp.fromDate(params.canceledAt) : null,
     stripeCustomerId: params.stripeCustomerId,
     stripeSubscriptionId: params.stripeSubscriptionId,
     stripePriceId: params.stripePriceId,
@@ -171,6 +177,8 @@ export function buildFreeEntitlement(
     periodEnd: Timestamp.fromDate(periodEnd),
     periodKey,
     source: "free",
+    cancelAtPeriodEnd: false,
+    canceledAt: null,
     stripeCustomerId: stripe.stripeCustomerId ?? null,
     stripeSubscriptionId: stripe.stripeSubscriptionId ?? null,
     stripePriceId: stripe.stripePriceId ?? null,
@@ -197,6 +205,8 @@ export async function syncStripeEntitlement(params: {
   status: string;
   periodStartSec: number;
   periodEndSec: number;
+  cancelAtPeriodEnd: boolean;
+  canceledAtSec?: number | null;
 }) {
   const plan = getPlanByPriceId(params.priceId);
   if (!plan) {
@@ -222,6 +232,8 @@ export async function syncStripeEntitlement(params: {
     status: params.status,
     periodStartSec: params.periodStartSec,
     periodEndSec: params.periodEndSec,
+    cancelAtPeriodEnd: params.cancelAtPeriodEnd,
+    canceledAtSec: params.canceledAtSec ?? null,
   });
 }
 
@@ -233,6 +245,8 @@ export async function syncStripeEntitlementForUid(params: {
   status: string;
   periodStartSec: number;
   periodEndSec: number;
+  cancelAtPeriodEnd: boolean;
+  canceledAtSec?: number | null;
 }) {
   const plan = getPlanByPriceId(params.priceId);
   if (!plan) {
@@ -252,6 +266,8 @@ export async function syncStripeEntitlementForUid(params: {
     status: params.status,
     periodStartSec: params.periodStartSec,
     periodEndSec: params.periodEndSec,
+    cancelAtPeriodEnd: params.cancelAtPeriodEnd,
+    canceledAtSec: params.canceledAtSec ?? null,
   });
 }
 
@@ -265,11 +281,17 @@ async function updateEntitlementDoc(params: {
   status: string;
   periodStartSec: number;
   periodEndSec: number;
+  cancelAtPeriodEnd: boolean;
+  canceledAtSec?: number | null;
 }) {
   const { periodStart, periodEnd, periodKey } = buildStripePeriod(
     params.periodStartSec,
     params.periodEndSec
   );
+  const canceledAt =
+    params.canceledAtSec && params.canceledAtSec > 0
+      ? new Date(params.canceledAtSec * 1000)
+      : null;
   const payload = buildStripeEntitlement({
     planId: params.planId,
     status: params.status,
@@ -277,6 +299,8 @@ async function updateEntitlementDoc(params: {
     periodStart,
     periodEnd,
     periodKey,
+    cancelAtPeriodEnd: params.cancelAtPeriodEnd,
+    canceledAt,
     stripeCustomerId: params.customerId,
     stripeSubscriptionId: params.subscriptionId,
     stripePriceId: params.priceId,
@@ -289,6 +313,7 @@ function parseEntitlement(data?: DocumentData | null) {
   const periodStart = data.periodStart?.toDate?.();
   const periodEnd = data.periodEnd?.toDate?.();
   const periodKey = data.periodKey as string | undefined;
+  const canceledAt = data.canceledAt?.toDate?.();
   if (!periodStart || !periodEnd || !periodKey) {
     return null;
   }
@@ -304,6 +329,8 @@ function parseEntitlement(data?: DocumentData | null) {
     periodEnd,
     periodKey,
     source: (data.source as "stripe" | "free" | undefined) ?? "free",
+    cancelAtPeriodEnd: Boolean(data.cancelAtPeriodEnd ?? false),
+    canceledAt: canceledAt ?? null,
     stripeCustomerId: data.stripeCustomerId ?? null,
     stripeSubscriptionId: data.stripeSubscriptionId ?? null,
     stripePriceId: data.stripePriceId ?? null,

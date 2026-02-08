@@ -7,6 +7,7 @@ class Entitlement {
   final DateTime periodEnd;
   final String periodKey;
   final String source;
+  final bool cancelAtPeriodEnd;
   final String? stripeCustomerId;
   final String? stripeSubscriptionId;
   final String? stripePriceId;
@@ -20,6 +21,7 @@ class Entitlement {
     required this.periodEnd,
     required this.periodKey,
     required this.source,
+    required this.cancelAtPeriodEnd,
     required this.stripeCustomerId,
     required this.stripeSubscriptionId,
     required this.stripePriceId,

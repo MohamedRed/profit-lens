@@ -681,6 +681,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get subscriptionStatusUnknown => 'Inconnu';
 
   @override
+  String subscriptionStatusCanceling(Object date) {
+    return 'Se termine le $date';
+  }
+
+  @override
   String get upgradePlanButton => 'Passer à un forfait supérieur';
 
   @override

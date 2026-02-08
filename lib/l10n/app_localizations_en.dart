@@ -673,6 +673,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionStatusUnknown => 'Unknown';
 
   @override
+  String subscriptionStatusCanceling(Object date) {
+    return 'Cancels on $date';
+  }
+
+  @override
   String get upgradePlanButton => 'Upgrade plan';
 
   @override

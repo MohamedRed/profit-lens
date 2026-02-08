@@ -58,6 +58,7 @@ class FirestoreEntitlementRepository implements EntitlementRepository {
       periodEnd: periodEnd,
       periodKey: periodKey,
       source: (data['source'] as String?) ?? 'free',
+      cancelAtPeriodEnd: (data['cancelAtPeriodEnd'] as bool?) ?? false,
       stripeCustomerId: data['stripeCustomerId'] as String?,
       stripeSubscriptionId: data['stripeSubscriptionId'] as String?,
       stripePriceId: data['stripePriceId'] as String?,
