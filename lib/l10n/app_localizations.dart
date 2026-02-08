@@ -1306,6 +1306,60 @@ abstract class AppLocalizations {
   /// **'Unlimited offers'**
   String get offersRemainingUnlimited;
 
+  /// No description provided for @subscriptionStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription status'**
+  String get subscriptionStatusLabel;
+
+  /// No description provided for @subscriptionStatusFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get subscriptionStatusFree;
+
+  /// No description provided for @subscriptionStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get subscriptionStatusActive;
+
+  /// No description provided for @subscriptionStatusPastDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment issue'**
+  String get subscriptionStatusPastDue;
+
+  /// No description provided for @subscriptionStatusCanceled.
+  ///
+  /// In en, this message translates to:
+  /// **'Canceled'**
+  String get subscriptionStatusCanceled;
+
+  /// No description provided for @subscriptionStatusTrialing.
+  ///
+  /// In en, this message translates to:
+  /// **'Trial'**
+  String get subscriptionStatusTrialing;
+
+  /// No description provided for @subscriptionStatusIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Incomplete'**
+  String get subscriptionStatusIncomplete;
+
+  /// No description provided for @subscriptionStatusUnpaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpaid'**
+  String get subscriptionStatusUnpaid;
+
+  /// No description provided for @subscriptionStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get subscriptionStatusUnknown;
+
   /// No description provided for @upgradePlanButton.
   ///
   /// In en, this message translates to:

@@ -646,6 +646,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offersRemainingUnlimited => 'Unlimited offers';
 
   @override
+  String get subscriptionStatusLabel => 'Subscription status';
+
+  @override
+  String get subscriptionStatusFree => 'Free';
+
+  @override
+  String get subscriptionStatusActive => 'Active';
+
+  @override
+  String get subscriptionStatusPastDue => 'Payment issue';
+
+  @override
+  String get subscriptionStatusCanceled => 'Canceled';
+
+  @override
+  String get subscriptionStatusTrialing => 'Trial';
+
+  @override
+  String get subscriptionStatusIncomplete => 'Incomplete';
+
+  @override
+  String get subscriptionStatusUnpaid => 'Unpaid';
+
+  @override
+  String get subscriptionStatusUnknown => 'Unknown';
+
+  @override
   String get upgradePlanButton => 'Upgrade plan';
 
   @override

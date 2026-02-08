@@ -643,6 +643,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String get offersRemainingUnlimited => 'عروض غير محدودة';
 
   @override
+  String get subscriptionStatusLabel => 'حالة الاشتراك';
+
+  @override
+  String get subscriptionStatusFree => 'مجاني';
+
+  @override
+  String get subscriptionStatusActive => 'نشط';
+
+  @override
+  String get subscriptionStatusPastDue => 'متأخر الدفع';
+
+  @override
+  String get subscriptionStatusCanceled => 'ملغي';
+
+  @override
+  String get subscriptionStatusTrialing => 'تجربة';
+
+  @override
+  String get subscriptionStatusIncomplete => 'غير مكتمل';
+
+  @override
+  String get subscriptionStatusUnpaid => 'غير مدفوع';
+
+  @override
+  String get subscriptionStatusUnknown => 'غير معروف';
+
+  @override
   String get upgradePlanButton => 'ترقية الخطة';
 
   @override

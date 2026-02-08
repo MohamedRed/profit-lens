@@ -88,12 +88,18 @@ class _OfferUsageContent extends StatelessWidget {
     final label = remaining == null
         ? l10n.offersRemainingUnlimited
         : l10n.offersRemainingValue(remaining);
+    final statusLabel = _resolveStatusLabel(l10n, entitlement);
     return SectionCard(
       title: l10n.offersRemainingTitle,
       children: [
         Text(
           label,
           style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        const SizedBox(height: 6),
+        Text(
+          '${l10n.subscriptionStatusLabel}: $statusLabel',
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 8),
         if (entitlement.isFree)
@@ -108,5 +114,29 @@ class _OfferUsageContent extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  String _resolveStatusLabel(AppLocalizations l10n, Entitlement entitlement) {
+    final status = entitlement.status.toLowerCase();
+    switch (status) {
+      case 'free':
+        return l10n.subscriptionStatusFree;
+      case 'active':
+        return l10n.subscriptionStatusActive;
+      case 'past_due':
+        return l10n.subscriptionStatusPastDue;
+      case 'canceled':
+      case 'cancelled':
+        return l10n.subscriptionStatusCanceled;
+      case 'trialing':
+        return l10n.subscriptionStatusTrialing;
+      case 'incomplete':
+      case 'incomplete_expired':
+        return l10n.subscriptionStatusIncomplete;
+      case 'unpaid':
+        return l10n.subscriptionStatusUnpaid;
+      default:
+        return l10n.subscriptionStatusUnknown;
+    }
   }
 }
