@@ -41,6 +41,7 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
   return OfferFlowCallbacks(
     onImportScreenshot: () => importOfferScreenshot(
       context: context,
+      userId: user.uid,
       source: ImageSource.gallery,
       picker: AppScope.of(context).offerImagePickerService,
       controller: controller,
@@ -52,6 +53,7 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
     ),
     onCaptureScreenshot: () => importOfferScreenshot(
       context: context,
+      userId: user.uid,
       source: ImageSource.camera,
       picker: AppScope.of(context).offerImagePickerService,
       controller: controller,

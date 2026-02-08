@@ -46,6 +46,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Nous n\'avons pas pu terminer l\'analyse. Modifiez les détails et réessayez.';
 
   @override
+  String get analysisFailedScreenshotBody =>
+      'Impossible de lire cette capture. Importez une capture d’offre valide.';
+
+  @override
   String get addOptionalDetailsButton => 'Ajouter des détails optionnels';
 
   @override

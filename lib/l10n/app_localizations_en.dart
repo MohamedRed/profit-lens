@@ -46,6 +46,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'We couldn\'t complete the analysis. Please edit the details and try again.';
 
   @override
+  String get analysisFailedScreenshotBody =>
+      'We couldn\'t read this screenshot. Please upload a valid offer screenshot.';
+
+  @override
   String get addOptionalDetailsButton => 'Add optional details';
 
   @override

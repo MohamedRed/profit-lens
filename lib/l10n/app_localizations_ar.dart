@@ -46,6 +46,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذر إكمال التحليل. يرجى تعديل التفاصيل والمحاولة مرة أخرى.';
 
   @override
+  String get analysisFailedScreenshotBody =>
+      'تعذر قراءة هذه اللقطة. يرجى رفع لقطة صحيحة للعرض.';
+
+  @override
   String get addOptionalDetailsButton => 'إضافة تفاصيل اختيارية';
 
   @override

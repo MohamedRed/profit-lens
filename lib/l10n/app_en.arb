@@ -12,6 +12,7 @@
   "analysisStepProfitability": "Calculating profitability",
   "analysisFailedTitle": "Analysis incomplete",
   "analysisFailedBody": "We couldn't complete the analysis. Please edit the details and try again.",
+  "analysisFailedScreenshotBody": "We couldn't read this screenshot. Please upload a valid offer screenshot.",
   "addOptionalDetailsButton": "Add optional details",
   "hideOptionalDetailsButton": "Hide optional details",
   "offerAmountLabel": "Payout (EUR)",

@@ -12,8 +12,18 @@ String resolveAnalysisErrorMessage(
     }
     final message = error.message?.trim();
     if (message != null && message.isNotEmpty) {
+      if (_isScreenshotExtractionFailure(message)) {
+        return l10n.analysisFailedScreenshotBody;
+      }
       return message;
     }
   }
   return l10n.analysisFailedBody;
+}
+
+bool _isScreenshotExtractionFailure(String message) {
+  final normalized = message.toLowerCase();
+  return normalized.contains('gemini') ||
+      normalized.contains('extraction') ||
+      normalized.contains('no offer');
 }

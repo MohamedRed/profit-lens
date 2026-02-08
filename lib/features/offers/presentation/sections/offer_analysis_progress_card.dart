@@ -7,13 +7,11 @@ import '../offer_analysis_status.dart';
 class OfferAnalysisProgressCard extends StatelessWidget {
   final OfferAnalysisStatus status;
   final String? errorMessage;
-  final VoidCallback onEdit;
 
   const OfferAnalysisProgressCard({
     super.key,
     required this.status,
     required this.errorMessage,
-    required this.onEdit,
   });
 
   @override
@@ -24,11 +22,6 @@ class OfferAnalysisProgressCard extends StatelessWidget {
         title: l10n.analysisFailedTitle,
         children: [
           Text(errorMessage ?? l10n.analysisFailedBody),
-          const SizedBox(height: 8),
-          TextButton(
-            onPressed: onEdit,
-            child: Text(l10n.editOfferDetailsButton),
-          ),
         ],
       );
     }

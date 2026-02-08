@@ -88,14 +88,12 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
       return OfferAnalysisProgressCard(
         status: analysisStatus,
         errorMessage: widget.controller.analysisErrorMessage,
-        onEdit: () => setState(() => _isEditing = true),
       );
     }
     if (analysisStatus == OfferAnalysisStatus.failed) {
       return OfferAnalysisProgressCard(
         status: analysisStatus,
         errorMessage: widget.controller.analysisErrorMessage,
-        onEdit: () => setState(() => _isEditing = true),
       );
     }
     if (analysisStatus == OfferAnalysisStatus.completed &&

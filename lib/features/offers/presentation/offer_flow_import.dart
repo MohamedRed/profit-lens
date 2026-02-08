@@ -11,9 +11,11 @@ import 'offer_analysis_status.dart';
 import 'offer_flow_error_message.dart';
 import 'offer_flow_loading_action.dart';
 import 'offer_flow_analysis_progress.dart';
+import 'offer_flow_limits.dart';
 
 Future<void> importOfferScreenshot({
   required BuildContext context,
+  required String userId,
   required ImageSource source,
   required OfferImagePickerService picker,
   required OfferFlowController controller,
@@ -32,6 +34,10 @@ Future<void> importOfferScreenshot({
   controller.setScreenshotThumbnail(thumbnailBytes);
   onUpdated();
   if (!context.mounted) {
+    return;
+  }
+  final withinLimit = await ensureWithinOfferLimit(context, userId);
+  if (!withinLimit) {
     return;
   }
   final runId = controller.startAnalysis(OfferAnalysisStatus.extracting);

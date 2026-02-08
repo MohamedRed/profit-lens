@@ -172,6 +172,12 @@ abstract class AppLocalizations {
   /// **'We couldn\'t complete the analysis. Please edit the details and try again.'**
   String get analysisFailedBody;
 
+  /// No description provided for @analysisFailedScreenshotBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t read this screenshot. Please upload a valid offer screenshot.'**
+  String get analysisFailedScreenshotBody;
+
   /// No description provided for @addOptionalDetailsButton.
   ///
   /// In en, this message translates to:

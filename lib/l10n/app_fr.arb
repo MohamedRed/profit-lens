@@ -12,6 +12,7 @@
   "analysisStepProfitability": "Calcul de la rentabilité",
   "analysisFailedTitle": "Analyse incomplète",
   "analysisFailedBody": "Nous n'avons pas pu terminer l'analyse. Modifiez les détails et réessayez.",
+  "analysisFailedScreenshotBody": "Impossible de lire cette capture. Importez une capture d’offre valide.",
   "addOptionalDetailsButton": "Ajouter des détails optionnels",
   "hideOptionalDetailsButton": "Masquer les détails optionnels",
   "offerAmountLabel": "Gain (EUR)",
