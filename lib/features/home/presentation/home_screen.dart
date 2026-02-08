@@ -83,14 +83,14 @@ class _HomeScreenState extends State<HomeScreen> {
         page: OfferHistoryScreen(user: widget.user),
       ),
       _HomeTab(
-        labelBuilder: (l10n) => l10n.helpTabLabel,
-        icon: Icons.support_agent,
-        page: HelpScreen(user: widget.user),
-      ),
-      _HomeTab(
         labelBuilder: (l10n) => l10n.settingsTabLabel,
         icon: Icons.settings,
         page: SettingsScreen(user: widget.user, profile: widget.profile),
+      ),
+      _HomeTab(
+        labelBuilder: (l10n) => l10n.helpTabLabel,
+        icon: Icons.support_agent,
+        page: HelpScreen(user: widget.user),
       ),
     ];
 
