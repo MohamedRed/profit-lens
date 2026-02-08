@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       _HomeTab(
         labelBuilder: (l10n) => l10n.helpTabLabel,
-        icon: Icons.support_agent,
+        icon: Icons.help_outline,
         page: HelpScreen(user: widget.user),
       ),
     ];
