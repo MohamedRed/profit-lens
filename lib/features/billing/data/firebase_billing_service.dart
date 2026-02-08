@@ -1,4 +1,5 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/config/firebase_regions.dart';
@@ -47,6 +48,17 @@ class FirebaseBillingService implements BillingService {
 
   Future<void> _launch(String url) async {
     final uri = Uri.parse(url);
+    if (kIsWeb) {
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.platformDefault,
+        webOnlyWindowName: '_self',
+      );
+      if (!launched) {
+        throw StateError('Could not launch $url');
+      }
+      return;
+    }
     if (!await canLaunchUrl(uri)) {
       throw StateError('Could not launch $url');
     }
