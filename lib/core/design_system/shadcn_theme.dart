@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'shadcn_tokens.dart';
 import 'shadcn_typography.dart';
+import '../theme/no_swipe_cupertino_page_transitions_builder.dart';
 
 class ShadcnTheme {
   const ShadcnTheme._();
@@ -33,8 +34,8 @@ class ShadcnTheme {
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
           TargetPlatform.android: ZoomPageTransitionsBuilder(),
-          TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
-          TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: NoSwipeCupertinoPageTransitionsBuilder(),
+          TargetPlatform.macOS: NoSwipeCupertinoPageTransitionsBuilder(),
           TargetPlatform.linux: ZoomPageTransitionsBuilder(),
           TargetPlatform.windows: ZoomPageTransitionsBuilder(),
         },
