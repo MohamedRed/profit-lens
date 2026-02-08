@@ -149,6 +149,21 @@ export const revokeDevice = onCall(
   }
 );
 
+export async function assertDeviceActive(uid: string, deviceId: string) {
+  const snapshot = await db
+    .collection("users")
+    .doc(uid)
+    .collection("devices")
+    .doc(deviceId)
+    .get();
+  if (!snapshot.exists) {
+    throw new HttpsError("failed-precondition", "Device not registered.");
+  }
+  if (snapshot.data()?.active === false) {
+    throw new HttpsError("failed-precondition", "Device inactive.");
+  }
+}
+
 function serializeDevice(doc: QueryDocumentSnapshot): DeviceResponse {
   const data = doc.data() as Record<string, any>;
   return {
