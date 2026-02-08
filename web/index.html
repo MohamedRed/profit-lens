@@ -23,6 +23,7 @@
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="theme-color" content="#FFFFFF">
   <meta name="apple-mobile-web-app-title" content="ProfitLens">
@@ -41,6 +42,26 @@
       margin: 0;
       overscroll-behavior-x: none;
       touch-action: pan-y;
+    }
+
+    #edge-swipe-guard-left,
+    #edge-swipe-guard-right {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 16px;
+      background: transparent;
+      z-index: 2147483647;
+      pointer-events: none;
+      touch-action: none;
+    }
+
+    #edge-swipe-guard-left {
+      left: 0;
+    }
+
+    #edge-swipe-guard-right {
+      right: 0;
     }
 
     #splash {
@@ -136,6 +157,8 @@
       </div>
     </div>
   </div>
+  <div id="edge-swipe-guard-left" aria-hidden="true"></div>
+  <div id="edge-swipe-guard-right" aria-hidden="true"></div>
   <script>
     window.addEventListener("beforeinstallprompt", function (event) {
       event.preventDefault();
@@ -152,7 +175,26 @@
         window.navigator.standalone === true;
       if (!isIos || !isStandalone) return;
 
-      var edgeWidth = 24;
+      // Extra insurance: fixed edge guards stop Safari from treating the gesture
+      // as browser navigation (it becomes an interaction with a page element).
+      var guardLeft = document.getElementById("edge-swipe-guard-left");
+      var guardRight = document.getElementById("edge-swipe-guard-right");
+      var blockEdgeTouch = function (event) {
+        event.preventDefault();
+      };
+
+      [guardLeft, guardRight].forEach(function (el) {
+        if (!el) return;
+        el.style.pointerEvents = "auto";
+        el.addEventListener("touchstart", blockEdgeTouch, { passive: false });
+        el.addEventListener("touchmove", blockEdgeTouch, { passive: false });
+      });
+
+      // iOS edge-swipe navigation tends to trigger when starting extremely
+      // close to the screen edge. Block that aggressively.
+      var hardEdgeWidth = 12;
+      // Wider band for softer blocking (helps on diagonal swipes).
+      var edgeWidth = 32;
       var startX = 0;
       var startY = 0;
       var tracking = false;
@@ -164,7 +206,32 @@
           var t = event.touches[0];
           startX = t.clientX;
           startY = t.clientY;
+
+          // Block the extreme-edge start immediately to prevent browser history
+          // navigation. Our UI has padding, so this won't block real controls.
+          if (startX <= hardEdgeWidth || startX >= (window.innerWidth - hardEdgeWidth)) {
+            tracking = true;
+            event.preventDefault();
+            return;
+          }
+
           tracking = startX <= edgeWidth || startX >= (window.innerWidth - edgeWidth);
+        },
+        { passive: false, capture: true }
+      );
+
+      document.addEventListener(
+        "touchend",
+        function () {
+          tracking = false;
+        },
+        { passive: true, capture: true }
+      );
+
+      document.addEventListener(
+        "touchcancel",
+        function () {
+          tracking = false;
         },
         { passive: true, capture: true }
       );
@@ -179,7 +246,8 @@
           var dy = t.clientY - startY;
 
           // Only block a mostly-horizontal gesture that started at the edge.
-          if (Math.abs(dx) <= Math.abs(dy)) return;
+          if (Math.abs(dx) < 8) return;
+          if (Math.abs(dx) < Math.abs(dy) * 0.6) return;
 
           // Left edge: swipe right (back). Right edge: swipe left (forward).
           if (startX <= edgeWidth && dx > 0) {
