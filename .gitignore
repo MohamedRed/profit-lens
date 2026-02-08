@@ -39,6 +39,11 @@ migrate_working_dir/
 /tool/dev_dart_defines.json
 functions/.env.*
 
+# Terraform local state/cache
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.backup
+
 # Symbolication related
 app.*.symbols
 
