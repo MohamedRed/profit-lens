@@ -33,9 +33,15 @@ class OfferLimitImportButton extends StatelessWidget {
     return StreamBuilder<Entitlement?>(
       stream: services.entitlementRepository.watchEntitlement(userId),
       builder: (context, entitlementSnapshot) {
+        final isEntitlementLoading =
+            entitlementSnapshot.connectionState == ConnectionState.waiting &&
+                !entitlementSnapshot.hasData;
         final entitlement = entitlementSnapshot.data;
         if (entitlement == null || entitlement.offerLimit == null) {
-          return _buildButton(canSubmit: !isBusy);
+          return _buildButton(
+            canSubmit: !isBusy && !isEntitlementLoading,
+            isLoading: isEntitlementLoading,
+          );
         }
         return StreamBuilder<OfferUsage?>(
           stream: services.usageRepository.watchUsage(
@@ -43,22 +49,30 @@ class OfferLimitImportButton extends StatelessWidget {
             entitlement.periodKey,
           ),
           builder: (context, usageSnapshot) {
+            final isUsageLoading =
+                usageSnapshot.connectionState == ConnectionState.waiting &&
+                    !usageSnapshot.hasData;
             final usage = usageSnapshot.data;
             final used = usage?.offerCount ?? 0;
             final limitReached = used >= entitlement.offerLimit!;
-            return _buildButton(canSubmit: !isBusy && !limitReached);
+            return _buildButton(
+              canSubmit: !isBusy && !limitReached && !isUsageLoading,
+              isLoading: isUsageLoading,
+            );
           },
         );
       },
     );
   }
 
-  Widget _buildButton({required bool canSubmit}) {
+  Widget _buildButton({required bool canSubmit, bool isLoading = false}) {
     return PrimaryButton(
       key: buttonKey,
       label: label,
       icon: icon,
       onPressed: canSubmit ? onPressed : null,
+      isBusy: isLoading && !isBusy,
+      showSpinnerWithLabel: isLoading,
     );
   }
 }

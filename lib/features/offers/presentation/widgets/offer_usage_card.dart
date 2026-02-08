@@ -25,9 +25,18 @@ class OfferUsageCard extends StatelessWidget {
     return StreamBuilder<Entitlement?>(
       stream: services.entitlementRepository.watchEntitlement(uid),
       builder: (context, snapshot) {
+        final l10n = AppLocalizations.of(context)!;
         final entitlement = snapshot.data;
         if (entitlement == null) {
-          return const SizedBox.shrink();
+          return SectionCard(
+            title: l10n.offersRemainingTitle,
+            children: [
+              Text(
+                l10n.loadingLabel,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          );
         }
         return StreamBuilder<OfferUsage?>(
           stream: services.usageRepository.watchUsage(
