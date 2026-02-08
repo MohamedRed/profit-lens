@@ -1281,6 +1281,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to compute profitability. Check your profile settings.'**
   String get profitabilityFailedMessage;
+
+  /// No description provided for @offersRemainingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Offers remaining'**
+  String get offersRemainingTitle;
+
+  /// No description provided for @offersRemainingValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{remaining} remaining this month'**
+  String offersRemainingValue(Object remaining);
+
+  /// No description provided for @offersRemainingUnlimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited offers'**
+  String get offersRemainingUnlimited;
+
+  /// No description provided for @upgradePlanButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade plan'**
+  String get upgradePlanButton;
+
+  /// No description provided for @managePlanButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage plan'**
+  String get managePlanButton;
+
+  /// No description provided for @offerLimitReachedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You have reached your monthly offer limit. Upgrade to continue.'**
+  String get offerLimitReachedMessage;
+
+  /// No description provided for @subscriptionPlansTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a plan'**
+  String get subscriptionPlansTitle;
+
+  /// No description provided for @subscriptionPlansSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the monthly cap that fits your deliveries.'**
+  String get subscriptionPlansSubtitle;
+
+  /// No description provided for @planPricePerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} / month'**
+  String planPricePerMonth(Object price);
+
+  /// No description provided for @planOffersPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} offers per month'**
+  String planOffersPerMonth(Object count);
+
+  /// No description provided for @planUnlimitedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited offers'**
+  String get planUnlimitedLabel;
+
+  /// No description provided for @planChooseButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose plan'**
+  String get planChooseButton;
+
+  /// No description provided for @subscriptionFreeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Free plan'**
+  String get subscriptionFreeTitle;
+
+  /// No description provided for @subscriptionFreeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'10 offers per month'**
+  String get subscriptionFreeSubtitle;
+
+  /// No description provided for @subscriptionActiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription active'**
+  String get subscriptionActiveTitle;
+
+  /// No description provided for @subscriptionActiveSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your billing and plan details.'**
+  String get subscriptionActiveSubtitle;
+
+  /// No description provided for @subscriptionActivePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Current plan: {price}'**
+  String subscriptionActivePlan(Object price);
+
+  /// No description provided for @devicesSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get devicesSectionTitle;
+
+  /// No description provided for @devicesSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage the device linked to your plan'**
+  String get devicesSectionSubtitle;
+
+  /// No description provided for @deviceManagementTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Device access'**
+  String get deviceManagementTitle;
+
+  /// No description provided for @deviceManagementSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Only one device can be active at a time.'**
+  String get deviceManagementSubtitle;
+
+  /// No description provided for @deviceRevokeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke'**
+  String get deviceRevokeAction;
+
+  /// No description provided for @deviceLimitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Device limit reached'**
+  String get deviceLimitTitle;
+
+  /// No description provided for @deviceLimitSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your plan allows 1 active device. Replace one to continue.'**
+  String get deviceLimitSubtitle;
+
+  /// No description provided for @deviceUnknownLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown device'**
+  String get deviceUnknownLabel;
+
+  /// No description provided for @deviceCurrentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get deviceCurrentLabel;
+
+  /// No description provided for @deviceReplaceAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get deviceReplaceAction;
+
+  /// No description provided for @deviceLastSeenPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen'**
+  String get deviceLastSeenPrefix;
+
+  /// No description provided for @deviceRegisterFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to register device'**
+  String get deviceRegisterFailedTitle;
+
+  /// No description provided for @retryButtonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retryButtonLabel;
 }
 
 class _AppLocalizationsDelegate

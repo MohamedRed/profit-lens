@@ -221,5 +221,55 @@
   "modelLookupNotFoundMessage": "Aucun modèle trouvé pour cette marque/modèle.",
   "modelLookupFailedMessage": "Impossible de récupérer les données du modèle.",
   "noHistoryMessage": "Aucune offre enregistrée.",
-  "profitabilityFailedMessage": "Impossible de calculer la rentabilité. Vérifiez votre profil."
+  "profitabilityFailedMessage": "Impossible de calculer la rentabilité. Vérifiez votre profil.",
+  "offersRemainingTitle": "Offres restantes",
+  "offersRemainingValue": "{remaining} restantes ce mois-ci",
+  "@offersRemainingValue": {
+    "placeholders": {
+      "remaining": {}
+    }
+  },
+  "offersRemainingUnlimited": "Offres illimitées",
+  "upgradePlanButton": "Passer à un forfait supérieur",
+  "managePlanButton": "Gérer l’abonnement",
+  "offerLimitReachedMessage": "Vous avez atteint votre limite mensuelle. Passez à un forfait supérieur pour continuer.",
+  "subscriptionPlansTitle": "Choisir un forfait",
+  "subscriptionPlansSubtitle": "Sélectionnez le plafond mensuel adapté à vos livraisons.",
+  "planPricePerMonth": "{price} / mois",
+  "@planPricePerMonth": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "planOffersPerMonth": "{count} offres par mois",
+  "@planOffersPerMonth": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "planUnlimitedLabel": "Offres illimitées",
+  "planChooseButton": "Choisir ce forfait",
+  "subscriptionFreeTitle": "Forfait gratuit",
+  "subscriptionFreeSubtitle": "10 offres par mois",
+  "subscriptionActiveTitle": "Abonnement actif",
+  "subscriptionActiveSubtitle": "Gérez votre facturation et votre forfait.",
+  "subscriptionActivePlan": "Forfait actuel : {price}",
+  "@subscriptionActivePlan": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "devicesSectionTitle": "Appareils",
+  "devicesSectionSubtitle": "Gérez l’appareil lié à votre forfait",
+  "deviceManagementTitle": "Accès appareil",
+  "deviceManagementSubtitle": "Un seul appareil peut être actif à la fois.",
+  "deviceRevokeAction": "Révoquer",
+  "deviceLimitTitle": "Limite d’appareils atteinte",
+  "deviceLimitSubtitle": "Votre forfait autorise 1 appareil actif. Remplacez-en un pour continuer.",
+  "deviceUnknownLabel": "Appareil inconnu",
+  "deviceCurrentLabel": "Actuel",
+  "deviceReplaceAction": "Remplacer",
+  "deviceLastSeenPrefix": "Dernière utilisation",
+  "deviceRegisterFailedTitle": "Impossible d’enregistrer l’appareil",
+  "retryButtonLabel": "Réessayer"
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/app_scope.dart';
+import '../../../core/config/app_config.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../../profile/domain/user_profile.dart';
@@ -46,6 +47,10 @@ Future<void> handleOfferAnalysis({
   if (!ready) {
     return;
   }
+  final withinLimit = await _ensureWithinOfferLimit(context, user.uid);
+  if (!withinLimit) {
+    return;
+  }
   final runId = controller.startAnalysis(OfferAnalysisStatus.extracting);
   final progress = OfferAnalysisProgressDriver.start(
     controller: controller,
@@ -81,10 +86,12 @@ Future<void> handleOfferAnalysis({
   }
   OfferRecord? record;
   try {
+    final deviceId = await AppScope.of(context).deviceIdService.getDeviceId();
     record = await AppScope.of(context).offerAnalysisService.analyzeOffer(
       offer: offer,
       vehicleId: vehicle.id,
       source: controller.source,
+      deviceId: deviceId,
     );
     if (!controller.isCurrentAnalysis(runId)) {
       return;
@@ -131,5 +138,33 @@ Future<void> handleOfferAnalysis({
         ),
       ),
     );
+  }
+}
+
+Future<bool> _ensureWithinOfferLimit(BuildContext context, String uid) async {
+  if (!AppConfig.firebaseConfigured) {
+    return true;
+  }
+  final services = AppScope.of(context);
+  try {
+    final entitlement = await services.entitlementRepository.fetchEntitlement(uid);
+    if (entitlement == null || entitlement.offerLimit == null) {
+      return true;
+    }
+    final usage =
+        await services.usageRepository.fetchUsage(uid, entitlement.periodKey);
+    final used = usage?.offerCount ?? 0;
+    if (used >= entitlement.offerLimit!) {
+      if (context.mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.offerLimitReachedMessage)),
+        );
+      }
+      return false;
+    }
+    return true;
+  } catch (_) {
+    return true;
   }
 }

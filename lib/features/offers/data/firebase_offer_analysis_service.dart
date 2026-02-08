@@ -27,6 +27,7 @@ class FirebaseOfferAnalysisService implements OfferAnalysisService {
     XFile? image,
     String? vehicleId,
     OfferSource? source,
+    required String deviceId,
   }) async {
     if (!AppConfig.firebaseConfigured) {
       throw StateError('Firebase is not configured.');
@@ -38,6 +39,7 @@ class FirebaseOfferAnalysisService implements OfferAnalysisService {
       if (offer != null) 'offer': _encodeOffer(offer),
       if (vehicleId != null) 'vehicleId': vehicleId,
       if (source != null) 'source': source.name,
+      'deviceId': deviceId,
     };
     if (image != null) {
       final mimeType = image.mimeType;

@@ -637,4 +637,107 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get profitabilityFailedMessage =>
       'Impossible de calculer la rentabilité. Vérifiez votre profil.';
+
+  @override
+  String get offersRemainingTitle => 'Offres restantes';
+
+  @override
+  String offersRemainingValue(Object remaining) {
+    return '$remaining restantes ce mois-ci';
+  }
+
+  @override
+  String get offersRemainingUnlimited => 'Offres illimitées';
+
+  @override
+  String get upgradePlanButton => 'Passer à un forfait supérieur';
+
+  @override
+  String get managePlanButton => 'Gérer l’abonnement';
+
+  @override
+  String get offerLimitReachedMessage =>
+      'Vous avez atteint votre limite mensuelle. Passez à un forfait supérieur pour continuer.';
+
+  @override
+  String get subscriptionPlansTitle => 'Choisir un forfait';
+
+  @override
+  String get subscriptionPlansSubtitle =>
+      'Sélectionnez le plafond mensuel adapté à vos livraisons.';
+
+  @override
+  String planPricePerMonth(Object price) {
+    return '$price / mois';
+  }
+
+  @override
+  String planOffersPerMonth(Object count) {
+    return '$count offres par mois';
+  }
+
+  @override
+  String get planUnlimitedLabel => 'Offres illimitées';
+
+  @override
+  String get planChooseButton => 'Choisir ce forfait';
+
+  @override
+  String get subscriptionFreeTitle => 'Forfait gratuit';
+
+  @override
+  String get subscriptionFreeSubtitle => '10 offres par mois';
+
+  @override
+  String get subscriptionActiveTitle => 'Abonnement actif';
+
+  @override
+  String get subscriptionActiveSubtitle =>
+      'Gérez votre facturation et votre forfait.';
+
+  @override
+  String subscriptionActivePlan(Object price) {
+    return 'Forfait actuel : $price';
+  }
+
+  @override
+  String get devicesSectionTitle => 'Appareils';
+
+  @override
+  String get devicesSectionSubtitle => 'Gérez l’appareil lié à votre forfait';
+
+  @override
+  String get deviceManagementTitle => 'Accès appareil';
+
+  @override
+  String get deviceManagementSubtitle =>
+      'Un seul appareil peut être actif à la fois.';
+
+  @override
+  String get deviceRevokeAction => 'Révoquer';
+
+  @override
+  String get deviceLimitTitle => 'Limite d’appareils atteinte';
+
+  @override
+  String get deviceLimitSubtitle =>
+      'Votre forfait autorise 1 appareil actif. Remplacez-en un pour continuer.';
+
+  @override
+  String get deviceUnknownLabel => 'Appareil inconnu';
+
+  @override
+  String get deviceCurrentLabel => 'Actuel';
+
+  @override
+  String get deviceReplaceAction => 'Remplacer';
+
+  @override
+  String get deviceLastSeenPrefix => 'Dernière utilisation';
+
+  @override
+  String get deviceRegisterFailedTitle => 'Impossible d’enregistrer l’appareil';
+
+  @override
+  String get retryButtonLabel => 'Réessayer';
 }

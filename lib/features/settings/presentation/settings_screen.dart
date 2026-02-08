@@ -9,6 +9,8 @@ import 'widgets/settings_language_card.dart';
 import 'widgets/settings_profile_card.dart';
 import 'widgets/settings_signout_card.dart';
 import 'widgets/settings_vehicle_card.dart';
+import 'widgets/settings_subscription_card.dart';
+import 'widgets/settings_devices_card.dart';
 
 class SettingsScreen extends StatelessWidget {
   final AuthUser user;
@@ -37,6 +39,10 @@ class SettingsScreen extends StatelessWidget {
               SettingsLanguageCard(user: user, profile: profile),
               const SizedBox(height: 12),
               const SettingsInstallCard(),
+              const SizedBox(height: 12),
+              SettingsSubscriptionCard(user: user),
+              const SizedBox(height: 12),
+              SettingsDevicesCard(user: user),
               const SizedBox(height: 12),
               SettingsVehicleCard(
                 user: user,

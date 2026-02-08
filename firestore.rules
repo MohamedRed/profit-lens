@@ -24,6 +24,21 @@ service cloud.firestore {
         allow read: if isOwner(uid);
         allow write: if false;
       }
+
+      match /entitlements/{docId} {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
+
+      match /usage/{periodKey} {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
+
+      match /devices/{deviceId} {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
     }
 
     match /defaults/{docId} {

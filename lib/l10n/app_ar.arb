@@ -221,5 +221,55 @@
   "modelLookupNotFoundMessage": "لم يتم العثور على تطابق لهذه العلامة/الطراز.",
   "modelLookupFailedMessage": "تعذر جلب بيانات الطراز.",
   "noHistoryMessage": "لا توجد عروض محفوظة.",
-  "profitabilityFailedMessage": "تعذر حساب الربحية. تحقق من إعدادات ملفك."
+  "profitabilityFailedMessage": "تعذر حساب الربحية. تحقق من إعدادات ملفك.",
+  "offersRemainingTitle": "العروض المتبقية",
+  "offersRemainingValue": "{remaining} متبقية هذا الشهر",
+  "@offersRemainingValue": {
+    "placeholders": {
+      "remaining": {}
+    }
+  },
+  "offersRemainingUnlimited": "عروض غير محدودة",
+  "upgradePlanButton": "ترقية الخطة",
+  "managePlanButton": "إدارة الخطة",
+  "offerLimitReachedMessage": "لقد بلغت الحد الشهري للعروض. قم بالترقية للمتابعة.",
+  "subscriptionPlansTitle": "اختر خطة",
+  "subscriptionPlansSubtitle": "اختر الحد الشهري المناسب لتوصيلاتك.",
+  "planPricePerMonth": "{price} / شهرياً",
+  "@planPricePerMonth": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "planOffersPerMonth": "{count} عرض في الشهر",
+  "@planOffersPerMonth": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "planUnlimitedLabel": "عروض غير محدودة",
+  "planChooseButton": "اختيار الخطة",
+  "subscriptionFreeTitle": "الخطة المجانية",
+  "subscriptionFreeSubtitle": "10 عروض شهرياً",
+  "subscriptionActiveTitle": "الاشتراك نشط",
+  "subscriptionActiveSubtitle": "أدر الفوترة وتفاصيل خطتك.",
+  "subscriptionActivePlan": "الخطة الحالية: {price}",
+  "@subscriptionActivePlan": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "devicesSectionTitle": "الأجهزة",
+  "devicesSectionSubtitle": "إدارة الجهاز المرتبط بخطتك",
+  "deviceManagementTitle": "الوصول للأجهزة",
+  "deviceManagementSubtitle": "يمكن تفعيل جهاز واحد فقط في كل مرة.",
+  "deviceRevokeAction": "إلغاء",
+  "deviceLimitTitle": "تم الوصول لحد الأجهزة",
+  "deviceLimitSubtitle": "تسمح خطتك بجهاز واحد نشط. استبدل جهازاً للمتابعة.",
+  "deviceUnknownLabel": "جهاز غير معروف",
+  "deviceCurrentLabel": "الحالي",
+  "deviceReplaceAction": "استبدال",
+  "deviceLastSeenPrefix": "آخر ظهور",
+  "deviceRegisterFailedTitle": "تعذر تسجيل الجهاز",
+  "retryButtonLabel": "إعادة المحاولة"
 }

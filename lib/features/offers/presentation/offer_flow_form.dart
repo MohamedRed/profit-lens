@@ -10,6 +10,7 @@ import 'sections/offer_details_section.dart';
 import 'sections/offer_profitability_target_section.dart';
 import 'sections/vehicle_picker_section.dart';
 import 'widgets/profitability_overview_card.dart';
+import 'widgets/offer_usage_card.dart';
 import 'offer_flow_keys.dart';
 import 'offer_flow_loading_action.dart';
 import 'offer_analysis_status.dart';
@@ -18,6 +19,7 @@ import 'widgets/offer_screenshot_preview.dart';
 
 class OfferFlowForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
+  final String userId;
   final List<VehicleProfile> vehicles;
   final String? selectedVehicleId;
   final ValueChanged<String?> onVehicleChanged;
@@ -39,6 +41,7 @@ class OfferFlowForm extends StatelessWidget {
   const OfferFlowForm({
     super.key,
     required this.formKey,
+    required this.userId,
     required this.vehicles,
     required this.selectedVehicleId,
     required this.onVehicleChanged,
@@ -89,6 +92,8 @@ class OfferFlowForm extends StatelessWidget {
             minProfitabilityEuro: minProfitabilityEuro,
             onSaved: onMinProfitabilityChanged,
           ),
+          const SizedBox(height: 16),
+          OfferUsageCard(uid: userId),
           const SizedBox(height: 16),
           PrimaryButton(
             key: OfferFlowKeys.importScreenshotButton,

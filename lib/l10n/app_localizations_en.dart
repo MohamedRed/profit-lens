@@ -629,4 +629,107 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profitabilityFailedMessage =>
       'Unable to compute profitability. Check your profile settings.';
+
+  @override
+  String get offersRemainingTitle => 'Offers remaining';
+
+  @override
+  String offersRemainingValue(Object remaining) {
+    return '$remaining remaining this month';
+  }
+
+  @override
+  String get offersRemainingUnlimited => 'Unlimited offers';
+
+  @override
+  String get upgradePlanButton => 'Upgrade plan';
+
+  @override
+  String get managePlanButton => 'Manage plan';
+
+  @override
+  String get offerLimitReachedMessage =>
+      'You have reached your monthly offer limit. Upgrade to continue.';
+
+  @override
+  String get subscriptionPlansTitle => 'Choose a plan';
+
+  @override
+  String get subscriptionPlansSubtitle =>
+      'Pick the monthly cap that fits your deliveries.';
+
+  @override
+  String planPricePerMonth(Object price) {
+    return '$price / month';
+  }
+
+  @override
+  String planOffersPerMonth(Object count) {
+    return '$count offers per month';
+  }
+
+  @override
+  String get planUnlimitedLabel => 'Unlimited offers';
+
+  @override
+  String get planChooseButton => 'Choose plan';
+
+  @override
+  String get subscriptionFreeTitle => 'Free plan';
+
+  @override
+  String get subscriptionFreeSubtitle => '10 offers per month';
+
+  @override
+  String get subscriptionActiveTitle => 'Subscription active';
+
+  @override
+  String get subscriptionActiveSubtitle =>
+      'Manage your billing and plan details.';
+
+  @override
+  String subscriptionActivePlan(Object price) {
+    return 'Current plan: $price';
+  }
+
+  @override
+  String get devicesSectionTitle => 'Devices';
+
+  @override
+  String get devicesSectionSubtitle => 'Manage the device linked to your plan';
+
+  @override
+  String get deviceManagementTitle => 'Device access';
+
+  @override
+  String get deviceManagementSubtitle =>
+      'Only one device can be active at a time.';
+
+  @override
+  String get deviceRevokeAction => 'Revoke';
+
+  @override
+  String get deviceLimitTitle => 'Device limit reached';
+
+  @override
+  String get deviceLimitSubtitle =>
+      'Your plan allows 1 active device. Replace one to continue.';
+
+  @override
+  String get deviceUnknownLabel => 'Unknown device';
+
+  @override
+  String get deviceCurrentLabel => 'Current';
+
+  @override
+  String get deviceReplaceAction => 'Replace';
+
+  @override
+  String get deviceLastSeenPrefix => 'Last seen';
+
+  @override
+  String get deviceRegisterFailedTitle => 'Unable to register device';
+
+  @override
+  String get retryButtonLabel => 'Retry';
 }

@@ -61,10 +61,12 @@ Future<void> importOfferScreenshot({
         (item) => item.id == selectedVehicleId,
         orElse: () => vehicles.first,
       );
+      final deviceId = await AppScope.of(context).deviceIdService.getDeviceId();
       final record = await AppScope.of(context).offerAnalysisService.analyzeOffer(
         image: image,
         vehicleId: vehicle.id,
         source: OfferSource.screenshot,
+        deviceId: deviceId,
       );
       if (!controller.isCurrentAnalysis(runId)) {
         return;

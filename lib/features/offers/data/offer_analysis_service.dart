@@ -10,5 +10,6 @@ abstract class OfferAnalysisService {
     XFile? image,
     String? vehicleId,
     OfferSource? source,
+    required String deviceId,
   });
 }

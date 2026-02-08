@@ -7,6 +7,9 @@ String resolveAnalysisErrorMessage(
   AppLocalizations l10n,
 ) {
   if (error is FirebaseFunctionsException) {
+    if (error.code == 'resource-exhausted') {
+      return l10n.offerLimitReachedMessage;
+    }
     final message = error.message?.trim();
     if (message != null && message.isNotEmpty) {
       return message;

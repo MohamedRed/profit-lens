@@ -221,5 +221,55 @@
   "modelLookupNotFoundMessage": "No match found for this brand/model.",
   "modelLookupFailedMessage": "Unable to fetch model data.",
   "noHistoryMessage": "No offers saved yet.",
-  "profitabilityFailedMessage": "Unable to compute profitability. Check your profile settings."
+  "profitabilityFailedMessage": "Unable to compute profitability. Check your profile settings.",
+  "offersRemainingTitle": "Offers remaining",
+  "offersRemainingValue": "{remaining} remaining this month",
+  "@offersRemainingValue": {
+    "placeholders": {
+      "remaining": {}
+    }
+  },
+  "offersRemainingUnlimited": "Unlimited offers",
+  "upgradePlanButton": "Upgrade plan",
+  "managePlanButton": "Manage plan",
+  "offerLimitReachedMessage": "You have reached your monthly offer limit. Upgrade to continue.",
+  "subscriptionPlansTitle": "Choose a plan",
+  "subscriptionPlansSubtitle": "Pick the monthly cap that fits your deliveries.",
+  "planPricePerMonth": "{price} / month",
+  "@planPricePerMonth": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "planOffersPerMonth": "{count} offers per month",
+  "@planOffersPerMonth": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "planUnlimitedLabel": "Unlimited offers",
+  "planChooseButton": "Choose plan",
+  "subscriptionFreeTitle": "Free plan",
+  "subscriptionFreeSubtitle": "10 offers per month",
+  "subscriptionActiveTitle": "Subscription active",
+  "subscriptionActiveSubtitle": "Manage your billing and plan details.",
+  "subscriptionActivePlan": "Current plan: {price}",
+  "@subscriptionActivePlan": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "devicesSectionTitle": "Devices",
+  "devicesSectionSubtitle": "Manage the device linked to your plan",
+  "deviceManagementTitle": "Device access",
+  "deviceManagementSubtitle": "Only one device can be active at a time.",
+  "deviceRevokeAction": "Revoke",
+  "deviceLimitTitle": "Device limit reached",
+  "deviceLimitSubtitle": "Your plan allows 1 active device. Replace one to continue.",
+  "deviceUnknownLabel": "Unknown device",
+  "deviceCurrentLabel": "Current",
+  "deviceReplaceAction": "Replace",
+  "deviceLastSeenPrefix": "Last seen",
+  "deviceRegisterFailedTitle": "Unable to register device",
+  "retryButtonLabel": "Retry"
 }

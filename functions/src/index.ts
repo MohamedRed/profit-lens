@@ -12,6 +12,12 @@ export { verifyOfferRoute } from "./verify_offer_route";
 export { analyzeOffer } from "./analyze_offer";
 export { syncOfferDailyStats } from "./offer_stats";
 export { backfillOfferStats } from "./offer_stats_backfill";
+export { registerDevice, revokeDevice } from "./device_registry";
+export {
+  createCheckoutSession,
+  createCustomerPortalSession,
+  stripeWebhook,
+} from "./billing";
 
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const geminiModel = defineString("GEMINI_MODEL", {

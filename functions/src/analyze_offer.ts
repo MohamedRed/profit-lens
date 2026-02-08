@@ -6,6 +6,16 @@ import { evaluateProfitability } from "./profitability_engine";
 import { buildOfferRecordPayload } from "./offer_record_mapper";
 import { OfferExtraction, OfferInput } from "./profitability_types";
 import { db } from "./firebase_admin";
+import {
+  DocumentData,
+  DocumentReference,
+  Timestamp,
+} from "firebase-admin/firestore";
+import {
+  EntitlementSnapshot,
+  ensureEntitlement,
+  usageDocRef,
+} from "./entitlements";
 import { requestGeminiOffer } from "./gemini_client";
 import { parseGeminiJson } from "./gemini_json";
 import { postprocessOfferExtraction } from "./offer_postprocess";
@@ -19,6 +29,7 @@ type AnalyzeOfferPayload = {
   extraction?: { confidence?: number; rawText?: string | null };
   imageBase64?: string;
   mimeType?: string;
+  deviceId?: string;
 };
 
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
@@ -43,6 +54,12 @@ export const analyzeOffer = onCall(
     }
 
     const payload = request.data as AnalyzeOfferPayload;
+    const deviceId = payload.deviceId?.trim();
+    if (!deviceId) {
+      throw new HttpsError("invalid-argument", "Missing deviceId.");
+    }
+    await assertDeviceActive(uid, deviceId);
+    const entitlement = await ensureEntitlement(uid);
     const resolved = await resolveOfferInput(payload);
     if (!resolved) {
       throw new HttpsError("invalid-argument", "Missing offer payload.");
@@ -109,7 +126,12 @@ export const analyzeOffer = onCall(
       extraction,
     });
 
-    await docRef.set(document, { merge: true });
+    await saveOfferWithUsage({
+      uid,
+      entitlement,
+      docRef,
+      document,
+    });
     logger.info("Offer analysis saved", {
       uid,
       offerId: docRef.id,
@@ -248,6 +270,59 @@ async function extractOfferFromImagePayload(payload: AnalyzeOfferPayload) {
     offer,
     extraction: extraction ?? null,
   };
+}
+
+async function assertDeviceActive(uid: string, deviceId: string) {
+  const snapshot = await db
+    .collection("users")
+    .doc(uid)
+    .collection("devices")
+    .doc(deviceId)
+    .get();
+  if (!snapshot.exists) {
+    throw new HttpsError("failed-precondition", "Device not registered.");
+  }
+  if (snapshot.data()?.active === false) {
+    throw new HttpsError("failed-precondition", "Device inactive.");
+  }
+}
+
+async function saveOfferWithUsage(params: {
+  uid: string;
+  entitlement: EntitlementSnapshot;
+  docRef: DocumentReference;
+  document: DocumentData;
+}) {
+  const { uid, entitlement, docRef, document } = params;
+  const usageRef = usageDocRef(uid, entitlement.periodKey);
+  const now = Timestamp.now();
+  await db.runTransaction(async (tx) => {
+    const usageSnapshot = await tx.get(usageRef);
+    const currentCount = usageSnapshot.exists
+      ? Number(usageSnapshot.data()?.offerCount ?? 0)
+      : 0;
+    if (
+      entitlement.offerLimit != null &&
+      currentCount >= entitlement.offerLimit
+    ) {
+      throw new HttpsError("resource-exhausted", "Offer limit reached.", {
+        offerLimit: entitlement.offerLimit,
+        used: currentCount,
+      });
+    }
+    const nextCount = currentCount + 1;
+    tx.set(
+      usageRef,
+      {
+        periodStart: Timestamp.fromDate(entitlement.periodStart),
+        periodEnd: Timestamp.fromDate(entitlement.periodEnd),
+        offerCount: nextCount,
+        updatedAt: now,
+      },
+      { merge: true }
+    );
+    tx.set(docRef, document, { merge: true });
+  });
 }
 
 function mergeOfferInputs(

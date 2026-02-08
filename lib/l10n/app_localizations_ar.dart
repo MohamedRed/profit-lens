@@ -626,4 +626,104 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profitabilityFailedMessage =>
       'تعذر حساب الربحية. تحقق من إعدادات ملفك.';
+
+  @override
+  String get offersRemainingTitle => 'العروض المتبقية';
+
+  @override
+  String offersRemainingValue(Object remaining) {
+    return '$remaining متبقية هذا الشهر';
+  }
+
+  @override
+  String get offersRemainingUnlimited => 'عروض غير محدودة';
+
+  @override
+  String get upgradePlanButton => 'ترقية الخطة';
+
+  @override
+  String get managePlanButton => 'إدارة الخطة';
+
+  @override
+  String get offerLimitReachedMessage =>
+      'لقد بلغت الحد الشهري للعروض. قم بالترقية للمتابعة.';
+
+  @override
+  String get subscriptionPlansTitle => 'اختر خطة';
+
+  @override
+  String get subscriptionPlansSubtitle => 'اختر الحد الشهري المناسب لتوصيلاتك.';
+
+  @override
+  String planPricePerMonth(Object price) {
+    return '$price / شهرياً';
+  }
+
+  @override
+  String planOffersPerMonth(Object count) {
+    return '$count عرض في الشهر';
+  }
+
+  @override
+  String get planUnlimitedLabel => 'عروض غير محدودة';
+
+  @override
+  String get planChooseButton => 'اختيار الخطة';
+
+  @override
+  String get subscriptionFreeTitle => 'الخطة المجانية';
+
+  @override
+  String get subscriptionFreeSubtitle => '10 عروض شهرياً';
+
+  @override
+  String get subscriptionActiveTitle => 'الاشتراك نشط';
+
+  @override
+  String get subscriptionActiveSubtitle => 'أدر الفوترة وتفاصيل خطتك.';
+
+  @override
+  String subscriptionActivePlan(Object price) {
+    return 'الخطة الحالية: $price';
+  }
+
+  @override
+  String get devicesSectionTitle => 'الأجهزة';
+
+  @override
+  String get devicesSectionSubtitle => 'إدارة الجهاز المرتبط بخطتك';
+
+  @override
+  String get deviceManagementTitle => 'الوصول للأجهزة';
+
+  @override
+  String get deviceManagementSubtitle => 'يمكن تفعيل جهاز واحد فقط في كل مرة.';
+
+  @override
+  String get deviceRevokeAction => 'إلغاء';
+
+  @override
+  String get deviceLimitTitle => 'تم الوصول لحد الأجهزة';
+
+  @override
+  String get deviceLimitSubtitle =>
+      'تسمح خطتك بجهاز واحد نشط. استبدل جهازاً للمتابعة.';
+
+  @override
+  String get deviceUnknownLabel => 'جهاز غير معروف';
+
+  @override
+  String get deviceCurrentLabel => 'الحالي';
+
+  @override
+  String get deviceReplaceAction => 'استبدال';
+
+  @override
+  String get deviceLastSeenPrefix => 'آخر ظهور';
+
+  @override
+  String get deviceRegisterFailedTitle => 'تعذر تسجيل الجهاز';
+
+  @override
+  String get retryButtonLabel => 'إعادة المحاولة';
 }

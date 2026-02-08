@@ -62,6 +62,7 @@ class OfferFlowView extends StatelessWidget {
             ? Center(child: Text(l10n.noVehiclesMessage))
             : OfferFlowForm(
                 formKey: formKey,
+                userId: user.uid,
                 controller: controller,
                 requiresDuration: requiresDuration,
                 vehicles: vehicles,

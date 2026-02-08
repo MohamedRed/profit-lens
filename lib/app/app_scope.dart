@@ -2,6 +2,16 @@ import 'package:flutter/widgets.dart';
 
 import '../features/auth/data/firebase_auth_repository.dart';
 import '../features/auth/domain/auth_repository.dart';
+import '../features/billing/data/billing_service.dart';
+import '../features/billing/data/entitlement_repository.dart';
+import '../features/billing/data/firestore_entitlement_repository.dart';
+import '../features/billing/data/firestore_usage_repository.dart';
+import '../features/billing/data/firebase_billing_service.dart';
+import '../features/billing/data/usage_repository.dart';
+import '../features/devices/data/device_registry_service.dart';
+import '../features/devices/data/device_repository.dart';
+import '../features/devices/data/firebase_device_registry_service.dart';
+import '../features/devices/data/firestore_device_repository.dart';
 import '../features/offers/data/firestore_offer_repository.dart';
 import '../features/offers/data/firestore_offer_stats_repository.dart';
 import '../features/offers/data/offer_analysis_service.dart';
@@ -18,9 +28,16 @@ import '../features/vehicles/data/vehicle_plate_lookup_service.dart';
 import '../features/vehicles/data/firestore_vehicle_repository.dart';
 import '../features/vehicles/data/vehicle_repository.dart';
 import '../core/localization/app_locale_controller.dart';
+import '../core/device/device_id_service.dart';
 
 class AppServices {
   final AuthRepository authRepository;
+  final EntitlementRepository entitlementRepository;
+  final UsageRepository usageRepository;
+  final BillingService billingService;
+  final DeviceRegistryService deviceRegistryService;
+  final DeviceRepository deviceRepository;
+  final DeviceIdService deviceIdService;
   final UserProfileRepository userProfileRepository;
   final VehicleRepository vehicleRepository;
   final OfferRepository offerRepository;
@@ -33,6 +50,12 @@ class AppServices {
 
   AppServices({
     AuthRepository? authRepository,
+    EntitlementRepository? entitlementRepository,
+    UsageRepository? usageRepository,
+    BillingService? billingService,
+    DeviceRegistryService? deviceRegistryService,
+    DeviceRepository? deviceRepository,
+    DeviceIdService? deviceIdService,
     UserProfileRepository? userProfileRepository,
     VehicleRepository? vehicleRepository,
     OfferRepository? offerRepository,
@@ -43,6 +66,14 @@ class AppServices {
     VehiclePlateLookupService? vehiclePlateLookupService,
     AppLocaleController? localeController,
   })  : authRepository = authRepository ?? FirebaseAuthRepository(),
+        entitlementRepository =
+            entitlementRepository ?? FirestoreEntitlementRepository(),
+        usageRepository = usageRepository ?? FirestoreUsageRepository(),
+        billingService = billingService ?? FirebaseBillingService(),
+        deviceRegistryService =
+            deviceRegistryService ?? FirebaseDeviceRegistryService(),
+        deviceRepository = deviceRepository ?? FirestoreDeviceRepository(),
+        deviceIdService = deviceIdService ?? DeviceIdService(),
         userProfileRepository =
             userProfileRepository ?? FirestoreUserProfileRepository(),
         vehicleRepository = vehicleRepository ?? FirestoreVehicleRepository(),

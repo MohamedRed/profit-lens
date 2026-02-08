@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/app_scope.dart';
 import '../../auth/domain/auth_user.dart';
+import '../../devices/presentation/device_access_gate.dart';
 import 'profile_setup_screen.dart';
 import '../../home/presentation/home_screen.dart';
 
@@ -23,14 +24,20 @@ class ProfileGate extends StatelessWidget {
         }
         final profile = snapshot.data;
         if (profile == null) {
-          return ProfileSetupScreen(user: user);
+          return DeviceAccessGate(
+            user: user,
+            child: ProfileSetupScreen(user: user),
+          );
         }
         final localeController = AppScope.of(context).localeController;
         final preferredLocale = profile.preferredLocale ?? 'fr';
         if (localeController.locale.languageCode != preferredLocale) {
           localeController.setLocaleCode(preferredLocale);
         }
-        return HomeScreen(user: user, profile: profile);
+        return DeviceAccessGate(
+          user: user,
+          child: HomeScreen(user: user, profile: profile),
+        );
       },
     );
   }
