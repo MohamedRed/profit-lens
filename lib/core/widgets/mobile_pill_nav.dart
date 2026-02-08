@@ -45,7 +45,7 @@ class MobilePillNav extends StatelessWidget {
           return Container(
             height: height,
             decoration: BoxDecoration(
-              color: Colors.transparent,
+              color: ShadcnColors.surface,
               borderRadius: BorderRadius.circular(ShadcnRadius.pill),
               boxShadow: const [
                 BoxShadow(
