@@ -8,9 +8,11 @@ import 'package:profit_lens/features/vehicles/data/vehicle_model_lookup_service.
 import 'package:profit_lens/features/vehicles/data/vehicle_plate_lookup_service.dart';
 import 'package:profit_lens/features/vehicles/data/vehicle_repository.dart';
 import 'package:profit_lens/features/help/data/help_ticket_repository.dart';
+import 'package:profit_lens/features/notifications/data/notification_token_repository.dart';
 
 import 'fakes/auth_repository_fake.dart';
 import 'fakes/help_ticket_repository_fake.dart';
+import 'fakes/notification_token_repository_fake.dart';
 import 'fakes/offer_image_picker_service_fake.dart';
 import 'fakes/offer_repository_fake.dart';
 import 'fakes/user_profile_repository_fake.dart';
@@ -29,6 +31,7 @@ class TestAppServices extends AppServices {
     VehicleModelLookupService? vehicleModelLookupService,
     VehiclePlateLookupService? vehiclePlateLookupService,
     HelpTicketRepository? helpTicketRepository,
+    NotificationTokenRepository? notificationTokenRepository,
   }) : super(
          authRepository: authRepository ?? InMemoryAuthRepository(),
          userProfileRepository:
@@ -44,5 +47,8 @@ class TestAppServices extends AppServices {
              vehiclePlateLookupService ?? const StubVehiclePlateLookupService(),
          helpTicketRepository:
              helpTicketRepository ?? InMemoryHelpTicketRepository(),
+         notificationTokenRepository:
+             notificationTokenRepository ??
+             InMemoryNotificationTokenRepository(),
        );
 }

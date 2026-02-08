@@ -24,6 +24,8 @@ import '../features/profile/data/user_profile_repository.dart';
 import '../features/help/data/firestore_help_ticket_repository.dart';
 import '../features/help/data/help_attachment_picker_service.dart';
 import '../features/help/data/help_ticket_repository.dart';
+import '../features/notifications/data/firestore_notification_token_repository.dart';
+import '../features/notifications/data/notification_token_repository.dart';
 import '../features/vehicles/data/firebase_vehicle_model_lookup_service.dart';
 import '../features/vehicles/data/firebase_vehicle_plate_lookup_service.dart';
 import '../features/vehicles/data/vehicle_model_lookup_service.dart';
@@ -49,6 +51,7 @@ class AppServices {
   final OfferAnalysisService offerAnalysisService;
   final HelpTicketRepository helpTicketRepository;
   final HelpAttachmentPickerService helpAttachmentPickerService;
+  final NotificationTokenRepository notificationTokenRepository;
   final VehicleModelLookupService vehicleModelLookupService;
   final VehiclePlateLookupService vehiclePlateLookupService;
   final AppLocaleController localeController;
@@ -69,6 +72,7 @@ class AppServices {
     OfferAnalysisService? offerAnalysisService,
     HelpTicketRepository? helpTicketRepository,
     HelpAttachmentPickerService? helpAttachmentPickerService,
+    NotificationTokenRepository? notificationTokenRepository,
     VehicleModelLookupService? vehicleModelLookupService,
     VehiclePlateLookupService? vehiclePlateLookupService,
     AppLocaleController? localeController,
@@ -95,6 +99,8 @@ class AppServices {
             helpTicketRepository ?? FirestoreHelpTicketRepository(),
         helpAttachmentPickerService =
             helpAttachmentPickerService ?? DeviceHelpAttachmentPickerService(),
+        notificationTokenRepository = notificationTokenRepository ??
+            FirestoreNotificationTokenRepository(),
         vehicleModelLookupService = vehicleModelLookupService ??
             FirebaseVehicleModelLookupService(),
         vehiclePlateLookupService = vehiclePlateLookupService ??

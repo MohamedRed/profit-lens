@@ -8,8 +8,13 @@ import 'help_ticket_card.dart';
 
 class HelpTicketListSection extends StatelessWidget {
   final Stream<List<HelpTicket>> ticketStream;
+  final ValueChanged<HelpTicket> onSelected;
 
-  const HelpTicketListSection({super.key, required this.ticketStream});
+  const HelpTicketListSection({
+    super.key,
+    required this.ticketStream,
+    required this.onSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +51,15 @@ class HelpTicketListSection extends StatelessWidget {
               separatorBuilder: (_, __) =>
                   const SizedBox(height: ShadcnSpacing.md),
               itemBuilder: (context, index) {
-                return HelpTicketCard(ticket: tickets[index]);
+                final ticket = tickets[index];
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(ShadcnRadius.lg),
+                    onTap: () => onSelected(ticket),
+                    child: HelpTicketCard(ticket: ticket),
+                  ),
+                );
               },
             );
           },

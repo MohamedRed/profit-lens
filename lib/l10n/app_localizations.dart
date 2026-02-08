@@ -1756,6 +1756,78 @@ abstract class AppLocalizations {
   /// **'Status updated'**
   String get helpStatusUpdatedLabel;
 
+  /// No description provided for @helpTicketDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket details'**
+  String get helpTicketDetailTitle;
+
+  /// No description provided for @helpTicketDescriptionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get helpTicketDescriptionTitle;
+
+  /// No description provided for @helpTicketDescriptionEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No description provided.'**
+  String get helpTicketDescriptionEmpty;
+
+  /// No description provided for @helpTicketAttachmentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments'**
+  String get helpTicketAttachmentsTitle;
+
+  /// No description provided for @helpAttachmentsScreenshotsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshots'**
+  String get helpAttachmentsScreenshotsTitle;
+
+  /// No description provided for @helpAttachmentsAudioTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio notes'**
+  String get helpAttachmentsAudioTitle;
+
+  /// No description provided for @helpNoAttachmentsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No attachments uploaded.'**
+  String get helpNoAttachmentsMessage;
+
+  /// No description provided for @helpAudioLoadingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading audio…'**
+  String get helpAudioLoadingLabel;
+
+  /// No description provided for @helpAudioPlaybackError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to play this audio clip.'**
+  String get helpAudioPlaybackError;
+
+  /// No description provided for @helpAiTriageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI triage'**
+  String get helpAiTriageTitle;
+
+  /// No description provided for @helpAiSummaryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get helpAiSummaryLabel;
+
+  /// No description provided for @helpAiNextStepsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Next steps'**
+  String get helpAiNextStepsLabel;
+
   /// No description provided for @helpTitleTooLong.
   ///
   /// In en, this message translates to:

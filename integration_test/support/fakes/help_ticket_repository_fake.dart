@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:profit_lens/features/help/data/help_ticket_repository.dart';
 import 'package:profit_lens/features/help/domain/help_ticket.dart';
+import 'package:profit_lens/features/help/domain/help_ticket_attachment.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_attachment_type.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_draft.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_status.dart';
@@ -17,6 +18,14 @@ class InMemoryHelpTicketRepository implements HelpTicketRepository {
   Stream<List<HelpTicket>> watchTickets(String uid) async* {
     yield List<HelpTicket>.unmodifiable(_tickets);
     yield* _controller.stream;
+  }
+
+  @override
+  Stream<List<HelpTicketAttachment>> watchAttachments({
+    required String uid,
+    required String ticketId,
+  }) async* {
+    yield const [];
   }
 
   @override
@@ -42,6 +51,10 @@ class InMemoryHelpTicketRepository implements HelpTicketRepository {
       updatedAt: now,
       imageCount: imageCount,
       audioCount: audioCount,
+      aiSummary: null,
+      aiNextSteps: null,
+      aiConfidence: null,
+      aiNeedsUserAction: null,
     );
     _tickets.insert(0, ticket);
     _controller.add(List<HelpTicket>.unmodifiable(_tickets));

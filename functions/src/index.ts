@@ -13,6 +13,8 @@ export { analyzeOffer } from "./analyze_offer";
 export { syncOfferDailyStats } from "./offer_stats";
 export { backfillOfferStats } from "./offer_stats_backfill";
 export { registerDevice, revokeDevice } from "./device_registry";
+export { triageHelpTicket } from "./help_ticket_triage";
+export { notifyHelpTicketStatus } from "./help_ticket_notifications";
 export {
   createCheckoutSession,
   createCustomerPortalSession,

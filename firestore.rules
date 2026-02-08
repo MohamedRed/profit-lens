@@ -47,6 +47,10 @@ service cloud.firestore {
           allow read, write: if isOwner(uid);
         }
       }
+
+      match /notificationTokens/{tokenId} {
+        allow read, write: if isOwner(uid);
+      }
     }
 
     match /defaults/{docId} {

@@ -901,6 +901,42 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpStatusUpdatedLabel => 'Statut mis à jour';
 
   @override
+  String get helpTicketDetailTitle => 'Détails du ticket';
+
+  @override
+  String get helpTicketDescriptionTitle => 'Description';
+
+  @override
+  String get helpTicketDescriptionEmpty => 'Aucune description fournie.';
+
+  @override
+  String get helpTicketAttachmentsTitle => 'Pièces jointes';
+
+  @override
+  String get helpAttachmentsScreenshotsTitle => 'Captures d’écran';
+
+  @override
+  String get helpAttachmentsAudioTitle => 'Notes audio';
+
+  @override
+  String get helpNoAttachmentsMessage => 'Aucune pièce jointe.';
+
+  @override
+  String get helpAudioLoadingLabel => 'Chargement de l’audio…';
+
+  @override
+  String get helpAudioPlaybackError => 'Impossible de lire cet enregistrement.';
+
+  @override
+  String get helpAiTriageTitle => 'Analyse IA';
+
+  @override
+  String get helpAiSummaryLabel => 'Résumé';
+
+  @override
+  String get helpAiNextStepsLabel => 'Prochaines étapes';
+
+  @override
   String helpTitleTooLong(Object max) {
     return 'Le titre doit contenir au maximum $max caractères.';
   }

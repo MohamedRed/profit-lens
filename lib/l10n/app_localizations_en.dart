@@ -891,6 +891,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpStatusUpdatedLabel => 'Status updated';
 
   @override
+  String get helpTicketDetailTitle => 'Ticket details';
+
+  @override
+  String get helpTicketDescriptionTitle => 'Description';
+
+  @override
+  String get helpTicketDescriptionEmpty => 'No description provided.';
+
+  @override
+  String get helpTicketAttachmentsTitle => 'Attachments';
+
+  @override
+  String get helpAttachmentsScreenshotsTitle => 'Screenshots';
+
+  @override
+  String get helpAttachmentsAudioTitle => 'Audio notes';
+
+  @override
+  String get helpNoAttachmentsMessage => 'No attachments uploaded.';
+
+  @override
+  String get helpAudioLoadingLabel => 'Loading audio…';
+
+  @override
+  String get helpAudioPlaybackError => 'Unable to play this audio clip.';
+
+  @override
+  String get helpAiTriageTitle => 'AI triage';
+
+  @override
+  String get helpAiSummaryLabel => 'Summary';
+
+  @override
+  String get helpAiNextStepsLabel => 'Next steps';
+
+  @override
   String helpTitleTooLong(Object max) {
     return 'Title must be $max characters or less.';
   }

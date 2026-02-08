@@ -15,6 +15,7 @@ import '../presentation/controllers/help_audio_recorder_controller.dart';
 import '../presentation/controllers/help_ticket_form_controller.dart';
 import '../presentation/models/help_local_attachment.dart';
 import 'help_screen_helpers.dart';
+import 'help_ticket_detail_screen.dart';
 import 'widgets/help_intro_section.dart';
 import 'widgets/help_ticket_form_section.dart';
 import 'widgets/help_ticket_list_section.dart';
@@ -100,6 +101,7 @@ class _HelpScreenState extends State<HelpScreen> {
             );
             final listSection = HelpTicketListSection(
               ticketStream: ticketStream,
+              onSelected: _openTicketDetail,
             );
 
             if (!isWide) {
@@ -292,5 +294,14 @@ class _HelpScreenState extends State<HelpScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _openTicketDetail(HelpTicket ticket) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>
+            HelpTicketDetailScreen(user: widget.user, ticket: ticket),
+      ),
+    );
   }
 }

@@ -881,6 +881,42 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpStatusUpdatedLabel => 'تم تحديث الحالة';
 
   @override
+  String get helpTicketDetailTitle => 'تفاصيل التذكرة';
+
+  @override
+  String get helpTicketDescriptionTitle => 'الوصف';
+
+  @override
+  String get helpTicketDescriptionEmpty => 'لا يوجد وصف.';
+
+  @override
+  String get helpTicketAttachmentsTitle => 'المرفقات';
+
+  @override
+  String get helpAttachmentsScreenshotsTitle => 'لقطات الشاشة';
+
+  @override
+  String get helpAttachmentsAudioTitle => 'الملاحظات الصوتية';
+
+  @override
+  String get helpNoAttachmentsMessage => 'لا توجد مرفقات.';
+
+  @override
+  String get helpAudioLoadingLabel => 'جارٍ تحميل الصوت…';
+
+  @override
+  String get helpAudioPlaybackError => 'تعذر تشغيل هذا المقطع الصوتي.';
+
+  @override
+  String get helpAiTriageTitle => 'فرز الذكاء الاصطناعي';
+
+  @override
+  String get helpAiSummaryLabel => 'الملخص';
+
+  @override
+  String get helpAiNextStepsLabel => 'الخطوات التالية';
+
+  @override
   String helpTitleTooLong(Object max) {
     return 'يجب ألا يتجاوز العنوان $max حرفًا.';
   }

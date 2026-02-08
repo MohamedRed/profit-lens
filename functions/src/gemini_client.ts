@@ -9,6 +9,15 @@ type GeminiRequest = {
   mimeType: string;
 };
 
+type GeminiJsonRequest = {
+  apiKey: string;
+  model: string;
+  prompt: string;
+  schema: Record<string, unknown>;
+  temperature?: number;
+  maxOutputTokens?: number;
+};
+
 const offerExtractionSchema = {
   type: "object",
   properties: {
@@ -117,6 +126,56 @@ export async function requestGeminiOffer(
     };
     logger.warn("Gemini returned empty text", diagnostics);
     console.error("Gemini returned empty text", JSON.stringify(diagnostics));
+    throw new HttpsError("internal", "Empty Gemini response.");
+  }
+
+  return text;
+}
+
+export async function requestGeminiJson(
+  request: GeminiJsonRequest
+): Promise<string> {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${request.model}:generateContent?key=${request.apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: request.prompt }],
+          },
+        ],
+        generationConfig: {
+          temperature: request.temperature ?? 0.2,
+          maxOutputTokens: request.maxOutputTokens ?? 1024,
+          responseMimeType: "application/json",
+          responseJsonSchema: request.schema,
+        },
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new HttpsError(
+      "internal",
+      `Gemini API error (${response.status}): ${errorText}`
+    );
+  }
+
+  const body = (await response.json()) as {
+    candidates?: Array<{
+      content?: { parts?: Array<{ text?: string }> };
+    }>;
+  };
+  const text =
+    body.candidates?.[0]?.content?.parts
+      ?.map((part) => part.text ?? "")
+      .join("") ?? "";
+
+  if (!text) {
     throw new HttpsError("internal", "Empty Gemini response.");
   }
 

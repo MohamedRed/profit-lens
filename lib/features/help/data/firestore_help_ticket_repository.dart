@@ -5,6 +5,7 @@ import '../domain/help_ticket_attachment.dart';
 import '../domain/help_ticket_attachment_type.dart';
 import '../domain/help_ticket_draft.dart';
 import '../domain/help_ticket_status.dart';
+import 'help_ticket_attachment_mapper.dart';
 import 'help_ticket_mapper.dart';
 import 'help_ticket_repository.dart';
 import 'help_ticket_storage.dart';
@@ -12,13 +13,16 @@ import 'help_ticket_storage.dart';
 class FirestoreHelpTicketRepository implements HelpTicketRepository {
   final FirebaseFirestore _firestore;
   final HelpTicketMapper _mapper;
+  final HelpTicketAttachmentMapper _attachmentMapper;
   final HelpTicketStorage _storage;
   FirestoreHelpTicketRepository({
     FirebaseFirestore? firestore,
     HelpTicketMapper? mapper,
+    HelpTicketAttachmentMapper? attachmentMapper,
     HelpTicketStorage? storage,
   }) : _firestore = firestore ?? FirebaseFirestore.instance,
        _mapper = mapper ?? HelpTicketMapper(),
+       _attachmentMapper = attachmentMapper ?? HelpTicketAttachmentMapper(),
        _storage = storage ?? FirebaseHelpTicketStorage();
 
   void _ensureConfigured() {
@@ -31,6 +35,13 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
     return _firestore.collection('users').doc(uid).collection('helpTickets');
   }
 
+  CollectionReference<Map<String, dynamic>> _attachmentCollection({
+    required String uid,
+    required String ticketId,
+  }) {
+    return _collection(uid).doc(ticketId).collection('attachments');
+  }
+
   @override
   Stream<List<HelpTicket>> watchTickets(String uid) {
     _ensureConfigured();
@@ -41,6 +52,23 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
           (snapshot) => snapshot.docs
               .map((doc) => _mapper.fromDocument(doc.id, doc.data()))
               .whereType<HelpTicket>()
+              .toList(),
+        );
+  }
+
+  @override
+  Stream<List<HelpTicketAttachment>> watchAttachments({
+    required String uid,
+    required String ticketId,
+  }) {
+    _ensureConfigured();
+    return _attachmentCollection(uid: uid, ticketId: ticketId)
+        .orderBy('uploadedAt', descending: false)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => _attachmentMapper.fromDocument(doc.id, doc.data()))
+              .whereType<HelpTicketAttachment>()
               .toList(),
         );
   }
@@ -105,6 +133,10 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
       updatedAt: DateTime.now(),
       imageCount: imageCount,
       audioCount: audioCount,
+      aiSummary: null,
+      aiNextSteps: null,
+      aiConfidence: null,
+      aiNeedsUserAction: null,
     );
   }
 

@@ -10,6 +10,10 @@ class HelpTicket {
   final DateTime? updatedAt;
   final int imageCount;
   final int audioCount;
+  final String? aiSummary;
+  final String? aiNextSteps;
+  final double? aiConfidence;
+  final bool? aiNeedsUserAction;
 
   const HelpTicket({
     required this.id,
@@ -21,5 +25,9 @@ class HelpTicket {
     required this.updatedAt,
     required this.imageCount,
     required this.audioCount,
+    required this.aiSummary,
+    required this.aiNextSteps,
+    required this.aiConfidence,
+    required this.aiNeedsUserAction,
   });
 }

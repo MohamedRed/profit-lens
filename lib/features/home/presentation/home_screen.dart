@@ -6,6 +6,8 @@ import '../../offers/presentation/offer_history_screen.dart';
 import '../../profile/domain/user_profile.dart';
 import '../../settings/presentation/settings_screen.dart';
 import '../../help/presentation/help_screen.dart';
+import '../../notifications/presentation/notification_registration_coordinator.dart';
+import '../../../app/app_scope.dart';
 import '../../../core/widgets/mobile_pill_nav.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/platform/google_maps_preloader.dart';
@@ -14,11 +16,7 @@ class HomeScreen extends StatefulWidget {
   final AuthUser user;
   final UserProfile profile;
 
-  const HomeScreen({
-    super.key,
-    required this.user,
-    required this.profile,
-  });
+  const HomeScreen({super.key, required this.user, required this.profile});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -26,11 +24,48 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  NotificationRegistrationCoordinator? _notificationCoordinator;
 
   @override
   void initState() {
     super.initState();
     preloadGoogleMaps();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_notificationCoordinator != null) return;
+    final services = AppScope.of(context);
+    _notificationCoordinator = NotificationRegistrationCoordinator(
+      repository: services.notificationTokenRepository,
+      deviceIdService: services.deviceIdService,
+    );
+    _notificationCoordinator!.start(
+      user: widget.user,
+      onForegroundMessage: (message) {
+        if (!mounted) return;
+        final notification = message.notification;
+        final body = notification?.body ?? '';
+        final title = notification?.title;
+        if ((title == null || title.isEmpty) && body.isEmpty) return;
+        final parts = <String>[
+          if (title != null && title.isNotEmpty) title,
+          if (body.isNotEmpty) body,
+        ];
+        final text = parts.join(' · ');
+        if (text.isEmpty) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(text)));
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _notificationCoordinator?.dispose();
+    super.dispose();
   }
 
   @override
