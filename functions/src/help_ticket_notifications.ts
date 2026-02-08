@@ -1,6 +1,5 @@
 import { onDocumentUpdated } from "firebase-functions/v2/firestore";
-import * as logger from "firebase-functions/logger";
-import { auth, db, messaging } from "./firebase_admin";
+import { db, messaging } from "./firebase_admin";
 
 const REGION = "europe-west1";
 
@@ -36,7 +35,6 @@ export const notifyHelpTicketStatus = onDocumentUpdated(
     const body = afterMessage;
 
     await sendPushNotifications({ uid, title, body, ticketId, status: afterStatus });
-    await queueEmailNotification({ uid, title, body, ticketId });
   }
 );
 
@@ -93,32 +91,5 @@ async function sendPushNotifications(params: {
           .delete()
       )
     );
-  }
-}
-
-async function queueEmailNotification(params: {
-  uid: string;
-  title: string;
-  body: string;
-  ticketId: string;
-}) {
-  try {
-    const userRecord = await auth.getUser(params.uid);
-    const email = userRecord.email;
-    if (!email) return;
-
-    await db.collection("mail").add({
-      to: email,
-      message: {
-        subject: params.title,
-        text: `${params.body}\n\nTicket ID: ${params.ticketId}`,
-      },
-    });
-  } catch (error) {
-    logger.warn("Failed to queue email notification", {
-      uid: params.uid,
-      ticketId: params.ticketId,
-      error,
-    });
   }
 }
