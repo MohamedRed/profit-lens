@@ -11,6 +11,7 @@ import 'sections/offer_profitability_target_section.dart';
 import 'sections/vehicle_picker_section.dart';
 import 'widgets/profitability_overview_card.dart';
 import 'widgets/offer_usage_card.dart';
+import 'widgets/offer_limit_import_button.dart';
 import 'offer_flow_keys.dart';
 import 'offer_flow_loading_action.dart';
 import 'offer_analysis_status.dart';
@@ -95,11 +96,13 @@ class OfferFlowForm extends StatelessWidget {
           const SizedBox(height: 16),
           OfferUsageCard(uid: userId),
           const SizedBox(height: 16),
-          PrimaryButton(
-            key: OfferFlowKeys.importScreenshotButton,
+          OfferLimitImportButton(
+            userId: userId,
+            buttonKey: OfferFlowKeys.importScreenshotButton,
             label: l10n.importScreenshotButton,
             icon: Icons.upload_file,
-            onPressed: isBusy ? null : onImportScreenshot,
+            isBusy: isBusy,
+            onPressed: onImportScreenshot,
           ),
           const SizedBox(height: 12),
           if (showCaptureCta) ...[
