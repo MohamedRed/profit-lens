@@ -39,6 +39,8 @@
     body {
       height: 100%;
       margin: 0;
+      overscroll-behavior-x: none;
+      touch-action: pan-y;
     }
 
     #splash {
@@ -139,6 +141,57 @@
       event.preventDefault();
       window.defferedPromptEvent = event;
     });
+
+    (function () {
+      // In iOS PWAs, an edge swipe can trigger browser history navigation.
+      // That feels like an accidental app exit, so we block it.
+      var ua = navigator.userAgent || "";
+      var isIos = /iPad|iPhone|iPod/.test(ua);
+      var isStandalone =
+        (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+        window.navigator.standalone === true;
+      if (!isIos || !isStandalone) return;
+
+      var edgeWidth = 24;
+      var startX = 0;
+      var startY = 0;
+      var tracking = false;
+
+      document.addEventListener(
+        "touchstart",
+        function (event) {
+          if (!event.touches || event.touches.length !== 1) return;
+          var t = event.touches[0];
+          startX = t.clientX;
+          startY = t.clientY;
+          tracking = startX <= edgeWidth || startX >= (window.innerWidth - edgeWidth);
+        },
+        { passive: true, capture: true }
+      );
+
+      document.addEventListener(
+        "touchmove",
+        function (event) {
+          if (!tracking) return;
+          if (!event.touches || event.touches.length !== 1) return;
+          var t = event.touches[0];
+          var dx = t.clientX - startX;
+          var dy = t.clientY - startY;
+
+          // Only block a mostly-horizontal gesture that started at the edge.
+          if (Math.abs(dx) <= Math.abs(dy)) return;
+
+          // Left edge: swipe right (back). Right edge: swipe left (forward).
+          if (startX <= edgeWidth && dx > 0) {
+            event.preventDefault();
+          } else if (startX >= (window.innerWidth - edgeWidth) && dx < 0) {
+            event.preventDefault();
+          }
+        },
+        { passive: false, capture: true }
+      );
+    })();
+
     window.addEventListener("flutter-first-frame", function () {
       var splash = document.getElementById("splash");
       if (!splash) return;
