@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart' as widgets;
 
 import '../../../../core/design_system/shadcn_tokens.dart';
 import '../../../../core/widgets/primary_button.dart';
@@ -15,7 +15,7 @@ class HelpTicketFormSection extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final HelpTicketFormController controller;
   final List<HelpLocalAttachment> screenshots;
-  final widgets.ValueListenable<HelpAudioRecorderSnapshot> audioSnapshot;
+  final ValueListenable<HelpAudioRecorderSnapshot> audioSnapshot;
   final bool isSubmitting;
   final VoidCallback onAddFromCamera;
   final VoidCallback onAddFromGallery;

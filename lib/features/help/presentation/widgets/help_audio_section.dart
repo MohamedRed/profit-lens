@@ -1,12 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart' as widgets;
 
 import '../../../../core/design_system/shadcn_tokens.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../controllers/help_audio_recorder_controller.dart';
 
 class HelpAudioSection extends StatelessWidget {
-  final widgets.ValueListenable<HelpAudioRecorderSnapshot> snapshot;
+  final ValueListenable<HelpAudioRecorderSnapshot> snapshot;
   final bool isSubmitting;
   final VoidCallback onStartRecording;
   final VoidCallback onStopRecording;
@@ -39,7 +39,7 @@ class HelpAudioSection extends StatelessWidget {
           ).textTheme.bodySmall?.copyWith(color: ShadcnColors.textSecondary),
         ),
         const SizedBox(height: ShadcnSpacing.md),
-        widgets.ValueListenableBuilder<HelpAudioRecorderSnapshot>(
+        ValueListenableBuilder<HelpAudioRecorderSnapshot>(
           valueListenable: snapshot,
           builder: (context, value, _) {
             if (value.isRecording) {
