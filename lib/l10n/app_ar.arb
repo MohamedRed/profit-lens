@@ -292,8 +292,6 @@
   "helpIntroTitle": "احصل على الدعم بسرعة",
   "helpIntroBody": "أبلغ عن الأخطاء أو المشكلات مع لقطات شاشة أو ملاحظة صوتية. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.",
   "helpFormTitle": "إرسال تذكرة",
-  "helpTitleLabel": "العنوان",
-  "helpTitleHint": "ملخص قصير للمشكلة",
   "helpDescriptionLabel": "صف المشكلة",
   "helpDescriptionHint": "الخطوات، النتيجة المتوقعة، وما حدث فعليًا",
   "helpDescriptionRequired": "أضف وصفًا مختصرًا أو سجّل ملاحظة صوتية.",
@@ -344,11 +342,5 @@
   "helpAudioPlaybackError": "تعذر تشغيل هذا المقطع الصوتي.",
   "helpAiTriageTitle": "فرز الذكاء الاصطناعي",
   "helpAiSummaryLabel": "الملخص",
-  "helpAiNextStepsLabel": "الخطوات التالية",
-  "helpTitleTooLong": "يجب ألا يتجاوز العنوان {max} حرفًا.",
-  "@helpTitleTooLong": {
-    "placeholders": {
-      "max": {}
-    }
-  }
+  "helpAiNextStepsLabel": "الخطوات التالية"
 }

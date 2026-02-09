@@ -3,14 +3,12 @@ import 'dart:typed_data';
 import 'help_ticket_attachment_type.dart';
 
 class HelpTicketDraft {
-  final String title;
   final String description;
   final String deviceId;
   final String platform;
   final String locale;
 
   const HelpTicketDraft({
-    required this.title,
     required this.description,
     required this.deviceId,
     required this.platform,

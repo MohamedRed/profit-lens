@@ -777,12 +777,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpFormTitle => 'إرسال تذكرة';
 
   @override
-  String get helpTitleLabel => 'العنوان';
-
-  @override
-  String get helpTitleHint => 'ملخص قصير للمشكلة';
-
-  @override
   String get helpDescriptionLabel => 'صف المشكلة';
 
   @override
@@ -923,9 +917,4 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpAiNextStepsLabel => 'الخطوات التالية';
-
-  @override
-  String helpTitleTooLong(Object max) {
-    return 'يجب ألا يتجاوز العنوان $max حرفًا.';
-  }
 }

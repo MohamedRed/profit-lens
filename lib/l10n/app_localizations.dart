@@ -1552,18 +1552,6 @@ abstract class AppLocalizations {
   /// **'Submit a ticket'**
   String get helpFormTitle;
 
-  /// No description provided for @helpTitleLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Title'**
-  String get helpTitleLabel;
-
-  /// No description provided for @helpTitleHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Short summary of the issue'**
-  String get helpTitleHint;
-
   /// No description provided for @helpDescriptionLabel.
   ///
   /// In en, this message translates to:
@@ -1839,12 +1827,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next steps'**
   String get helpAiNextStepsLabel;
-
-  /// No description provided for @helpTitleTooLong.
-  ///
-  /// In en, this message translates to:
-  /// **'Title must be {max} characters or less.'**
-  String helpTitleTooLong(Object max);
 }
 
 class _AppLocalizationsDelegate

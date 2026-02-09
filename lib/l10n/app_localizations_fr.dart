@@ -791,12 +791,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpFormTitle => 'Soumettre un ticket';
 
   @override
-  String get helpTitleLabel => 'Titre';
-
-  @override
-  String get helpTitleHint => 'Résumé court du problème';
-
-  @override
   String get helpDescriptionLabel => 'Décrivez le problème';
 
   @override
@@ -943,9 +937,4 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpAiNextStepsLabel => 'Prochaines étapes';
-
-  @override
-  String helpTitleTooLong(Object max) {
-    return 'Le titre doit contenir au maximum $max caractères.';
-  }
 }

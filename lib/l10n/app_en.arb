@@ -292,8 +292,6 @@
   "helpIntroTitle": "Get help fast",
   "helpIntroBody": "Report bugs or issues with screenshots or an audio note. A coding AI agent will triage and keep you updated.",
   "helpFormTitle": "Submit a ticket",
-  "helpTitleLabel": "Title",
-  "helpTitleHint": "Short summary of the issue",
   "helpDescriptionLabel": "Describe the issue",
   "helpDescriptionHint": "Steps, expected result, and what actually happened",
   "helpDescriptionRequired": "Add a short description or record an audio note.",
@@ -344,11 +342,5 @@
   "helpAudioPlaybackError": "Unable to play this audio clip.",
   "helpAiTriageTitle": "AI triage",
   "helpAiSummaryLabel": "Summary",
-  "helpAiNextStepsLabel": "Next steps",
-  "helpTitleTooLong": "Title must be {max} characters or less.",
-  "@helpTitleTooLong": {
-    "placeholders": {
-      "max": {}
-    }
-  }
+  "helpAiNextStepsLabel": "Next steps"
 }

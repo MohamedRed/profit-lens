@@ -52,21 +52,6 @@ class HelpTicketFormSection extends StatelessWidget {
           child: Column(
             children: [
               TextFormField(
-                controller: controller.titleController,
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  labelText: l10n.helpTitleLabel,
-                  hintText: l10n.helpTitleHint,
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return l10n.requiredFieldError;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: ShadcnSpacing.lg),
-              TextFormField(
                 controller: controller.descriptionController,
                 maxLines: 6,
                 minLines: 4,

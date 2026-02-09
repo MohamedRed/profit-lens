@@ -5,15 +5,13 @@ import '../domain/help_ticket_status.dart';
 
 class HelpTicketMapper {
   HelpTicket? fromDocument(String id, Map<String, dynamic> data) {
-    final title = data['title'] as String?;
     final description = data['description'] as String?;
-    if (title == null || description == null) return null;
+    if (description == null) return null;
     final status =
         helpTicketStatusFromString(data['status'] as String?) ??
         HelpTicketStatus.open;
     return HelpTicket(
       id: id,
-      title: title,
       description: description,
       status: status,
       statusMessage: data['statusMessage'] as String?,

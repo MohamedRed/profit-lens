@@ -111,7 +111,6 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
 
     final batch = _firestore.batch();
     batch.set(ticketRef, {
-      'title': draft.title,
       'description': draft.description,
       'status': helpTicketStatusToString(HelpTicketStatus.open),
       'deviceId': draft.deviceId,
@@ -139,7 +138,6 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
 
     return HelpTicket(
       id: ticketId,
-      title: draft.title,
       description: draft.description,
       status: HelpTicketStatus.open,
       statusMessage: null,

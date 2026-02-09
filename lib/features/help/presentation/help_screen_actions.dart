@@ -98,12 +98,6 @@ mixin _HelpScreenActions on State<HelpScreen> {
     }
     FocusScope.of(context).unfocus();
 
-    final title = _state._formController.titleController.text.trim();
-    if (title.length > _HelpScreenState.maxTitleLength) {
-      _showSnackBar(l10n.helpTitleTooLong(_HelpScreenState.maxTitleLength));
-      return;
-    }
-
     final description = _state._formController.descriptionController.text
         .trim();
     final audioAttachment = _state._audioController.snapshot.value.attachment;
@@ -121,7 +115,6 @@ mixin _HelpScreenActions on State<HelpScreen> {
       final deviceId = await services.deviceIdService.getDeviceId();
       if (!mounted) return;
       final draft = HelpTicketDraft(
-        title: title,
         description: description,
         deviceId: deviceId,
         platform: platform,
@@ -158,12 +151,4 @@ mixin _HelpScreenActions on State<HelpScreen> {
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  void _openTicketDetail(HelpTicket ticket) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) =>
-            HelpTicketDetailScreen(user: widget.user, ticketId: ticket.id),
-      ),
-    );
-  }
 }

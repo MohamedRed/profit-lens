@@ -8,14 +8,12 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../data/help_attachment_picker_service.dart';
 import '../data/help_ticket_repository.dart';
-import '../domain/help_ticket.dart';
 import '../domain/help_ticket_attachment_type.dart';
 import '../domain/help_ticket_draft.dart';
 import '../presentation/controllers/help_audio_recorder_controller.dart';
 import '../presentation/controllers/help_ticket_form_controller.dart';
 import '../presentation/models/help_local_attachment.dart';
 import 'help_screen_helpers.dart';
-import 'help_ticket_detail_screen.dart';
 import 'widgets/help_intro_section.dart';
 import 'widgets/help_ticket_form_section.dart';
 import 'widgets/help_ticket_list_section.dart';
@@ -33,7 +31,6 @@ class HelpScreen extends StatefulWidget {
 
 class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
   static const int maxScreenshots = 5;
-  static const int maxTitleLength = 120;
 
   final _formKey = GlobalKey<FormState>();
   final _uuid = const Uuid();
@@ -75,7 +72,7 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
     final ticketStream = ticketRepository?.watchTickets(widget.user.uid);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: ShadcnColors.background,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -97,7 +94,6 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
             );
             final listSection = HelpTicketListSection(
               ticketStream: ticketStream ?? const Stream.empty(),
-              onSelected: _openTicketDetail,
             );
 
             if (!isWide) {

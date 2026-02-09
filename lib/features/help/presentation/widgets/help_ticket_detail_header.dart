@@ -30,8 +30,10 @@ class HelpTicketDetailHeader extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  ticket.title,
+                  _headlineFromDescription(ticket.description),
                   style: Theme.of(context).textTheme.titleMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               HelpTicketStatusChip(status: ticket.status),
@@ -63,4 +65,11 @@ String? _formatTimestamp(BuildContext context, DateTime? dateTime) {
   if (dateTime == null) return null;
   final localizations = MaterialLocalizations.of(context);
   return localizations.formatFullDate(dateTime.toLocal());
+}
+
+String _headlineFromDescription(String description) {
+  final trimmed = description.trim();
+  if (trimmed.isEmpty) return '';
+  final firstLine = trimmed.split('\n').first.trim();
+  return firstLine.isEmpty ? trimmed : firstLine;
 }

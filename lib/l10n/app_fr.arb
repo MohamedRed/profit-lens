@@ -292,8 +292,6 @@
   "helpIntroTitle": "Obtenir de l’aide rapidement",
   "helpIntroBody": "Signalez des bugs ou des problèmes avec des captures d’écran ou une note audio. Un agent IA de développement les analysera et vous tiendra informé.",
   "helpFormTitle": "Soumettre un ticket",
-  "helpTitleLabel": "Titre",
-  "helpTitleHint": "Résumé court du problème",
   "helpDescriptionLabel": "Décrivez le problème",
   "helpDescriptionHint": "Étapes, résultat attendu et ce qui s’est passé",
   "helpDescriptionRequired": "Ajoutez une courte description ou enregistrez une note audio.",
@@ -344,11 +342,5 @@
   "helpAudioPlaybackError": "Impossible de lire cet enregistrement.",
   "helpAiTriageTitle": "Analyse IA",
   "helpAiSummaryLabel": "Résumé",
-  "helpAiNextStepsLabel": "Prochaines étapes",
-  "helpTitleTooLong": "Le titre doit contenir au maximum {max} caractères.",
-  "@helpTitleTooLong": {
-    "placeholders": {
-      "max": {}
-    }
-  }
+  "helpAiNextStepsLabel": "Prochaines étapes"
 }
