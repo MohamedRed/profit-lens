@@ -20,7 +20,8 @@ class OfferFlowController {
   final TextEditingController pickupNameController = TextEditingController();
   final TextEditingController pickupAddressController = TextEditingController();
   final TextEditingController dropoffNameController = TextEditingController();
-  final TextEditingController dropoffAddressController = TextEditingController();
+  final TextEditingController dropoffAddressController =
+      TextEditingController();
 
   OfferSource source = OfferSource.manual;
   OfferExtractionMetadata? extraction;
@@ -144,10 +145,7 @@ class OfferFlowController {
 
   bool isCurrentAnalysis(int runId) => runId == _analysisRunId;
 
-  void setAnalysisStatus(
-    OfferAnalysisStatus status, {
-    String? errorMessage,
-  }) {
+  void setAnalysisStatus(OfferAnalysisStatus status, {String? errorMessage}) {
     analysisStatus = status;
     analysisErrorMessage = errorMessage;
   }

@@ -32,21 +32,25 @@ class PlaceAutocompleteWebPlaceDetails {
       if (placeCtor == null) {
         return null;
       }
-      final place = js_util.callConstructor(
-        placeCtor,
-        [js_util.jsify({'id': placeId})],
-      );
+      final place = js_util.callConstructor(placeCtor, [
+        js_util.jsify({'id': placeId}),
+      ]);
       final fields = js_util.jsify({
-        'fields': ['displayName', 'formattedAddress', 'location']
+        'fields': ['displayName', 'formattedAddress', 'location'],
       });
       final promise = js_util.callMethod(place, 'fetchFields', [fields]);
       await js_util.promiseToFuture(promise);
       final displayName =
           _readString(js_util.getProperty(place, 'displayName')) ??
-              _readString(js_util.getProperty(
-                  js_util.getProperty(place, 'displayName'), 'text'));
-      final formattedAddress =
-          _readString(js_util.getProperty(place, 'formattedAddress'));
+          _readString(
+            js_util.getProperty(
+              js_util.getProperty(place, 'displayName'),
+              'text',
+            ),
+          );
+      final formattedAddress = _readString(
+        js_util.getProperty(place, 'formattedAddress'),
+      );
       final location = js_util.getProperty(place, 'location');
       double? lat;
       double? lng;

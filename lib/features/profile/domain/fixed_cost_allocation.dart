@@ -1,5 +1,1 @@
-enum FixedCostAllocation {
-  perHour,
-  perKm,
-  perDelivery,
-}
+enum FixedCostAllocation { perHour, perKm, perDelivery }

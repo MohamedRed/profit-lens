@@ -35,8 +35,10 @@ class TestFixtures {
       monthlyWorkingHours: 0,
       monthlyDistanceKm: 0,
       monthlyDeliveries: 0,
+      minProfitabilityEuro: 0,
       defaultVehicleId: 'vehicle-1',
       useFranceDefaults: true,
+      preferredLocale: 'en',
     );
   }
 

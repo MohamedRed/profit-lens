@@ -8,15 +8,16 @@ class UserProfileMapper {
   UserProfile? fromDocument(String uid, Map<String, dynamic>? data) {
     if (data == null) return null;
     final activity = _activityFromString(data['activity'] as String?);
-    final allocation =
-        _allocationFromString(data['fixedCostAllocation'] as String?);
+    final allocation = _allocationFromString(
+      data['fixedCostAllocation'] as String?,
+    );
     final socialRate = (data['socialContributionRate'] as num?)?.toDouble();
     final fixedCosts = (data['monthlyFixedCosts'] as num?)?.toDouble();
     final monthlyHours = (data['monthlyWorkingHours'] as num?)?.toDouble();
     final monthlyDistance = (data['monthlyDistanceKm'] as num?)?.toDouble();
     final monthlyDeliveries = (data['monthlyDeliveries'] as num?)?.toInt();
-    final minProfitability = (data['minProfitabilityEuro'] as num?)
-            ?.toDouble() ??
+    final minProfitability =
+        (data['minProfitabilityEuro'] as num?)?.toDouble() ??
         ProfileDefaults.minProfitabilityEuro;
     final countryCode = data['countryCode'] as String?;
     final currencyCode = data['currencyCode'] as String?;

@@ -4,10 +4,7 @@ class ChartAxisTick {
   final double value;
   final String label;
 
-  const ChartAxisTick({
-    required this.value,
-    required this.label,
-  });
+  const ChartAxisTick({required this.value, required this.label});
 }
 
 class ProfitHistoryChartCanvas extends StatelessWidget {
@@ -40,17 +37,16 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
           final thresholdRatio = (0 - minValue) / (range == 0 ? 1 : range);
           final thresholdY =
               padding + chartHeight - (thresholdRatio * chartHeight);
-          final badgeTop =
-              thresholdY.clamp(8.0, constraints.maxHeight - 28.0);
-          final labelStyle = Theme.of(context)
-              .textTheme
-              .labelSmall
-              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
+          final badgeTop = thresholdY.clamp(8.0, constraints.maxHeight - 28.0);
+          final labelStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          );
           final tickPositions = axisTicks
               .map(
                 (tick) => _AxisTickPosition(
                   label: tick.label,
-                  top: padding +
+                  top:
+                      padding +
                       chartHeight -
                       (((tick.value - minValue) / (range == 0 ? 1 : range)) *
                           chartHeight) -
@@ -68,8 +64,7 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
                     for (final tick in tickPositions)
                       Positioned(
                         right: 8,
-                        top: tick.top
-                            .clamp(2.0, constraints.maxHeight - 16.0),
+                        top: tick.top.clamp(2.0, constraints.maxHeight - 16.0),
                         child: Text(
                           tick.label,
                           style: labelStyle,
@@ -92,7 +87,9 @@ class ProfitHistoryChartCanvas extends StatelessWidget {
                           lineColor: Theme.of(context).colorScheme.primary,
                           thresholdColor: Theme.of(context).colorScheme.error,
                           axisColor: Theme.of(context).dividerColor,
-                          gridColor: Theme.of(context).colorScheme.outlineVariant,
+                          gridColor: Theme.of(
+                            context,
+                          ).colorScheme.outlineVariant,
                           backgroundColor: Theme.of(context)
                               .colorScheme
                               .surfaceContainerHighest
@@ -123,20 +120,14 @@ class _AxisTickPosition {
   final String label;
   final double top;
 
-  const _AxisTickPosition({
-    required this.label,
-    required this.top,
-  });
+  const _AxisTickPosition({required this.label, required this.top});
 }
 
 class _ThresholdBadge extends StatelessWidget {
   final String label;
   final Color color;
 
-  const _ThresholdBadge({
-    required this.label,
-    required this.color,
-  });
+  const _ThresholdBadge({required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -150,10 +141,7 @@ class _ThresholdBadge extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Text(
           label,
-          style: Theme.of(context)
-              .textTheme
-              .labelSmall
-              ?.copyWith(color: color),
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color),
         ),
       ),
     );
@@ -233,7 +221,8 @@ class _ProfitHistoryChartPainter extends CustomPainter {
       ..color = thresholdColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.5;
-    final thresholdY = chartRect.bottom -
+    final thresholdY =
+        chartRect.bottom -
         ((threshold - normalizedMin) / range) * chartRect.height;
     canvas.drawLine(
       Offset(chartRect.left, thresholdY),
@@ -257,7 +246,8 @@ class _ProfitHistoryChartPainter extends CustomPainter {
     for (var i = 0; i < values.length; i++) {
       final xRatio = values.length == 1 ? 0.5 : i / (values.length - 1);
       final x = chartRect.left + chartRect.width * xRatio;
-      final y = chartRect.bottom -
+      final y =
+          chartRect.bottom -
           ((values[i] - normalizedMin) / range) * chartRect.height;
       if (i == 0) {
         path.moveTo(x, y);

@@ -39,8 +39,7 @@ class _OfferProfitabilityTargetSectionState
   @override
   void didUpdateWidget(OfferProfitabilityTargetSection oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!_focusNode.hasFocus &&
-        widget.minProfitabilityEuro != _lastSaved) {
+    if (!_focusNode.hasFocus && widget.minProfitabilityEuro != _lastSaved) {
       _lastSaved = widget.minProfitabilityEuro;
       _controller.text = widget.minProfitabilityEuro.toStringAsFixed(2);
     }

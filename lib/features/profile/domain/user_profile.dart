@@ -63,8 +63,7 @@ class UserProfile {
   }) {
     return UserProfile(
       uid: uid ?? this.uid,
-      email:
-          identical(email, _nullSentinel) ? this.email : email as String?,
+      email: identical(email, _nullSentinel) ? this.email : email as String?,
       countryCode: countryCode ?? this.countryCode,
       currencyCode: currencyCode ?? this.currencyCode,
       activity: activity ?? this.activity,
@@ -79,8 +78,7 @@ class UserProfile {
       monthlyWorkingHours: monthlyWorkingHours ?? this.monthlyWorkingHours,
       monthlyDistanceKm: monthlyDistanceKm ?? this.monthlyDistanceKm,
       monthlyDeliveries: monthlyDeliveries ?? this.monthlyDeliveries,
-      minProfitabilityEuro:
-          minProfitabilityEuro ?? this.minProfitabilityEuro,
+      minProfitabilityEuro: minProfitabilityEuro ?? this.minProfitabilityEuro,
       defaultVehicleId: identical(defaultVehicleId, _nullSentinel)
           ? this.defaultVehicleId
           : defaultVehicleId as String?,

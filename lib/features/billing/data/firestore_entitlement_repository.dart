@@ -8,7 +8,7 @@ class FirestoreEntitlementRepository implements EntitlementRepository {
   final FirebaseFirestore _firestore;
 
   FirestoreEntitlementRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   void _ensureConfigured() {
     if (!AppConfig.firebaseConfigured) {

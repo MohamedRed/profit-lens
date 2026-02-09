@@ -64,8 +64,8 @@ class PlaceAutocompleteDomHelper {
     try {
       final value =
           _readString(js_util.getProperty(autocomplete, 'value')) ??
-              _readString(js_util.getProperty(autocomplete, 'inputValue')) ??
-              _readString(js_util.getProperty(autocomplete, 'query'));
+          _readString(js_util.getProperty(autocomplete, 'inputValue')) ??
+          _readString(js_util.getProperty(autocomplete, 'query'));
       if (value != null) {
         return value;
       }
@@ -168,11 +168,13 @@ class PlaceAutocompleteDomHelper {
       final target = event.target;
       Element? item;
       if (target is Element) {
-        item = target.closest('[role="option"]') ??
+        item =
+            target.closest('[role="option"]') ??
             target.closest('gmp-place-list-item') ??
             target;
       }
-      final value = readAutocompleteValue() ??
+      final value =
+          readAutocompleteValue() ??
           _readString(item?.text) ??
           _readString(item?.innerText);
       if (value != null && value.isNotEmpty) {

@@ -908,6 +908,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpTicketAttachmentsTitle => 'Attachments';
 
   @override
+  String get helpTicketNotFound => 'This ticket doesn\'t exist anymore.';
+
+  @override
   String get helpAttachmentsScreenshotsTitle => 'Screenshots';
 
   @override

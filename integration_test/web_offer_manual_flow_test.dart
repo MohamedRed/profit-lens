@@ -24,10 +24,10 @@ void main() {
     final vehicle = TestFixtures.vehicle();
     final services = TestAppServices(
       authRepository: InMemoryAuthRepository(initialUser: TestFixtures.user),
-      userProfileRepository:
-          InMemoryUserProfileRepository(initialProfile: profile),
-      vehicleRepository:
-          InMemoryVehicleRepository(initialVehicles: [vehicle]),
+      userProfileRepository: InMemoryUserProfileRepository(
+        initialProfile: profile,
+      ),
+      vehicleRepository: InMemoryVehicleRepository(initialVehicles: [vehicle]),
       offerAnalysisService: FakeOfferAnalysisService(
         profile: profile,
         vehicle: vehicle,
@@ -90,10 +90,7 @@ void main() {
     expect(find.text('Gross revenue'), findsOneWidget);
     expect(find.text('Total costs'), findsOneWidget);
     expect(find.text('Net profit'), findsOneWidget);
-    expect(
-      find.text(CurrencyFormat.euro(payout, localeTag)),
-      findsOneWidget,
-    );
+    expect(find.text(CurrencyFormat.euro(payout, localeTag)), findsOneWidget);
     expect(
       find.text(CurrencyFormat.euro(totalCosts, localeTag)),
       findsOneWidget,

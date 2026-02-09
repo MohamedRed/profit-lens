@@ -29,9 +29,9 @@ class SignInFields extends StatelessWidget {
         Text(
           l10n.signInTitle,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: ShadcnColors.textPrimary,
-              ),
+            fontWeight: FontWeight.w600,
+            color: ShadcnColors.textPrimary,
+          ),
         ),
         const SizedBox(height: ShadcnSpacing.lg),
         TextFormField(

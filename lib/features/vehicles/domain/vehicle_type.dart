@@ -1,6 +1,1 @@
-enum VehicleType {
-  bike,
-  ebike,
-  scooter,
-  car,
-}
+enum VehicleType { bike, ebike, scooter, car }

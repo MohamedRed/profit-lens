@@ -7,10 +7,7 @@ import '../../domain/offer_daily_stats.dart';
 class ProfitHistorySummary extends StatelessWidget {
   final List<OfferDailyStats> stats;
 
-  const ProfitHistorySummary({
-    super.key,
-    required this.stats,
-  });
+  const ProfitHistorySummary({super.key, required this.stats});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +20,10 @@ class ProfitHistorySummary extends StatelessWidget {
     if (totalCount == 0) {
       return const SizedBox.shrink();
     }
-    final totalSum =
-        stats.fold<double>(0, (sum, stat) => sum + stat.netProfitSum);
+    final totalSum = stats.fold<double>(
+      0,
+      (sum, stat) => sum + stat.netProfitSum,
+    );
     final averageAll = totalSum / totalCount;
     final averageLabel = CurrencyFormat.euro(averageAll, localeTag);
 
@@ -59,10 +58,7 @@ class ProfitHistorySummary extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          headline,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
+        Text(headline, style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 4),
         Text(
           l10n.historySummaryAverageProfit(averageLabel),
@@ -73,13 +69,14 @@ class ProfitHistorySummary extends StatelessWidget {
   }
 
   double _averageProfit(List<OfferDailyStats> entries) {
-    final totalCount =
-        entries.fold<int>(0, (sum, stat) => sum + stat.count);
+    final totalCount = entries.fold<int>(0, (sum, stat) => sum + stat.count);
     if (totalCount == 0) {
       return 0;
     }
-    final totalSum =
-        entries.fold<double>(0, (sum, stat) => sum + stat.netProfitSum);
+    final totalSum = entries.fold<double>(
+      0,
+      (sum, stat) => sum + stat.netProfitSum,
+    );
     return totalSum / totalCount;
   }
 

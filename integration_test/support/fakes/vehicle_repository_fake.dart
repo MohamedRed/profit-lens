@@ -5,7 +5,7 @@ import 'package:profit_lens/features/vehicles/domain/vehicle_profile.dart';
 
 class InMemoryVehicleRepository implements VehicleRepository {
   InMemoryVehicleRepository({List<VehicleProfile>? initialVehicles})
-      : _vehicles = List<VehicleProfile>.from(initialVehicles ?? const []);
+    : _vehicles = List<VehicleProfile>.from(initialVehicles ?? const []);
 
   final List<VehicleProfile> _vehicles;
   final StreamController<List<VehicleProfile>> _controller =

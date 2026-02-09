@@ -19,11 +19,12 @@ class OfferRecordRemoteMapper {
     CostBreakdownMapper? costBreakdownMapper,
     VehicleSnapshotMapper? vehicleSnapshotMapper,
     RouteVerificationMapper? routeVerificationMapper,
-  })  : _costSettingsMapper = costSettingsMapper ?? CostSettingsMapper(),
-        _costBreakdownMapper = costBreakdownMapper ?? CostBreakdownMapper(),
-        _vehicleSnapshotMapper = vehicleSnapshotMapper ?? VehicleSnapshotMapper(),
-        _routeVerificationMapper =
-            routeVerificationMapper ?? RouteVerificationMapper();
+  }) : _costSettingsMapper = costSettingsMapper ?? CostSettingsMapper(),
+       _costBreakdownMapper = costBreakdownMapper ?? CostBreakdownMapper(),
+       _vehicleSnapshotMapper =
+           vehicleSnapshotMapper ?? VehicleSnapshotMapper(),
+       _routeVerificationMapper =
+           routeVerificationMapper ?? RouteVerificationMapper();
 
   OfferRecord? fromResponse(Map<String, dynamic>? data) {
     if (data == null) return null;
@@ -34,12 +35,15 @@ class OfferRecordRemoteMapper {
     final offer = _offerFromRecord(record);
     final source = _sourceFromString(record['source'] as String?);
     final createdAt = _parseDate(record['createdAt']);
-    final vehicle = _vehicleSnapshotMapper
-        .fromDocument(record['vehicleSnapshot'] as Map<String, dynamic>?);
-    final costSettings = _costSettingsMapper
-        .fromDocument(record['costSnapshot'] as Map<String, dynamic>?);
-    final breakdown = _costBreakdownMapper
-        .fromDocument(record['breakdown'] as Map<String, dynamic>?);
+    final vehicle = _vehicleSnapshotMapper.fromDocument(
+      record['vehicleSnapshot'] as Map<String, dynamic>?,
+    );
+    final costSettings = _costSettingsMapper.fromDocument(
+      record['costSnapshot'] as Map<String, dynamic>?,
+    );
+    final breakdown = _costBreakdownMapper.fromDocument(
+      record['breakdown'] as Map<String, dynamic>?,
+    );
 
     if (id == null ||
         offer == null ||
@@ -59,8 +63,9 @@ class OfferRecordRemoteMapper {
       vehicleSnapshot: vehicle,
       costSnapshot: costSettings,
       breakdown: breakdown,
-      extraction:
-          _extractionFromDocument(record['extraction'] as Map<String, dynamic>?),
+      extraction: _extractionFromDocument(
+        record['extraction'] as Map<String, dynamic>?,
+      ),
     );
   }
 
@@ -71,8 +76,8 @@ class OfferRecordRemoteMapper {
     final payout = (offerMap['payoutEuro'] as num?)?.toDouble();
     final distance = (offerMap['distanceKm'] as num?)?.toDouble();
     if (payout == null || distance == null) return null;
-    final routeVerificationMap = offerMap['routeVerification'] ??
-        data['routeVerification'];
+    final routeVerificationMap =
+        offerMap['routeVerification'] ?? data['routeVerification'];
     return Offer(
       payoutEuro: payout,
       distanceKm: distance,
@@ -81,8 +86,9 @@ class OfferRecordRemoteMapper {
       pickupAddress: offerMap['pickupAddress'] as String?,
       dropoffName: offerMap['dropoffName'] as String?,
       dropoffAddress: offerMap['dropoffAddress'] as String?,
-      routeVerification: _routeVerificationMapper
-          .fromDocument(routeVerificationMap as Map<String, dynamic>?),
+      routeVerification: _routeVerificationMapper.fromDocument(
+        routeVerificationMap as Map<String, dynamic>?,
+      ),
     );
   }
 
@@ -100,8 +106,7 @@ class OfferRecordRemoteMapper {
     return null;
   }
 
-  OfferExtractionMetadata? _extractionFromDocument(
-      Map<String, dynamic>? data) {
+  OfferExtractionMetadata? _extractionFromDocument(Map<String, dynamic>? data) {
     if (data == null) return null;
     final confidence = (data['confidence'] as num?)?.toDouble();
     if (confidence == null) return null;

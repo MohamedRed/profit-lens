@@ -25,19 +25,25 @@ VehicleProfile buildVehicleProfile({
 }) {
   final brand = controller.brandController.text.trim();
   final model = controller.modelController.text.trim();
-  final licensePlate =
-      normalizeFrenchLicensePlate(controller.licensePlateController.text);
+  final licensePlate = normalizeFrenchLicensePlate(
+    controller.licensePlateController.text,
+  );
   final resolvedPlate = licensePlate.isEmpty ? null : licensePlate;
-  final registrationYear =
-      NumberParsing.parseInt(controller.registrationYearController.text);
-  final consumption =
-      NumberParsing.parseDouble(controller.consumptionController.text);
-  final energyPrice =
-      NumberParsing.parseDouble(controller.energyPriceController.text);
-  final maintenance =
-      NumberParsing.parseDouble(controller.maintenanceController.text);
-  final depreciation =
-      NumberParsing.parseDouble(controller.depreciationController.text);
+  final registrationYear = NumberParsing.parseInt(
+    controller.registrationYearController.text,
+  );
+  final consumption = NumberParsing.parseDouble(
+    controller.consumptionController.text,
+  );
+  final energyPrice = NumberParsing.parseDouble(
+    controller.energyPriceController.text,
+  );
+  final maintenance = NumberParsing.parseDouble(
+    controller.maintenanceController.text,
+  );
+  final depreciation = NumberParsing.parseDouble(
+    controller.depreciationController.text,
+  );
   if (consumption == null || energyPrice == null) {
     throw StateError('Missing required vehicle costs.');
   }

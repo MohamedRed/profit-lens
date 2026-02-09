@@ -8,10 +8,7 @@ import '../../../devices/presentation/device_management_screen.dart';
 class SettingsDevicesCard extends StatelessWidget {
   final AuthUser user;
 
-  const SettingsDevicesCard({
-    super.key,
-    required this.user,
-  });
+  const SettingsDevicesCard({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {

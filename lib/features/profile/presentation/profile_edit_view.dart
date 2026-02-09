@@ -74,5 +74,4 @@ class ProfileEditView extends StatelessWidget {
       ),
     );
   }
-
 }

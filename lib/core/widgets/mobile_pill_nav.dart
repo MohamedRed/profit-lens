@@ -37,8 +37,9 @@ class MobilePillNav extends StatelessWidget {
           final baseItemWidth =
               (constraints.maxWidth - baseHorizontalPadding * 2) / items.length;
           final isCompact = baseItemWidth < 84;
-          final horizontalPadding =
-              isCompact ? compactHorizontalPadding : baseHorizontalPadding;
+          final horizontalPadding = isCompact
+              ? compactHorizontalPadding
+              : baseHorizontalPadding;
           final verticalPadding = isCompact ? 6.0 : 8.0;
           final height = isCompact ? 64.0 : 72.0;
 
@@ -117,10 +118,10 @@ class _NavButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isActive ? ShadcnColors.purple : ShadcnColors.textSecondary;
     final labelStyle = Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: color,
-          fontSize: isCompact ? 10 : null,
-          height: isCompact ? 1.1 : null,
-        );
+      color: color,
+      fontSize: isCompact ? 10 : null,
+      height: isCompact ? 1.1 : null,
+    );
     final iconSize = isCompact ? 20.0 : 24.0;
     final horizontalPadding = isCompact ? 6.0 : 12.0;
     final spacing = isCompact ? 2.0 : 4.0;

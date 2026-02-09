@@ -72,10 +72,7 @@ class _InstallBannerContent extends StatelessWidget {
               _InstallBannerIcon(isApple: isApple),
               const SizedBox(width: ShadcnSpacing.md),
               Expanded(
-                child: _InstallBannerText(
-                  title: title,
-                  subtitle: subtitle,
-                ),
+                child: _InstallBannerText(title: title, subtitle: subtitle),
               ),
             ],
           ),
@@ -85,10 +82,7 @@ class _InstallBannerContent extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: SizedBox(
             width: isCompact ? double.infinity : null,
-            child: _InstallBannerButton(
-              label: ctaLabel,
-              isEnabled: isEnabled,
-            ),
+            child: _InstallBannerButton(label: ctaLabel, isEnabled: isEnabled),
           ),
         ),
       ],
@@ -122,10 +116,7 @@ class _InstallBannerText extends StatelessWidget {
   final String title;
   final String subtitle;
 
-  const _InstallBannerText({
-    required this.title,
-    required this.subtitle,
-  });
+  const _InstallBannerText({required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -137,18 +128,18 @@ class _InstallBannerText extends StatelessWidget {
           softWrap: true,
           textAlign: TextAlign.left,
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: ShadcnColors.textPrimary,
-              ),
+            fontWeight: FontWeight.w700,
+            color: ShadcnColors.textPrimary,
+          ),
         ),
         const SizedBox(height: ShadcnSpacing.xs),
         Text(
           subtitle,
           softWrap: true,
           textAlign: TextAlign.left,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: ShadcnColors.textSecondary,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: ShadcnColors.textSecondary),
         ),
       ],
     );
@@ -159,10 +150,7 @@ class _InstallBannerButton extends StatelessWidget {
   final String label;
   final bool isEnabled;
 
-  const _InstallBannerButton({
-    required this.label,
-    required this.isEnabled,
-  });
+  const _InstallBannerButton({required this.label, required this.isEnabled});
 
   @override
   Widget build(BuildContext context) {

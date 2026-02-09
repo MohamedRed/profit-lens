@@ -31,10 +31,8 @@ class SettingsProfileCard extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => ProfileEditScreen(
-                user: user,
-                profile: profile,
-              ),
+              builder: (context) =>
+                  ProfileEditScreen(user: user, profile: profile),
             ),
           );
         },

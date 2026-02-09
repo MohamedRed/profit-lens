@@ -35,20 +35,14 @@ Future<bool> ensureOfferReady({
   if (action == MissingDataAction.editProfile) {
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ProfileEditScreen(
-          user: user,
-          profile: profile,
-        ),
+        builder: (context) => ProfileEditScreen(user: user, profile: profile),
       ),
     );
   } else if (action == MissingDataAction.editVehicle) {
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => VehicleFormScreen(
-          user: user,
-          profile: profile,
-          vehicle: vehicle,
-        ),
+        builder: (context) =>
+            VehicleFormScreen(user: user, profile: profile, vehicle: vehicle),
       ),
     );
   }

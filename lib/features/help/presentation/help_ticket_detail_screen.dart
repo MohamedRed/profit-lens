@@ -13,68 +13,87 @@ import 'widgets/help_ticket_detail_header.dart';
 
 class HelpTicketDetailScreen extends StatelessWidget {
   final AuthUser user;
-  final HelpTicket ticket;
+  final String ticketId;
 
   const HelpTicketDetailScreen({
     super.key,
     required this.user,
-    required this.ticket,
+    required this.ticketId,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final hasAiTriage =
-        (ticket.aiSummary?.isNotEmpty ?? false) ||
-        (ticket.aiNextSteps?.isNotEmpty ?? false);
-    final attachments = AppScope.of(
-      context,
-    ).helpTicketRepository.watchAttachments(uid: user.uid, ticketId: ticket.id);
+    final repository = AppScope.of(context).helpTicketRepository;
+    final ticketStream = repository.watchTicket(
+      uid: user.uid,
+      ticketId: ticketId,
+    );
+    final attachments = repository.watchAttachments(
+      uid: user.uid,
+      ticketId: ticketId,
+    );
     return Scaffold(
       appBar: AppBar(title: Text(l10n.helpTicketDetailTitle)),
-      body: ListView(
-        padding: const EdgeInsets.all(ShadcnSpacing.lg),
-        children: [
-          HelpTicketDetailHeader(ticket: ticket),
-          const SizedBox(height: ShadcnSpacing.lg),
-          SectionCard(
-            title: l10n.helpTicketDescriptionTitle,
+      body: StreamBuilder<HelpTicket?>(
+        stream: ticketStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting &&
+              !snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final ticket = snapshot.data;
+          if (ticket == null) {
+            return Center(child: Text(l10n.helpTicketNotFound));
+          }
+          final hasAiTriage =
+              (ticket.aiSummary?.isNotEmpty ?? false) ||
+              (ticket.aiNextSteps?.isNotEmpty ?? false);
+          return ListView(
+            padding: const EdgeInsets.all(ShadcnSpacing.lg),
             children: [
-              Text(
-                ticket.description.isEmpty
-                    ? l10n.helpTicketDescriptionEmpty
-                    : ticket.description,
-                style: Theme.of(context).textTheme.bodyMedium,
+              HelpTicketDetailHeader(ticket: ticket),
+              const SizedBox(height: ShadcnSpacing.lg),
+              SectionCard(
+                title: l10n.helpTicketDescriptionTitle,
+                children: [
+                  Text(
+                    ticket.description.isEmpty
+                        ? l10n.helpTicketDescriptionEmpty
+                        : ticket.description,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+              const SizedBox(height: ShadcnSpacing.lg),
+              if (hasAiTriage) ...[
+                HelpAiTriageSection(ticket: ticket),
+                const SizedBox(height: ShadcnSpacing.lg),
+              ],
+              SectionCard(
+                title: l10n.helpTicketAttachmentsTitle,
+                children: [
+                  StreamBuilder<List<HelpTicketAttachment>>(
+                    stream: attachments,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting &&
+                          !snapshot.hasData) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(ShadcnSpacing.lg),
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                      final items = snapshot.data ?? [];
+                      return HelpTicketAttachmentGallery(attachments: items);
+                    },
+                  ),
+                ],
               ),
             ],
-          ),
-          const SizedBox(height: ShadcnSpacing.lg),
-          if (hasAiTriage) ...[
-            HelpAiTriageSection(ticket: ticket),
-            const SizedBox(height: ShadcnSpacing.lg),
-          ],
-          SectionCard(
-            title: l10n.helpTicketAttachmentsTitle,
-            children: [
-              StreamBuilder<List<HelpTicketAttachment>>(
-                stream: attachments,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting &&
-                      !snapshot.hasData) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(ShadcnSpacing.lg),
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
-                  final items = snapshot.data ?? [];
-                  return HelpTicketAttachmentGallery(attachments: items);
-                },
-              ),
-            ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }

@@ -34,10 +34,7 @@ class BusinessTaxesSetupSection extends StatelessWidget {
     return SectionCard(
       title: l10n.costsSection,
       children: [
-        BusinessActivityField(
-          value: activity,
-          onChanged: onActivityChanged,
-        ),
+        BusinessActivityField(value: activity, onChanged: onActivityChanged),
         const SizedBox(height: 12),
         BusinessTaxesFields(
           socialRateController: socialRateController,

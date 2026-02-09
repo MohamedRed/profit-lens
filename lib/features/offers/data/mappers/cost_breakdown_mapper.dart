@@ -6,11 +6,11 @@ class CostBreakdownMapper {
     final energyCost = (data['energyCost'] as num?)?.toDouble();
     final maintenanceCost = (data['maintenanceCost'] as num?)?.toDouble();
     final depreciationCost = (data['depreciationCost'] as num?)?.toDouble();
-    final socialContributions =
-        (data['socialContributions'] as num?)?.toDouble();
+    final socialContributions = (data['socialContributions'] as num?)
+        ?.toDouble();
     final incomeTax = (data['incomeTax'] as num?)?.toDouble();
-    final fixedCostAllocation =
-        (data['fixedCostAllocation'] as num?)?.toDouble();
+    final fixedCostAllocation = (data['fixedCostAllocation'] as num?)
+        ?.toDouble();
     final totalCosts = (data['totalCosts'] as num?)?.toDouble();
     final netProfit = (data['netProfit'] as num?)?.toDouble();
     if (energyCost == null ||

@@ -31,9 +31,9 @@ Future<void> saveVehicleForm({
     final vehicleId = buildVehicleId(user: user, existing: existing);
     vehicle = buildVehicleProfile(id: vehicleId, controller: controller);
   } catch (_) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.requiredFieldError)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.requiredFieldError)));
     return;
   }
 
@@ -51,9 +51,9 @@ Future<void> saveVehicleForm({
       );
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.vehicleSaveFailedMessage)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.vehicleSaveFailedMessage)));
   } finally {
     if (context.mounted) {
       onSavingChanged(false);
@@ -74,10 +74,12 @@ Future<void> deleteVehicleForm({
     final services = AppScope.of(context);
     await services.vehicleRepository.deleteVehicle(user.uid, existing.id);
     if (profile.defaultVehicleId == existing.id) {
-      final remainingVehicles =
-          await services.vehicleRepository.fetchVehicles(user.uid);
-      final newDefaultId =
-          remainingVehicles.isEmpty ? null : remainingVehicles.first.id;
+      final remainingVehicles = await services.vehicleRepository.fetchVehicles(
+        user.uid,
+      );
+      final newDefaultId = remainingVehicles.isEmpty
+          ? null
+          : remainingVehicles.first.id;
       final updatedProfile = profile.copyWith(defaultVehicleId: newDefaultId);
       await services.userProfileRepository.saveProfile(updatedProfile);
     }
@@ -86,9 +88,9 @@ Future<void> deleteVehicleForm({
     }
   } catch (_) {
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.vehicleDeleteFailedMessage)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.vehicleDeleteFailedMessage)));
   } finally {
     if (context.mounted) {
       onDeletingChanged(false);

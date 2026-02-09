@@ -95,8 +95,7 @@ class _VehicleAutocompleteFieldState extends State<VehicleAutocompleteField> {
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 itemCount: optionList.length,
-                separatorBuilder: (context, index) =>
-                    const Divider(height: 1),
+                separatorBuilder: (context, index) => const Divider(height: 1),
                 itemBuilder: (context, index) {
                   final option = optionList[index];
                   return InkWell(

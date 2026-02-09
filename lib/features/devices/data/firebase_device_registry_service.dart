@@ -8,8 +8,9 @@ class FirebaseDeviceRegistryService implements DeviceRegistryService {
   final FirebaseFunctions _functions;
 
   FirebaseDeviceRegistryService({FirebaseFunctions? functions})
-      : _functions =
-            functions ?? FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion);
+    : _functions =
+          functions ??
+          FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion);
 
   @override
   Future<DeviceRegistrationResult> registerDevice({
@@ -37,7 +38,8 @@ class FirebaseDeviceRegistryService implements DeviceRegistryService {
   DeviceRegistrationResult _parseResult(Object? data) {
     final map = Map<String, dynamic>.from(data as Map);
     final limit = (map['deviceLimit'] as num?)?.toInt() ?? 1;
-    final devices = (map['activeDevices'] as List?)
+    final devices =
+        (map['activeDevices'] as List?)
             ?.map((entry) => _parseDevice(entry))
             .whereType<DeviceEntry>()
             .toList() ??

@@ -8,8 +8,9 @@ import 'support/test_app_services.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('sign-in form validates required fields and opens register',
-      (tester) async {
+  testWidgets('sign-in form validates required fields and opens register', (
+    tester,
+  ) async {
     await tester.binding.setLocale('en', 'US');
     await tester.pumpWidget(ProfitLensApp(services: TestAppServices()));
     await tester.pumpAndSettle();

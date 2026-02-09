@@ -12,9 +12,7 @@ String? validateFixedCosts({
   }
   switch (allocation) {
     case FixedCostAllocation.perHour:
-      return values.monthlyHours <= 0
-          ? l10n.monthlyHoursRequiredError
-          : null;
+      return values.monthlyHours <= 0 ? l10n.monthlyHoursRequiredError : null;
     case FixedCostAllocation.perKm:
       return values.monthlyDistance <= 0
           ? l10n.monthlyDistanceRequiredError

@@ -40,8 +40,10 @@ class VehicleModelAutocompleteField extends StatelessWidget {
         final brand = brandController.text;
         if (brand.trim().isEmpty) return const Iterable<String>.empty();
         final normalizedQuery = query.toLowerCase();
-        final models =
-            VehicleCatalogFr.modelsFor(type: vehicleType, brand: brand);
+        final models = VehicleCatalogFr.modelsFor(
+          type: vehicleType,
+          brand: brand,
+        );
         if (normalizedQuery.isEmpty) return models;
         return models.where(
           (model) => model.toLowerCase().startsWith(normalizedQuery),

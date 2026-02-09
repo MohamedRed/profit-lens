@@ -31,6 +31,7 @@ class FakeOfferAnalysisService implements OfferAnalysisService {
     XFile? image,
     String? vehicleId,
     OfferSource? source,
+    required String deviceId,
   }) async {
     final resolvedOffer = _resolveOffer(offer, image);
     final costSettings = _buildCostSettings(profile);
@@ -109,7 +110,8 @@ class FakeOfferAnalysisService implements OfferAnalysisService {
     required VehicleProfile vehicle,
   }) {
     final distance = offer.routeVerification?.distanceKm ?? offer.distanceKm;
-    final energyCost = distance *
+    final energyCost =
+        distance *
         (vehicle.energyConsumptionPer100Km / 100) *
         vehicle.energyPricePerUnit;
     final maintenanceCost = distance * vehicle.maintenancePerKm;
@@ -120,7 +122,8 @@ class FakeOfferAnalysisService implements OfferAnalysisService {
       offer: offer,
       costs: costs,
     );
-    final totalCosts = energyCost +
+    final totalCosts =
+        energyCost +
         maintenanceCost +
         depreciationCost +
         socialContributions +

@@ -50,10 +50,7 @@ class VehicleDetailsSection extends StatelessWidget {
           onChanged: onPresetsChanged,
         ),
         const SizedBox(height: 12),
-        VehicleTypeField(
-          value: vehicleType,
-          onChanged: onVehicleTypeChanged,
-        ),
+        VehicleTypeField(value: vehicleType, onChanged: onVehicleTypeChanged),
         const SizedBox(height: 12),
         VehicleIdentityFields(
           vehicleType: vehicleType,

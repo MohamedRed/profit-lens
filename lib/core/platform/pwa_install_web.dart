@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:html' as html;
-import 'dart:js_util' as js_util;
 
 import 'package:flutter/foundation.dart';
 
@@ -12,7 +11,9 @@ final ValueNotifier<bool> _pwaInstallAvailability = ValueNotifier(false);
 ValueListenable<bool> get pwaInstallAvailability {
   _ensureBeforeInstallPromptListener();
   final deferredEvent = _getDeferredPromptEvent();
-  if (!_isStandalone && deferredEvent != null && !_pwaInstallAvailability.value) {
+  if (!_isStandalone &&
+      deferredEvent != null &&
+      !_pwaInstallAvailability.value) {
     scheduleMicrotask(() {
       if (!_pwaInstallAvailability.value) {
         _pwaInstallAvailability.value = true;
@@ -27,18 +28,22 @@ void _ensureBeforeInstallPromptListener() {
     return;
   }
   _listenerRegistered = true;
+
   html.window.addEventListener('beforeinstallprompt', (event) {
+    event.preventDefault();
     final jsEvent = event as dynamic;
-    if (js_util.hasProperty(jsEvent, 'preventDefault')) {
-      js_util.callMethod(jsEvent, 'preventDefault', const []);
-    }
     _deferredPromptEvent = jsEvent;
-    js_util.setProperty(html.window, 'defferedPromptEvent', jsEvent);
+    try {
+      (html.window as dynamic).defferedPromptEvent = jsEvent;
+    } catch (_) {}
     _pwaInstallAvailability.value = !_isStandalone;
   });
+
   html.window.addEventListener('appinstalled', (_) {
     _deferredPromptEvent = null;
-    js_util.setProperty(html.window, 'defferedPromptEvent', null);
+    try {
+      (html.window as dynamic).defferedPromptEvent = null;
+    } catch (_) {}
     _pwaInstallAvailability.value = false;
   });
 }
@@ -47,12 +52,14 @@ dynamic _getDeferredPromptEvent() {
   if (_deferredPromptEvent != null) {
     return _deferredPromptEvent;
   }
-  if (js_util.hasProperty(html.window, 'defferedPromptEvent')) {
-    final event = js_util.getProperty(html.window, 'defferedPromptEvent');
-    if (event != null) {
-      _deferredPromptEvent = event;
+
+  try {
+    final globalEvent = (html.window as dynamic).defferedPromptEvent;
+    if (globalEvent != null) {
+      _deferredPromptEvent = globalEvent;
     }
-  }
+  } catch (_) {}
+
   return _deferredPromptEvent;
 }
 
@@ -78,72 +85,108 @@ bool get isPwaInstalled => _isStandalone;
 
 Future<bool> showPwaInstallDialog() async {
   _ensureBeforeInstallPromptListener();
+
   if (_isIosDevice) {
     return _showAppleInstallDialog();
   }
+
   final deferredEvent = _getDeferredPromptEvent();
   if (deferredEvent == null) {
     html.window.console.warn('beforeinstallprompt not available');
     return false;
   }
-  if (js_util.hasProperty(deferredEvent, 'prompt')) {
-    js_util.callMethod(deferredEvent, 'prompt', const []);
-    if (js_util.hasProperty(deferredEvent, 'userChoice')) {
-      try {
-        await js_util.promiseToFuture(
-          js_util.getProperty(deferredEvent, 'userChoice'),
-        );
-      } catch (_) {}
-    }
+
+  try {
+    (deferredEvent as dynamic).prompt();
+  } catch (_) {
+    return false;
   }
+
+  await _waitForUserChoice(deferredEvent);
+
   _deferredPromptEvent = null;
-  js_util.setProperty(html.window, 'defferedPromptEvent', null);
+  try {
+    (html.window as dynamic).defferedPromptEvent = null;
+  } catch (_) {}
   _pwaInstallAvailability.value = false;
   return true;
 }
 
-Future<bool> _showAppleInstallDialog() async {
-  final customElements = js_util.getProperty(html.window, 'customElements');
-  if (customElements != null &&
-      js_util.hasProperty(customElements, 'whenDefined')) {
-    await js_util.promiseToFuture(
-      js_util.callMethod(customElements, 'whenDefined', ['pwa-install']),
-    );
+Future<void> _waitForUserChoice(dynamic deferredEvent) async {
+  dynamic userChoice;
+  try {
+    userChoice = (deferredEvent as dynamic).userChoice;
+  } catch (_) {
+    return;
   }
+  if (userChoice == null) {
+    return;
+  }
+
+  final completer = Completer<void>();
+  try {
+    userChoice.then(
+      (_) {
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      },
+      (_) {
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      },
+    );
+    await completer.future.timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {},
+    );
+  } catch (_) {}
+}
+
+Future<bool> _showAppleInstallDialog() async {
   final element = html.document.querySelector('pwa-install');
   if (element == null) {
     html.window.console.warn('pwa-install element not found');
     return false;
   }
-  if (js_util.hasProperty(element, 'showDialog')) {
-    js_util.callMethod(element, 'showDialog', const []);
+
+  try {
+    (element as dynamic).showDialog();
     return true;
+  } catch (_) {
+    html.window.console.warn('pwa-install showDialog not available');
+    return false;
   }
-  html.window.console.warn('pwa-install showDialog not available');
-  return false;
 }
 
 bool get _isStandalone {
-  final isBrowserMode =
-      html.window.matchMedia('(display-mode: browser)').matches;
+  final isBrowserMode = html.window
+      .matchMedia('(display-mode: browser)')
+      .matches;
   if (isBrowserMode) {
     return false;
   }
+
   if (_isIosDevice) {
-    if (js_util.hasProperty(html.window.navigator, 'standalone')) {
-      return js_util.getProperty(html.window.navigator, 'standalone') == true;
+    try {
+      final standalone = (html.window.navigator as dynamic).standalone;
+      return standalone == true;
+    } catch (_) {
+      return false;
     }
-    return false;
   }
-  final mediaQuery =
-      html.window.matchMedia('(display-mode: standalone)').matches;
-  if (mediaQuery) {
+
+  if (html.window.matchMedia('(display-mode: standalone)').matches) {
     return true;
   }
-  if (js_util.hasProperty(html.window.navigator, 'standalone')) {
-    return js_util.getProperty(html.window.navigator, 'standalone') == true;
+
+  try {
+    final standalone = (html.window.navigator as dynamic).standalone;
+    return standalone == true;
+  } catch (_) {
+    return false;
   }
-  return false;
 }
 
 bool get _isIosDevice {
@@ -153,13 +196,16 @@ bool get _isIosDevice {
       userAgent.contains('ipod')) {
     return true;
   }
+
   final platform = html.window.navigator.platform?.toLowerCase();
   if (platform != null && platform.contains('mac')) {
-    final maxTouchPoints =
-        js_util.getProperty(html.window.navigator, 'maxTouchPoints');
-    if (maxTouchPoints is num && maxTouchPoints > 1) {
-      return true;
-    }
+    try {
+      final maxTouchPoints = (html.window.navigator as dynamic).maxTouchPoints;
+      if (maxTouchPoints is num && maxTouchPoints > 1) {
+        return true;
+      }
+    } catch (_) {}
   }
+
   return false;
 }

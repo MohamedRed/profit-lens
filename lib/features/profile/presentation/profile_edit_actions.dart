@@ -22,9 +22,9 @@ Future<void> saveProfileEdit({
   }
   final values = parseBusinessProfileValues(controller);
   if (values == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.requiredFieldError)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.requiredFieldError)));
     return;
   }
   final fixedCostError = validateFixedCosts(
@@ -33,9 +33,9 @@ Future<void> saveProfileEdit({
     l10n: l10n,
   );
   if (fixedCostError != null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(fixedCostError)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(fixedCostError)));
     return;
   }
 
@@ -61,9 +61,9 @@ Future<void> saveProfileEdit({
     }
   } catch (_) {
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.profileSaveFailedMessage)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.profileSaveFailedMessage)));
   } finally {
     if (context.mounted) {
       onSavingChanged(false);

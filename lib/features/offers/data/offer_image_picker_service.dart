@@ -8,7 +8,7 @@ class DeviceOfferImagePickerService implements OfferImagePickerService {
   final ImagePicker _picker;
 
   DeviceOfferImagePickerService({ImagePicker? picker})
-      : _picker = picker ?? ImagePicker();
+    : _picker = picker ?? ImagePicker();
 
   @override
   Future<XFile?> pickImage({required ImageSource source}) {

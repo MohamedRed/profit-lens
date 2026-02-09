@@ -10,10 +10,8 @@ import '../l10n/app_localizations.dart';
 class ProfitLensApp extends StatelessWidget {
   final AppServices services;
 
-  ProfitLensApp({
-    super.key,
-    AppServices? services,
-  }) : services = services ?? AppServices();
+  ProfitLensApp({super.key, AppServices? services})
+    : services = services ?? AppServices();
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +25,7 @@ class ProfitLensApp extends StatelessWidget {
               AppLocalizations.of(context)?.appTitle ?? 'ProfitLens',
           theme: AppTheme.light(),
           builder: (context, child) => Stack(
-            children: [
-              if (child != null) child,
-              const PwaUpdateBanner(),
-            ],
+            children: [if (child != null) child, const PwaUpdateBanner()],
           ),
           localizationsDelegates: const [
             AppLocalizations.delegate,
@@ -38,11 +33,7 @@ class ProfitLensApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [
-            Locale('fr'),
-            Locale('en'),
-            Locale('ar'),
-          ],
+          supportedLocales: const [Locale('fr'), Locale('en'), Locale('ar')],
           home: const AuthGate(),
         ),
       ),

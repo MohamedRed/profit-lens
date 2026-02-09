@@ -45,4 +45,3 @@ class NoSwipeCupertinoPageTransitionsBuilder extends PageTransitionsBuilder {
     );
   }
 }
-

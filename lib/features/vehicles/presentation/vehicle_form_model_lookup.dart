@@ -28,21 +28,21 @@ Future<void> lookupVehicleModel({
     );
     if (!context.mounted) return;
     if (result == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.modelLookupNotFoundMessage)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.modelLookupNotFoundMessage)));
       return;
     }
     onApplyStart();
     controller.applyModelConsumption(result.consumptionPer100Km);
     onApplyEnd();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.modelLookupAppliedMessage)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.modelLookupAppliedMessage)));
   } catch (_) {
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.modelLookupFailedMessage)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.modelLookupFailedMessage)));
   }
 }

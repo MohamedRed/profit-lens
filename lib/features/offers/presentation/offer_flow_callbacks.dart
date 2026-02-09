@@ -89,10 +89,7 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
           controller.analysisStatus == OfferAnalysisStatus.completed) {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => OfferResultScreen(
-              user: user,
-              record: record,
-            ),
+            builder: (context) => OfferResultScreen(user: user, record: record),
           ),
         );
         return;

@@ -22,11 +22,7 @@ class OfferResultScreen extends StatelessWidget {
       appBar: AppBar(title: Text(l10n.resultTitle)),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: ListView(
-          children: [
-            OfferBreakdownCard(record: record),
-          ],
-        ),
+        child: ListView(children: [OfferBreakdownCard(record: record)]),
       ),
     );
   }

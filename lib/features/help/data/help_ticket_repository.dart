@@ -4,6 +4,10 @@ import '../domain/help_ticket_draft.dart';
 
 abstract class HelpTicketRepository {
   Stream<List<HelpTicket>> watchTickets(String uid);
+  Stream<HelpTicket?> watchTicket({
+    required String uid,
+    required String ticketId,
+  });
   Stream<List<HelpTicketAttachment>> watchAttachments({
     required String uid,
     required String ticketId,

@@ -11,7 +11,7 @@ class FirebaseVehiclePlateLookupService implements VehiclePlateLookupService {
   final FirebaseFunctions? _functions;
 
   FirebaseVehiclePlateLookupService({FirebaseFunctions? functions})
-      : _functions = functions;
+    : _functions = functions;
 
   @override
   Future<VehiclePlateLookupResult?> lookup({
@@ -21,11 +21,10 @@ class FirebaseVehiclePlateLookupService implements VehiclePlateLookupService {
     if (!AppConfig.firebaseConfigured) {
       throw StateError('Firebase is not configured.');
     }
-    final callable = (_functions ??
-            FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion))
-        .httpsCallable(
-      'lookupVehicleByPlate',
-    );
+    final callable =
+        (_functions ??
+                FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion))
+            .httpsCallable('lookupVehicleByPlate');
     final response = await callable.call(<String, dynamic>{
       'licensePlate': licensePlate,
       'countryCode': countryCode,
@@ -55,7 +54,5 @@ EnergyType? _energyTypeFromString(String? value) {
 
 FuelType? _fuelTypeFromString(String? value) {
   if (value == null) return null;
-  return FuelType.values
-      .where((element) => element.name == value)
-      .firstOrNull;
+  return FuelType.values.where((element) => element.name == value).firstOrNull;
 }

@@ -20,9 +20,7 @@ class OfferAnalysisProgressCard extends StatelessWidget {
     if (status == OfferAnalysisStatus.failed) {
       return SectionCard(
         title: l10n.analysisFailedTitle,
-        children: [
-          Text(errorMessage ?? l10n.analysisFailedBody),
-        ],
+        children: [Text(errorMessage ?? l10n.analysisFailedBody)],
       );
     }
 
@@ -31,26 +29,17 @@ class OfferAnalysisProgressCard extends StatelessWidget {
       children: [
         _StepRow(
           label: l10n.analysisStepExtracting,
-          state: _stepState(
-            status,
-            OfferAnalysisStatus.extracting,
-          ),
+          state: _stepState(status, OfferAnalysisStatus.extracting),
         ),
         const SizedBox(height: 6),
         _StepRow(
           label: l10n.analysisStepVerifyRoute,
-          state: _stepState(
-            status,
-            OfferAnalysisStatus.verifyingRoute,
-          ),
+          state: _stepState(status, OfferAnalysisStatus.verifyingRoute),
         ),
         const SizedBox(height: 6),
         _StepRow(
           label: l10n.analysisStepProfitability,
-          state: _stepState(
-            status,
-            OfferAnalysisStatus.calculatingProfit,
-          ),
+          state: _stepState(status, OfferAnalysisStatus.calculatingProfit),
         ),
       ],
     );
@@ -89,10 +78,7 @@ class _StepRow extends StatelessWidget {
   final String label;
   final _StepState state;
 
-  const _StepRow({
-    required this.label,
-    required this.state,
-  });
+  const _StepRow({required this.label, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -113,8 +99,11 @@ class _StepRow extends StatelessWidget {
         );
         break;
       case _StepState.pending:
-        icon = Icon(Icons.radio_button_unchecked,
-            color: color.outline, size: 18);
+        icon = Icon(
+          Icons.radio_button_unchecked,
+          color: color.outline,
+          size: 18,
+        );
         break;
     }
     return Row(

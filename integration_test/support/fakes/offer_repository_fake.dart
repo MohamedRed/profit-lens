@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:profit_lens/features/offers/data/offer_repository.dart';
 import 'package:profit_lens/features/offers/domain/offer_record.dart';
 
@@ -23,4 +24,19 @@ class InMemoryOfferRepository implements OfferRepository {
   @override
   Future<List<OfferRecord>> fetchOffers(String uid) async =>
       List<OfferRecord>.unmodifiable(_offers);
+
+  @override
+  Future<OfferPage> fetchOffersPage(
+    String uid, {
+    DocumentSnapshot<Map<String, dynamic>>? startAfter,
+    int limit = 30,
+  }) async {
+    // Pagination isn't used in the integration test suite.
+    // Returning `hasMore: false` avoids duplicate pages without a Firestore cursor.
+    return OfferPage(
+      offers: List<OfferRecord>.unmodifiable(_offers),
+      lastDocument: null,
+      hasMore: false,
+    );
+  }
 }

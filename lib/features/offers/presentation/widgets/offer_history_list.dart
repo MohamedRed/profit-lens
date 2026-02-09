@@ -39,10 +39,13 @@ class OfferHistoryList extends StatelessWidget {
           );
         }
         final offer = offers[index];
-        final profit = CurrencyFormat.euro(offer.breakdown.netProfit, localeTag);
+        final profit = CurrencyFormat.euro(
+          offer.breakdown.netProfit,
+          localeTag,
+        );
         final payout = CurrencyFormat.euro(offer.offer.payoutEuro, localeTag);
-        final distanceKm = offer.offer.routeVerification?.distanceKm ??
-            offer.offer.distanceKm;
+        final distanceKm =
+            offer.offer.routeVerification?.distanceKm ?? offer.offer.distanceKm;
         final subtitle =
             '${distanceKm.toStringAsFixed(1)} km • ${formatShortDateTime(context, offer.createdAt)}';
 
@@ -63,10 +66,9 @@ class OfferHistoryList extends StatelessWidget {
                     children: [
                       Text(
                         profit,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(fontSize: 20),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(fontSize: 20),
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -82,9 +84,9 @@ class OfferHistoryList extends StatelessWidget {
                     Text(
                       payout,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontWeight: FontWeight.w600,
-                          ),
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     const Icon(Icons.chevron_right, color: Color(0xFFA1A1AA)),

@@ -18,8 +18,8 @@ class FirebaseOfferAnalysisService implements OfferAnalysisService {
   FirebaseOfferAnalysisService({
     FirebaseFunctions? functions,
     OfferRecordRemoteMapper? mapper,
-  })  : _functions = functions,
-        _mapper = mapper ?? OfferRecordRemoteMapper();
+  }) : _functions = functions,
+       _mapper = mapper ?? OfferRecordRemoteMapper();
 
   @override
   Future<OfferRecord> analyzeOffer({
@@ -32,9 +32,10 @@ class FirebaseOfferAnalysisService implements OfferAnalysisService {
     if (!AppConfig.firebaseConfigured) {
       throw StateError('Firebase is not configured.');
     }
-    final callable = (_functions ??
-            FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion))
-        .httpsCallable('analyzeOffer');
+    final callable =
+        (_functions ??
+                FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion))
+            .httpsCallable('analyzeOffer');
     final payload = <String, dynamic>{
       if (offer != null) 'offer': _encodeOffer(offer),
       if (vehicleId != null) 'vehicleId': vehicleId,
@@ -50,9 +51,7 @@ class FirebaseOfferAnalysisService implements OfferAnalysisService {
       payload['imageBase64'] = base64Encode(bytes);
       payload['mimeType'] = mimeType;
     }
-    final response = await callable.call(<String, dynamic>{
-      ...payload,
-    });
+    final response = await callable.call(<String, dynamic>{...payload});
     final data = Map<String, dynamic>.from(response.data as Map);
     final record = _mapper.fromResponse(data);
     if (record == null) {
@@ -70,8 +69,7 @@ class FirebaseOfferAnalysisService implements OfferAnalysisService {
       if (offer.pickupName != null) 'pickupName': offer.pickupName,
       if (offer.pickupAddress != null) 'pickupAddress': offer.pickupAddress,
       if (offer.dropoffName != null) 'dropoffName': offer.dropoffName,
-      if (offer.dropoffAddress != null)
-        'dropoffAddress': offer.dropoffAddress,
+      if (offer.dropoffAddress != null) 'dropoffAddress': offer.dropoffAddress,
     };
   }
 }

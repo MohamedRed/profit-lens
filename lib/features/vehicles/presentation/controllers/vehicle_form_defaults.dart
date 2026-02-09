@@ -20,8 +20,8 @@ void applyEnergyPriceDefaultsForVehicle({
       energyPriceController.text = '0';
       break;
     case EnergyType.electric:
-      energyPriceController.text =
-          FranceDefaults.electricityPricePerKwh.toStringAsFixed(4);
+      energyPriceController.text = FranceDefaults.electricityPricePerKwh
+          .toStringAsFixed(4);
       break;
     case EnergyType.fuel:
       final fuel = fuelType ?? FuelType.e10;

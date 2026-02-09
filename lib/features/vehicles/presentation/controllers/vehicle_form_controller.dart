@@ -68,19 +68,19 @@ class VehicleFormController {
     final resolvedEnergyType = vehicle == null
         ? derivedEnergyType
         : (defaultVehicleType == VehicleType.bike ||
-                defaultVehicleType == VehicleType.ebike)
-            ? derivedEnergyType
-            : (vehicle.energyType ?? derivedEnergyType);
+              defaultVehicleType == VehicleType.ebike)
+        ? derivedEnergyType
+        : (vehicle.energyType ?? derivedEnergyType);
     final resolvedFuelType = vehicle == null
         ? defaultFuelTypeForVehicle(defaultVehicleType, resolvedEnergyType)
         : (defaultVehicleType == VehicleType.bike ||
-                defaultVehicleType == VehicleType.ebike)
-            ? defaultFuelTypeForVehicle(defaultVehicleType, resolvedEnergyType)
-            : (vehicle.fuelType ??
-                defaultFuelTypeForVehicle(
-                  defaultVehicleType,
-                  resolvedEnergyType,
-                ));
+              defaultVehicleType == VehicleType.ebike)
+        ? defaultFuelTypeForVehicle(defaultVehicleType, resolvedEnergyType)
+        : (vehicle.fuelType ??
+              defaultFuelTypeForVehicle(
+                defaultVehicleType,
+                resolvedEnergyType,
+              ));
 
     final controller = VehicleFormController(
       licensePlateController: licensePlateController,

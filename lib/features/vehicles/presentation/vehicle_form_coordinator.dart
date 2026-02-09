@@ -32,7 +32,10 @@ class _VehicleFormCoordinatorState extends State<VehicleFormCoordinator> {
   @override
   void initState() {
     super.initState();
-    _state = VehicleFormState(profile: widget.profile, existing: widget.vehicle);
+    _state = VehicleFormState(
+      profile: widget.profile,
+      existing: widget.vehicle,
+    );
     if (_state.useVehiclePresets) {
       _state.applyPresetsForType(setEnergyType: true);
     }
@@ -45,8 +48,7 @@ class _VehicleFormCoordinatorState extends State<VehicleFormCoordinator> {
   }
 
   Future<void> _lookupModel() async {
-    if (_state.isLookingUpModel ||
-        !_state.useVehiclePresets) {
+    if (_state.isLookingUpModel || !_state.useVehiclePresets) {
       return;
     }
     _state.isLookingUpModel = true;
@@ -132,11 +134,8 @@ class _VehicleFormCoordinatorState extends State<VehicleFormCoordinator> {
         onPlateLookup: _lookupPlate,
         isLookingUpPlate: _state.isLookingUpPlate,
         isSaving: _state.isSaving,
-        onSave: () => _state.save(
-          context: context,
-          formKey: _formKey,
-          user: widget.user,
-        ),
+        onSave: () =>
+            _state.save(context: context, formKey: _formKey, user: widget.user),
         onDelete: widget.vehicle == null ? null : _confirmDelete,
         onVehicleTypeChanged: _state.changeVehicleType,
         onEnergyTypeChanged: _state.changeEnergyType,

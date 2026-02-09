@@ -39,7 +39,8 @@ Object? extractPlaceFromEvent(Object event) {
 
 String? readEventDisplayValue(Object event) {
   final detail = getJsProperty(event, 'detail');
-  final displayText = readJsString(getJsProperty(detail, 'text')) ??
+  final displayText =
+      readJsString(getJsProperty(detail, 'text')) ??
       readJsString(getJsProperty(detail, 'value')) ??
       readJsString(getJsProperty(detail, 'inputValue')) ??
       readJsString(getJsProperty(detail, 'query')) ??
@@ -48,13 +49,15 @@ String? readEventDisplayValue(Object event) {
     return displayText;
   }
   final prediction = getJsProperty(detail, 'placePrediction');
-  final predictionText = readJsString(getJsProperty(prediction, 'text')) ??
+  final predictionText =
+      readJsString(getJsProperty(prediction, 'text')) ??
       readJsString(getJsProperty(prediction, 'description'));
   if (predictionText != null) {
     return predictionText;
   }
   final selected = getJsProperty(detail, 'selection');
-  final selectionText = readJsString(getJsProperty(selected, 'text')) ??
+  final selectionText =
+      readJsString(getJsProperty(selected, 'text')) ??
       readJsString(getJsProperty(selected, 'description'));
   if (selectionText != null) {
     return selectionText;

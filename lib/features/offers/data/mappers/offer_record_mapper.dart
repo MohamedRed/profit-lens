@@ -20,24 +20,34 @@ class OfferRecordMapper {
     CostBreakdownMapper? costBreakdownMapper,
     VehicleSnapshotMapper? vehicleSnapshotMapper,
     RouteVerificationMapper? routeVerificationMapper,
-  })  : _costSettingsMapper = costSettingsMapper ?? CostSettingsMapper(),
-        _costBreakdownMapper = costBreakdownMapper ?? CostBreakdownMapper(),
-        _vehicleSnapshotMapper = vehicleSnapshotMapper ?? VehicleSnapshotMapper(),
-        _routeVerificationMapper =
-            routeVerificationMapper ?? RouteVerificationMapper();
+  }) : _costSettingsMapper = costSettingsMapper ?? CostSettingsMapper(),
+       _costBreakdownMapper = costBreakdownMapper ?? CostBreakdownMapper(),
+       _vehicleSnapshotMapper =
+           vehicleSnapshotMapper ?? VehicleSnapshotMapper(),
+       _routeVerificationMapper =
+           routeVerificationMapper ?? RouteVerificationMapper();
 
   OfferRecord? fromDocument(String id, Map<String, dynamic>? data) {
     if (data == null) return null;
     final offer = _offerFromDocument(data);
     final source = _sourceFromString(data['source'] as String?);
     final createdAt = (data['createdAt'] as Timestamp?)?.toDate();
-    final vehicle = _vehicleSnapshotMapper
-        .fromDocument(data['vehicleSnapshot'] as Map<String, dynamic>?);
-    final costSettings = _costSettingsMapper
-        .fromDocument(data['costSnapshot'] as Map<String, dynamic>?);
-    final breakdown = _costBreakdownMapper
-        .fromDocument(data['breakdown'] as Map<String, dynamic>?);
-    if (offer == null || source == null || createdAt == null || vehicle == null || costSettings == null || breakdown == null) return null;
+    final vehicle = _vehicleSnapshotMapper.fromDocument(
+      data['vehicleSnapshot'] as Map<String, dynamic>?,
+    );
+    final costSettings = _costSettingsMapper.fromDocument(
+      data['costSnapshot'] as Map<String, dynamic>?,
+    );
+    final breakdown = _costBreakdownMapper.fromDocument(
+      data['breakdown'] as Map<String, dynamic>?,
+    );
+    if (offer == null ||
+        source == null ||
+        createdAt == null ||
+        vehicle == null ||
+        costSettings == null ||
+        breakdown == null)
+      return null;
     return OfferRecord(
       id: id,
       offer: offer,
@@ -46,8 +56,9 @@ class OfferRecordMapper {
       vehicleSnapshot: vehicle,
       costSnapshot: costSettings,
       breakdown: breakdown,
-      extraction:
-          _extractionFromDocument(data['extraction'] as Map<String, dynamic>?),
+      extraction: _extractionFromDocument(
+        data['extraction'] as Map<String, dynamic>?,
+      ),
     );
   }
 
@@ -61,11 +72,14 @@ class OfferRecordMapper {
       'dropoffName': record.offer.dropoffName,
       'dropoffAddress': record.offer.dropoffAddress,
       if (record.offer.routeVerification != null)
-        'routeVerification':
-            _routeVerificationMapper.toDocument(record.offer.routeVerification!),
+        'routeVerification': _routeVerificationMapper.toDocument(
+          record.offer.routeVerification!,
+        ),
       'source': record.source.name,
       'createdAt': Timestamp.fromDate(record.createdAt),
-      'vehicleSnapshot': _vehicleSnapshotMapper.toDocument(record.vehicleSnapshot),
+      'vehicleSnapshot': _vehicleSnapshotMapper.toDocument(
+        record.vehicleSnapshot,
+      ),
       'costSnapshot': _costSettingsMapper.toDocument(record.costSnapshot),
       'breakdown': _costBreakdownMapper.toDocument(record.breakdown),
       if (record.extraction != null)
@@ -88,8 +102,9 @@ class OfferRecordMapper {
       pickupAddress: data['pickupAddress'] as String?,
       dropoffName: data['dropoffName'] as String?,
       dropoffAddress: data['dropoffAddress'] as String?,
-      routeVerification: _routeVerificationMapper
-          .fromDocument(data['routeVerification'] as Map<String, dynamic>?),
+      routeVerification: _routeVerificationMapper.fromDocument(
+        data['routeVerification'] as Map<String, dynamic>?,
+      ),
     );
   }
 

@@ -25,16 +25,17 @@ class OfferBreakdownCard extends StatelessWidget {
           children: [
             Text(
               CurrencyFormat.euro(record.breakdown.netProfit, localeTag),
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(color: netColor),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(color: netColor),
             ),
             const SizedBox(height: 4),
             Text(l10n.netProfitLabel),
             const SizedBox(height: 16),
-            _row(l10n.grossRevenueLabel,
-                CurrencyFormat.euro(record.offer.payoutEuro, localeTag)),
+            _row(
+              l10n.grossRevenueLabel,
+              CurrencyFormat.euro(record.offer.payoutEuro, localeTag),
+            ),
             if (record.offer.routeVerification != null) ...[
               _row(
                 l10n.verifiedDistanceLabel,
@@ -45,29 +46,41 @@ class OfferBreakdownCard extends StatelessWidget {
                 '${record.offer.routeVerification!.durationMinutes.toStringAsFixed(0)} ${l10n.durationUnitMinutes}',
               ),
             ],
-            _row(l10n.energyCostLabel,
-                CurrencyFormat.euro(record.breakdown.energyCost, localeTag)),
             _row(
-                l10n.maintenanceCostLabel,
-                CurrencyFormat.euro(
-                    record.breakdown.maintenanceCost, localeTag)),
+              l10n.energyCostLabel,
+              CurrencyFormat.euro(record.breakdown.energyCost, localeTag),
+            ),
             _row(
-                l10n.depreciationCostLabel,
-                CurrencyFormat.euro(
-                    record.breakdown.depreciationCost, localeTag)),
+              l10n.maintenanceCostLabel,
+              CurrencyFormat.euro(record.breakdown.maintenanceCost, localeTag),
+            ),
             _row(
-                l10n.socialContributionLabel,
-                CurrencyFormat.euro(
-                    record.breakdown.socialContributions, localeTag)),
-            _row(l10n.incomeTaxLabel,
-                CurrencyFormat.euro(record.breakdown.incomeTax, localeTag)),
+              l10n.depreciationCostLabel,
+              CurrencyFormat.euro(record.breakdown.depreciationCost, localeTag),
+            ),
             _row(
-                l10n.fixedCostsLabel,
-                CurrencyFormat.euro(
-                    record.breakdown.fixedCostAllocation, localeTag)),
+              l10n.socialContributionLabel,
+              CurrencyFormat.euro(
+                record.breakdown.socialContributions,
+                localeTag,
+              ),
+            ),
+            _row(
+              l10n.incomeTaxLabel,
+              CurrencyFormat.euro(record.breakdown.incomeTax, localeTag),
+            ),
+            _row(
+              l10n.fixedCostsLabel,
+              CurrencyFormat.euro(
+                record.breakdown.fixedCostAllocation,
+                localeTag,
+              ),
+            ),
             const Divider(height: 24),
-            _row(l10n.totalCostsLabel,
-                CurrencyFormat.euro(record.breakdown.totalCosts, localeTag)),
+            _row(
+              l10n.totalCostsLabel,
+              CurrencyFormat.euro(record.breakdown.totalCosts, localeTag),
+            ),
           ],
         ),
       ),
@@ -79,10 +92,7 @@ class OfferBreakdownCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label),
-          Text(value),
-        ],
+        children: [Text(label), Text(value)],
       ),
     );
   }

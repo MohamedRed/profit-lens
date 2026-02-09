@@ -48,9 +48,7 @@ class PwaUpdateBanner extends StatelessWidget {
                         Expanded(
                           child: Text(
                             l10n.updateAvailableTitle,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ),
@@ -62,8 +60,9 @@ class PwaUpdateBanner extends StatelessWidget {
                               vertical: ShadcnSpacing.sm,
                             ),
                             shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(ShadcnRadius.md),
+                              borderRadius: BorderRadius.circular(
+                                ShadcnRadius.md,
+                              ),
                             ),
                           ),
                           child: Text(l10n.updateAvailableCta),

@@ -39,17 +39,15 @@ BusinessProfileValues? parseBusinessProfileValues(
   return BusinessProfileValues(
     socialRate: socialRate,
     incomeTax: NumberParsing.parseDouble(controller.incomeTaxController.text),
-    monthlyFixedCosts: NumberParsing.parseDouble(
+    monthlyFixedCosts:
+        NumberParsing.parseDouble(
           controller.monthlyFixedCostsController.text,
         ) ??
         0,
-    monthlyHours: NumberParsing.parseDouble(
-          controller.monthlyHoursController.text,
-        ) ??
-        0,
-    monthlyDistance: NumberParsing.parseDouble(
-          controller.monthlyDistanceController.text,
-        ) ??
+    monthlyHours:
+        NumberParsing.parseDouble(controller.monthlyHoursController.text) ?? 0,
+    monthlyDistance:
+        NumberParsing.parseDouble(controller.monthlyDistanceController.text) ??
         0,
     monthlyDeliveries:
         int.tryParse(controller.monthlyDeliveriesController.text) ?? 0,

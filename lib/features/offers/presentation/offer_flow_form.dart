@@ -124,9 +124,7 @@ class OfferFlowForm extends StatelessWidget {
           ],
           const SizedBox(height: 16),
           if (controller.screenshotThumbnail != null) ...[
-            OfferScreenshotPreview(
-              thumbnail: controller.screenshotThumbnail!,
-            ),
+            OfferScreenshotPreview(thumbnail: controller.screenshotThumbnail!),
             const SizedBox(height: 16),
           ],
           if (showOverview) ...[

@@ -2,6 +2,7 @@ import '../../vehicles/domain/energy_type.dart';
 import '../../vehicles/domain/fuel_type.dart';
 import '../../vehicles/domain/vehicle_type.dart';
 import 'france_defaults.dart';
+
 class VehiclePresetDefaults {
   final EnergyType energyType;
   final FuelType? fuelType;
@@ -16,6 +17,7 @@ class VehiclePresetDefaults {
     required this.depreciationPerKm,
   });
 }
+
 class VehiclePresetsFr {
   static const VehiclePresetDefaults bike = VehiclePresetDefaults(
     energyType: EnergyType.none,
@@ -71,6 +73,7 @@ class VehiclePresetsFr {
         return carFuel;
     }
   }
+
   static VehiclePresetDefaults forTypeEnergy(
     VehicleType type,
     EnergyType energyType,
@@ -83,6 +86,7 @@ class VehiclePresetsFr {
     }
     return defaultForType(type);
   }
+
   static const List<DefaultSource> sources = [
     DefaultSource(
       label: "ADEME car labelling dataset (consumption for cars)",
@@ -91,7 +95,8 @@ class VehiclePresetsFr {
     ),
     DefaultSource(
       label: "ProfitLens baseline estimates (maintenance & depreciation)",
-      url: "https://github.com/MohamedRed/profit-lens/blob/main/docs/vehicle-presets.md",
+      url:
+          "https://github.com/MohamedRed/profit-lens/blob/main/docs/vehicle-presets.md",
       lastChecked: "2026-01-24",
     ),
   ];

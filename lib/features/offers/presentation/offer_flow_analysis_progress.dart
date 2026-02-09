@@ -18,8 +18,8 @@ class OfferAnalysisProgressDriver {
     required this.onUpdated,
     required DateTime startedAt,
     required Duration minDuration,
-  })  : _startedAt = startedAt,
-        _minDuration = minDuration;
+  }) : _startedAt = startedAt,
+       _minDuration = minDuration;
 
   factory OfferAnalysisProgressDriver.start({
     required OfferFlowController controller,

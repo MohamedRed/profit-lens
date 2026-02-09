@@ -76,46 +76,43 @@ class AppServices {
     VehicleModelLookupService? vehicleModelLookupService,
     VehiclePlateLookupService? vehiclePlateLookupService,
     AppLocaleController? localeController,
-  })  : authRepository = authRepository ?? FirebaseAuthRepository(),
-        entitlementRepository =
-            entitlementRepository ?? FirestoreEntitlementRepository(),
-        usageRepository = usageRepository ?? FirestoreUsageRepository(),
-        billingService = billingService ?? FirebaseBillingService(),
-        deviceRegistryService =
-            deviceRegistryService ?? FirebaseDeviceRegistryService(),
-        deviceRepository = deviceRepository ?? FirestoreDeviceRepository(),
-        deviceIdService = deviceIdService ?? DeviceIdService(),
-        userProfileRepository =
-            userProfileRepository ?? FirestoreUserProfileRepository(),
-        vehicleRepository = vehicleRepository ?? FirestoreVehicleRepository(),
-        offerRepository = offerRepository ?? FirestoreOfferRepository(),
-        offerStatsRepository =
-            offerStatsRepository ?? FirestoreOfferStatsRepository(),
-        offerImagePickerService =
-            offerImagePickerService ?? DeviceOfferImagePickerService(),
-        offerAnalysisService =
-            offerAnalysisService ?? FirebaseOfferAnalysisService(),
-        helpTicketRepository =
-            helpTicketRepository ?? FirestoreHelpTicketRepository(),
-        helpAttachmentPickerService =
-            helpAttachmentPickerService ?? DeviceHelpAttachmentPickerService(),
-        notificationTokenRepository = notificationTokenRepository ??
-            FirestoreNotificationTokenRepository(),
-        vehicleModelLookupService = vehicleModelLookupService ??
-            FirebaseVehicleModelLookupService(),
-        vehiclePlateLookupService = vehiclePlateLookupService ??
-            FirebaseVehiclePlateLookupService(),
-        localeController = localeController ?? AppLocaleController();
+  }) : authRepository = authRepository ?? FirebaseAuthRepository(),
+       entitlementRepository =
+           entitlementRepository ?? FirestoreEntitlementRepository(),
+       usageRepository = usageRepository ?? FirestoreUsageRepository(),
+       billingService = billingService ?? FirebaseBillingService(),
+       deviceRegistryService =
+           deviceRegistryService ?? FirebaseDeviceRegistryService(),
+       deviceRepository = deviceRepository ?? FirestoreDeviceRepository(),
+       deviceIdService = deviceIdService ?? DeviceIdService(),
+       userProfileRepository =
+           userProfileRepository ?? FirestoreUserProfileRepository(),
+       vehicleRepository = vehicleRepository ?? FirestoreVehicleRepository(),
+       offerRepository = offerRepository ?? FirestoreOfferRepository(),
+       offerStatsRepository =
+           offerStatsRepository ?? FirestoreOfferStatsRepository(),
+       offerImagePickerService =
+           offerImagePickerService ?? DeviceOfferImagePickerService(),
+       offerAnalysisService =
+           offerAnalysisService ?? FirebaseOfferAnalysisService(),
+       helpTicketRepository =
+           helpTicketRepository ?? FirestoreHelpTicketRepository(),
+       helpAttachmentPickerService =
+           helpAttachmentPickerService ?? DeviceHelpAttachmentPickerService(),
+       notificationTokenRepository =
+           notificationTokenRepository ??
+           FirestoreNotificationTokenRepository(),
+       vehicleModelLookupService =
+           vehicleModelLookupService ?? FirebaseVehicleModelLookupService(),
+       vehiclePlateLookupService =
+           vehiclePlateLookupService ?? FirebaseVehiclePlateLookupService(),
+       localeController = localeController ?? AppLocaleController();
 }
 
 class AppScope extends InheritedWidget {
   final AppServices services;
 
-  const AppScope({
-    super.key,
-    required this.services,
-    required super.child,
-  });
+  const AppScope({super.key, required this.services, required super.child});
 
   static AppServices of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();
@@ -126,6 +123,5 @@ class AppScope extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(AppScope oldWidget) =>
-      services != oldWidget.services;
+  bool updateShouldNotify(AppScope oldWidget) => services != oldWidget.services;
 }

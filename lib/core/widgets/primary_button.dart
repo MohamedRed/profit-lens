@@ -40,10 +40,7 @@ class _ButtonContent extends StatelessWidget {
   final String label;
   final IconData? icon;
 
-  const _ButtonContent({
-    required this.label,
-    required this.icon,
-  });
+  const _ButtonContent({required this.label, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +49,7 @@ class _ButtonContent extends StatelessWidget {
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, size: 18),
-        const SizedBox(width: 8),
-        Text(label),
-      ],
+      children: [Icon(icon, size: 18), const SizedBox(width: 8), Text(label)],
     );
   }
 }
@@ -65,10 +58,7 @@ class _BusyContent extends StatelessWidget {
   final String label;
   final bool showSpinnerWithLabel;
 
-  const _BusyContent({
-    required this.label,
-    required this.showSpinnerWithLabel,
-  });
+  const _BusyContent({required this.label, required this.showSpinnerWithLabel});
 
   @override
   Widget build(BuildContext context) {

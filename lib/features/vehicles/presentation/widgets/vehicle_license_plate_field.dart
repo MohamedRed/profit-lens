@@ -58,11 +58,7 @@ class VehicleLicensePlateField extends StatelessWidget {
         if (isNarrow) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              field,
-              const SizedBox(height: 8),
-              button,
-            ],
+            children: [field, const SizedBox(height: 8), button],
           );
         }
         return Row(

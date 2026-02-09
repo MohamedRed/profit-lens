@@ -48,17 +48,11 @@ class VehicleEnergySection extends StatelessWidget {
       title: l10n.vehicleEnergySectionTitle,
       children: [
         if (showEnergyType) ...[
-          EnergyTypeField(
-            value: energyType,
-            onChanged: onEnergyTypeChanged,
-          ),
+          EnergyTypeField(value: energyType, onChanged: onEnergyTypeChanged),
           const SizedBox(height: 12),
         ],
         if (showFuelType) ...[
-          FuelTypeField(
-            value: fuelType,
-            onChanged: onFuelTypeChanged,
-          ),
+          FuelTypeField(value: fuelType, onChanged: onFuelTypeChanged),
           const SizedBox(height: 12),
         ],
         VehicleEnergyFields(

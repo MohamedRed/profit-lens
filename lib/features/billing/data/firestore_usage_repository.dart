@@ -8,7 +8,7 @@ class FirestoreUsageRepository implements UsageRepository {
   final FirebaseFirestore _firestore;
 
   FirestoreUsageRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   void _ensureConfigured() {
     if (!AppConfig.firebaseConfigured) {

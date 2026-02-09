@@ -8,7 +8,7 @@ class FirestoreDeviceRepository implements DeviceRepository {
   final FirebaseFirestore _firestore;
 
   FirestoreDeviceRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   void _ensureConfigured() {
     if (!AppConfig.firebaseConfigured) {

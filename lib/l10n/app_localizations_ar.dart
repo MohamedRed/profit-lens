@@ -898,6 +898,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpTicketAttachmentsTitle => 'المرفقات';
 
   @override
+  String get helpTicketNotFound => 'لم تعد هذه التذكرة موجودة.';
+
+  @override
   String get helpAttachmentsScreenshotsTitle => 'لقطات الشاشة';
 
   @override

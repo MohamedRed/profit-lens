@@ -13,12 +13,12 @@ class ProfileSetupState extends ChangeNotifier {
   bool isApplyingPresets = false;
 
   ProfileSetupState()
-      : businessController = BusinessProfileController.forSetup(),
-        vehicleController = VehicleFormController.fromVehicle(
-          vehicle: null,
-          useFranceDefaults: true,
-        ),
-        useVehiclePresets = true {
+    : businessController = BusinessProfileController.forSetup(),
+      vehicleController = VehicleFormController.fromVehicle(
+        vehicle: null,
+        useFranceDefaults: true,
+      ),
+      useVehiclePresets = true {
     useVehiclePresets = businessController.useFranceDefaults;
   }
 

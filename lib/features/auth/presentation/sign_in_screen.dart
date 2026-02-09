@@ -19,10 +19,7 @@ class SignInScreen extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      ShadcnColors.background,
-                      ShadcnColors.surface,
-                    ],
+                    colors: [ShadcnColors.background, ShadcnColors.surface],
                   ),
                 ),
               ),

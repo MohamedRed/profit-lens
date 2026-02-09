@@ -1,5 +1,4 @@
 import 'dart:html' as html;
-import 'dart:js_util' as js_util;
 
 import 'package:flutter/foundation.dart';
 
@@ -68,8 +67,8 @@ void _listenForState(html.ServiceWorker worker) {
       _pwaUpdateAvailability.value = true;
     }
   });
-  if (js_util.hasProperty(worker, 'state') &&
-      js_util.getProperty(worker, 'state') == 'installed' &&
+
+  if (worker.state == 'installed' &&
       html.window.navigator.serviceWorker?.controller != null) {
     _pwaUpdateAvailability.value = true;
   }

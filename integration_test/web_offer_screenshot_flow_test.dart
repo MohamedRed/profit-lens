@@ -22,10 +22,10 @@ void main() {
     final vehicle = TestFixtures.vehicle();
     final services = TestAppServices(
       authRepository: InMemoryAuthRepository(initialUser: TestFixtures.user),
-      userProfileRepository:
-          InMemoryUserProfileRepository(initialProfile: profile),
-      vehicleRepository:
-          InMemoryVehicleRepository(initialVehicles: [vehicle]),
+      userProfileRepository: InMemoryUserProfileRepository(
+        initialProfile: profile,
+      ),
+      vehicleRepository: InMemoryVehicleRepository(initialVehicles: [vehicle]),
       offerImagePickerService: AssetOfferImagePickerService(
         assetsBySource: {
           ImageSource.gallery: TestFixtures.galleryScreenshotPath,
@@ -64,10 +64,7 @@ void main() {
 
     expect(find.textContaining('12.50'), findsNothing);
     expect(find.text('Pickup name: Bistro Lumiere'), findsNothing);
-    expect(
-      find.text('Pickup address: 10 Rue des Fleurs, Paris'),
-      findsNothing,
-    );
+    expect(find.text('Pickup address: 10 Rue des Fleurs, Paris'), findsNothing);
     expect(find.text('Drop-off name (optional): Client A'), findsNothing);
     expect(
       find.text('Drop-off address: 22 Avenue Victor Hugo, Paris'),

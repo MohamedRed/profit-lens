@@ -45,9 +45,9 @@ class _SignInFormState extends State<SignInForm> {
       );
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.toString())));
     } finally {
       if (mounted) {
         setState(() {
@@ -58,11 +58,9 @@ class _SignInFormState extends State<SignInForm> {
   }
 
   void _openRegister() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const RegisterScreen(),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const RegisterScreen()));
   }
 
   @override
@@ -92,9 +90,7 @@ class _SignInFormState extends State<SignInForm> {
                     horizontalPadding,
                     ShadcnSpacing.section,
                   ),
-                  children: const [
-                    PwaInstallBanner(),
-                  ],
+                  children: const [PwaInstallBanner()],
                 );
               }
 
@@ -142,10 +138,7 @@ class _AuthHero extends StatelessWidget {
   final String title;
   final String subtitle;
 
-  const _AuthHero({
-    required this.title,
-    required this.subtitle,
-  });
+  const _AuthHero({required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -165,9 +158,9 @@ class _AuthHero extends StatelessWidget {
             child: Text(
               title,
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: ShadcnColors.textSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
+                color: ShadcnColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),
@@ -175,16 +168,16 @@ class _AuthHero extends StatelessWidget {
         Text(
           AppLocalizations.of(context)!.signInTitle,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: ShadcnColors.textPrimary,
-              ),
+            fontWeight: FontWeight.w700,
+            color: ShadcnColors.textPrimary,
+          ),
         ),
         const SizedBox(height: ShadcnSpacing.sm),
         Text(
           subtitle,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: ShadcnColors.textSecondary,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: ShadcnColors.textSecondary),
         ),
       ],
     );

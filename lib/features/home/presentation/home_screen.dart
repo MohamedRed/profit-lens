@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../auth/domain/auth_user.dart';
@@ -6,8 +10,11 @@ import '../../offers/presentation/offer_history_screen.dart';
 import '../../profile/domain/user_profile.dart';
 import '../../settings/presentation/settings_screen.dart';
 import '../../help/presentation/help_screen.dart';
+import '../../help/presentation/help_ticket_detail_screen.dart';
 import '../../notifications/presentation/notification_registration_coordinator.dart';
+import '../../notifications/domain/notification_deep_link.dart';
 import '../../../app/app_scope.dart';
+import '../../../core/config/app_config.dart';
 import '../../../core/widgets/mobile_pill_nav.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/platform/google_maps_preloader.dart';
@@ -23,18 +30,34 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  static const int _helpTabIndex = 3;
+
   int _currentIndex = 0;
   NotificationRegistrationCoordinator? _notificationCoordinator;
+  StreamSubscription<RemoteMessage>? _openedAppSubscription;
+  bool _initialDeepLinkHandled = false;
+  bool _isTicketDetailOpen = false;
+  String? _openedTicketId;
 
   @override
   void initState() {
     super.initState();
     preloadGoogleMaps();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handleTicketDeepLinkFromUrl();
+
+      if (!AppConfig.firebaseConfigured || kIsWeb) {
+        return;
+      }
+      _listenForNotificationOpens();
+      _handleTicketDeepLinkFromInitialNotification();
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (!AppConfig.firebaseConfigured) return;
     if (_notificationCoordinator != null) return;
     final services = AppScope.of(context);
     _notificationCoordinator = NotificationRegistrationCoordinator(
@@ -64,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    _openedAppSubscription?.cancel();
     _notificationCoordinator?.dispose();
     super.dispose();
   }
@@ -113,6 +137,63 @@ class _HomeScreenState extends State<HomeScreen> {
         onChanged: (index) => setState(() => _currentIndex = index),
       ),
     );
+  }
+
+  void _listenForNotificationOpens() {
+    _openedAppSubscription?.cancel();
+    _openedAppSubscription = FirebaseMessaging.onMessageOpenedApp.listen((
+      message,
+    ) {
+      final deepLink = notificationDeepLinkFromMessage(message);
+      if (deepLink == null) return;
+      _openTicketDetailById(deepLink.ticketId);
+    });
+  }
+
+  void _handleTicketDeepLinkFromUrl() {
+    if (!kIsWeb || _initialDeepLinkHandled) {
+      return;
+    }
+    _initialDeepLinkHandled = true;
+    final ticketId = Uri.base.queryParameters['ticketId'] ?? '';
+    if (ticketId.isEmpty) {
+      return;
+    }
+    _openTicketDetailById(ticketId);
+  }
+
+  Future<void> _handleTicketDeepLinkFromInitialNotification() async {
+    if (_initialDeepLinkHandled) return;
+    _initialDeepLinkHandled = true;
+
+    final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    if (!mounted || initialMessage == null) return;
+    final deepLink = notificationDeepLinkFromMessage(initialMessage);
+    if (deepLink == null) return;
+    _openTicketDetailById(deepLink.ticketId);
+  }
+
+  void _openTicketDetailById(String ticketId) {
+    if (!mounted) return;
+    if (_isTicketDetailOpen && _openedTicketId == ticketId) {
+      return;
+    }
+    if (_currentIndex != _helpTabIndex) {
+      setState(() => _currentIndex = _helpTabIndex);
+    }
+    _isTicketDetailOpen = true;
+    _openedTicketId = ticketId;
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) =>
+                HelpTicketDetailScreen(user: widget.user, ticketId: ticketId),
+          ),
+        )
+        .then((_) {
+          _isTicketDetailOpen = false;
+          _openedTicketId = null;
+        });
   }
 }
 

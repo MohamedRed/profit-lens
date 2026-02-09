@@ -27,7 +27,8 @@ PlaceSelectionResult buildSelectionFromEvent({
   required PlaceAutocompleteDomHelper? domHelper,
   String? lastTypedValue,
 }) {
-  final place = extractPlaceFromEvent(event) ?? getJsProperty(autocomplete, 'place');
+  final place =
+      extractPlaceFromEvent(event) ?? getJsProperty(autocomplete, 'place');
   final placeJson = place == null
       ? null
       : PlaceAutocompleteWebPlaceDetails.readPlaceJson(place);
@@ -43,22 +44,26 @@ PlaceSelectionResult buildSelectionFromEvent({
       print('PlacesUI place json: $placeJson');
     }
   }
-  final placeId = readJsString(getJsProperty(place, 'id')) ??
+  final placeId =
+      readJsString(getJsProperty(place, 'id')) ??
       readJsString(getJsProperty(place, 'placeId')) ??
       readJsString(placeJson?['id']) ??
       readJsString(placeJson?['placeId']) ??
       '';
   final formattedAddress =
       readJsString(getJsProperty(place, 'formattedAddress')) ??
-          readJsString(placeJson?['formattedAddress']) ??
-          readJsString(placeJson?['formatted_address']);
-  final displayName = getJsProperty(place, 'displayName') ?? placeJson?['displayName'];
+      readJsString(placeJson?['formattedAddress']) ??
+      readJsString(placeJson?['formatted_address']);
+  final displayName =
+      getJsProperty(place, 'displayName') ?? placeJson?['displayName'];
   String? name;
   if (displayName != null) {
-    name = readJsString(displayName) ??
+    name =
+        readJsString(displayName) ??
         readJsString(getJsProperty(displayName, 'text'));
   }
-  name ??= readJsString(getJsProperty(place, 'name')) ??
+  name ??=
+      readJsString(getJsProperty(place, 'name')) ??
       readJsString(placeJson?['name']) ??
       readJsString(placeJson?['displayName']);
   final location = getJsProperty(place, 'location');
@@ -87,7 +92,8 @@ PlaceSelectionResult buildSelectionFromEvent({
     }
   }
   final eventDisplayValue = readEventDisplayValue(event);
-  final displayValue = formattedAddress ??
+  final displayValue =
+      formattedAddress ??
       name ??
       eventDisplayValue ??
       domHelper?.readAutocompleteValue() ??

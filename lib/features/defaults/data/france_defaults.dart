@@ -48,7 +48,8 @@ class FranceDefaults {
     ),
     DefaultSource(
       label: 'Tarif Bleu residential electricity price (base option 6 kVA)',
-      url: 'https://www.cre.fr/actualites/grille-tarifaire-des-tarifs-reglementes-bleus-residentiels-applicables-au-1er-fevrier-2026/',
+      url:
+          'https://www.cre.fr/actualites/grille-tarifaire-des-tarifs-reglementes-bleus-residentiels-applicables-au-1er-fevrier-2026/',
       lastChecked: '2026-01-23',
     ),
     DefaultSource(

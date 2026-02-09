@@ -10,6 +10,7 @@ import '../../vehicles/presentation/vehicle_form_actions.dart';
 import '../../vehicles/presentation/vehicle_form_model_lookup.dart';
 import '../../vehicles/presentation/vehicle_form_plate_lookup.dart';
 import 'profile_setup_state.dart';
+
 extension ProfileSetupStateVehicle on ProfileSetupState {
   void applyPresetsForType({required bool setEnergyType}) {
     isApplyingPresets = true;
@@ -18,8 +19,10 @@ extension ProfileSetupStateVehicle on ProfileSetupState {
         vehicleController.vehicleType,
       );
       vehicleController.energyType = energyType;
-      vehicleController.fuelType =
-          defaultFuelTypeForVehicle(vehicleController.vehicleType, energyType);
+      vehicleController.fuelType = defaultFuelTypeForVehicle(
+        vehicleController.vehicleType,
+        energyType,
+      );
     }
     vehicleController.applyTypePresets();
     vehicleController.applyEnergyPriceDefaults(
@@ -27,6 +30,7 @@ extension ProfileSetupStateVehicle on ProfileSetupState {
     );
     isApplyingPresets = false;
   }
+
   void togglePresets(bool value) {
     useVehiclePresets = value;
     if (value) {
@@ -34,6 +38,7 @@ extension ProfileSetupStateVehicle on ProfileSetupState {
     }
     refresh();
   }
+
   void markPresetEdited() {
     if (!useVehiclePresets || isApplyingPresets) {
       return;
@@ -41,12 +46,14 @@ extension ProfileSetupStateVehicle on ProfileSetupState {
     useVehiclePresets = false;
     refresh();
   }
+
   void updateDefaults(bool value) {
     businessController.useFranceDefaults = value;
     businessController.applyFranceDefaults();
     vehicleController.applyEnergyPriceDefaults(useFranceDefaults: value);
     refresh();
   }
+
   void changeVehicleType(VehicleType value) {
     updateVehicleType(controller: vehicleController, value: value);
     if (useVehiclePresets) {
@@ -54,6 +61,7 @@ extension ProfileSetupStateVehicle on ProfileSetupState {
     }
     refresh();
   }
+
   void changeEnergyType(EnergyType value) {
     updateEnergyType(
       controller: vehicleController,
@@ -65,6 +73,7 @@ extension ProfileSetupStateVehicle on ProfileSetupState {
     }
     refresh();
   }
+
   void changeFuelType(FuelType? value) {
     updateFuelType(
       controller: vehicleController,
@@ -76,6 +85,7 @@ extension ProfileSetupStateVehicle on ProfileSetupState {
     }
     refresh();
   }
+
   Future<void> lookupModel({
     required BuildContext context,
     required VehicleModelLookupService service,

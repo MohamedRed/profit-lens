@@ -232,9 +232,9 @@ class _ProfileSetupStepperState extends State<ProfileSetupStepper> {
 
   Widget _withSources(
     Widget content,
-    List<DefaultSource> sources,
-    {required bool showSources}
-  ) {
+    List<DefaultSource> sources, {
+    required bool showSources,
+  }) {
     if (!showSources) {
       return content;
     }
@@ -253,10 +253,7 @@ class _ProfileStepData {
   final String label;
   final Widget content;
 
-  const _ProfileStepData({
-    required this.label,
-    required this.content,
-  });
+  const _ProfileStepData({required this.label, required this.content});
 }
 
 class _ProfileStepHeader extends StatelessWidget {
@@ -287,13 +284,13 @@ class _ProfileStepHeader extends StatelessWidget {
       final circleColor = isComplete
           ? completeColor
           : isActive
-              ? activeColor
-              : inactiveColor;
+          ? activeColor
+          : inactiveColor;
       final circleTextColor = isComplete
           ? theme.colorScheme.onPrimaryContainer
           : isActive
-              ? theme.colorScheme.onPrimary
-              : theme.colorScheme.onSurfaceVariant;
+          ? theme.colorScheme.onPrimary
+          : theme.colorScheme.onSurfaceVariant;
       children.add(
         InkWell(
           borderRadius: BorderRadius.circular(16),

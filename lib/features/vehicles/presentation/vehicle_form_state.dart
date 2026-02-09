@@ -14,14 +14,12 @@ class VehicleFormState extends ChangeNotifier {
   bool isLookingUpPlate = false;
   bool isApplyingPresets = false;
 
-  VehicleFormState({
-    required this.profile,
-    required this.existing,
-  })  : controller = VehicleFormController.fromVehicle(
-          vehicle: existing,
-          useFranceDefaults: profile.useFranceDefaults,
-        ),
-        useVehiclePresets = existing == null ? profile.useFranceDefaults : false;
+  VehicleFormState({required this.profile, required this.existing})
+    : controller = VehicleFormController.fromVehicle(
+        vehicle: existing,
+        useFranceDefaults: profile.useFranceDefaults,
+      ),
+      useVehiclePresets = existing == null ? profile.useFranceDefaults : false;
 
   @override
   void dispose() {

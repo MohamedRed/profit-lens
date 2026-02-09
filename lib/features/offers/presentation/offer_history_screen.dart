@@ -52,8 +52,10 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
     final services = AppScope.of(context);
     _offerRepository = services.offerRepository;
     _offerStatsRepository = services.offerStatsRepository;
-    _statsStream =
-        _offerStatsRepository.watchDailyStats(widget.user.uid, limit: 90);
+    _statsStream = _offerStatsRepository.watchDailyStats(
+      widget.user.uid,
+      limit: 90,
+    );
     _loadInitial();
     _initialized = true;
   }
@@ -136,16 +138,12 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
 
     if (_isLoadingInitial) {
       return const Scaffold(
-        body: SafeArea(
-          child: Center(child: CircularProgressIndicator()),
-        ),
+        body: SafeArea(child: Center(child: CircularProgressIndicator())),
       );
     }
     if (_offers.isEmpty) {
       return Scaffold(
-        body: SafeArea(
-          child: Center(child: Text(l10n.noHistoryMessage)),
-        ),
+        body: SafeArea(child: Center(child: Text(l10n.noHistoryMessage))),
       );
     }
     return StreamBuilder<List<OfferDailyStats>>(
@@ -194,9 +192,7 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      OfferHistoryDetailScreen(
-                                    record: offer,
-                                  ),
+                                      OfferHistoryDetailScreen(record: offer),
                                 ),
                               );
                             },

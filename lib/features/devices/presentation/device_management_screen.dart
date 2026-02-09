@@ -9,18 +9,13 @@ import '../domain/device_entry.dart';
 class DeviceManagementScreen extends StatelessWidget {
   final AuthUser user;
 
-  const DeviceManagementScreen({
-    super.key,
-    required this.user,
-  });
+  const DeviceManagementScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.deviceManagementTitle),
-      ),
+      appBar: AppBar(title: Text(l10n.deviceManagementTitle)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(ShadcnSpacing.lg),
@@ -30,8 +25,8 @@ class DeviceManagementScreen extends StatelessWidget {
               Text(
                 l10n.deviceManagementSubtitle,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: ShadcnColors.textSecondary,
-                    ),
+                  color: ShadcnColors.textSecondary,
+                ),
               ),
               const SizedBox(height: ShadcnSpacing.lg),
               Expanded(child: _DeviceList(user: user)),
@@ -69,8 +64,8 @@ class _DeviceList extends StatelessWidget {
             return ListView.separated(
               itemBuilder: (context, index) {
                 final device = devices[index];
-                final isCurrent = currentDeviceId != null &&
-                    device.id == currentDeviceId;
+                final isCurrent =
+                    currentDeviceId != null && device.id == currentDeviceId;
                 return _DeviceTile(
                   device: device,
                   isCurrent: isCurrent,
@@ -93,9 +88,9 @@ class _DeviceList extends StatelessWidget {
       await AppScope.of(context).deviceRegistryService.revokeDevice(deviceId);
     } catch (error) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.toString())));
     }
   }
 }
@@ -117,7 +112,7 @@ class _DeviceTile extends StatelessWidget {
     final subtitle = device.lastSeen == null
         ? null
         : '${l10n.deviceLastSeenPrefix} '
-            '${MaterialLocalizations.of(context).formatFullDate(device.lastSeen!.toLocal())}';
+              '${MaterialLocalizations.of(context).formatFullDate(device.lastSeen!.toLocal())}';
     return ListTile(
       title: Text(
         device.platform.isEmpty ? l10n.deviceUnknownLabel : device.platform,

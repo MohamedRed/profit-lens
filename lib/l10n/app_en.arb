@@ -336,6 +336,7 @@
   "helpTicketDescriptionTitle": "Description",
   "helpTicketDescriptionEmpty": "No description provided.",
   "helpTicketAttachmentsTitle": "Attachments",
+  "helpTicketNotFound": "This ticket doesn't exist anymore.",
   "helpAttachmentsScreenshotsTitle": "Screenshots",
   "helpAttachmentsAudioTitle": "Audio notes",
   "helpNoAttachmentsMessage": "No attachments uploaded.",

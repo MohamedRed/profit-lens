@@ -26,9 +26,9 @@ Future<void> saveProfileSetup({
 
   final values = parseBusinessProfileValues(businessController);
   if (values == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.requiredFieldError)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.requiredFieldError)));
     return;
   }
 
@@ -38,9 +38,9 @@ Future<void> saveProfileSetup({
     l10n: l10n,
   );
   if (fixedCostError != null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(fixedCostError)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(fixedCostError)));
     return;
   }
 
@@ -49,9 +49,9 @@ Future<void> saveProfileSetup({
     final vehicleId = buildVehicleId(user: user, existing: null);
     vehicle = buildVehicleProfile(id: vehicleId, controller: vehicleController);
   } catch (_) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.requiredFieldError)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.requiredFieldError)));
     return;
   }
 
@@ -82,9 +82,9 @@ Future<void> saveProfileSetup({
     await services.vehicleRepository.saveVehicle(user.uid, vehicle);
   } catch (_) {
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.profileSaveFailedMessage)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.profileSaveFailedMessage)));
   } finally {
     if (context.mounted) {
       onSavingChanged(false);

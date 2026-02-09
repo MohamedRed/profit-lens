@@ -16,11 +16,7 @@ class DeviceAccessGate extends StatefulWidget {
   final AuthUser user;
   final Widget child;
 
-  const DeviceAccessGate({
-    super.key,
-    required this.user,
-    required this.child,
-  });
+  const DeviceAccessGate({super.key, required this.user, required this.child});
 
   @override
   State<DeviceAccessGate> createState() => _DeviceAccessGateState();
@@ -122,9 +118,7 @@ class _DeviceAccessGateState extends State<DeviceAccessGate> {
       return widget.child;
     }
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     if (_blockedDevices != null) {
       return DeviceLimitScreen(

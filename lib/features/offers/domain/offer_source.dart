@@ -1,4 +1,1 @@
-enum OfferSource {
-  manual,
-  screenshot,
-}
+enum OfferSource { manual, screenshot }

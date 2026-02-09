@@ -28,8 +28,8 @@ class SubscriptionPlansSheet extends StatelessWidget {
               Text(
                 l10n.subscriptionPlansSubtitle,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: ShadcnColors.textSecondary,
-                    ),
+                  color: ShadcnColors.textSecondary,
+                ),
               ),
               const SizedBox(height: ShadcnSpacing.lg),
               ...BillingPlans.all.map(
@@ -60,10 +60,7 @@ class _PlanCard extends StatelessWidget {
     return SectionCard(
       title: l10n.planPricePerMonth(plan.priceLabel),
       children: [
-        Text(
-          offersLabel,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
+        Text(offersLabel, style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: ShadcnSpacing.md),
         FilledButton(
           onPressed: () => _startCheckout(context, plan),
@@ -78,11 +75,7 @@ class _PlanCard extends StatelessWidget {
     try {
       await AppScope.of(context).billingService.startCheckout(plan.priceId);
     } catch (error) {
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(error.toString()),
-        ),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(error.toString())));
     }
   }
 }

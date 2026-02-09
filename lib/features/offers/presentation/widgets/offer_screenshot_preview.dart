@@ -8,10 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 class OfferScreenshotPreview extends StatelessWidget {
   final Uint8List thumbnail;
 
-  const OfferScreenshotPreview({
-    super.key,
-    required this.thumbnail,
-  });
+  const OfferScreenshotPreview({super.key, required this.thumbnail});
 
   void _openPreview(BuildContext context) {
     showDialog<void>(
@@ -36,10 +33,7 @@ class OfferScreenshotPreview extends StatelessWidget {
                 child: InteractiveViewer(
                   minScale: 0.8,
                   maxScale: 4,
-                  child: Image.memory(
-                    thumbnail,
-                    fit: BoxFit.contain,
-                  ),
+                  child: Image.memory(thumbnail, fit: BoxFit.contain),
                 ),
               ),
               const SizedBox(height: ShadcnSpacing.sm),
@@ -81,9 +75,9 @@ class OfferScreenshotPreview extends StatelessWidget {
               Expanded(
                 child: Text(
                   l10n.importedScreenshotTitle,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
               const SizedBox(width: ShadcnSpacing.sm),

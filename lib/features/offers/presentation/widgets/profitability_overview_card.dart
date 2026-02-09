@@ -40,10 +40,9 @@ class ProfitabilityOverviewCard extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               CurrencyFormat.euro(netProfit, localeTag),
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(color: netColor),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(color: netColor),
             ),
             const SizedBox(height: 4),
             Text(l10n.netProfitLabel),
@@ -87,10 +86,7 @@ class ProfitabilityOverviewCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label),
-          Text(value),
-        ],
+        children: [Text(label), Text(value)],
       ),
     );
   }
@@ -118,8 +114,9 @@ class ProfitabilityDecisionCard extends StatelessWidget {
     final decisionBackground = isAccept
         ? Colors.green.shade600.withOpacity(0.12)
         : Theme.of(context).colorScheme.error.withOpacity(0.12);
-    final decisionLabel =
-        isAccept ? l10n.offerDecisionAccept : l10n.offerDecisionDecline;
+    final decisionLabel = isAccept
+        ? l10n.offerDecisionAccept
+        : l10n.offerDecisionDecline;
     final decisionDetail = isAccept
         ? l10n.offerDecisionAbove(
             CurrencyFormat.euro(targetDelta.abs(), localeTag),
@@ -161,17 +158,17 @@ class _DecisionSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final titleStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
-          color: textColor,
-          fontWeight: FontWeight.w700,
-        );
+      color: textColor,
+      fontWeight: FontWeight.w700,
+    );
     final detailStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: textColor,
-          fontWeight: FontWeight.w600,
-        );
+      color: textColor,
+      fontWeight: FontWeight.w600,
+    );
     final pillTextStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: textColor,
-          fontWeight: FontWeight.w600,
-        );
+      color: textColor,
+      fontWeight: FontWeight.w600,
+    );
     final pillBackground = textColor.withOpacity(0.12);
     return Container(
       width: double.infinity,

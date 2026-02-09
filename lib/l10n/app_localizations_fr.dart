@@ -918,6 +918,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpTicketAttachmentsTitle => 'Pièces jointes';
 
   @override
+  String get helpTicketNotFound => 'Ce ticket n’existe plus.';
+
+  @override
   String get helpAttachmentsScreenshotsTitle => 'Captures d’écran';
 
   @override

@@ -14,8 +14,8 @@ class FirestoreVehicleRepository implements VehicleRepository {
   FirestoreVehicleRepository({
     FirebaseFirestore? firestore,
     VehicleProfileMapper? mapper,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _mapper = mapper ?? VehicleProfileMapper();
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _mapper = mapper ?? VehicleProfileMapper();
 
   void _ensureConfigured() {
     if (!AppConfig.firebaseConfigured) {
@@ -37,7 +37,10 @@ class FirestoreVehicleRepository implements VehicleRepository {
   @override
   Stream<List<VehicleProfile>> watchVehicles(String uid) {
     _ensureConfigured();
-    return _collection(uid).orderBy('createdAt', descending: false).snapshots().map(
+    return _collection(uid)
+        .orderBy('createdAt', descending: false)
+        .snapshots()
+        .map(
           (snapshot) => snapshot.docs
               .map((doc) => _mapper.fromDocument(doc.id, doc.data()))
               .toList(),
@@ -58,8 +61,9 @@ class FirestoreVehicleRepository implements VehicleRepository {
     _ensureConfigured();
     final vehicleRef = _collection(uid).doc(vehicle.id);
     final plate = _normalizePlate(vehicle.licensePlate);
-    final plateRef =
-        plate == null ? null : _plateIndexCollection(uid).doc(plate);
+    final plateRef = plate == null
+        ? null
+        : _plateIndexCollection(uid).doc(plate);
     await _firestore.runTransaction((transaction) async {
       final existingSnap = await transaction.get(vehicleRef);
       final existingData = existingSnap.data();
@@ -81,14 +85,10 @@ class FirestoreVehicleRepository implements VehicleRepository {
         transaction.delete(_plateIndexCollection(uid).doc(previousPlate));
       }
 
-      transaction.set(
-        vehicleRef,
-        {
-          ..._mapper.toDocument(vehicle),
-          'createdAt': FieldValue.serverTimestamp(),
-        },
-        SetOptions(merge: true),
-      );
+      transaction.set(vehicleRef, {
+        ..._mapper.toDocument(vehicle),
+        'createdAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
 
       if (plateRef != null) {
         final platePayload = <String, dynamic>{
@@ -109,8 +109,9 @@ class FirestoreVehicleRepository implements VehicleRepository {
       if (!snapshot.exists) {
         return;
       }
-      final plate =
-          _normalizePlate(snapshot.data()?['licensePlate'] as String?);
+      final plate = _normalizePlate(
+        snapshot.data()?['licensePlate'] as String?,
+      );
       transaction.delete(vehicleRef);
       if (plate != null) {
         transaction.delete(_plateIndexCollection(uid).doc(plate));

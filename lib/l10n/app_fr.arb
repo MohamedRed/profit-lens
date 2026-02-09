@@ -336,6 +336,7 @@
   "helpTicketDescriptionTitle": "Description",
   "helpTicketDescriptionEmpty": "Aucune description fournie.",
   "helpTicketAttachmentsTitle": "Pièces jointes",
+  "helpTicketNotFound": "Ce ticket n’existe plus.",
   "helpAttachmentsScreenshotsTitle": "Captures d’écran",
   "helpAttachmentsAudioTitle": "Notes audio",
   "helpNoAttachmentsMessage": "Aucune pièce jointe.",

@@ -336,6 +336,7 @@
   "helpTicketDescriptionTitle": "الوصف",
   "helpTicketDescriptionEmpty": "لا يوجد وصف.",
   "helpTicketAttachmentsTitle": "المرفقات",
+  "helpTicketNotFound": "لم تعد هذه التذكرة موجودة.",
   "helpAttachmentsScreenshotsTitle": "لقطات الشاشة",
   "helpAttachmentsAudioTitle": "الملاحظات الصوتية",
   "helpNoAttachmentsMessage": "لا توجد مرفقات.",

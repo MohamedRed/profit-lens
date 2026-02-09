@@ -11,9 +11,7 @@ class RegisterScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.registerTitle)),
-      body: const SafeArea(
-        child: RegisterForm(),
-      ),
+      body: const SafeArea(child: RegisterForm()),
     );
   }
 }

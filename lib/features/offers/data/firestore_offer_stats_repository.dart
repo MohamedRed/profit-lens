@@ -12,8 +12,8 @@ class FirestoreOfferStatsRepository implements OfferStatsRepository {
   FirestoreOfferStatsRepository({
     FirebaseFirestore? firestore,
     OfferDailyStatsMapper? mapper,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _mapper = mapper ?? OfferDailyStatsMapper();
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _mapper = mapper ?? OfferDailyStatsMapper();
 
   CollectionReference<Map<String, dynamic>> _collection(String uid) =>
       _firestore.collection('users').doc(uid).collection('offerStats');
@@ -25,10 +25,7 @@ class FirestoreOfferStatsRepository implements OfferStatsRepository {
   }
 
   @override
-  Stream<List<OfferDailyStats>> watchDailyStats(
-    String uid, {
-    int limit = 90,
-  }) {
+  Stream<List<OfferDailyStats>> watchDailyStats(String uid, {int limit = 90}) {
     _ensureConfigured();
     return _collection(uid)
         .orderBy('dayStart', descending: true)

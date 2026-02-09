@@ -8,11 +8,7 @@ class OfferFlowScreen extends StatelessWidget {
   final AuthUser user;
   final UserProfile profile;
 
-  const OfferFlowScreen({
-    super.key,
-    required this.user,
-    required this.profile,
-  });
+  const OfferFlowScreen({super.key, required this.user, required this.profile});
 
   @override
   Widget build(BuildContext context) {

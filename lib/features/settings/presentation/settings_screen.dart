@@ -16,11 +16,7 @@ class SettingsScreen extends StatelessWidget {
   final AuthUser user;
   final UserProfile profile;
 
-  const SettingsScreen({
-    super.key,
-    required this.user,
-    required this.profile,
-  });
+  const SettingsScreen({super.key, required this.user, required this.profile});
 
   @override
   Widget build(BuildContext context) {

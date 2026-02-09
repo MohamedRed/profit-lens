@@ -12,8 +12,8 @@ class FirestoreOfferRepository implements OfferRepository {
   FirestoreOfferRepository({
     FirebaseFirestore? firestore,
     OfferRecordMapper? mapper,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _mapper = mapper ?? OfferRecordMapper();
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _mapper = mapper ?? OfferRecordMapper();
 
   CollectionReference<Map<String, dynamic>> _collection(String uid) =>
       _firestore.collection('users').doc(uid).collection('offers');
@@ -30,10 +30,7 @@ class FirestoreOfferRepository implements OfferRepository {
     final doc = offer.id.isEmpty
         ? _collection(uid).doc()
         : _collection(uid).doc(offer.id);
-    await doc.set(
-      _mapper.toDocument(offer),
-      SetOptions(merge: true),
-    );
+    await doc.set(_mapper.toDocument(offer), SetOptions(merge: true));
   }
 
   @override
@@ -53,9 +50,9 @@ class FirestoreOfferRepository implements OfferRepository {
   @override
   Future<List<OfferRecord>> fetchOffers(String uid) async {
     _ensureConfigured();
-    final snapshot = await _collection(uid)
-        .orderBy('createdAt', descending: true)
-        .get();
+    final snapshot = await _collection(
+      uid,
+    ).orderBy('createdAt', descending: true).get();
     return snapshot.docs
         .map((doc) => _mapper.fromDocument(doc.id, doc.data()))
         .whereType<OfferRecord>()
@@ -69,8 +66,9 @@ class FirestoreOfferRepository implements OfferRepository {
     int limit = 30,
   }) async {
     _ensureConfigured();
-    Query<Map<String, dynamic>> query =
-        _collection(uid).orderBy('createdAt', descending: true).limit(limit);
+    Query<Map<String, dynamic>> query = _collection(
+      uid,
+    ).orderBy('createdAt', descending: true).limit(limit);
     if (startAfter != null) {
       query = query.startAfterDocument(startAfter);
     }
@@ -79,8 +77,7 @@ class FirestoreOfferRepository implements OfferRepository {
         .map((doc) => _mapper.fromDocument(doc.id, doc.data()))
         .whereType<OfferRecord>()
         .toList();
-    final lastDocument =
-        snapshot.docs.isEmpty ? null : snapshot.docs.last;
+    final lastDocument = snapshot.docs.isEmpty ? null : snapshot.docs.last;
     final hasMore = snapshot.docs.length == limit && offers.isNotEmpty;
     return OfferPage(
       offers: offers,

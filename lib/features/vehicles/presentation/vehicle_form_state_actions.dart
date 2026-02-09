@@ -15,8 +15,10 @@ extension VehicleFormStateActions on VehicleFormState {
     if (setEnergyType) {
       final energyType = defaultEnergyTypeForVehicle(controller.vehicleType);
       controller.energyType = energyType;
-      controller.fuelType =
-          defaultFuelTypeForVehicle(controller.vehicleType, energyType);
+      controller.fuelType = defaultFuelTypeForVehicle(
+        controller.vehicleType,
+        energyType,
+      );
     }
     controller.applyTypePresets();
     controller.applyEnergyPriceDefaults(
@@ -50,13 +52,16 @@ extension VehicleFormStateActions on VehicleFormState {
     }
 
     final defaultEnergyType = defaultEnergyTypeForVehicle(value);
-    final requiresEnergyReset = value == VehicleType.bike ||
+    final requiresEnergyReset =
+        value == VehicleType.bike ||
         value == VehicleType.ebike ||
         controller.energyType == EnergyType.none;
     if (requiresEnergyReset) {
       controller.energyType = defaultEnergyType;
-      controller.fuelType =
-          defaultFuelTypeForVehicle(value, controller.energyType);
+      controller.fuelType = defaultFuelTypeForVehicle(
+        value,
+        controller.energyType,
+      );
       controller.applyEnergyPriceDefaults(
         useFranceDefaults: profile.useFranceDefaults,
       );
@@ -66,8 +71,10 @@ extension VehicleFormStateActions on VehicleFormState {
       }
     } else if (controller.energyType == EnergyType.fuel &&
         controller.fuelType == null) {
-      controller.fuelType =
-          defaultFuelTypeForVehicle(value, controller.energyType);
+      controller.fuelType = defaultFuelTypeForVehicle(
+        value,
+        controller.energyType,
+      );
       controller.applyEnergyPriceDefaults(
         useFranceDefaults: profile.useFranceDefaults,
       );

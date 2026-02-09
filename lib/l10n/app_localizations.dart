@@ -1786,6 +1786,12 @@ abstract class AppLocalizations {
   /// **'Attachments'**
   String get helpTicketAttachmentsTitle;
 
+  /// No description provided for @helpTicketNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This ticket doesn\'t exist anymore.'**
+  String get helpTicketNotFound;
+
   /// No description provided for @helpAttachmentsScreenshotsTitle.
   ///
   /// In en, this message translates to:

@@ -29,15 +29,23 @@ class ProfileSetupView extends StatelessWidget {
   final VoidCallback onSave;
   const ProfileSetupView({
     super.key,
-    required this.formKey, required this.businessController,
-    required this.vehicleController, required this.isSaving,
-    required this.useVehiclePresets, required this.onVehiclePresetsChanged,
-    required this.onVehiclePresetEdited, required this.onModelLookup,
-    required this.onPlateLookup, required this.isLookingUpPlate,
-    required this.onActivityChanged, required this.onAllocationChanged,
-    required this.onDefaultsChanged, required this.onLiberatoryTaxChanged,
+    required this.formKey,
+    required this.businessController,
+    required this.vehicleController,
+    required this.isSaving,
+    required this.useVehiclePresets,
+    required this.onVehiclePresetsChanged,
+    required this.onVehiclePresetEdited,
+    required this.onModelLookup,
+    required this.onPlateLookup,
+    required this.isLookingUpPlate,
+    required this.onActivityChanged,
+    required this.onAllocationChanged,
+    required this.onDefaultsChanged,
+    required this.onLiberatoryTaxChanged,
     required this.onVehicleTypeChanged,
-    required this.onEnergyTypeChanged, required this.onFuelTypeChanged,
+    required this.onEnergyTypeChanged,
+    required this.onFuelTypeChanged,
     required this.onSave,
   });
   @override
@@ -80,5 +88,4 @@ class ProfileSetupView extends StatelessWidget {
       ),
     );
   }
-
 }

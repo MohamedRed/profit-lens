@@ -35,7 +35,7 @@ class OfferLimitImportButton extends StatelessWidget {
       builder: (context, entitlementSnapshot) {
         final isEntitlementLoading =
             entitlementSnapshot.connectionState == ConnectionState.waiting &&
-                !entitlementSnapshot.hasData;
+            !entitlementSnapshot.hasData;
         final entitlement = entitlementSnapshot.data;
         if (entitlement == null || entitlement.offerLimit == null) {
           return _buildButton(
@@ -51,7 +51,7 @@ class OfferLimitImportButton extends StatelessWidget {
           builder: (context, usageSnapshot) {
             final isUsageLoading =
                 usageSnapshot.connectionState == ConnectionState.waiting &&
-                    !usageSnapshot.hasData;
+                !usageSnapshot.hasData;
             final usage = usageSnapshot.data;
             final used = usage?.offerCount ?? 0;
             final limitReached = used >= entitlement.offerLimit!;

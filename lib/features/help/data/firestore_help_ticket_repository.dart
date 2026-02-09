@@ -57,6 +57,20 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
   }
 
   @override
+  Stream<HelpTicket?> watchTicket({
+    required String uid,
+    required String ticketId,
+  }) {
+    _ensureConfigured();
+    return _collection(uid).doc(ticketId).snapshots().map((snapshot) {
+      if (!snapshot.exists) return null;
+      final data = snapshot.data();
+      if (data == null) return null;
+      return _mapper.fromDocument(snapshot.id, data);
+    });
+  }
+
+  @override
   Stream<List<HelpTicketAttachment>> watchAttachments({
     required String uid,
     required String ticketId,

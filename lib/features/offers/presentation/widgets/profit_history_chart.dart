@@ -10,10 +10,7 @@ import 'profit_history_chart_canvas.dart';
 class ProfitHistoryChart extends StatelessWidget {
   final List<OfferDailyStats> stats;
 
-  const ProfitHistoryChart({
-    super.key,
-    required this.stats,
-  });
+  const ProfitHistoryChart({super.key, required this.stats});
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +21,11 @@ class ProfitHistoryChart extends StatelessWidget {
         child: Text(l10n.historyChartEmptyMessage),
       );
     }
-    final sorted = [...stats]..sort(
-        (a, b) => a.dayStart.compareTo(b.dayStart),
-      );
+    final sorted = [...stats]..sort((a, b) => a.dayStart.compareTo(b.dayStart));
     final values = sorted.map((stat) => stat.averageProfit).toList();
     final minValue = values.reduce((a, b) => a < b ? a : b);
     final maxValue = values.reduce((a, b) => a > b ? a : b);
-    final maxAbs =
-        math.max(minValue.abs(), maxValue.abs()).toDouble();
+    final maxAbs = math.max(minValue.abs(), maxValue.abs()).toDouble();
     final normalizedMax = maxAbs == 0 ? 1.0 : maxAbs;
     final normalizedMin = -normalizedMax;
     final localeTag = Localizations.localeOf(context).toString();
@@ -46,10 +40,7 @@ class ProfitHistoryChart extends StatelessWidget {
         value: normalizedMax / 2,
         label: CurrencyFormat.euro(normalizedMax / 2, localeTag),
       ),
-      ChartAxisTick(
-        value: 0,
-        label: thresholdLabel,
-      ),
+      ChartAxisTick(value: 0, label: thresholdLabel),
       ChartAxisTick(
         value: normalizedMin / 2,
         label: CurrencyFormat.euro(normalizedMin / 2, localeTag),
@@ -103,10 +94,7 @@ class _LegendItem extends StatelessWidget {
   final Color color;
   final String label;
 
-  const _LegendItem({
-    required this.color,
-    required this.label,
-  });
+  const _LegendItem({required this.color, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -116,10 +104,7 @@ class _LegendItem extends StatelessWidget {
         Container(
           width: 12,
           height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 6),
         Text(label),

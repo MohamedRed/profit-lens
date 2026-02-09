@@ -9,8 +9,9 @@ class FirebaseBillingService implements BillingService {
   final FirebaseFunctions _functions;
 
   FirebaseBillingService({FirebaseFunctions? functions})
-      : _functions =
-            functions ?? FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion);
+    : _functions =
+          functions ??
+          FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion);
 
   @override
   Future<void> startCheckout(String priceId) async {
@@ -35,9 +36,7 @@ class FirebaseBillingService implements BillingService {
   Future<void> openCustomerPortal() async {
     final callable = _functions.httpsCallable('createCustomerPortalSession');
     final origin = Uri.base.origin;
-    final response = await callable.call({
-      'origin': origin,
-    });
+    final response = await callable.call({'origin': origin});
     final data = Map<String, dynamic>.from(response.data as Map);
     final url = data['url'] as String?;
     if (url == null || url.isEmpty) {

@@ -1,5 +1,1 @@
-enum BusinessActivity {
-  deliveryServices,
-  services,
-  sales,
-}
+enum BusinessActivity { deliveryServices, services, sales }

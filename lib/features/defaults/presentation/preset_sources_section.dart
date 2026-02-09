@@ -8,10 +8,7 @@ import '../data/france_defaults.dart';
 class PresetSourcesSection extends StatefulWidget {
   final List<DefaultSource> sources;
 
-  const PresetSourcesSection({
-    super.key,
-    required this.sources,
-  });
+  const PresetSourcesSection({super.key, required this.sources});
 
   @override
   State<PresetSourcesSection> createState() => _PresetSourcesSectionState();
@@ -32,20 +29,20 @@ class _PresetSourcesSectionState extends State<PresetSourcesSection> {
       hasBody: _expanded,
       children: _expanded
           ? widget.sources
-              .map(
-                (source) => ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(source.label),
-                  subtitle: Text(
-                    '${l10n.sourceLastCheckedLabel}: ${source.lastChecked}',
+                .map(
+                  (source) => ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(source.label),
+                    subtitle: Text(
+                      '${l10n.sourceLastCheckedLabel}: ${source.lastChecked}',
+                    ),
+                    trailing: TextButton(
+                      onPressed: () => _openSource(context, source.url),
+                      child: Text(l10n.sourceOpenButton),
+                    ),
                   ),
-                  trailing: TextButton(
-                    onPressed: () => _openSource(context, source.url),
-                    child: Text(l10n.sourceOpenButton),
-                  ),
-                ),
-              )
-              .toList()
+                )
+                .toList()
           : const [],
     );
   }
@@ -53,14 +50,11 @@ class _PresetSourcesSectionState extends State<PresetSourcesSection> {
   Future<void> _openSource(BuildContext context, String url) async {
     final l10n = AppLocalizations.of(context)!;
     final uri = Uri.parse(url);
-    final launched = await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
-    );
+    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!launched && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.sourceOpenError)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.sourceOpenError)));
     }
   }
 }

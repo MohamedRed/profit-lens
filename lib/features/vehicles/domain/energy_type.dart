@@ -1,5 +1,1 @@
-enum EnergyType {
-  none,
-  electric,
-  fuel,
-}
+enum EnergyType { none, electric, fuel }

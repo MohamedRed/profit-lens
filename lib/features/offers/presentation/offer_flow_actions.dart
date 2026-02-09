@@ -105,9 +105,9 @@ Future<void> handleOfferAnalysis({
   } catch (error) {
     final message = resolveAnalysisErrorMessage(error, l10n);
     if (context.mounted && controller.isCurrentAnalysis(runId)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
     if (controller.isCurrentAnalysis(runId)) {
       controller.setAnalysisStatus(
@@ -132,10 +132,7 @@ Future<void> handleOfferAnalysis({
   if (navigateToDetails) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => OfferResultScreen(
-          user: user,
-          record: record!,
-        ),
+        builder: (context) => OfferResultScreen(user: user, record: record!),
       ),
     );
   }

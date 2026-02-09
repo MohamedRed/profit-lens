@@ -23,14 +23,13 @@ Future<void> lookupVehiclePlate({
     return;
   }
   if (!isValidFrenchLicensePlate(rawPlate)) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.vehicleLicensePlateInvalid)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.vehicleLicensePlateInvalid)));
     return;
   }
   final normalized = normalizeFrenchLicensePlate(rawPlate);
-  controller.licensePlateController.text =
-      formatFrenchLicensePlate(normalized);
+  controller.licensePlateController.text = formatFrenchLicensePlate(normalized);
 
   try {
     final result = await service.lookup(
@@ -39,9 +38,9 @@ Future<void> lookupVehiclePlate({
     );
     if (!context.mounted) return;
     if (result == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.plateLookupNotFoundMessage)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.plateLookupNotFoundMessage)));
       return;
     }
     onApplyStart();
@@ -53,19 +52,19 @@ Future<void> lookupVehiclePlate({
     );
     onApplyEnd();
     if (!applied) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.plateLookupNotFoundMessage)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.plateLookupNotFoundMessage)));
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.plateLookupAppliedMessage)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.plateLookupAppliedMessage)));
   } catch (_) {
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.plateLookupFailedMessage)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.plateLookupFailedMessage)));
   }
 }
 
@@ -87,8 +86,8 @@ bool _applyPlateLookupResult({
     applied = true;
   }
   if (result.registrationYear != null && result.registrationYear! > 0) {
-    controller.registrationYearController.text =
-        result.registrationYear.toString();
+    controller.registrationYearController.text = result.registrationYear
+        .toString();
     applied = true;
   }
   if (result.energyType != null || result.fuelType != null) {
@@ -140,14 +139,7 @@ String? _sanitizeLookupValue(String? value) {
   final trimmed = value.trim();
   if (trimmed.isEmpty) return null;
   final normalized = trimmed.toLowerCase();
-  const unknownValues = {
-    'unknown',
-    'inconnu',
-    'n/a',
-    'na',
-    'null',
-    '-',
-  };
+  const unknownValues = {'unknown', 'inconnu', 'n/a', 'na', 'null', '-'};
   if (unknownValues.contains(normalized)) {
     return null;
   }

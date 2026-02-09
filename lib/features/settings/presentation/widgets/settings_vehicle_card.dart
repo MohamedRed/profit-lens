@@ -31,10 +31,8 @@ class SettingsVehicleCard extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => VehicleFormScreen(
-                      user: user,
-                      profile: profile,
-                    ),
+                    builder: (context) =>
+                        VehicleFormScreen(user: user, profile: profile),
                   ),
                 );
               },

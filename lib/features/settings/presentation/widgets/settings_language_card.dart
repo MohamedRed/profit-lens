@@ -87,9 +87,9 @@ class _SettingsLanguageCardState extends State<SettingsLanguageCard> {
         setState(() {
           _selected = previous;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.profileSaveFailedMessage)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.profileSaveFailedMessage)));
       }
     } finally {
       if (mounted) {

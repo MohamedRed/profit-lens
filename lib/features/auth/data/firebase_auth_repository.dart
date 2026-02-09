@@ -7,7 +7,8 @@ import '../domain/auth_user.dart';
 class FirebaseAuthRepository implements AuthRepository {
   final FirebaseAuth _auth;
 
-  FirebaseAuthRepository({FirebaseAuth? auth}) : _auth = auth ?? FirebaseAuth.instance;
+  FirebaseAuthRepository({FirebaseAuth? auth})
+    : _auth = auth ?? FirebaseAuth.instance;
 
   void _ensureConfigured() {
     if (!AppConfig.firebaseConfigured) {

@@ -31,10 +31,14 @@ export const notifyHelpTicketStatus = onDocumentUpdated(
 
     const uid = event.params.uid as string;
     const ticketId = event.params.ticketId as string;
-    const title = "Ticket update";
-    const body = afterMessage;
 
-    await sendPushNotifications({ uid, title, body, ticketId, status: afterStatus });
+    await sendPushNotifications({
+      uid,
+      title: "Ticket update",
+      body: afterMessage,
+      ticketId,
+      status: afterStatus,
+    });
   }
 );
 

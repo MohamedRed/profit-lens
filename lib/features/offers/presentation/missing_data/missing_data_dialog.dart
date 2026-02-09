@@ -10,10 +10,14 @@ Future<MissingDataAction?> showMissingDataDialog({
   required AppLocalizations l10n,
   required List<MissingDataSection> sections,
 }) {
-  final hasProfile = sections.any((section) =>
-      section.title == l10n.profileSectionTitle && section.items.isNotEmpty);
-  final hasVehicle = sections.any((section) =>
-      section.title == l10n.vehiclesSectionTitle && section.items.isNotEmpty);
+  final hasProfile = sections.any(
+    (section) =>
+        section.title == l10n.profileSectionTitle && section.items.isNotEmpty,
+  );
+  final hasVehicle = sections.any(
+    (section) =>
+        section.title == l10n.vehiclesSectionTitle && section.items.isNotEmpty,
+  );
   return showDialog<MissingDataAction>(
     context: context,
     builder: (context) => AlertDialog(
@@ -25,7 +29,10 @@ Future<MissingDataAction?> showMissingDataDialog({
           Text(l10n.missingDataDescription),
           const SizedBox(height: 8),
           for (final section in sections) ...[
-            Text(section.title, style: const TextStyle(fontWeight: FontWeight.w600)),
+            Text(
+              section.title,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
             const SizedBox(height: 4),
             for (final item in section.items) Text('• $item'),
             const SizedBox(height: 8),

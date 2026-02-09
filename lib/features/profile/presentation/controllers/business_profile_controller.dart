@@ -91,14 +91,16 @@ class BusinessProfileController {
       return;
     }
     socialRateController.text =
-        (FranceDefaults.socialContributionRateServices * 100)
+        (FranceDefaults.socialContributionRateServices * 100).toStringAsFixed(
+          1,
+        );
+    incomeTaxController.text =
+        (FranceDefaults.incomeTaxRateForActivity(
+                  activity: activity,
+                  useLiberatoryTax: useLiberatoryTax,
+                ) *
+                100)
             .toStringAsFixed(1);
-    incomeTaxController.text = (FranceDefaults.incomeTaxRateForActivity(
-          activity: activity,
-          useLiberatoryTax: useLiberatoryTax,
-        ) *
-        100)
-        .toStringAsFixed(1);
   }
 
   void dispose() {

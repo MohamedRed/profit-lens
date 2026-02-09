@@ -44,9 +44,11 @@ class DeviceLimitScreen extends StatelessWidget {
                     final device = devices[index];
                     final isCurrent = device.id == currentDeviceId;
                     return ListTile(
-                      title: Text(device.platform.isEmpty
-                          ? l10n.deviceUnknownLabel
-                          : device.platform),
+                      title: Text(
+                        device.platform.isEmpty
+                            ? l10n.deviceUnknownLabel
+                            : device.platform,
+                      ),
                       subtitle: device.lastSeen == null
                           ? null
                           : Text(
@@ -66,10 +68,7 @@ class DeviceLimitScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              PrimaryButton(
-                label: l10n.signOutButton,
-                onPressed: onSignOut,
-              ),
+              PrimaryButton(label: l10n.signOutButton, onPressed: onSignOut),
             ],
           ),
         ),

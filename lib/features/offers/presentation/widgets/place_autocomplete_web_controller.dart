@@ -81,10 +81,14 @@ class PlaceAutocompleteWebController {
       throw StateError('Custom elements are unavailable in this browser.');
     }
     await js_util.promiseToFuture(
-      js_util.callMethod(customElements, 'whenDefined', ['gmp-basic-place-autocomplete']),
+      js_util.callMethod(customElements, 'whenDefined', [
+        'gmp-basic-place-autocomplete',
+      ]),
     );
     await js_util.promiseToFuture(
-      js_util.callMethod(customElements, 'whenDefined', ['gmp-place-details-compact']),
+      js_util.callMethod(customElements, 'whenDefined', [
+        'gmp-place-details-compact',
+      ]),
     );
   }
 
@@ -92,9 +96,7 @@ class PlaceAutocompleteWebController {
     final autocomplete =
         Element.tag('gmp-basic-place-autocomplete') as HtmlElement;
     final regionCodes = [countryCode.toLowerCase()];
-    final options = js_util.jsify({
-      'includedRegionCodes': regionCodes,
-    });
+    final options = js_util.jsify({'includedRegionCodes': regionCodes});
     try {
       js_util.setProperty(autocomplete, 'includedRegionCodes', regionCodes);
     } catch (_) {}
@@ -157,12 +159,14 @@ class PlaceAutocompleteWebController {
       }
       if ((displayValue == null || displayValue.isEmpty) &&
           selection.placeId.isNotEmpty) {
-        PlaceAutocompleteWebPlaceDetails.fetchPlaceDetails(selection.placeId)
-            .then((resolved) {
+        PlaceAutocompleteWebPlaceDetails.fetchPlaceDetails(
+          selection.placeId,
+        ).then((resolved) {
           if (resolved == null) {
             return;
           }
-          final resolvedValue = resolved.displayValue ??
+          final resolvedValue =
+              resolved.displayValue ??
               resolved.formattedAddress ??
               resolved.name;
           if (resolvedValue != null && resolvedValue.isNotEmpty) {

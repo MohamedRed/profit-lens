@@ -9,7 +9,7 @@ class FirebaseVehicleModelLookupService implements VehicleModelLookupService {
   final FirebaseFunctions? _functions;
 
   FirebaseVehicleModelLookupService({FirebaseFunctions? functions})
-      : _functions = functions;
+    : _functions = functions;
 
   @override
   Future<VehicleModelLookupResult?> lookup({
@@ -23,11 +23,10 @@ class FirebaseVehicleModelLookupService implements VehicleModelLookupService {
     if (energyType == EnergyType.none) {
       return null;
     }
-    final callable = (_functions ??
-            FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion))
-        .httpsCallable(
-      'lookupVehicleModel',
-    );
+    final callable =
+        (_functions ??
+                FirebaseFunctions.instanceFor(region: firebaseFunctionsRegion))
+            .httpsCallable('lookupVehicleModel');
     final response = await callable.call(<String, dynamic>{
       'brand': brand,
       'model': model,

@@ -8,10 +8,7 @@ import 'profit_history_summary.dart';
 class OfferHistoryCharts extends StatelessWidget {
   final List<OfferDailyStats> stats;
 
-  const OfferHistoryCharts({
-    super.key,
-    required this.stats,
-  });
+  const OfferHistoryCharts({super.key, required this.stats});
 
   @override
   Widget build(BuildContext context) {

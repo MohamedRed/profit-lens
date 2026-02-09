@@ -53,8 +53,7 @@ class OfferDetailsSummary extends StatelessWidget {
             ],
           ),
           const SizedBox(height: ShadcnSpacing.lg),
-          if (payout.isNotEmpty)
-            Text('${l10n.offerAmountLabel}: €$payout'),
+          if (payout.isNotEmpty) Text('${l10n.offerAmountLabel}: €$payout'),
           if (verification == null && distance.isNotEmpty)
             Text('${l10n.distanceKmLabel}: $distance'),
           if (verification == null && duration.isNotEmpty)

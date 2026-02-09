@@ -1,5 +1,1 @@
-enum OfferFlowLoadingAction {
-  importScreenshot,
-  captureScreenshot,
-  analyze,
-}
+enum OfferFlowLoadingAction { importScreenshot, captureScreenshot, analyze }

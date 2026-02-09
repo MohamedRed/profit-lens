@@ -124,9 +124,7 @@ class ShadcnTheme {
         ),
       ),
       chipTheme: ChipThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         backgroundColor: ShadcnColors.surface,
         selectedColor: ShadcnColors.purple.withOpacity(.12),
         labelStyle: textTheme.labelMedium,

@@ -12,8 +12,8 @@ class FirestoreUserProfileRepository implements UserProfileRepository {
   FirestoreUserProfileRepository({
     FirebaseFirestore? firestore,
     UserProfileMapper? mapper,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _mapper = mapper ?? UserProfileMapper();
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _mapper = mapper ?? UserProfileMapper();
 
   void _ensureConfigured() {
     if (!AppConfig.firebaseConfigured) {
@@ -28,9 +28,9 @@ class FirestoreUserProfileRepository implements UserProfileRepository {
   @override
   Stream<UserProfile?> watchProfile(String uid) {
     _ensureConfigured();
-    return _doc(uid).snapshots().map(
-          (snapshot) => _mapper.fromDocument(uid, snapshot.data()),
-        );
+    return _doc(
+      uid,
+    ).snapshots().map((snapshot) => _mapper.fromDocument(uid, snapshot.data()));
   }
 
   @override

@@ -141,11 +141,10 @@ class _OfferFlowCoordinatorStreamState
           if (value <= 0) {
             return;
           }
-          final updated = widget.profile.copyWith(
-            minProfitabilityEuro: value,
-          );
+          final updated = widget.profile.copyWith(minProfitabilityEuro: value);
           await AppScope.of(context).userProfileRepository.saveProfile(updated);
         }
+
         return OfferFlowCoordinatorView(
           user: widget.user,
           formKey: widget.formKey,
