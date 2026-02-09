@@ -83,19 +83,6 @@ class OfferFlowForm extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         children: [
-          VehiclePickerSection(
-            vehicles: vehicles,
-            selectedVehicleId: selectedVehicleId,
-            onChanged: onVehicleChanged,
-          ),
-          const SizedBox(height: 16),
-          OfferProfitabilityTargetSection(
-            minProfitabilityEuro: minProfitabilityEuro,
-            onSaved: onMinProfitabilityChanged,
-          ),
-          const SizedBox(height: 16),
-          OfferUsageCard(uid: userId),
-          const SizedBox(height: 16),
           OfferLimitImportButton(
             userId: userId,
             buttonKey: OfferFlowKeys.importScreenshotButton,
@@ -127,6 +114,19 @@ class OfferFlowForm extends StatelessWidget {
             OfferScreenshotPreview(thumbnail: controller.screenshotThumbnail!),
             const SizedBox(height: 16),
           ],
+          VehiclePickerSection(
+            vehicles: vehicles,
+            selectedVehicleId: selectedVehicleId,
+            onChanged: onVehicleChanged,
+          ),
+          const SizedBox(height: 16),
+          OfferProfitabilityTargetSection(
+            minProfitabilityEuro: minProfitabilityEuro,
+            onSaved: onMinProfitabilityChanged,
+          ),
+          const SizedBox(height: 16),
+          OfferUsageCard(uid: userId),
+          const SizedBox(height: 16),
           if (showOverview) ...[
             ProfitabilityDecisionCard(
               record: previewRecord!,
