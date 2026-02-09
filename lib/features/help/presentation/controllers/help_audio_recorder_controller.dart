@@ -98,9 +98,7 @@ class HelpAudioRecorderController {
       error: null,
     );
     try {
-      final recording = await _capture
-          .stop()
-          .timeout(const Duration(seconds: 5), onTimeout: () => null);
+      final recording = await _capture.stop();
       if (recording == null || recording.bytes.isEmpty) {
         state.value = state.value.copyWith(
           recording: null,

@@ -841,7 +841,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Microphone permission is required to record voice notes.';
 
   @override
-  String get helpAudioFailed => 'We couldn’t start recording. Try again.';
+  String get helpAudioFailed => 'We couldn’t record the voice note. Try again.';
 
   @override
   String get helpAudioTranscribingLabel => 'Transcribing voice note…';

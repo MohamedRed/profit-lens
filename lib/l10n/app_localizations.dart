@@ -1657,7 +1657,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpAudioFailed.
   ///
   /// In en, this message translates to:
-  /// **'We couldn’t start recording. Try again.'**
+  /// **'We couldn’t record the voice note. Try again.'**
   String get helpAudioFailed;
 
   /// No description provided for @helpAudioTranscribingLabel.

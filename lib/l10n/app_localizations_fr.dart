@@ -850,7 +850,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpAudioFailed =>
-      'Impossible de démarrer l’enregistrement. Réessayez.';
+      'Impossible d’enregistrer la note vocale. Réessayez.';
 
   @override
   String get helpAudioTranscribingLabel => 'Transcription de la note vocale…';

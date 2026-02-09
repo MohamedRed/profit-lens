@@ -314,7 +314,7 @@
   "helpAudioDeleteButton": "إزالة",
   "helpAudioNotSupported": "التسجيل الصوتي غير متاح على هذا الجهاز.",
   "helpAudioPermissionDenied": "يلزم إذن الميكروفون لتسجيل الملاحظة الصوتية.",
-  "helpAudioFailed": "تعذر بدء التسجيل. حاول مرة أخرى.",
+  "helpAudioFailed": "تعذر تسجيل الملاحظة الصوتية. حاول مرة أخرى.",
   "helpAudioTranscribingLabel": "جارٍ تحويل الملاحظة الصوتية إلى نص…",
   "helpAudioTranscriptionFailed": "تعذر تحويل الملاحظة الصوتية إلى نص.",
   "helpAttachmentTitle": "لقطات الشاشة",

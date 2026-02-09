@@ -834,7 +834,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'يلزم إذن الميكروفون لتسجيل الملاحظة الصوتية.';
 
   @override
-  String get helpAudioFailed => 'تعذر بدء التسجيل. حاول مرة أخرى.';
+  String get helpAudioFailed => 'تعذر تسجيل الملاحظة الصوتية. حاول مرة أخرى.';
 
   @override
   String get helpAudioTranscribingLabel =>

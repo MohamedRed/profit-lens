@@ -314,7 +314,7 @@
   "helpAudioDeleteButton": "Supprimer",
   "helpAudioNotSupported": "L’enregistrement vocal n’est pas disponible sur cet appareil.",
   "helpAudioPermissionDenied": "L’accès au micro est requis pour enregistrer une note vocale.",
-  "helpAudioFailed": "Impossible de démarrer l’enregistrement. Réessayez.",
+  "helpAudioFailed": "Impossible d’enregistrer la note vocale. Réessayez.",
   "helpAudioTranscribingLabel": "Transcription de la note vocale…",
   "helpAudioTranscriptionFailed": "Impossible de transcrire la note vocale.",
   "helpAttachmentTitle": "Captures d’écran",

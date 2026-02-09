@@ -77,31 +77,52 @@ class WebHelpAudioCapture implements HelpAudioCapture {
       return null;
     }
     final completer = Completer<HelpAudioRecording?>();
+    var completed = false;
+    Timer? timeout;
+    void completeOnce(HelpAudioRecording? recording) {
+      if (completed) return;
+      completed = true;
+      timeout?.cancel();
+      completer.complete(recording);
+    }
     if (js_util.hasProperty(recorder, 'requestData')) {
       try {
         js_util.callMethod(recorder, 'requestData', []);
       } catch (_) {}
     }
+    timeout = Timer(const Duration(seconds: 5), () {
+      _disposeStream();
+      completeOnce(null);
+    });
     js_util.callMethod(recorder, 'addEventListener', [
       'stop',
       js_util.allowInterop((_) async {
-      _stopwatch.stop();
-      final blob = html.Blob(_chunks, _mimeType);
-      final bytes = await _blobToBytes(blob);
-      final duration = _stopwatch.elapsed;
-      final filename = _buildFilename(_mimeType);
-      _disposeStream();
-      completer.complete(
-        HelpAudioRecording(
-          bytes: bytes,
-          contentType: _mimeType,
-          filename: filename,
-          duration: duration,
-        ),
-      );
+        _stopwatch.stop();
+        final blob = html.Blob(_chunks, _mimeType);
+        final bytes = await _blobToBytes(blob);
+        final duration = _stopwatch.elapsed;
+        final filename = _buildFilename(_mimeType);
+        _disposeStream();
+        if (bytes.isEmpty) {
+          completeOnce(null);
+          return;
+        }
+        completeOnce(
+          HelpAudioRecording(
+            bytes: bytes,
+            contentType: _mimeType,
+            filename: filename,
+            duration: duration,
+          ),
+        );
       }),
     ]);
-    js_util.callMethod(recorder, 'stop', []);
+    try {
+      js_util.callMethod(recorder, 'stop', []);
+    } catch (_) {
+      _disposeStream();
+      completeOnce(null);
+    }
     return completer.future;
   }
 

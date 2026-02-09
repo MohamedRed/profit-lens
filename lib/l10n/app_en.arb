@@ -314,7 +314,7 @@
   "helpAudioDeleteButton": "Remove",
   "helpAudioNotSupported": "Voice recording isn’t available on this device.",
   "helpAudioPermissionDenied": "Microphone permission is required to record voice notes.",
-  "helpAudioFailed": "We couldn’t start recording. Try again.",
+  "helpAudioFailed": "We couldn’t record the voice note. Try again.",
   "helpAudioTranscribingLabel": "Transcribing voice note…",
   "helpAudioTranscriptionFailed": "We couldn’t transcribe the voice note.",
   "helpAttachmentTitle": "Screenshots",
