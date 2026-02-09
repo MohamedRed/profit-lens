@@ -794,7 +794,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'Signalez des bugs ou des problèmes avec des captures, des notes vocales ou la saisie vocale. Un agent IA de développement les analysera et vous tiendra informé.';
+      'Signalez des bugs ou des problèmes avec des captures ou des notes vocales. Un agent IA de développement les analysera et vous tiendra informé.';
 
   @override
   String get helpFormTitle => 'Soumettre un ticket';
@@ -808,25 +808,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpDescriptionRequired =>
-      'Ajoutez une courte description, enregistrez une note vocale ou utilisez la saisie vocale.';
-
-  @override
-  String get helpVoiceInputTooltip => 'Saisie vocale';
-
-  @override
-  String get helpVoiceListeningLabel => 'Écoute…';
-
-  @override
-  String get helpVoicePermissionDenied =>
-      'L’accès au micro est requis pour la saisie vocale.';
-
-  @override
-  String get helpVoiceNotAvailable =>
-      'La saisie vocale n’est pas disponible sur cet appareil.';
-
-  @override
-  String get helpVoiceFailed =>
-      'Impossible de démarrer la saisie vocale. Réessayez.';
+      'Ajoutez une courte description ou enregistrez une note vocale.';
 
   @override
   String get helpAudioTitle => 'Note vocale';

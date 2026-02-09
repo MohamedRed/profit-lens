@@ -1561,7 +1561,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpIntroBody.
   ///
   /// In en, this message translates to:
-  /// **'Report bugs or issues with screenshots, voice notes, or voice input. A coding AI agent will triage and keep you updated.'**
+  /// **'Report bugs or issues with screenshots or voice notes. A coding AI agent will triage and keep you updated.'**
   String get helpIntroBody;
 
   /// No description provided for @helpFormTitle.
@@ -1585,38 +1585,8 @@ abstract class AppLocalizations {
   /// No description provided for @helpDescriptionRequired.
   ///
   /// In en, this message translates to:
-  /// **'Add a short description, record a voice note, or use voice input.'**
+  /// **'Add a short description or record a voice note.'**
   String get helpDescriptionRequired;
-
-  /// No description provided for @helpVoiceInputTooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Voice input'**
-  String get helpVoiceInputTooltip;
-
-  /// No description provided for @helpVoiceListeningLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Listening…'**
-  String get helpVoiceListeningLabel;
-
-  /// No description provided for @helpVoicePermissionDenied.
-  ///
-  /// In en, this message translates to:
-  /// **'Microphone permission is required for voice input.'**
-  String get helpVoicePermissionDenied;
-
-  /// No description provided for @helpVoiceNotAvailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Voice input isn’t available on this device.'**
-  String get helpVoiceNotAvailable;
-
-  /// No description provided for @helpVoiceFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'We couldn’t start voice input. Try again.'**
-  String get helpVoiceFailed;
 
   /// No description provided for @helpAudioTitle.
   ///

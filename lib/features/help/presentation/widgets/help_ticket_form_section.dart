@@ -12,8 +12,6 @@ class HelpTicketFormSection extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final HelpTicketFormController controller;
   final List<HelpLocalAttachment> screenshots;
-  final bool isListening;
-  final bool showVoiceInput;
   final bool isAudioSupported;
   final bool isAudioRecording;
   final bool hasAudioRecording;
@@ -22,7 +20,6 @@ class HelpTicketFormSection extends StatelessWidget {
   final VoidCallback onAddFromCamera;
   final VoidCallback onAddFromGallery;
   final ValueChanged<String> onRemoveScreenshot;
-  final VoidCallback onToggleVoice;
   final VoidCallback onToggleAudio;
   final VoidCallback onClearAudio;
   final VoidCallback onSubmit;
@@ -32,8 +29,6 @@ class HelpTicketFormSection extends StatelessWidget {
     required this.formKey,
     required this.controller,
     required this.screenshots,
-    required this.isListening,
-    required this.showVoiceInput,
     required this.isAudioSupported,
     required this.isAudioRecording,
     required this.hasAudioRecording,
@@ -42,7 +37,6 @@ class HelpTicketFormSection extends StatelessWidget {
     required this.onAddFromCamera,
     required this.onAddFromGallery,
     required this.onRemoveScreenshot,
-    required this.onToggleVoice,
     required this.onToggleAudio,
     required this.onClearAudio,
     required this.onSubmit,
@@ -65,20 +59,20 @@ class HelpTicketFormSection extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: l10n.helpDescriptionLabel,
                   hintText: l10n.helpDescriptionHint,
-                  suffixIcon: showVoiceInput
-                      ? IconButton(
-                          onPressed: isSubmitting ? null : onToggleVoice,
-                          icon: Icon(
-                            isListening ? Icons.mic : Icons.mic_none,
-                            color: isListening
-                                ? ShadcnColors.purple
-                                : ShadcnColors.textSecondary,
-                          ),
-                          tooltip: isListening
-                              ? l10n.helpVoiceListeningLabel
-                              : l10n.helpVoiceInputTooltip,
-                        )
-                      : null,
+                  suffixIcon: IconButton(
+                    onPressed: isSubmitting || !isAudioSupported
+                        ? null
+                        : onToggleAudio,
+                    icon: Icon(
+                      isAudioRecording ? Icons.stop : Icons.mic_none,
+                      color: isAudioRecording
+                          ? ShadcnColors.purple
+                          : ShadcnColors.textSecondary,
+                    ),
+                    tooltip: isAudioRecording
+                        ? l10n.helpAudioStopButton
+                        : l10n.helpAudioRecordButton,
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -90,31 +84,66 @@ class HelpTicketFormSection extends StatelessWidget {
                   return null;
                 },
               ),
-              if (isListening) ...[
-                const SizedBox(height: ShadcnSpacing.sm),
-                Row(
-                  children: [
-                    const Icon(Icons.mic, size: 16, color: ShadcnColors.pink),
-                    const SizedBox(width: ShadcnSpacing.sm),
-                    Text(
-                      l10n.helpVoiceListeningLabel,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: ShadcnColors.textSecondary,
-                          ),
-                    ),
-                  ],
+              const SizedBox(height: ShadcnSpacing.sm),
+              if (!isAudioSupported)
+                Text(
+                  l10n.helpAudioNotSupported,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: ShadcnColors.textSecondary,
+                      ),
+                )
+              else ...[
+                Text(
+                  l10n.helpAudioSubtitle,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: ShadcnColors.textSecondary,
+                      ),
                 ),
-              ],
-              if (!showVoiceInput) ...[
-                const SizedBox(height: ShadcnSpacing.lg),
-                _InlineAudioControls(
-                  isSupported: isAudioSupported,
-                  isRecording: isAudioRecording,
-                  hasRecording: hasAudioRecording,
-                  recordedDuration: audioDuration,
-                  onToggleRecording: isSubmitting ? null : onToggleAudio,
-                  onClearRecording: isSubmitting ? null : onClearAudio,
-                ),
+                if (isAudioRecording) ...[
+                  const SizedBox(height: ShadcnSpacing.sm),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.mic,
+                        size: 16,
+                        color: ShadcnColors.pink,
+                      ),
+                      const SizedBox(width: ShadcnSpacing.sm),
+                      Text(
+                        l10n.helpAudioRecordingLabel,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: ShadcnColors.textSecondary,
+                            ),
+                      ),
+                    ],
+                  ),
+                ],
+                if (!isAudioRecording && hasAudioRecording) ...[
+                  const SizedBox(height: ShadcnSpacing.sm),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.check_circle,
+                        size: 16,
+                        color: ShadcnColors.teal,
+                      ),
+                      const SizedBox(width: ShadcnSpacing.sm),
+                      Expanded(
+                        child: Text(
+                          _formatReadyLabel(l10n, audioDuration),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: ShadcnColors.textSecondary,
+                                  ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: isSubmitting ? null : onClearAudio,
+                        child: Text(l10n.helpAudioDeleteButton),
+                      ),
+                    ],
+                  ),
+                ],
               ],
               const SizedBox(height: ShadcnSpacing.lg),
               HelpAttachmentSection(
@@ -136,99 +165,6 @@ class HelpTicketFormSection extends StatelessWidget {
             ],
           ),
         ),
-      ],
-    );
-  }
-}
-
-class _InlineAudioControls extends StatelessWidget {
-  final bool isSupported;
-  final bool isRecording;
-  final bool hasRecording;
-  final Duration? recordedDuration;
-  final VoidCallback? onToggleRecording;
-  final VoidCallback? onClearRecording;
-
-  const _InlineAudioControls({
-    required this.isSupported,
-    required this.isRecording,
-    required this.hasRecording,
-    required this.recordedDuration,
-    required this.onToggleRecording,
-    required this.onClearRecording,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    if (!isSupported) {
-      return Text(
-        l10n.helpAudioNotSupported,
-        style: Theme.of(
-          context,
-        ).textTheme.bodySmall?.copyWith(color: ShadcnColors.textSecondary),
-      );
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.helpAudioSubtitle,
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: ShadcnColors.textSecondary),
-        ),
-        const SizedBox(height: ShadcnSpacing.sm),
-        Row(
-          children: [
-            OutlinedButton.icon(
-              onPressed: onToggleRecording,
-              icon: Icon(isRecording ? Icons.stop : Icons.mic_none),
-              label: Text(
-                isRecording
-                    ? l10n.helpAudioStopButton
-                    : l10n.helpAudioRecordButton,
-              ),
-            ),
-            if (hasRecording) ...[
-              const SizedBox(width: ShadcnSpacing.md),
-              TextButton(
-                onPressed: onClearRecording,
-                child: Text(l10n.helpAudioDeleteButton),
-              ),
-            ],
-          ],
-        ),
-        if (isRecording) ...[
-          const SizedBox(height: ShadcnSpacing.sm),
-          Row(
-            children: [
-              const Icon(Icons.mic, size: 16, color: ShadcnColors.pink),
-              const SizedBox(width: ShadcnSpacing.sm),
-              Text(
-                l10n.helpAudioRecordingLabel,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: ShadcnColors.textSecondary,
-                    ),
-              ),
-            ],
-          ),
-        ],
-        if (!isRecording && hasRecording) ...[
-          const SizedBox(height: ShadcnSpacing.sm),
-          Row(
-            children: [
-              const Icon(Icons.check_circle, size: 16, color: ShadcnColors.teal),
-              const SizedBox(width: ShadcnSpacing.sm),
-              Text(
-                _formatReadyLabel(l10n, recordedDuration),
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: ShadcnColors.textSecondary,
-                    ),
-              ),
-            ],
-          ),
-        ],
       ],
     );
   }

@@ -780,7 +780,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'أبلغ عن الأخطاء أو المشكلات مع لقطات الشاشة أو الملاحظات الصوتية أو الإملاء الصوتي. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.';
+      'أبلغ عن الأخطاء أو المشكلات مع لقطات الشاشة أو الملاحظات الصوتية. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.';
 
   @override
   String get helpFormTitle => 'إرسال تذكرة';
@@ -794,22 +794,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpDescriptionRequired =>
-      'أضف وصفًا مختصرًا أو سجّل ملاحظة صوتية أو استخدم الإملاء الصوتي.';
-
-  @override
-  String get helpVoiceInputTooltip => 'إملاء صوتي';
-
-  @override
-  String get helpVoiceListeningLabel => 'جارٍ الاستماع…';
-
-  @override
-  String get helpVoicePermissionDenied => 'يلزم إذن الميكروفون للإملاء الصوتي.';
-
-  @override
-  String get helpVoiceNotAvailable => 'الإملاء الصوتي غير متاح على هذا الجهاز.';
-
-  @override
-  String get helpVoiceFailed => 'تعذر بدء الإملاء الصوتي. حاول مرة أخرى.';
+      'أضف وصفًا مختصرًا أو سجّل ملاحظة صوتية.';
 
   @override
   String get helpAudioTitle => 'ملاحظة صوتية';

@@ -786,7 +786,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'Report bugs or issues with screenshots, voice notes, or voice input. A coding AI agent will triage and keep you updated.';
+      'Report bugs or issues with screenshots or voice notes. A coding AI agent will triage and keep you updated.';
 
   @override
   String get helpFormTitle => 'Submit a ticket';
@@ -800,24 +800,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpDescriptionRequired =>
-      'Add a short description, record a voice note, or use voice input.';
-
-  @override
-  String get helpVoiceInputTooltip => 'Voice input';
-
-  @override
-  String get helpVoiceListeningLabel => 'Listening…';
-
-  @override
-  String get helpVoicePermissionDenied =>
-      'Microphone permission is required for voice input.';
-
-  @override
-  String get helpVoiceNotAvailable =>
-      'Voice input isn’t available on this device.';
-
-  @override
-  String get helpVoiceFailed => 'We couldn’t start voice input. Try again.';
+      'Add a short description or record a voice note.';
 
   @override
   String get helpAudioTitle => 'Voice note';

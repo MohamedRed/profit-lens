@@ -4,7 +4,6 @@ import 'package:uuid/uuid.dart';
 
 import '../../../app/app_scope.dart';
 import '../../../core/design_system/shadcn_tokens.dart';
-import '../../../core/platform/pwa_install.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../data/help_attachment_picker_service.dart';
@@ -12,7 +11,6 @@ import '../data/help_ticket_repository.dart';
 import '../domain/help_ticket_attachment_type.dart';
 import '../domain/help_ticket_draft.dart';
 import '../presentation/controllers/help_audio_recorder_controller.dart';
-import '../presentation/controllers/help_speech_controller.dart';
 import '../presentation/controllers/help_ticket_form_controller.dart';
 import '../presentation/models/help_local_attachment.dart';
 import 'help_screen_helpers.dart';
@@ -37,7 +35,6 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
   final _formKey = GlobalKey<FormState>();
   final _uuid = const Uuid();
   late final HelpTicketFormController _formController;
-  late final HelpSpeechController _speechController;
   late final HelpAudioRecorderController _audioController;
 
   HelpTicketRepository? _ticketRepository;
@@ -50,7 +47,6 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
   void initState() {
     super.initState();
     _formController = HelpTicketFormController.empty();
-    _speechController = HelpSpeechController();
     _audioController = HelpAudioRecorderController();
   }
 
@@ -66,7 +62,6 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
   @override
   void dispose() {
     _formController.dispose();
-    _speechController.dispose();
     _audioController.dispose();
     super.dispose();
   }
@@ -74,7 +69,6 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final showVoiceInput = !isIosPwaInstalled;
 
     return Scaffold(
       appBar: AppBar(
@@ -93,32 +87,24 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
           builder: (context, constraints) {
             final isWide = constraints.maxWidth >= 900;
             final introSection = const HelpIntroSection();
-            final formSection = ValueListenableBuilder<HelpSpeechState>(
-              valueListenable: _speechController.state,
-              builder: (context, state, _) {
-                return ValueListenableBuilder<HelpAudioRecorderState>(
-                  valueListenable: _audioController.state,
-                  builder: (context, audioState, __) {
-                    return HelpTicketFormSection(
-                      formKey: _formKey,
-                      controller: _formController,
-                      screenshots: List.unmodifiable(_screenshots),
-                      isListening: state.isListening,
-                      showVoiceInput: showVoiceInput,
-                      isAudioSupported: _audioController.isSupported,
-                      isAudioRecording: audioState.isRecording,
-                      hasAudioRecording: audioState.recording != null,
-                      audioDuration: audioState.recording?.duration,
-                      isSubmitting: _isSubmitting,
-                      onAddFromCamera: _addScreenshotFromCamera,
-                      onAddFromGallery: _addScreenshotsFromGallery,
-                      onRemoveScreenshot: _removeScreenshot,
-                      onToggleVoice: _toggleVoiceInput,
-                      onToggleAudio: _toggleAudioRecording,
-                      onClearAudio: _clearAudioRecording,
-                      onSubmit: _submitTicket,
-                    );
-                  },
+            final formSection = ValueListenableBuilder<HelpAudioRecorderState>(
+              valueListenable: _audioController.state,
+              builder: (context, audioState, __) {
+                return HelpTicketFormSection(
+                  formKey: _formKey,
+                  controller: _formController,
+                  screenshots: List.unmodifiable(_screenshots),
+                  isAudioSupported: _audioController.isSupported,
+                  isAudioRecording: audioState.isRecording,
+                  hasAudioRecording: audioState.recording != null,
+                  audioDuration: audioState.recording?.duration,
+                  isSubmitting: _isSubmitting,
+                  onAddFromCamera: _addScreenshotFromCamera,
+                  onAddFromGallery: _addScreenshotsFromGallery,
+                  onRemoveScreenshot: _removeScreenshot,
+                  onToggleAudio: _toggleAudioRecording,
+                  onClearAudio: _clearAudioRecording,
+                  onSubmit: _submitTicket,
                 );
               },
             );

@@ -91,34 +91,6 @@ mixin _HelpScreenActions on State<HelpScreen> {
     _state._formKey.currentState?.validate();
   }
 
-  Future<void> _toggleVoiceInput() async {
-    if (_state._isSubmitting) return;
-    final l10n = AppLocalizations.of(context)!;
-    final localeId = Localizations.localeOf(context).toLanguageTag();
-    final error = await _state._speechController.toggle(
-      controller: _state._formController.descriptionController,
-      localeId: localeId,
-    );
-    if (error == null) {
-      if (_state._speechController.state.value.isListening) {
-        _state._formKey.currentState?.validate();
-      }
-      return;
-    }
-    if (!mounted) return;
-    switch (error) {
-      case HelpSpeechError.permissionDenied:
-        _showSnackBar(l10n.helpVoicePermissionDenied);
-        break;
-      case HelpSpeechError.notAvailable:
-        _showSnackBar(l10n.helpVoiceNotAvailable);
-        break;
-      case HelpSpeechError.unknown:
-        _showSnackBar(l10n.helpVoiceFailed);
-        break;
-    }
-  }
-
   Future<void> _submitTicket() async {
     if (_state._isSubmitting) return;
     final l10n = AppLocalizations.of(context)!;
@@ -126,7 +98,6 @@ mixin _HelpScreenActions on State<HelpScreen> {
     if (formState == null) return;
     final services = AppScope.of(context);
     final localeTag = Localizations.localeOf(context).toString();
-    await _state._speechController.stop();
     await _state._audioController.stop();
     if (!mounted) return;
     if (!formState.validate()) {
@@ -175,7 +146,6 @@ mixin _HelpScreenActions on State<HelpScreen> {
       if (!mounted) return;
       _state._formController.reset();
       _state._screenshots.clear();
-      await _state._speechController.stop();
       _state._audioController.clear();
       _showSnackBar(l10n.helpTicketSubmitted);
       setState(() {});
