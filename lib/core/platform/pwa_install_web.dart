@@ -162,23 +162,24 @@ Future<bool> _showAppleInstallDialog() async {
 }
 
 bool get _isStandalone {
-  final isBrowserMode = html.window
-      .matchMedia('(display-mode: browser)')
-      .matches;
-  if (isBrowserMode) {
-    return false;
-  }
-
   if (_isIosDevice) {
     try {
       final standalone = (html.window.navigator as dynamic).standalone;
-      return standalone == true;
+      if (standalone == true) {
+        return true;
+      }
     } catch (_) {
-      return false;
+      // Continue with display-mode checks below.
     }
   }
 
   if (html.window.matchMedia('(display-mode: standalone)').matches) {
+    return true;
+  }
+  if (html.window.matchMedia('(display-mode: fullscreen)').matches) {
+    return true;
+  }
+  if (html.window.matchMedia('(display-mode: minimal-ui)').matches) {
     return true;
   }
 
