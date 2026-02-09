@@ -34,6 +34,11 @@ class SettingsScreen extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
+                Text(
+                  l10n.settingsTabLabel,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                const SizedBox(height: 16),
                 _SettingsSectionContainer(
                   child: SettingsProfileCard(user: user, profile: profile),
                 ),
