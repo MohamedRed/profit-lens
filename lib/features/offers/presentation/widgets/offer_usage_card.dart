@@ -154,14 +154,49 @@ class _ManagePlanButton extends StatefulWidget {
   State<_ManagePlanButton> createState() => _ManagePlanButtonState();
 }
 
-class _ManagePlanButtonState extends State<_ManagePlanButton> {
+class _ManagePlanButtonState extends State<_ManagePlanButton>
+    with WidgetsBindingObserver {
   bool _openingPortal = false;
+  bool _leftApp = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!_openingPortal) {
+      return;
+    }
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      _leftApp = true;
+      return;
+    }
+    if (state == AppLifecycleState.resumed && _leftApp) {
+      setState(() {
+        _openingPortal = false;
+        _leftApp = false;
+      });
+    }
+  }
 
   Future<void> _handlePress() async {
     if (_openingPortal) {
       return;
     }
-    setState(() => _openingPortal = true);
+    setState(() {
+      _openingPortal = true;
+      _leftApp = false;
+    });
     final l10n = AppLocalizations.of(context)!;
     try {
       await widget.onManage();
@@ -172,11 +207,11 @@ class _ManagePlanButtonState extends State<_ManagePlanButton> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.sourceOpenError)));
+      setState(() {
+        _openingPortal = false;
+        _leftApp = false;
+      });
     }
-    if (!mounted) {
-      return;
-    }
-    setState(() => _openingPortal = false);
   }
 
   @override

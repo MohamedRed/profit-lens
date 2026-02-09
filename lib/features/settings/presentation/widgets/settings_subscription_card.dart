@@ -41,8 +41,40 @@ class _SubscriptionTile extends StatefulWidget {
   State<_SubscriptionTile> createState() => _SubscriptionTileState();
 }
 
-class _SubscriptionTileState extends State<_SubscriptionTile> {
+class _SubscriptionTileState extends State<_SubscriptionTile>
+    with WidgetsBindingObserver {
   bool _openingPortal = false;
+  bool _leftApp = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!_openingPortal) {
+      return;
+    }
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      _leftApp = true;
+      return;
+    }
+    if (state == AppLifecycleState.resumed && _leftApp) {
+      setState(() {
+        _openingPortal = false;
+        _leftApp = false;
+      });
+    }
+  }
 
   Future<void> _handleAction() async {
     if (_openingPortal) {
@@ -57,7 +89,10 @@ class _SubscriptionTileState extends State<_SubscriptionTile> {
       );
       return;
     }
-    setState(() => _openingPortal = true);
+    setState(() {
+      _openingPortal = true;
+      _leftApp = false;
+    });
     final l10n = AppLocalizations.of(context)!;
     try {
       await AppScope.of(context).billingService.openCustomerPortal();
@@ -68,11 +103,11 @@ class _SubscriptionTileState extends State<_SubscriptionTile> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.sourceOpenError)));
+      setState(() {
+        _openingPortal = false;
+        _leftApp = false;
+      });
     }
-    if (!mounted) {
-      return;
-    }
-    setState(() => _openingPortal = false);
   }
 
   @override
