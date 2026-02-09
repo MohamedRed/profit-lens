@@ -4,7 +4,6 @@ import '../../../../core/design_system/shadcn_tokens.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/help_ticket_attachment.dart';
 import '../../domain/help_ticket_attachment_type.dart';
-import 'help_audio_player_tile.dart';
 
 class HelpTicketAttachmentGallery extends StatelessWidget {
   final List<HelpTicketAttachment> attachments;
@@ -17,11 +16,7 @@ class HelpTicketAttachmentGallery extends StatelessWidget {
     final images = attachments
         .where((item) => item.type == HelpTicketAttachmentType.image)
         .toList();
-    final audios = attachments
-        .where((item) => item.type == HelpTicketAttachmentType.audio)
-        .toList();
-
-    if (images.isEmpty && audios.isEmpty) {
+    if (images.isEmpty) {
       return Text(
         l10n.helpNoAttachmentsMessage,
         style: Theme.of(
@@ -40,20 +35,6 @@ class HelpTicketAttachmentGallery extends StatelessWidget {
           ),
           const SizedBox(height: ShadcnSpacing.md),
           _ImageGrid(images: images),
-          if (audios.isNotEmpty) const SizedBox(height: ShadcnSpacing.lg),
-        ],
-        if (audios.isNotEmpty) ...[
-          Text(
-            l10n.helpAttachmentsAudioTitle,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          const SizedBox(height: ShadcnSpacing.md),
-          ...audios.map(
-            (audio) => Padding(
-              padding: const EdgeInsets.only(bottom: ShadcnSpacing.md),
-              child: HelpAudioPlayerTile(attachment: audio),
-            ),
-          ),
         ],
       ],
     );

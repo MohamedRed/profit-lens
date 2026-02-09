@@ -18,7 +18,6 @@ class HelpTicketMapper {
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
       imageCount: (data['imageCount'] as num?)?.toInt() ?? 0,
-      audioCount: (data['audioCount'] as num?)?.toInt() ?? 0,
       aiSummary: data['aiSummary'] as String?,
       aiNextSteps: data['aiNextSteps'] as String?,
       aiConfidence: (data['aiConfidence'] as num?)?.toDouble(),

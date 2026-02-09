@@ -777,7 +777,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'Report bugs or issues with screenshots or an audio note. A coding AI agent will triage and keep you updated.';
+      'Report bugs or issues with screenshots and voice input. A coding AI agent will triage and keep you updated.';
 
   @override
   String get helpFormTitle => 'Submit a ticket';
@@ -791,7 +791,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpDescriptionRequired =>
-      'Add a short description or record an audio note.';
+      'Add a short description or use voice input.';
+
+  @override
+  String get helpVoiceInputTooltip => 'Voice input';
+
+  @override
+  String get helpVoiceListeningLabel => 'Listening…';
+
+  @override
+  String get helpVoicePermissionDenied =>
+      'Microphone permission is required for voice input.';
+
+  @override
+  String get helpVoiceNotAvailable =>
+      'Voice input isn’t available on this device.';
+
+  @override
+  String get helpVoiceFailed => 'We couldn’t start voice input. Try again.';
 
   @override
   String get helpAttachmentTitle => 'Screenshots';
@@ -818,38 +835,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get removeAttachmentTooltip => 'Remove attachment';
 
   @override
-  String get helpAudioTitle => 'Audio note';
-
-  @override
-  String get helpAudioSubtitle =>
-      'Record a quick voice note if you’re on the go.';
-
-  @override
-  String get helpAudioRecordButton => 'Record';
-
-  @override
-  String get helpAudioStopButton => 'Stop';
-
-  @override
-  String get helpAudioRecordingLabel => 'Recording';
-
-  @override
-  String get helpAudioRecordedLabel => 'Audio note';
-
-  @override
-  String get helpAudioRecordAgainButton => 'Record again';
-
-  @override
-  String get helpAudioRemoveTooltip => 'Remove audio note';
-
-  @override
-  String get helpAudioPermissionDenied =>
-      'Microphone permission is required to record.';
-
-  @override
-  String get helpAudioFailed => 'We couldn\'t save that audio note. Try again.';
-
-  @override
   String get helpSubmittingLabel => 'Submitting...';
 
   @override
@@ -861,6 +846,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get helpSubmissionFailed =>
       'Unable to submit ticket. Please try again.';
+
+  @override
+  String get helpViewTicketsButton => 'View tickets';
+
+  @override
+  String get helpTicketsTitle => 'Tickets';
 
   @override
   String get helpRecentTicketsTitle => 'Recent tickets';
@@ -908,16 +899,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpAttachmentsScreenshotsTitle => 'Screenshots';
 
   @override
-  String get helpAttachmentsAudioTitle => 'Audio notes';
-
-  @override
   String get helpNoAttachmentsMessage => 'No attachments uploaded.';
-
-  @override
-  String get helpAudioLoadingLabel => 'Loading audio…';
-
-  @override
-  String get helpAudioPlaybackError => 'Unable to play this audio clip.';
 
   @override
   String get helpAiTriageTitle => 'AI triage';

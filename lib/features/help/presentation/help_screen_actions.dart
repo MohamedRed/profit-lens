@@ -49,7 +49,6 @@ mixin _HelpScreenActions on State<HelpScreen> {
       contentType: resolveHelpImageContentType(image.name),
       bytes: bytes,
       sizeBytes: bytes.length,
-      duration: null,
     );
     setState(() {
       _state._screenshots.add(attachment);
@@ -62,30 +61,32 @@ mixin _HelpScreenActions on State<HelpScreen> {
     });
   }
 
-  Future<void> _startRecording() async {
+  Future<void> _toggleVoiceInput() async {
     if (_state._isSubmitting) return;
     final l10n = AppLocalizations.of(context)!;
-    final started = await _state._audioController.start();
-    if (!started && mounted) {
-      _showSnackBar(l10n.helpAudioPermissionDenied);
-    }
-  }
-
-  Future<void> _stopRecording() async {
-    if (_state._isSubmitting) return;
-    final l10n = AppLocalizations.of(context)!;
-    final attachment = await _state._audioController.stop();
-    if (!mounted) return;
-    if (attachment == null) {
-      _showSnackBar(l10n.helpAudioFailed);
+    final localeId = Localizations.localeOf(context).toLanguageTag();
+    final error = await _state._speechController.toggle(
+      controller: _state._formController.descriptionController,
+      localeId: localeId,
+    );
+    if (error == null) {
+      if (_state._speechController.state.value.isListening) {
+        _state._formKey.currentState?.validate();
+      }
       return;
     }
-    _state._formKey.currentState?.validate();
-  }
-
-  void _clearRecording() {
-    _state._audioController.clearAttachment();
-    _state._formKey.currentState?.validate();
+    if (!mounted) return;
+    switch (error) {
+      case HelpSpeechError.permissionDenied:
+        _showSnackBar(l10n.helpVoicePermissionDenied);
+        break;
+      case HelpSpeechError.notAvailable:
+        _showSnackBar(l10n.helpVoiceNotAvailable);
+        break;
+      case HelpSpeechError.unknown:
+        _showSnackBar(l10n.helpVoiceFailed);
+        break;
+    }
   }
 
   Future<void> _submitTicket() async {
@@ -93,6 +94,10 @@ mixin _HelpScreenActions on State<HelpScreen> {
     final l10n = AppLocalizations.of(context)!;
     final formState = _state._formKey.currentState;
     if (formState == null) return;
+    final services = AppScope.of(context);
+    final localeTag = Localizations.localeOf(context).toString();
+    await _state._speechController.stop();
+    if (!mounted) return;
     if (!formState.validate()) {
       return;
     }
@@ -100,8 +105,7 @@ mixin _HelpScreenActions on State<HelpScreen> {
 
     final description = _state._formController.descriptionController.text
         .trim();
-    final audioAttachment = _state._audioController.snapshot.value.attachment;
-    if (description.isEmpty && audioAttachment == null) {
+    if (description.isEmpty) {
       _showSnackBar(l10n.helpDescriptionRequired);
       return;
     }
@@ -109,8 +113,6 @@ mixin _HelpScreenActions on State<HelpScreen> {
     setState(() => _state._isSubmitting = true);
 
     try {
-      final services = AppScope.of(context);
-      final localeTag = Localizations.localeOf(context).toString();
       final platform = resolveHelpPlatform();
       final deviceId = await services.deviceIdService.getDeviceId();
       if (!mounted) return;
@@ -122,7 +124,6 @@ mixin _HelpScreenActions on State<HelpScreen> {
       );
       final attachments = <HelpTicketAttachmentDraft>[
         for (final screenshot in _state._screenshots) screenshot.toDraft(),
-        if (audioAttachment != null) audioAttachment.toDraft(),
       ];
       await _state._ticketRepository!.createTicket(
         uid: widget.user.uid,
@@ -132,7 +133,7 @@ mixin _HelpScreenActions on State<HelpScreen> {
       if (!mounted) return;
       _state._formController.reset();
       _state._screenshots.clear();
-      _state._audioController.clearAttachment();
+      await _state._speechController.stop();
       _showSnackBar(l10n.helpTicketSubmitted);
       setState(() {});
     } catch (_) {
@@ -149,6 +150,14 @@ mixin _HelpScreenActions on State<HelpScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _openTickets() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => HelpTicketsScreen(user: widget.user),
+      ),
+    );
   }
 
 }

@@ -8,7 +8,6 @@ class HelpTicketAttachment {
   final String contentType;
   final int sizeBytes;
   final DateTime? uploadedAt;
-  final int? durationSeconds;
 
   const HelpTicketAttachment({
     required this.id,
@@ -18,6 +17,5 @@ class HelpTicketAttachment {
     required this.contentType,
     required this.sizeBytes,
     required this.uploadedAt,
-    required this.durationSeconds,
   });
 }

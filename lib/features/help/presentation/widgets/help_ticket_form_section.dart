@@ -1,28 +1,23 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/design_system/shadcn_tokens.dart';
 import '../../../../core/widgets/primary_button.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../controllers/help_audio_recorder_controller.dart';
 import '../controllers/help_ticket_form_controller.dart';
 import '../models/help_local_attachment.dart';
 import 'help_attachment_section.dart';
-import 'help_audio_section.dart';
 
 class HelpTicketFormSection extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final HelpTicketFormController controller;
   final List<HelpLocalAttachment> screenshots;
-  final ValueListenable<HelpAudioRecorderSnapshot> audioSnapshot;
+  final bool isListening;
   final bool isSubmitting;
   final VoidCallback onAddFromCamera;
   final VoidCallback onAddFromGallery;
   final ValueChanged<String> onRemoveScreenshot;
-  final VoidCallback onStartRecording;
-  final VoidCallback onStopRecording;
-  final VoidCallback onClearRecording;
+  final VoidCallback onToggleVoice;
   final VoidCallback onSubmit;
 
   const HelpTicketFormSection({
@@ -30,14 +25,12 @@ class HelpTicketFormSection extends StatelessWidget {
     required this.formKey,
     required this.controller,
     required this.screenshots,
-    required this.audioSnapshot,
+    required this.isListening,
     required this.isSubmitting,
     required this.onAddFromCamera,
     required this.onAddFromGallery,
     required this.onRemoveScreenshot,
-    required this.onStartRecording,
-    required this.onStopRecording,
-    required this.onClearRecording,
+    required this.onToggleVoice,
     required this.onSubmit,
   });
 
@@ -58,17 +51,40 @@ class HelpTicketFormSection extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: l10n.helpDescriptionLabel,
                   hintText: l10n.helpDescriptionHint,
+                  suffixIcon: IconButton(
+                    onPressed: isSubmitting ? null : onToggleVoice,
+                    icon: Icon(
+                      isListening ? Icons.mic : Icons.mic_none,
+                      color:
+                          isListening ? ShadcnColors.purple : ShadcnColors.textSecondary,
+                    ),
+                    tooltip: isListening
+                        ? l10n.helpVoiceListeningLabel
+                        : l10n.helpVoiceInputTooltip,
+                  ),
                 ),
                 validator: (value) {
-                  if (audioSnapshot.value.attachment != null) {
-                    return null;
-                  }
                   if (value == null || value.trim().isEmpty) {
                     return l10n.helpDescriptionRequired;
                   }
                   return null;
                 },
               ),
+              if (isListening) ...[
+                const SizedBox(height: ShadcnSpacing.sm),
+                Row(
+                  children: [
+                    const Icon(Icons.mic, size: 16, color: ShadcnColors.pink),
+                    const SizedBox(width: ShadcnSpacing.sm),
+                    Text(
+                      l10n.helpVoiceListeningLabel,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: ShadcnColors.textSecondary,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
               const SizedBox(height: ShadcnSpacing.lg),
               HelpAttachmentSection(
                 screenshots: screenshots,
@@ -76,14 +92,6 @@ class HelpTicketFormSection extends StatelessWidget {
                 onAddFromCamera: onAddFromCamera,
                 onAddFromGallery: onAddFromGallery,
                 onRemove: onRemoveScreenshot,
-              ),
-              const SizedBox(height: ShadcnSpacing.lg),
-              HelpAudioSection(
-                snapshot: audioSnapshot,
-                isSubmitting: isSubmitting,
-                onStartRecording: onStartRecording,
-                onStopRecording: onStopRecording,
-                onClearRecording: onClearRecording,
               ),
               const SizedBox(height: ShadcnSpacing.section),
               PrimaryButton(

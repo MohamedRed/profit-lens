@@ -85,12 +85,10 @@ export const triageHelpTicket = onDocumentCreated(
       helpTriagePrompt,
       "",
       "Ticket:",
-      `Title: ${data.title ?? ""}`,
       `Description: ${data.description ?? ""}`,
       `Platform: ${data.platform ?? ""}`,
       `Locale: ${data.locale ?? ""}`,
       `ImageCount: ${data.imageCount ?? 0}`,
-      `AudioCount: ${data.audioCount ?? 0}`,
     ].join("\n");
 
     const model = geminiModel.value();

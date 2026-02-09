@@ -785,7 +785,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'Signalez des bugs ou des problèmes avec des captures d’écran ou une note audio. Un agent IA de développement les analysera et vous tiendra informé.';
+      'Signalez des bugs ou des problèmes avec des captures d’écran et la saisie vocale. Un agent IA de développement les analysera et vous tiendra informé.';
 
   @override
   String get helpFormTitle => 'Soumettre un ticket';
@@ -799,7 +799,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpDescriptionRequired =>
-      'Ajoutez une courte description ou enregistrez une note audio.';
+      'Ajoutez une courte description ou utilisez la saisie vocale.';
+
+  @override
+  String get helpVoiceInputTooltip => 'Saisie vocale';
+
+  @override
+  String get helpVoiceListeningLabel => 'Écoute…';
+
+  @override
+  String get helpVoicePermissionDenied =>
+      'L’accès au micro est requis pour la saisie vocale.';
+
+  @override
+  String get helpVoiceNotAvailable =>
+      'La saisie vocale n’est pas disponible sur cet appareil.';
+
+  @override
+  String get helpVoiceFailed =>
+      'Impossible de démarrer la saisie vocale. Réessayez.';
 
   @override
   String get helpAttachmentTitle => 'Captures d’écran';
@@ -826,39 +844,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get removeAttachmentTooltip => 'Supprimer la pièce jointe';
 
   @override
-  String get helpAudioTitle => 'Note audio';
-
-  @override
-  String get helpAudioSubtitle =>
-      'Enregistrez une note vocale quand vous êtes en déplacement.';
-
-  @override
-  String get helpAudioRecordButton => 'Enregistrer';
-
-  @override
-  String get helpAudioStopButton => 'Arrêter';
-
-  @override
-  String get helpAudioRecordingLabel => 'Enregistrement';
-
-  @override
-  String get helpAudioRecordedLabel => 'Note audio';
-
-  @override
-  String get helpAudioRecordAgainButton => 'Réenregistrer';
-
-  @override
-  String get helpAudioRemoveTooltip => 'Supprimer la note audio';
-
-  @override
-  String get helpAudioPermissionDenied =>
-      'L’accès au micro est requis pour enregistrer.';
-
-  @override
-  String get helpAudioFailed =>
-      'Impossible d’enregistrer la note audio. Réessayez.';
-
-  @override
   String get helpSubmittingLabel => 'Envoi…';
 
   @override
@@ -871,6 +856,12 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get helpSubmissionFailed =>
       'Impossible d’envoyer le ticket. Réessayez.';
+
+  @override
+  String get helpViewTicketsButton => 'Voir les tickets';
+
+  @override
+  String get helpTicketsTitle => 'Tickets';
 
   @override
   String get helpRecentTicketsTitle => 'Tickets récents';
@@ -918,16 +909,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpAttachmentsScreenshotsTitle => 'Captures d’écran';
 
   @override
-  String get helpAttachmentsAudioTitle => 'Notes audio';
-
-  @override
   String get helpNoAttachmentsMessage => 'Aucune pièce jointe.';
-
-  @override
-  String get helpAudioLoadingLabel => 'Chargement de l’audio…';
-
-  @override
-  String get helpAudioPlaybackError => 'Impossible de lire cet enregistrement.';
 
   @override
   String get helpAiTriageTitle => 'Analyse IA';

@@ -10,13 +10,13 @@ import '../data/help_attachment_picker_service.dart';
 import '../data/help_ticket_repository.dart';
 import '../domain/help_ticket_attachment_type.dart';
 import '../domain/help_ticket_draft.dart';
-import '../presentation/controllers/help_audio_recorder_controller.dart';
+import '../presentation/controllers/help_speech_controller.dart';
 import '../presentation/controllers/help_ticket_form_controller.dart';
 import '../presentation/models/help_local_attachment.dart';
 import 'help_screen_helpers.dart';
+import 'help_tickets_screen.dart';
 import 'widgets/help_intro_section.dart';
 import 'widgets/help_ticket_form_section.dart';
-import 'widgets/help_ticket_list_section.dart';
 
 part 'help_screen_actions.dart';
 
@@ -35,7 +35,7 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
   final _formKey = GlobalKey<FormState>();
   final _uuid = const Uuid();
   late final HelpTicketFormController _formController;
-  late final HelpAudioRecorderController _audioController;
+  late final HelpSpeechController _speechController;
 
   HelpTicketRepository? _ticketRepository;
   HelpAttachmentPickerService? _attachmentPicker;
@@ -47,7 +47,7 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
   void initState() {
     super.initState();
     _formController = HelpTicketFormController.empty();
-    _audioController = HelpAudioRecorderController();
+    _speechController = HelpSpeechController();
   }
 
   @override
@@ -62,38 +62,47 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
   @override
   void dispose() {
     _formController.dispose();
-    _audioController.dispose();
+    _speechController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final ticketRepository = _ticketRepository;
-    final ticketStream = ticketRepository?.watchTickets(widget.user.uid);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(l10n.helpTabLabel),
+        actions: [
+          IconButton(
+            onPressed: _openTickets,
+            icon: const Icon(Icons.list_alt),
+            tooltip: l10n.helpViewTicketsButton,
+          ),
+        ],
+      ),
       backgroundColor: ShadcnColors.background,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
             final isWide = constraints.maxWidth >= 900;
             final introSection = const HelpIntroSection();
-            final formSection = HelpTicketFormSection(
-              formKey: _formKey,
-              controller: _formController,
-              screenshots: List.unmodifiable(_screenshots),
-              audioSnapshot: _audioController.snapshot,
-              isSubmitting: _isSubmitting,
-              onAddFromCamera: _addScreenshotFromCamera,
-              onAddFromGallery: _addScreenshotsFromGallery,
-              onRemoveScreenshot: _removeScreenshot,
-              onStartRecording: _startRecording,
-              onStopRecording: _stopRecording,
-              onClearRecording: _clearRecording,
-              onSubmit: _submitTicket,
-            );
-            final listSection = HelpTicketListSection(
-              ticketStream: ticketStream ?? const Stream.empty(),
+            final formSection = ValueListenableBuilder<HelpSpeechState>(
+              valueListenable: _speechController.state,
+              builder: (context, state, _) {
+                return HelpTicketFormSection(
+                  formKey: _formKey,
+                  controller: _formController,
+                  screenshots: List.unmodifiable(_screenshots),
+                  isListening: state.isListening,
+                  isSubmitting: _isSubmitting,
+                  onAddFromCamera: _addScreenshotFromCamera,
+                  onAddFromGallery: _addScreenshotsFromGallery,
+                  onRemoveScreenshot: _removeScreenshot,
+                  onToggleVoice: _toggleVoiceInput,
+                  onSubmit: _submitTicket,
+                );
+              },
             );
 
             if (!isWide) {
@@ -103,8 +112,6 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
                   introSection,
                   const SizedBox(height: ShadcnSpacing.lg),
                   formSection,
-                  const SizedBox(height: ShadcnSpacing.lg),
-                  listSection,
                 ],
               );
             }
@@ -124,8 +131,6 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
                       ],
                     ),
                   ),
-                  const SizedBox(width: ShadcnSpacing.section),
-                  Expanded(child: listSection),
                 ],
               ),
             );

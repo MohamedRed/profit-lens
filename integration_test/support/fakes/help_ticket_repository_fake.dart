@@ -51,19 +51,14 @@ class InMemoryHelpTicketRepository implements HelpTicketRepository {
     final imageCount = attachments
         .where((item) => item.type == HelpTicketAttachmentType.image)
         .length;
-    final audioCount = attachments
-        .where((item) => item.type == HelpTicketAttachmentType.audio)
-        .length;
     final ticket = HelpTicket(
       id: _uuid.v4(),
-      title: draft.title,
       description: draft.description,
       status: HelpTicketStatus.open,
       statusMessage: null,
       createdAt: now,
       updatedAt: now,
       imageCount: imageCount,
-      audioCount: audioCount,
       aiSummary: null,
       aiNextSteps: null,
       aiConfidence: null,

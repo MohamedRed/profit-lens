@@ -24,7 +24,6 @@ class HelpTicketAttachmentMapper {
       contentType: contentType,
       sizeBytes: sizeBytes,
       uploadedAt: (data['uploadedAt'] as Timestamp?)?.toDate(),
-      durationSeconds: (data['durationSeconds'] as num?)?.toInt(),
     );
   }
 }

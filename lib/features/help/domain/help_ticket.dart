@@ -8,7 +8,6 @@ class HelpTicket {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final int imageCount;
-  final int audioCount;
   final String? aiSummary;
   final String? aiNextSteps;
   final double? aiConfidence;
@@ -22,7 +21,6 @@ class HelpTicket {
     required this.createdAt,
     required this.updatedAt,
     required this.imageCount,
-    required this.audioCount,
     required this.aiSummary,
     required this.aiNextSteps,
     required this.aiConfidence,

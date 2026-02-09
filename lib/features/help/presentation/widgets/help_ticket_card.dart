@@ -51,12 +51,6 @@ class HelpTicketCard extends StatelessWidget {
               Text('${ticket.imageCount}'),
               const SizedBox(width: ShadcnSpacing.md),
             ],
-            if (ticket.audioCount > 0) ...[
-              const Icon(Icons.mic_none, size: 16),
-              const SizedBox(width: 4),
-              Text('${ticket.audioCount}'),
-              const SizedBox(width: ShadcnSpacing.md),
-            ],
             if (timestamp != null)
               Text(
                 timestamp,

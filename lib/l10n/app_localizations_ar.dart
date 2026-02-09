@@ -771,7 +771,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'أبلغ عن الأخطاء أو المشكلات مع لقطات شاشة أو ملاحظة صوتية. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.';
+      'أبلغ عن الأخطاء أو المشكلات مع لقطات الشاشة والإملاء الصوتي. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.';
 
   @override
   String get helpFormTitle => 'إرسال تذكرة';
@@ -784,7 +784,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpDescriptionRequired =>
-      'أضف وصفًا مختصرًا أو سجّل ملاحظة صوتية.';
+      'أضف وصفًا مختصرًا أو استخدم الإملاء الصوتي.';
+
+  @override
+  String get helpVoiceInputTooltip => 'إملاء صوتي';
+
+  @override
+  String get helpVoiceListeningLabel => 'جارٍ الاستماع…';
+
+  @override
+  String get helpVoicePermissionDenied => 'يلزم إذن الميكروفون للإملاء الصوتي.';
+
+  @override
+  String get helpVoiceNotAvailable => 'الإملاء الصوتي غير متاح على هذا الجهاز.';
+
+  @override
+  String get helpVoiceFailed => 'تعذر بدء الإملاء الصوتي. حاول مرة أخرى.';
 
   @override
   String get helpAttachmentTitle => 'لقطات الشاشة';
@@ -810,37 +825,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get removeAttachmentTooltip => 'إزالة المرفق';
 
   @override
-  String get helpAudioTitle => 'ملاحظة صوتية';
-
-  @override
-  String get helpAudioSubtitle =>
-      'سجّل ملاحظة صوتية سريعة عندما تكون في الطريق.';
-
-  @override
-  String get helpAudioRecordButton => 'تسجيل';
-
-  @override
-  String get helpAudioStopButton => 'إيقاف';
-
-  @override
-  String get helpAudioRecordingLabel => 'جارٍ التسجيل';
-
-  @override
-  String get helpAudioRecordedLabel => 'ملاحظة صوتية';
-
-  @override
-  String get helpAudioRecordAgainButton => 'إعادة التسجيل';
-
-  @override
-  String get helpAudioRemoveTooltip => 'إزالة الملاحظة الصوتية';
-
-  @override
-  String get helpAudioPermissionDenied => 'يلزم إذن الميكروفون للتسجيل.';
-
-  @override
-  String get helpAudioFailed => 'تعذر حفظ الملاحظة الصوتية. حاول مرة أخرى.';
-
-  @override
   String get helpSubmittingLabel => 'جارٍ الإرسال...';
 
   @override
@@ -851,6 +835,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpSubmissionFailed => 'تعذر إرسال التذكرة. حاول مرة أخرى.';
+
+  @override
+  String get helpViewTicketsButton => 'عرض التذاكر';
+
+  @override
+  String get helpTicketsTitle => 'التذاكر';
 
   @override
   String get helpRecentTicketsTitle => 'أحدث التذاكر';
@@ -898,16 +888,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpAttachmentsScreenshotsTitle => 'لقطات الشاشة';
 
   @override
-  String get helpAttachmentsAudioTitle => 'الملاحظات الصوتية';
-
-  @override
   String get helpNoAttachmentsMessage => 'لا توجد مرفقات.';
-
-  @override
-  String get helpAudioLoadingLabel => 'جارٍ تحميل الصوت…';
-
-  @override
-  String get helpAudioPlaybackError => 'تعذر تشغيل هذا المقطع الصوتي.';
 
   @override
   String get helpAiTriageTitle => 'فرز الذكاء الاصطناعي';

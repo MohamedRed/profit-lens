@@ -105,9 +105,6 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
     final imageCount = uploaded
         .where((item) => item.type == HelpTicketAttachmentType.image)
         .length;
-    final audioCount = uploaded
-        .where((item) => item.type == HelpTicketAttachmentType.audio)
-        .length;
 
     final batch = _firestore.batch();
     batch.set(ticketRef, {
@@ -117,7 +114,6 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
       'platform': draft.platform,
       'locale': draft.locale,
       'imageCount': imageCount,
-      'audioCount': audioCount,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
@@ -130,7 +126,6 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
         'filename': attachment.filename,
         'contentType': attachment.contentType,
         'sizeBytes': attachment.sizeBytes,
-        'durationSeconds': attachment.durationSeconds,
         'uploadedAt': FieldValue.serverTimestamp(),
       });
     }
@@ -144,7 +139,6 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       imageCount: imageCount,
-      audioCount: audioCount,
       aiSummary: null,
       aiNextSteps: null,
       aiConfidence: null,
