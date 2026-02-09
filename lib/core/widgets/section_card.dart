@@ -7,22 +7,27 @@ class SectionCard extends StatelessWidget {
   final List<Widget> children;
   final Widget? trailing;
   final bool hasBody;
+  final bool showSurface;
   const SectionCard({
     super.key,
     required this.title,
     required this.children,
     this.trailing,
     this.hasBody = true,
+    this.showSurface = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final showBody = hasBody && children.isNotEmpty;
+    final decoration = showSurface
+        ? BoxDecoration(
+            color: ShadcnColors.surface,
+            borderRadius: BorderRadius.circular(ShadcnRadius.xl),
+          )
+        : null;
     return Container(
-      decoration: BoxDecoration(
-        color: ShadcnColors.surface,
-        borderRadius: BorderRadius.circular(ShadcnRadius.xl),
-      ),
+      decoration: decoration,
       padding: const EdgeInsets.all(ShadcnSpacing.xxl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

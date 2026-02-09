@@ -88,6 +88,7 @@ class OfferFlowForm extends StatelessWidget {
             selectedVehicleId: selectedVehicleId,
             onChanged: onVehicleChanged,
           ),
+          const SizedBox(height: 16),
           OfferProfitabilityTargetSection(
             minProfitabilityEuro: minProfitabilityEuro,
             onSaved: onMinProfitabilityChanged,

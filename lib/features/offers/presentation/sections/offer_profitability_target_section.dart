@@ -77,6 +77,7 @@ class _OfferProfitabilityTargetSectionState
     final l10n = AppLocalizations.of(context)!;
     return SectionCard(
       title: l10n.profitabilityTargetTitle,
+      showSurface: false,
       children: [
         TextFormField(
           controller: _controller,

@@ -20,12 +20,14 @@ class OfferAnalysisProgressCard extends StatelessWidget {
     if (status == OfferAnalysisStatus.failed) {
       return SectionCard(
         title: l10n.analysisFailedTitle,
+        showSurface: false,
         children: [Text(errorMessage ?? l10n.analysisFailedBody)],
       );
     }
 
     return SectionCard(
       title: l10n.analysisProgressTitle,
+      showSurface: false,
       children: [
         _StepRow(
           label: l10n.analysisStepExtracting,

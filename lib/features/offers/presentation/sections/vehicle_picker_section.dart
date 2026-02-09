@@ -21,6 +21,7 @@ class VehiclePickerSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return SectionCard(
       title: l10n.vehicleSection,
+      showSurface: false,
       children: [
         DropdownButtonFormField<String>(
           initialValue: selectedVehicleId,
