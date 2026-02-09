@@ -12,6 +12,8 @@ class HelpIntroSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return SectionCard(
       title: l10n.helpIntroTitle,
+      backgroundColor: ShadcnColors.background,
+      borderColor: ShadcnColors.outline,
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,

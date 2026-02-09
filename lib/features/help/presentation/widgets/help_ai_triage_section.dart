@@ -21,6 +21,8 @@ class HelpAiTriageSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return SectionCard(
       title: l10n.helpAiTriageTitle,
+      backgroundColor: ShadcnColors.background,
+      borderColor: ShadcnColors.outline,
       children: [
         if (summary != null && summary.isNotEmpty) ...[
           Text(

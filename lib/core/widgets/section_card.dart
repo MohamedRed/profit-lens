@@ -7,6 +7,8 @@ class SectionCard extends StatelessWidget {
   final List<Widget> children;
   final Widget? trailing;
   final bool hasBody;
+  final Color? backgroundColor;
+  final Color? borderColor;
 
   const SectionCard({
     super.key,
@@ -14,6 +16,8 @@ class SectionCard extends StatelessWidget {
     required this.children,
     this.trailing,
     this.hasBody = true,
+    this.backgroundColor,
+    this.borderColor,
   });
 
   @override
@@ -21,8 +25,9 @@ class SectionCard extends StatelessWidget {
     final showBody = hasBody && children.isNotEmpty;
     return Container(
       decoration: BoxDecoration(
-        color: ShadcnColors.surface,
+        color: backgroundColor ?? ShadcnColors.surface,
         borderRadius: BorderRadius.circular(ShadcnRadius.xl),
+        border: borderColor == null ? null : Border.all(color: borderColor!),
       ),
       padding: const EdgeInsets.all(ShadcnSpacing.xxl),
       child: Column(

@@ -20,8 +20,9 @@ class HelpTicketDetailHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(ShadcnSpacing.lg),
       decoration: BoxDecoration(
-        color: ShadcnColors.surface,
+        color: ShadcnColors.background,
         borderRadius: BorderRadius.circular(ShadcnRadius.xl),
+        border: Border.all(color: ShadcnColors.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

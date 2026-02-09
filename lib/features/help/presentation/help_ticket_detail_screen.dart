@@ -36,6 +36,7 @@ class HelpTicketDetailScreen extends StatelessWidget {
     );
     return Scaffold(
       appBar: AppBar(title: Text(l10n.helpTicketDetailTitle)),
+      backgroundColor: ShadcnColors.background,
       body: StreamBuilder<HelpTicket?>(
         stream: ticketStream,
         builder: (context, snapshot) {
@@ -57,6 +58,8 @@ class HelpTicketDetailScreen extends StatelessWidget {
               const SizedBox(height: ShadcnSpacing.lg),
               SectionCard(
                 title: l10n.helpTicketDescriptionTitle,
+                backgroundColor: ShadcnColors.background,
+                borderColor: ShadcnColors.outline,
                 children: [
                   Text(
                     _resolveDescriptionText(l10n, ticket),
@@ -71,6 +74,8 @@ class HelpTicketDetailScreen extends StatelessWidget {
               ],
               SectionCard(
                 title: l10n.helpTicketAttachmentsTitle,
+                backgroundColor: ShadcnColors.background,
+                borderColor: ShadcnColors.outline,
                 children: [
                   StreamBuilder<List<HelpTicketAttachment>>(
                     stream: attachments,
