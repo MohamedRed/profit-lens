@@ -9,6 +9,7 @@ class SectionCard extends StatelessWidget {
   final bool hasBody;
   final bool showSurface;
   final bool showBorder;
+  final EdgeInsetsGeometry padding;
   const SectionCard({
     super.key,
     required this.title,
@@ -17,6 +18,7 @@ class SectionCard extends StatelessWidget {
     this.hasBody = true,
     this.showSurface = true,
     this.showBorder = false,
+    this.padding = const EdgeInsets.all(ShadcnSpacing.xxl),
   });
 
   @override
@@ -31,7 +33,7 @@ class SectionCard extends StatelessWidget {
         : null;
     return Container(
       decoration: decoration,
-      padding: const EdgeInsets.all(ShadcnSpacing.xxl),
+      padding: padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

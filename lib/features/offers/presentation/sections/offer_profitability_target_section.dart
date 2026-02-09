@@ -78,7 +78,8 @@ class _OfferProfitabilityTargetSectionState
     return SectionCard(
       title: l10n.profitabilityTargetTitle,
       showSurface: false,
-      showBorder: true,
+      showBorder: false,
+      padding: EdgeInsets.zero,
       children: [
         TextFormField(
           controller: _controller,
