@@ -28,6 +28,7 @@ class OfferUsageCard extends StatelessWidget {
           return SectionCard(
             title: l10n.offersRemainingTitle,
             showSurface: false,
+            showBorder: true,
             children: [
               Text(
                 l10n.loadingLabel,
@@ -92,6 +93,7 @@ class _OfferUsageContent extends StatelessWidget {
     return SectionCard(
       title: l10n.offersRemainingTitle,
       showSurface: false,
+      showBorder: true,
       children: [
         Text(label, style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 6),

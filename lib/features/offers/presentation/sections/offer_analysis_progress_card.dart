@@ -21,6 +21,7 @@ class OfferAnalysisProgressCard extends StatelessWidget {
       return SectionCard(
         title: l10n.analysisFailedTitle,
         showSurface: false,
+        showBorder: true,
         children: [Text(errorMessage ?? l10n.analysisFailedBody)],
       );
     }
@@ -28,6 +29,7 @@ class OfferAnalysisProgressCard extends StatelessWidget {
     return SectionCard(
       title: l10n.analysisProgressTitle,
       showSurface: false,
+      showBorder: true,
       children: [
         _StepRow(
           label: l10n.analysisStepExtracting,
