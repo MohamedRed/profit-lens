@@ -110,8 +110,7 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
     return SectionCard(
       title: l10n.offerDetailsSection,
       showSurface: false,
-      showBorder: false,
-      padding: EdgeInsets.zero,
+      showBorder: true,
       children: [
         OfferDetailsFormFields(
           payoutController: widget.controller.payoutController,

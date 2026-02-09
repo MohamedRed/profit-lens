@@ -22,8 +22,7 @@ class VehiclePickerSection extends StatelessWidget {
     return SectionCard(
       title: l10n.vehicleSection,
       showSurface: false,
-      showBorder: false,
-      padding: EdgeInsets.zero,
+      showBorder: true,
       children: [
         DropdownButtonFormField<String>(
           initialValue: selectedVehicleId,
