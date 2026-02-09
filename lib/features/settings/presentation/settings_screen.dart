@@ -5,6 +5,7 @@ import '../../auth/domain/auth_user.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../profile/domain/user_profile.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
+import '../../../core/design_system/shadcn_tokens.dart';
 import 'widgets/settings_install_card.dart';
 import 'widgets/settings_language_card.dart';
 import 'widgets/settings_profile_card.dart';
@@ -77,11 +78,10 @@ class _SettingsSectionContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = Theme.of(context).colorScheme.outline;
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: borderColor),
+        borderRadius: BorderRadius.circular(ShadcnRadius.xl),
+        border: Border.all(color: ShadcnColors.outline),
       ),
       child: child,
     );
