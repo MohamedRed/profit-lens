@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/design_system/shadcn_tokens.dart';
 import '../../../../core/widgets/primary_button.dart';
-import '../../../../core/widgets/section_card.dart';
+import 'help_section_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../controllers/help_ticket_form_controller.dart';
 import '../models/help_local_attachment.dart';
@@ -52,10 +52,8 @@ class HelpTicketFormSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return SectionCard(
+    return HelpSectionCard(
       title: l10n.helpFormTitle,
-      backgroundColor: ShadcnColors.background,
-      borderColor: ShadcnColors.outline,
       children: [
         Form(
           key: formKey,

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../design_system/shadcn_tokens.dart';
+import '../../../../core/design_system/shadcn_tokens.dart';
 
-class SectionCard extends StatelessWidget {
+class HelpSectionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
   final Widget? trailing;
   final bool hasBody;
-  const SectionCard({
+
+  const HelpSectionCard({
     super.key,
     required this.title,
     required this.children,
@@ -20,8 +21,9 @@ class SectionCard extends StatelessWidget {
     final showBody = hasBody && children.isNotEmpty;
     return Container(
       decoration: BoxDecoration(
-        color: ShadcnColors.surface,
+        color: ShadcnColors.background,
         borderRadius: BorderRadius.circular(ShadcnRadius.xl),
+        border: Border.all(color: ShadcnColors.outline),
       ),
       padding: const EdgeInsets.all(ShadcnSpacing.xxl),
       child: Column(

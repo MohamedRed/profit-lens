@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/design_system/shadcn_tokens.dart';
-import '../../../../core/widgets/section_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/help_ticket.dart';
+import 'help_section_card.dart';
 
 class HelpAiTriageSection extends StatelessWidget {
   final HelpTicket ticket;
@@ -19,10 +19,8 @@ class HelpAiTriageSection extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final l10n = AppLocalizations.of(context)!;
-    return SectionCard(
+    return HelpSectionCard(
       title: l10n.helpAiTriageTitle,
-      backgroundColor: ShadcnColors.background,
-      borderColor: ShadcnColors.outline,
       children: [
         if (summary != null && summary.isNotEmpty) ...[
           Text(

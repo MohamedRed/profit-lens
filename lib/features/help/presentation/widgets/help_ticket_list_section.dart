@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/design_system/shadcn_tokens.dart';
-import '../../../../core/widgets/section_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/help_ticket.dart';
+import 'help_section_card.dart';
 import 'help_ticket_card.dart';
 
 class HelpTicketListSection extends StatelessWidget {
@@ -27,10 +27,8 @@ class HelpTicketListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return SectionCard(
+    return HelpSectionCard(
       title: l10n.helpRecentTicketsTitle,
-      backgroundColor: ShadcnColors.background,
-      borderColor: ShadcnColors.outline,
       children: [
         if (isLoading && tickets.isEmpty)
           const Padding(

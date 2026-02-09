@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../../app/app_scope.dart';
 import '../../../core/design_system/shadcn_tokens.dart';
-import '../../../core/widgets/section_card.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../domain/help_ticket.dart';
 import '../domain/help_ticket_attachment.dart';
 import '../domain/help_ticket_transcription_status.dart';
 import 'widgets/help_ai_triage_section.dart';
+import 'widgets/help_section_card.dart';
 import 'widgets/help_ticket_attachment_gallery.dart';
 import 'widgets/help_ticket_detail_header.dart';
 
@@ -56,10 +56,8 @@ class HelpTicketDetailScreen extends StatelessWidget {
             children: [
               HelpTicketDetailHeader(ticket: ticket),
               const SizedBox(height: ShadcnSpacing.lg),
-              SectionCard(
+              HelpSectionCard(
                 title: l10n.helpTicketDescriptionTitle,
-                backgroundColor: ShadcnColors.background,
-                borderColor: ShadcnColors.outline,
                 children: [
                   Text(
                     _resolveDescriptionText(l10n, ticket),
@@ -72,10 +70,8 @@ class HelpTicketDetailScreen extends StatelessWidget {
                 HelpAiTriageSection(ticket: ticket),
                 const SizedBox(height: ShadcnSpacing.lg),
               ],
-              SectionCard(
+              HelpSectionCard(
                 title: l10n.helpTicketAttachmentsTitle,
-                backgroundColor: ShadcnColors.background,
-                borderColor: ShadcnColors.outline,
                 children: [
                   StreamBuilder<List<HelpTicketAttachment>>(
                     stream: attachments,

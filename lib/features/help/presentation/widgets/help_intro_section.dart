@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/widgets/section_card.dart';
 import '../../../../core/design_system/shadcn_tokens.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'help_section_card.dart';
 
 class HelpIntroSection extends StatelessWidget {
   const HelpIntroSection({super.key});
@@ -10,10 +10,8 @@ class HelpIntroSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return SectionCard(
+    return HelpSectionCard(
       title: l10n.helpIntroTitle,
-      backgroundColor: ShadcnColors.background,
-      borderColor: ShadcnColors.outline,
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
