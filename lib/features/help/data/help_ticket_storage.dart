@@ -34,9 +34,11 @@ class FirebaseHelpTicketStorage implements HelpTicketStorage {
       id: attachment.id,
       type: attachment.type,
       url: url,
+      storagePath: objectPath,
       filename: attachment.filename,
       contentType: attachment.contentType,
       sizeBytes: attachment.sizeBytes,
+      durationSeconds: attachment.durationSeconds,
       uploadedAt: DateTime.now(),
     );
   }

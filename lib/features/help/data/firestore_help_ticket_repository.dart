@@ -6,6 +6,7 @@ import '../domain/help_ticket_attachment_type.dart';
 import '../domain/help_ticket_draft.dart';
 import '../domain/help_ticket_page.dart';
 import '../domain/help_ticket_status.dart';
+import '../domain/help_ticket_transcription_status.dart';
 import 'help_ticket_attachment_mapper.dart';
 import 'help_ticket_mapper.dart';
 import 'help_ticket_repository.dart';
@@ -129,6 +130,11 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
     final imageCount = uploaded
         .where((item) => item.type == HelpTicketAttachmentType.image)
         .length;
+    final audioCount = uploaded
+        .where((item) => item.type == HelpTicketAttachmentType.audio)
+        .length;
+    final needsTranscription =
+        audioCount > 0 && draft.description.trim().isEmpty;
 
     final batch = _firestore.batch();
     batch.set(ticketRef, {
@@ -138,6 +144,8 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
       'platform': draft.platform,
       'locale': draft.locale,
       'imageCount': imageCount,
+      'audioCount': audioCount,
+      if (needsTranscription) 'transcriptionStatus': 'pending',
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
@@ -147,9 +155,12 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
       batch.set(attachmentsRef.doc(attachment.id), {
         'type': helpTicketAttachmentTypeToString(attachment.type),
         'url': attachment.url,
+        'storagePath': attachment.storagePath,
         'filename': attachment.filename,
         'contentType': attachment.contentType,
         'sizeBytes': attachment.sizeBytes,
+        if (attachment.durationSeconds != null)
+          'durationSeconds': attachment.durationSeconds,
         'uploadedAt': FieldValue.serverTimestamp(),
       });
     }
@@ -163,10 +174,14 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       imageCount: imageCount,
+      audioCount: audioCount,
       aiSummary: null,
       aiNextSteps: null,
       aiConfidence: null,
       aiNeedsUserAction: null,
+      transcriptionStatus:
+          needsTranscription ? HelpTicketTranscriptionStatus.pending : null,
+      transcriptionError: null,
     );
   }
 

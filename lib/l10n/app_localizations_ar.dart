@@ -771,7 +771,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'أبلغ عن الأخطاء أو المشكلات مع لقطات الشاشة والإملاء الصوتي. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.';
+      'أبلغ عن الأخطاء أو المشكلات مع لقطات الشاشة أو الملاحظات الصوتية أو الإملاء الصوتي. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.';
 
   @override
   String get helpFormTitle => 'إرسال تذكرة';
@@ -780,11 +780,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpDescriptionLabel => 'صف المشكلة';
 
   @override
-  String get helpDescriptionHint => 'الخطوات، النتيجة المتوقعة، وما حدث فعليًا';
+  String get helpDescriptionHint =>
+      'الخطوات، النتيجة المتوقعة، وما حدث فعليًا (أو سجّل ملاحظة صوتية)';
 
   @override
   String get helpDescriptionRequired =>
-      'أضف وصفًا مختصرًا أو استخدم الإملاء الصوتي.';
+      'أضف وصفًا مختصرًا أو سجّل ملاحظة صوتية أو استخدم الإملاء الصوتي.';
 
   @override
   String get helpVoiceInputTooltip => 'إملاء صوتي';
@@ -800,6 +801,51 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpVoiceFailed => 'تعذر بدء الإملاء الصوتي. حاول مرة أخرى.';
+
+  @override
+  String get helpAudioTitle => 'ملاحظة صوتية';
+
+  @override
+  String get helpAudioSubtitle =>
+      'سجّل ملاحظة صوتية وسنحوّلها إلى نص في الوصف.';
+
+  @override
+  String get helpAudioRecordButton => 'تسجيل ملاحظة صوتية';
+
+  @override
+  String get helpAudioStopButton => 'إيقاف التسجيل';
+
+  @override
+  String get helpAudioRecordingLabel => 'جارٍ التسجيل…';
+
+  @override
+  String get helpAudioReadyLabel => 'الملاحظة الصوتية جاهزة';
+
+  @override
+  String helpAudioReadyWithDuration(Object duration) {
+    return 'الملاحظة الصوتية جاهزة ($duration)';
+  }
+
+  @override
+  String get helpAudioDeleteButton => 'إزالة';
+
+  @override
+  String get helpAudioNotSupported => 'التسجيل الصوتي غير متاح على هذا الجهاز.';
+
+  @override
+  String get helpAudioPermissionDenied =>
+      'يلزم إذن الميكروفون لتسجيل الملاحظة الصوتية.';
+
+  @override
+  String get helpAudioFailed => 'تعذر بدء التسجيل. حاول مرة أخرى.';
+
+  @override
+  String get helpAudioTranscribingLabel =>
+      'جارٍ تحويل الملاحظة الصوتية إلى نص…';
+
+  @override
+  String get helpAudioTranscriptionFailed =>
+      'تعذر تحويل الملاحظة الصوتية إلى نص.';
 
   @override
   String get helpAttachmentTitle => 'لقطات الشاشة';
@@ -882,6 +928,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpTicketDescriptionEmpty => 'لا يوجد وصف.';
 
   @override
+  String get helpTicketAudioHeadline => 'ملاحظة صوتية';
+
+  @override
   String get helpTicketAttachmentsTitle => 'المرفقات';
 
   @override
@@ -891,7 +940,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpAttachmentsScreenshotsTitle => 'لقطات الشاشة';
 
   @override
+  String get helpAttachmentsAudioTitle => 'الملاحظات الصوتية';
+
+  @override
   String get helpNoAttachmentsMessage => 'لا توجد مرفقات.';
+
+  @override
+  String get helpAudioAttachmentLabel => 'ملاحظة صوتية';
+
+  @override
+  String get helpAudioPlayTooltip => 'تشغيل الملاحظة الصوتية';
+
+  @override
+  String get helpAudioOpenFailed => 'تعذر فتح الملاحظة الصوتية.';
 
   @override
   String get helpAiTriageTitle => 'فرز الذكاء الاصطناعي';

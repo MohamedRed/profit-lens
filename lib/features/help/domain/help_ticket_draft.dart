@@ -23,6 +23,7 @@ class HelpTicketAttachmentDraft {
   final String contentType;
   final Uint8List bytes;
   final int sizeBytes;
+  final int? durationSeconds;
 
   const HelpTicketAttachmentDraft({
     required this.id,
@@ -31,5 +32,6 @@ class HelpTicketAttachmentDraft {
     required this.contentType,
     required this.bytes,
     required this.sizeBytes,
+    required this.durationSeconds,
   });
 }

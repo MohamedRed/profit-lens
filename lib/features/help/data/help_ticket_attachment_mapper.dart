@@ -9,6 +9,8 @@ class HelpTicketAttachmentMapper {
     final filename = data['filename'] as String?;
     final contentType = data['contentType'] as String?;
     final sizeBytes = (data['sizeBytes'] as num?)?.toInt();
+    final storagePath = data['storagePath'] as String?;
+    final durationSeconds = (data['durationSeconds'] as num?)?.toInt();
     final type = helpTicketAttachmentTypeFromString(data['type'] as String?);
     if (url == null || filename == null || contentType == null) {
       return null;
@@ -20,9 +22,11 @@ class HelpTicketAttachmentMapper {
       id: id,
       type: type,
       url: url,
+      storagePath: storagePath,
       filename: filename,
       contentType: contentType,
       sizeBytes: sizeBytes,
+      durationSeconds: durationSeconds,
       uploadedAt: (data['uploadedAt'] as Timestamp?)?.toDate(),
     );
   }

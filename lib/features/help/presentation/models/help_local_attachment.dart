@@ -10,6 +10,7 @@ class HelpLocalAttachment {
   final String contentType;
   final Uint8List bytes;
   final int sizeBytes;
+  final int? durationSeconds;
 
   const HelpLocalAttachment({
     required this.id,
@@ -18,6 +19,7 @@ class HelpLocalAttachment {
     required this.contentType,
     required this.bytes,
     required this.sizeBytes,
+    required this.durationSeconds,
   });
 }
 
@@ -30,6 +32,7 @@ extension HelpLocalAttachmentDrafting on HelpLocalAttachment {
       contentType: contentType,
       bytes: bytes,
       sizeBytes: sizeBytes,
+      durationSeconds: durationSeconds,
     );
   }
 }

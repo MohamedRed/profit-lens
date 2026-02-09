@@ -14,6 +14,8 @@ export { syncOfferDailyStats } from "./offer_stats";
 export { backfillOfferStats } from "./offer_stats_backfill";
 export { registerDevice, revokeDevice } from "./device_registry";
 export { triageHelpTicket } from "./help_ticket_triage";
+export { triageHelpTicketAfterTranscription } from "./help_ticket_triage";
+export { transcribeHelpTicketAudio } from "./help_ticket_transcription";
 export { notifyHelpTicketStatus } from "./help_ticket_notifications";
 export {
   createCheckoutSession,

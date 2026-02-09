@@ -82,6 +82,7 @@ bool get isAppleInstallManualAvailable {
 }
 
 bool get isPwaInstalled => _isStandalone;
+bool get isIosPwaInstalled => _isStandalone && _isIosDevice;
 
 Future<bool> showPwaInstallDialog() async {
   _ensureBeforeInstallPromptListener();

@@ -777,7 +777,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'Report bugs or issues with screenshots and voice input. A coding AI agent will triage and keep you updated.';
+      'Report bugs or issues with screenshots, voice notes, or voice input. A coding AI agent will triage and keep you updated.';
 
   @override
   String get helpFormTitle => 'Submit a ticket';
@@ -787,11 +787,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpDescriptionHint =>
-      'Steps, expected result, and what actually happened';
+      'Steps, expected result, and what actually happened (or record a voice note)';
 
   @override
   String get helpDescriptionRequired =>
-      'Add a short description or use voice input.';
+      'Add a short description, record a voice note, or use voice input.';
 
   @override
   String get helpVoiceInputTooltip => 'Voice input';
@@ -809,6 +809,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpVoiceFailed => 'We couldn’t start voice input. Try again.';
+
+  @override
+  String get helpAudioTitle => 'Voice note';
+
+  @override
+  String get helpAudioSubtitle =>
+      'Record a voice note and we’ll transcribe it into your description.';
+
+  @override
+  String get helpAudioRecordButton => 'Record voice note';
+
+  @override
+  String get helpAudioStopButton => 'Stop recording';
+
+  @override
+  String get helpAudioRecordingLabel => 'Recording…';
+
+  @override
+  String get helpAudioReadyLabel => 'Voice note ready';
+
+  @override
+  String helpAudioReadyWithDuration(Object duration) {
+    return 'Voice note ready ($duration)';
+  }
+
+  @override
+  String get helpAudioDeleteButton => 'Remove';
+
+  @override
+  String get helpAudioNotSupported =>
+      'Voice recording isn’t available on this device.';
+
+  @override
+  String get helpAudioPermissionDenied =>
+      'Microphone permission is required to record voice notes.';
+
+  @override
+  String get helpAudioFailed => 'We couldn’t start recording. Try again.';
+
+  @override
+  String get helpAudioTranscribingLabel => 'Transcribing voice note…';
+
+  @override
+  String get helpAudioTranscriptionFailed =>
+      'We couldn’t transcribe the voice note.';
 
   @override
   String get helpAttachmentTitle => 'Screenshots';
@@ -893,6 +938,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpTicketDescriptionEmpty => 'No description provided.';
 
   @override
+  String get helpTicketAudioHeadline => 'Voice note';
+
+  @override
   String get helpTicketAttachmentsTitle => 'Attachments';
 
   @override
@@ -902,7 +950,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpAttachmentsScreenshotsTitle => 'Screenshots';
 
   @override
+  String get helpAttachmentsAudioTitle => 'Voice notes';
+
+  @override
   String get helpNoAttachmentsMessage => 'No attachments uploaded.';
+
+  @override
+  String get helpAudioAttachmentLabel => 'Voice note';
+
+  @override
+  String get helpAudioPlayTooltip => 'Play voice note';
+
+  @override
+  String get helpAudioOpenFailed => 'Unable to open voice note.';
 
   @override
   String get helpAiTriageTitle => 'AI triage';

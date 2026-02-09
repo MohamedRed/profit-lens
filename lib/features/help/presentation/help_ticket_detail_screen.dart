@@ -7,6 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../domain/help_ticket.dart';
 import '../domain/help_ticket_attachment.dart';
+import '../domain/help_ticket_transcription_status.dart';
 import 'widgets/help_ai_triage_section.dart';
 import 'widgets/help_ticket_attachment_gallery.dart';
 import 'widgets/help_ticket_detail_header.dart';
@@ -58,9 +59,7 @@ class HelpTicketDetailScreen extends StatelessWidget {
                 title: l10n.helpTicketDescriptionTitle,
                 children: [
                   Text(
-                    ticket.description.isEmpty
-                        ? l10n.helpTicketDescriptionEmpty
-                        : ticket.description,
+                    _resolveDescriptionText(l10n, ticket),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -97,4 +96,17 @@ class HelpTicketDetailScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+String _resolveDescriptionText(AppLocalizations l10n, HelpTicket ticket) {
+  if (ticket.description.isNotEmpty) {
+    return ticket.description;
+  }
+  if (ticket.transcriptionStatus == HelpTicketTranscriptionStatus.pending) {
+    return l10n.helpAudioTranscribingLabel;
+  }
+  if (ticket.transcriptionStatus == HelpTicketTranscriptionStatus.failed) {
+    return l10n.helpAudioTranscriptionFailed;
+  }
+  return l10n.helpTicketDescriptionEmpty;
 }

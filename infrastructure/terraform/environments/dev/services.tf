@@ -3,6 +3,7 @@ locals {
     "compute.googleapis.com",
     "iam.googleapis.com",
     "secretmanager.googleapis.com",
+    "speech.googleapis.com",
   ]
 }
 

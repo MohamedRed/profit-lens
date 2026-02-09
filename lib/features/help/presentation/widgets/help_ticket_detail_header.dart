@@ -30,7 +30,11 @@ class HelpTicketDetailHeader extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  _headlineFromDescription(ticket.description),
+                  _headlineFromDescription(
+                    ticket.description,
+                    ticket.audioCount,
+                    l10n,
+                  ),
                   style: Theme.of(context).textTheme.titleMedium,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -67,9 +71,15 @@ String? _formatTimestamp(BuildContext context, DateTime? dateTime) {
   return localizations.formatFullDate(dateTime.toLocal());
 }
 
-String _headlineFromDescription(String description) {
+String _headlineFromDescription(
+  String description,
+  int audioCount,
+  AppLocalizations l10n,
+) {
   final trimmed = description.trim();
-  if (trimmed.isEmpty) return '';
+  if (trimmed.isEmpty) {
+    return audioCount > 0 ? l10n.helpTicketAudioHeadline : '';
+  }
   final firstLine = trimmed.split('\n').first.trim();
   return firstLine.isEmpty ? trimmed : firstLine;
 }

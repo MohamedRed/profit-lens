@@ -7,17 +7,25 @@ import '../../../../l10n/app_localizations.dart';
 import '../controllers/help_ticket_form_controller.dart';
 import '../models/help_local_attachment.dart';
 import 'help_attachment_section.dart';
+import 'help_audio_section.dart';
 
 class HelpTicketFormSection extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final HelpTicketFormController controller;
   final List<HelpLocalAttachment> screenshots;
   final bool isListening;
+  final bool showVoiceInput;
+  final bool isAudioSupported;
+  final bool isAudioRecording;
+  final bool hasAudioRecording;
+  final Duration? audioDuration;
   final bool isSubmitting;
   final VoidCallback onAddFromCamera;
   final VoidCallback onAddFromGallery;
   final ValueChanged<String> onRemoveScreenshot;
   final VoidCallback onToggleVoice;
+  final VoidCallback onToggleAudio;
+  final VoidCallback onClearAudio;
   final VoidCallback onSubmit;
 
   const HelpTicketFormSection({
@@ -26,11 +34,18 @@ class HelpTicketFormSection extends StatelessWidget {
     required this.controller,
     required this.screenshots,
     required this.isListening,
+    required this.showVoiceInput,
+    required this.isAudioSupported,
+    required this.isAudioRecording,
+    required this.hasAudioRecording,
+    required this.audioDuration,
     required this.isSubmitting,
     required this.onAddFromCamera,
     required this.onAddFromGallery,
     required this.onRemoveScreenshot,
     required this.onToggleVoice,
+    required this.onToggleAudio,
+    required this.onClearAudio,
     required this.onSubmit,
   });
 
@@ -51,20 +66,26 @@ class HelpTicketFormSection extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: l10n.helpDescriptionLabel,
                   hintText: l10n.helpDescriptionHint,
-                  suffixIcon: IconButton(
-                    onPressed: isSubmitting ? null : onToggleVoice,
-                    icon: Icon(
-                      isListening ? Icons.mic : Icons.mic_none,
-                      color:
-                          isListening ? ShadcnColors.purple : ShadcnColors.textSecondary,
-                    ),
-                    tooltip: isListening
-                        ? l10n.helpVoiceListeningLabel
-                        : l10n.helpVoiceInputTooltip,
-                  ),
+                  suffixIcon: showVoiceInput
+                      ? IconButton(
+                          onPressed: isSubmitting ? null : onToggleVoice,
+                          icon: Icon(
+                            isListening ? Icons.mic : Icons.mic_none,
+                            color: isListening
+                                ? ShadcnColors.purple
+                                : ShadcnColors.textSecondary,
+                          ),
+                          tooltip: isListening
+                              ? l10n.helpVoiceListeningLabel
+                              : l10n.helpVoiceInputTooltip,
+                        )
+                      : null,
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
+                    if (hasAudioRecording) {
+                      return null;
+                    }
                     return l10n.helpDescriptionRequired;
                   }
                   return null;
@@ -85,6 +106,15 @@ class HelpTicketFormSection extends StatelessWidget {
                   ],
                 ),
               ],
+              const SizedBox(height: ShadcnSpacing.lg),
+              HelpAudioSection(
+                isSupported: isAudioSupported,
+                isRecording: isAudioRecording,
+                hasRecording: hasAudioRecording,
+                recordedDuration: audioDuration,
+                onToggleRecording: isSubmitting ? null : onToggleAudio,
+                onClearRecording: isSubmitting ? null : onClearAudio,
+              ),
               const SizedBox(height: ShadcnSpacing.lg),
               HelpAttachmentSection(
                 screenshots: screenshots,

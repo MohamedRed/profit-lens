@@ -1543,7 +1543,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpIntroBody.
   ///
   /// In en, this message translates to:
-  /// **'Report bugs or issues with screenshots and voice input. A coding AI agent will triage and keep you updated.'**
+  /// **'Report bugs or issues with screenshots, voice notes, or voice input. A coding AI agent will triage and keep you updated.'**
   String get helpIntroBody;
 
   /// No description provided for @helpFormTitle.
@@ -1561,13 +1561,13 @@ abstract class AppLocalizations {
   /// No description provided for @helpDescriptionHint.
   ///
   /// In en, this message translates to:
-  /// **'Steps, expected result, and what actually happened'**
+  /// **'Steps, expected result, and what actually happened (or record a voice note)'**
   String get helpDescriptionHint;
 
   /// No description provided for @helpDescriptionRequired.
   ///
   /// In en, this message translates to:
-  /// **'Add a short description or use voice input.'**
+  /// **'Add a short description, record a voice note, or use voice input.'**
   String get helpDescriptionRequired;
 
   /// No description provided for @helpVoiceInputTooltip.
@@ -1599,6 +1599,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We couldn’t start voice input. Try again.'**
   String get helpVoiceFailed;
+
+  /// No description provided for @helpAudioTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice note'**
+  String get helpAudioTitle;
+
+  /// No description provided for @helpAudioSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record a voice note and we’ll transcribe it into your description.'**
+  String get helpAudioSubtitle;
+
+  /// No description provided for @helpAudioRecordButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Record voice note'**
+  String get helpAudioRecordButton;
+
+  /// No description provided for @helpAudioStopButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop recording'**
+  String get helpAudioStopButton;
+
+  /// No description provided for @helpAudioRecordingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording…'**
+  String get helpAudioRecordingLabel;
+
+  /// No description provided for @helpAudioReadyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice note ready'**
+  String get helpAudioReadyLabel;
+
+  /// No description provided for @helpAudioReadyWithDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice note ready ({duration})'**
+  String helpAudioReadyWithDuration(Object duration);
+
+  /// No description provided for @helpAudioDeleteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get helpAudioDeleteButton;
+
+  /// No description provided for @helpAudioNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice recording isn’t available on this device.'**
+  String get helpAudioNotSupported;
+
+  /// No description provided for @helpAudioPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission is required to record voice notes.'**
+  String get helpAudioPermissionDenied;
+
+  /// No description provided for @helpAudioFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn’t start recording. Try again.'**
+  String get helpAudioFailed;
+
+  /// No description provided for @helpAudioTranscribingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Transcribing voice note…'**
+  String get helpAudioTranscribingLabel;
+
+  /// No description provided for @helpAudioTranscriptionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn’t transcribe the voice note.'**
+  String get helpAudioTranscriptionFailed;
 
   /// No description provided for @helpAttachmentTitle.
   ///
@@ -1756,6 +1834,12 @@ abstract class AppLocalizations {
   /// **'No description provided.'**
   String get helpTicketDescriptionEmpty;
 
+  /// No description provided for @helpTicketAudioHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice note'**
+  String get helpTicketAudioHeadline;
+
   /// No description provided for @helpTicketAttachmentsTitle.
   ///
   /// In en, this message translates to:
@@ -1774,11 +1858,35 @@ abstract class AppLocalizations {
   /// **'Screenshots'**
   String get helpAttachmentsScreenshotsTitle;
 
+  /// No description provided for @helpAttachmentsAudioTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice notes'**
+  String get helpAttachmentsAudioTitle;
+
   /// No description provided for @helpNoAttachmentsMessage.
   ///
   /// In en, this message translates to:
   /// **'No attachments uploaded.'**
   String get helpNoAttachmentsMessage;
+
+  /// No description provided for @helpAudioAttachmentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice note'**
+  String get helpAudioAttachmentLabel;
+
+  /// No description provided for @helpAudioPlayTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Play voice note'**
+  String get helpAudioPlayTooltip;
+
+  /// No description provided for @helpAudioOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open voice note.'**
+  String get helpAudioOpenFailed;
 
   /// No description provided for @helpAiTriageTitle.
   ///

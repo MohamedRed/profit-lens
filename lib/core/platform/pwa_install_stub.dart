@@ -9,5 +9,6 @@ bool get isPwaInstallAvailable => false;
 bool get isAppleInstallManualAvailable => false;
 
 bool get isPwaInstalled => false;
+bool get isIosPwaInstalled => false;
 
 Future<bool> showPwaInstallDialog() async => false;

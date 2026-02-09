@@ -49,6 +49,7 @@ mixin _HelpScreenActions on State<HelpScreen> {
       contentType: resolveHelpImageContentType(image.name),
       bytes: bytes,
       sizeBytes: bytes.length,
+      durationSeconds: null,
     );
     setState(() {
       _state._screenshots.add(attachment);
@@ -59,6 +60,35 @@ mixin _HelpScreenActions on State<HelpScreen> {
     setState(() {
       _state._screenshots.removeWhere((item) => item.id == id);
     });
+  }
+
+  Future<void> _toggleAudioRecording() async {
+    if (_state._isSubmitting) return;
+    final l10n = AppLocalizations.of(context)!;
+    final error = await _state._audioController.toggle();
+    if (error == null) {
+      if (_state._audioController.state.value.recording != null) {
+        _state._formKey.currentState?.validate();
+      }
+      return;
+    }
+    if (!mounted) return;
+    switch (error) {
+      case HelpAudioError.permissionDenied:
+        _showSnackBar(l10n.helpAudioPermissionDenied);
+        break;
+      case HelpAudioError.notSupported:
+        _showSnackBar(l10n.helpAudioNotSupported);
+        break;
+      case HelpAudioError.failed:
+        _showSnackBar(l10n.helpAudioFailed);
+        break;
+    }
+  }
+
+  void _clearAudioRecording() {
+    _state._audioController.clear();
+    _state._formKey.currentState?.validate();
   }
 
   Future<void> _toggleVoiceInput() async {
@@ -97,6 +127,7 @@ mixin _HelpScreenActions on State<HelpScreen> {
     final services = AppScope.of(context);
     final localeTag = Localizations.localeOf(context).toString();
     await _state._speechController.stop();
+    await _state._audioController.stop();
     if (!mounted) return;
     if (!formState.validate()) {
       return;
@@ -105,7 +136,8 @@ mixin _HelpScreenActions on State<HelpScreen> {
 
     final description = _state._formController.descriptionController.text
         .trim();
-    if (description.isEmpty) {
+    final audioRecording = _state._audioController.state.value.recording;
+    if (description.isEmpty && audioRecording == null) {
       _showSnackBar(l10n.helpDescriptionRequired);
       return;
     }
@@ -124,6 +156,16 @@ mixin _HelpScreenActions on State<HelpScreen> {
       );
       final attachments = <HelpTicketAttachmentDraft>[
         for (final screenshot in _state._screenshots) screenshot.toDraft(),
+        if (audioRecording != null)
+          HelpLocalAttachment(
+            id: _state._uuid.v4(),
+            type: HelpTicketAttachmentType.audio,
+            filename: audioRecording.filename,
+            contentType: audioRecording.contentType,
+            bytes: audioRecording.bytes,
+            sizeBytes: audioRecording.bytes.length,
+            durationSeconds: audioRecording.duration.inSeconds,
+          ).toDraft(),
       ];
       await _state._ticketRepository!.createTicket(
         uid: widget.user.uid,
@@ -134,6 +176,7 @@ mixin _HelpScreenActions on State<HelpScreen> {
       _state._formController.reset();
       _state._screenshots.clear();
       await _state._speechController.stop();
+      _state._audioController.clear();
       _showSnackBar(l10n.helpTicketSubmitted);
       setState(() {});
     } catch (_) {

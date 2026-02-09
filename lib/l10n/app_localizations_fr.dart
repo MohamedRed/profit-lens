@@ -785,7 +785,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'Signalez des bugs ou des problèmes avec des captures d’écran et la saisie vocale. Un agent IA de développement les analysera et vous tiendra informé.';
+      'Signalez des bugs ou des problèmes avec des captures, des notes vocales ou la saisie vocale. Un agent IA de développement les analysera et vous tiendra informé.';
 
   @override
   String get helpFormTitle => 'Soumettre un ticket';
@@ -795,11 +795,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpDescriptionHint =>
-      'Étapes, résultat attendu et ce qui s’est passé';
+      'Étapes, résultat attendu et ce qui s’est passé (ou enregistrez une note vocale)';
 
   @override
   String get helpDescriptionRequired =>
-      'Ajoutez une courte description ou utilisez la saisie vocale.';
+      'Ajoutez une courte description, enregistrez une note vocale ou utilisez la saisie vocale.';
 
   @override
   String get helpVoiceInputTooltip => 'Saisie vocale';
@@ -818,6 +818,52 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get helpVoiceFailed =>
       'Impossible de démarrer la saisie vocale. Réessayez.';
+
+  @override
+  String get helpAudioTitle => 'Note vocale';
+
+  @override
+  String get helpAudioSubtitle =>
+      'Enregistrez une note vocale et nous la transcrirons dans votre description.';
+
+  @override
+  String get helpAudioRecordButton => 'Enregistrer une note vocale';
+
+  @override
+  String get helpAudioStopButton => 'Arrêter l’enregistrement';
+
+  @override
+  String get helpAudioRecordingLabel => 'Enregistrement…';
+
+  @override
+  String get helpAudioReadyLabel => 'Note vocale prête';
+
+  @override
+  String helpAudioReadyWithDuration(Object duration) {
+    return 'Note vocale prête ($duration)';
+  }
+
+  @override
+  String get helpAudioDeleteButton => 'Supprimer';
+
+  @override
+  String get helpAudioNotSupported =>
+      'L’enregistrement vocal n’est pas disponible sur cet appareil.';
+
+  @override
+  String get helpAudioPermissionDenied =>
+      'L’accès au micro est requis pour enregistrer une note vocale.';
+
+  @override
+  String get helpAudioFailed =>
+      'Impossible de démarrer l’enregistrement. Réessayez.';
+
+  @override
+  String get helpAudioTranscribingLabel => 'Transcription de la note vocale…';
+
+  @override
+  String get helpAudioTranscriptionFailed =>
+      'Impossible de transcrire la note vocale.';
 
   @override
   String get helpAttachmentTitle => 'Captures d’écran';
@@ -904,6 +950,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpTicketDescriptionEmpty => 'Aucune description fournie.';
 
   @override
+  String get helpTicketAudioHeadline => 'Note vocale';
+
+  @override
   String get helpTicketAttachmentsTitle => 'Pièces jointes';
 
   @override
@@ -913,7 +962,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpAttachmentsScreenshotsTitle => 'Captures d’écran';
 
   @override
+  String get helpAttachmentsAudioTitle => 'Notes vocales';
+
+  @override
   String get helpNoAttachmentsMessage => 'Aucune pièce jointe.';
+
+  @override
+  String get helpAudioAttachmentLabel => 'Note vocale';
+
+  @override
+  String get helpAudioPlayTooltip => 'Lire la note vocale';
+
+  @override
+  String get helpAudioOpenFailed => 'Impossible d’ouvrir la note vocale.';
 
   @override
   String get helpAiTriageTitle => 'Analyse IA';

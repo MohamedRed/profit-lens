@@ -7,6 +7,7 @@ import 'package:profit_lens/features/help/domain/help_ticket_attachment_type.dar
 import 'package:profit_lens/features/help/domain/help_ticket_draft.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_page.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_status.dart';
+import 'package:profit_lens/features/help/domain/help_ticket_transcription_status.dart';
 import 'package:uuid/uuid.dart';
 
 class InMemoryHelpTicketRepository implements HelpTicketRepository {
@@ -76,6 +77,9 @@ class InMemoryHelpTicketRepository implements HelpTicketRepository {
     final imageCount = attachments
         .where((item) => item.type == HelpTicketAttachmentType.image)
         .length;
+    final audioCount = attachments
+        .where((item) => item.type == HelpTicketAttachmentType.audio)
+        .length;
     final ticket = HelpTicket(
       id: _uuid.v4(),
       description: draft.description,
@@ -84,10 +88,16 @@ class InMemoryHelpTicketRepository implements HelpTicketRepository {
       createdAt: now,
       updatedAt: now,
       imageCount: imageCount,
+      audioCount: audioCount,
       aiSummary: null,
       aiNextSteps: null,
       aiConfidence: null,
       aiNeedsUserAction: null,
+      transcriptionStatus:
+          audioCount > 0 && draft.description.isEmpty
+              ? HelpTicketTranscriptionStatus.pending
+              : null,
+      transcriptionError: null,
     );
     _tickets.insert(0, ticket);
     _controllerForTicket(ticket.id).add(ticket);
