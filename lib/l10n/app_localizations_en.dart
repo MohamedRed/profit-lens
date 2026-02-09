@@ -164,6 +164,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importScreenshotButton => 'Import screenshot';
 
   @override
+  String get importSourceTitle => 'Choose a source';
+
+  @override
+  String get importSourceGallery => 'Photo Library';
+
+  @override
+  String get importSourceCamera => 'Take Photo';
+
+  @override
   String get importedScreenshotTitle => 'Imported screenshot';
 
   @override

@@ -164,6 +164,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get importScreenshotButton => 'استيراد لقطة شاشة';
 
   @override
+  String get importSourceTitle => 'اختر مصدرًا';
+
+  @override
+  String get importSourceGallery => 'مكتبة الصور';
+
+  @override
+  String get importSourceCamera => 'التقاط صورة';
+
+  @override
   String get importedScreenshotTitle => 'لقطة شاشة مستوردة';
 
   @override

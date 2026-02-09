@@ -12,6 +12,7 @@ import 'offer_flow_import.dart';
 import 'offer_analysis_status.dart';
 import 'offer_result_screen.dart';
 import 'offer_flow_loading_action.dart';
+import 'widgets/offer_import_source_sheet.dart';
 
 class OfferFlowCallbacks {
   final VoidCallback onImportScreenshot;
@@ -39,18 +40,28 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
   required VoidCallback onUpdated,
 }) {
   return OfferFlowCallbacks(
-    onImportScreenshot: () => importOfferScreenshot(
-      context: context,
-      userId: user.uid,
-      source: ImageSource.gallery,
-      picker: AppScope.of(context).offerImagePickerService,
-      controller: controller,
-      vehicles: vehicles,
-      selectedVehicleId: selectedVehicleId,
-      onLoadingChanged: onLoadingChanged,
-      loadingAction: OfferFlowLoadingAction.importScreenshot,
-      onUpdated: onUpdated,
-    ),
+    onImportScreenshot: () async {
+      final option = await showOfferImportSourceSheet(context);
+      if (option == null) {
+        return;
+      }
+      final source = switch (option) {
+        OfferImportSourceOption.camera => ImageSource.camera,
+        OfferImportSourceOption.gallery => ImageSource.gallery,
+      };
+      await importOfferScreenshot(
+        context: context,
+        userId: user.uid,
+        source: source,
+        picker: AppScope.of(context).offerImagePickerService,
+        controller: controller,
+        vehicles: vehicles,
+        selectedVehicleId: selectedVehicleId,
+        onLoadingChanged: onLoadingChanged,
+        loadingAction: OfferFlowLoadingAction.importScreenshot,
+        onUpdated: onUpdated,
+      );
+    },
     onCaptureScreenshot: () => importOfferScreenshot(
       context: context,
       userId: user.uid,

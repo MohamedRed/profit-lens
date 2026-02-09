@@ -406,6 +406,24 @@ abstract class AppLocalizations {
   /// **'Import screenshot'**
   String get importScreenshotButton;
 
+  /// No description provided for @importSourceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a source'**
+  String get importSourceTitle;
+
+  /// No description provided for @importSourceGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo Library'**
+  String get importSourceGallery;
+
+  /// No description provided for @importSourceCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get importSourceCamera;
+
   /// No description provided for @importedScreenshotTitle.
   ///
   /// In en, this message translates to:
