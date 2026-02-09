@@ -10,10 +10,8 @@ class HelpTicketListSection extends StatelessWidget {
   final List<HelpTicket> tickets;
   final bool isLoading;
   final bool isLoadingMore;
-  final bool hasMore;
   final bool hasError;
   final VoidCallback? onRetry;
-  final VoidCallback? onLoadMore;
   final ValueChanged<HelpTicket>? onSelected;
 
   const HelpTicketListSection({
@@ -21,10 +19,8 @@ class HelpTicketListSection extends StatelessWidget {
     required this.tickets,
     required this.isLoading,
     required this.isLoadingMore,
-    required this.hasMore,
     required this.hasError,
     this.onRetry,
-    this.onLoadMore,
     this.onSelected,
   });
 
@@ -73,25 +69,9 @@ class HelpTicketListSection extends StatelessWidget {
               );
             },
           ),
-          if (hasMore) ...[
+          if (isLoadingMore) ...[
             const SizedBox(height: ShadcnSpacing.lg),
-            Center(
-              child: OutlinedButton.icon(
-                onPressed: isLoadingMore ? null : onLoadMore,
-                icon: isLoadingMore
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.expand_more),
-                label: Text(
-                  isLoadingMore
-                      ? l10n.helpLoadingMoreLabel
-                      : l10n.helpLoadMoreButton,
-                ),
-              ),
-            ),
+            const Center(child: CircularProgressIndicator()),
           ],
         ],
       ],

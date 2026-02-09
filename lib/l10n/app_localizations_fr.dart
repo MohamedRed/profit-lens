@@ -874,12 +874,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de charger les tickets pour l’instant.';
 
   @override
-  String get helpLoadMoreButton => 'Charger plus';
-
-  @override
-  String get helpLoadingMoreLabel => 'Chargement…';
-
-  @override
   String get helpStatusOpen => 'Ouvert';
 
   @override

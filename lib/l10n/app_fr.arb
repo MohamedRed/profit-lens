@@ -321,8 +321,6 @@
   "helpRecentTicketsTitle": "Tickets récents",
   "helpNoTicketsMessage": "Aucun ticket pour le moment.",
   "helpTicketsLoadFailed": "Impossible de charger les tickets pour l’instant.",
-  "helpLoadMoreButton": "Charger plus",
-  "helpLoadingMoreLabel": "Chargement…",
   "helpStatusOpen": "Ouvert",
   "helpStatusTriaging": "Analyse",
   "helpStatusInProgress": "En cours",

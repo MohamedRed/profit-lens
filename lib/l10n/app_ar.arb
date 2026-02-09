@@ -321,8 +321,6 @@
   "helpRecentTicketsTitle": "أحدث التذاكر",
   "helpNoTicketsMessage": "لا توجد تذاكر بعد.",
   "helpTicketsLoadFailed": "تعذر تحميل التذاكر الآن.",
-  "helpLoadMoreButton": "تحميل المزيد",
-  "helpLoadingMoreLabel": "جارٍ التحميل…",
   "helpStatusOpen": "مفتوحة",
   "helpStatusTriaging": "قيد الفرز",
   "helpStatusInProgress": "قيد العمل",

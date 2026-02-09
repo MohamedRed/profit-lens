@@ -22,16 +22,27 @@ class _HelpTicketsScreenState extends State<HelpTicketsScreen> {
   static const int pageSize = 12;
 
   final List<HelpTicket> _tickets = [];
+  final ScrollController _scrollController = ScrollController();
   HelpTicketPageCursor? _cursor;
   bool _isLoading = true;
   bool _isLoadingMore = false;
   bool _hasMore = true;
   bool _loadFailed = false;
+  bool _autoFillInProgress = false;
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     _loadInitial();
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
   }
 
   @override
@@ -45,6 +56,7 @@ class _HelpTicketsScreenState extends State<HelpTicketsScreen> {
         child: RefreshIndicator(
           onRefresh: _loadInitial,
           child: ListView(
+            controller: _scrollController,
             padding: const EdgeInsets.all(ShadcnSpacing.lg),
             physics: const AlwaysScrollableScrollPhysics(),
             children: [
@@ -52,10 +64,8 @@ class _HelpTicketsScreenState extends State<HelpTicketsScreen> {
                 tickets: List<HelpTicket>.unmodifiable(_tickets),
                 isLoading: _isLoading,
                 isLoadingMore: _isLoadingMore,
-                hasMore: _hasMore,
                 hasError: _loadFailed,
                 onRetry: _loadInitial,
-                onLoadMore: _loadMore,
                 onSelected: (ticket) => _openTicketDetail(context, ticket),
               ),
             ],
@@ -76,6 +86,7 @@ class _HelpTicketsScreenState extends State<HelpTicketsScreen> {
     await _fetchPage();
     if (!mounted) return;
     setState(() => _isLoading = false);
+    _scheduleAutoFill();
   }
 
   Future<void> _loadMore() async {
@@ -84,6 +95,7 @@ class _HelpTicketsScreenState extends State<HelpTicketsScreen> {
     await _fetchPage();
     if (!mounted) return;
     setState(() => _isLoadingMore = false);
+    _scheduleAutoFill();
   }
 
   Future<void> _fetchPage() async {
@@ -109,6 +121,28 @@ class _HelpTicketsScreenState extends State<HelpTicketsScreen> {
         SnackBar(content: Text(l10n.helpTicketsLoadFailed)),
       );
     }
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    if (_scrollController.position.extentAfter < 240) {
+      _loadMore();
+    }
+  }
+
+  void _scheduleAutoFill() {
+    if (_autoFillInProgress || !_hasMore) return;
+    _autoFillInProgress = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _autoFillInProgress = false;
+      if (!mounted || !_scrollController.hasClients) return;
+      if (_scrollController.position.maxScrollExtent < 120 &&
+          !_isLoadingMore &&
+          !_isLoading &&
+          _hasMore) {
+        _loadMore();
+      }
+    });
   }
 
   void _openTicketDetail(BuildContext context, HelpTicket ticket) {
