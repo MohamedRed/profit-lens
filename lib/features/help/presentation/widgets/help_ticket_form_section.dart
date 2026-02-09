@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/design_system/shadcn_tokens.dart';
 import '../../../../core/widgets/primary_button.dart';
-import 'help_section_card.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'help_section_card.dart';
 import '../controllers/help_ticket_form_controller.dart';
 import '../models/help_local_attachment.dart';
 import 'help_attachment_section.dart';
-import 'help_audio_section.dart';
 
 class HelpTicketFormSection extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -106,15 +105,17 @@ class HelpTicketFormSection extends StatelessWidget {
                   ],
                 ),
               ],
-              const SizedBox(height: ShadcnSpacing.lg),
-              HelpAudioSection(
-                isSupported: isAudioSupported,
-                isRecording: isAudioRecording,
-                hasRecording: hasAudioRecording,
-                recordedDuration: audioDuration,
-                onToggleRecording: isSubmitting ? null : onToggleAudio,
-                onClearRecording: isSubmitting ? null : onClearAudio,
-              ),
+              if (!showVoiceInput) ...[
+                const SizedBox(height: ShadcnSpacing.lg),
+                _InlineAudioControls(
+                  isSupported: isAudioSupported,
+                  isRecording: isAudioRecording,
+                  hasRecording: hasAudioRecording,
+                  recordedDuration: audioDuration,
+                  onToggleRecording: isSubmitting ? null : onToggleAudio,
+                  onClearRecording: isSubmitting ? null : onClearAudio,
+                ),
+              ],
               const SizedBox(height: ShadcnSpacing.lg),
               HelpAttachmentSection(
                 screenshots: screenshots,
@@ -138,4 +139,110 @@ class HelpTicketFormSection extends StatelessWidget {
       ],
     );
   }
+}
+
+class _InlineAudioControls extends StatelessWidget {
+  final bool isSupported;
+  final bool isRecording;
+  final bool hasRecording;
+  final Duration? recordedDuration;
+  final VoidCallback? onToggleRecording;
+  final VoidCallback? onClearRecording;
+
+  const _InlineAudioControls({
+    required this.isSupported,
+    required this.isRecording,
+    required this.hasRecording,
+    required this.recordedDuration,
+    required this.onToggleRecording,
+    required this.onClearRecording,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    if (!isSupported) {
+      return Text(
+        l10n.helpAudioNotSupported,
+        style: Theme.of(
+          context,
+        ).textTheme.bodySmall?.copyWith(color: ShadcnColors.textSecondary),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.helpAudioSubtitle,
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: ShadcnColors.textSecondary),
+        ),
+        const SizedBox(height: ShadcnSpacing.sm),
+        Row(
+          children: [
+            OutlinedButton.icon(
+              onPressed: onToggleRecording,
+              icon: Icon(isRecording ? Icons.stop : Icons.mic_none),
+              label: Text(
+                isRecording
+                    ? l10n.helpAudioStopButton
+                    : l10n.helpAudioRecordButton,
+              ),
+            ),
+            if (hasRecording) ...[
+              const SizedBox(width: ShadcnSpacing.md),
+              TextButton(
+                onPressed: onClearRecording,
+                child: Text(l10n.helpAudioDeleteButton),
+              ),
+            ],
+          ],
+        ),
+        if (isRecording) ...[
+          const SizedBox(height: ShadcnSpacing.sm),
+          Row(
+            children: [
+              const Icon(Icons.mic, size: 16, color: ShadcnColors.pink),
+              const SizedBox(width: ShadcnSpacing.sm),
+              Text(
+                l10n.helpAudioRecordingLabel,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: ShadcnColors.textSecondary,
+                    ),
+              ),
+            ],
+          ),
+        ],
+        if (!isRecording && hasRecording) ...[
+          const SizedBox(height: ShadcnSpacing.sm),
+          Row(
+            children: [
+              const Icon(Icons.check_circle, size: 16, color: ShadcnColors.teal),
+              const SizedBox(width: ShadcnSpacing.sm),
+              Text(
+                _formatReadyLabel(l10n, recordedDuration),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: ShadcnColors.textSecondary,
+                    ),
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+String _formatReadyLabel(AppLocalizations l10n, Duration? duration) {
+  if (duration == null) {
+    return l10n.helpAudioReadyLabel;
+  }
+  final totalSeconds = duration.inSeconds;
+  final minutes = totalSeconds ~/ 60;
+  final seconds = totalSeconds % 60;
+  final formatted = minutes > 0
+      ? '${minutes}m ${seconds.toString().padLeft(2, '0')}s'
+      : '${seconds}s';
+  return l10n.helpAudioReadyWithDuration(formatted);
 }
