@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/config/firebase_regions.dart';
+import '../../../core/web/web_navigator.dart' as web_navigator;
 import 'billing_service.dart';
 
 class FirebaseBillingService implements BillingService {
@@ -48,14 +49,7 @@ class FirebaseBillingService implements BillingService {
   Future<void> _launch(String url) async {
     final uri = Uri.parse(url);
     if (kIsWeb) {
-      final launched = await launchUrl(
-        uri,
-        mode: LaunchMode.platformDefault,
-        webOnlyWindowName: '_self',
-      );
-      if (!launched) {
-        throw StateError('Could not launch $url');
-      }
+      web_navigator.navigateToUrl(url);
       return;
     }
     if (!await canLaunchUrl(uri)) {
