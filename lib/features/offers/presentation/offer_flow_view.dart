@@ -57,6 +57,7 @@ class OfferFlowView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
+      appBar: AppBar(title: Text(l10n.offerTabLabel)),
       body: SafeArea(
         child: vehicles.isEmpty
             ? Center(child: Text(l10n.noVehiclesMessage))

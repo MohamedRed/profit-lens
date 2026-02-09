@@ -22,17 +22,13 @@ class DeviceLimitScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
+      appBar: AppBar(title: Text(l10n.deviceLimitTitle)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                l10n.deviceLimitTitle,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 8),
               Text(
                 l10n.deviceLimitSubtitle,
                 style: Theme.of(context).textTheme.bodyMedium,

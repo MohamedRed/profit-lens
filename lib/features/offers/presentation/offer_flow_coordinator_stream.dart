@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import '../../../app/app_scope.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../../profile/domain/fixed_cost_allocation.dart';
 import '../../profile/domain/user_profile.dart';
@@ -87,6 +88,7 @@ class _OfferFlowCoordinatorStreamState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return StreamBuilder<List<VehicleProfile>>(
       stream: AppScope.of(
         context,
@@ -94,8 +96,11 @@ class _OfferFlowCoordinatorStreamState
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             !snapshot.hasData) {
-          return const Scaffold(
-            body: SafeArea(child: Center(child: CircularProgressIndicator())),
+          return Scaffold(
+            appBar: AppBar(title: Text(l10n.offerTabLabel)),
+            body: const SafeArea(
+              child: Center(child: CircularProgressIndicator()),
+            ),
           );
         }
         final vehicles = snapshot.data ?? [];
@@ -106,8 +111,11 @@ class _OfferFlowCoordinatorStreamState
             }
           });
           if (!_showEmptyState) {
-            return const Scaffold(
-              body: SafeArea(child: Center(child: CircularProgressIndicator())),
+            return Scaffold(
+              appBar: AppBar(title: Text(l10n.offerTabLabel)),
+              body: const SafeArea(
+                child: Center(child: CircularProgressIndicator()),
+              ),
             );
           }
         } else {

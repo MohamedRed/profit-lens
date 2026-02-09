@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/app_scope.dart';
 import '../../auth/domain/auth_user.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../profile/domain/user_profile.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
 import 'widgets/settings_install_card.dart';
@@ -21,12 +22,14 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final services = AppScope.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return StreamBuilder<List<VehicleProfile>>(
       stream: services.vehicleRepository.watchVehicles(user.uid),
       builder: (context, snapshot) {
         final vehicles = snapshot.data ?? [];
         return Scaffold(
+          appBar: AppBar(title: Text(l10n.settingsTabLabel)),
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [

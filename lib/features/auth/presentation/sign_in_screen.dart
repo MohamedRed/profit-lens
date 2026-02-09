@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/design_system/shadcn_tokens.dart';
+import '../../../l10n/app_localizations.dart';
 import 'sign_in_form.dart';
 
 class SignInScreen extends StatelessWidget {
@@ -8,7 +9,9 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
+      appBar: AppBar(title: Text(l10n.signInTitle)),
       backgroundColor: ShadcnColors.background,
       body: SafeArea(
         child: Stack(

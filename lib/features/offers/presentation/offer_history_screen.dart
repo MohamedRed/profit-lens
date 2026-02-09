@@ -137,12 +137,16 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     if (_isLoadingInitial) {
-      return const Scaffold(
-        body: SafeArea(child: Center(child: CircularProgressIndicator())),
+      return Scaffold(
+        appBar: AppBar(title: Text(l10n.historyTabLabel)),
+        body: const SafeArea(
+          child: Center(child: CircularProgressIndicator()),
+        ),
       );
     }
     if (_offers.isEmpty) {
       return Scaffold(
+        appBar: AppBar(title: Text(l10n.historyTabLabel)),
         body: SafeArea(child: Center(child: Text(l10n.noHistoryMessage))),
       );
     }
@@ -151,6 +155,7 @@ class _OfferHistoryScreenState extends State<OfferHistoryScreen> {
       builder: (context, snapshot) {
         final stats = snapshot.data ?? [];
         return Scaffold(
+          appBar: AppBar(title: Text(l10n.historyTabLabel)),
           body: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
