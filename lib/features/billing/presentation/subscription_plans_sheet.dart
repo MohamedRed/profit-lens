@@ -76,7 +76,7 @@ class _PlanCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final overlay = StripeLaunchOverlay.show(context, l10n.managePlanButton);
     try {
-      await Future<void>.delayed(const Duration(milliseconds: 400));
+      await WidgetsBinding.instance.endOfFrame;
       await AppScope.of(context).billingService.startCheckout(plan.priceId);
     } catch (error) {
       messenger.showSnackBar(SnackBar(content: Text(error.toString())));

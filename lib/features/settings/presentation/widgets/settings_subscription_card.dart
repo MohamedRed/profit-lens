@@ -95,7 +95,7 @@ class _SubscriptionTileState extends State<_SubscriptionTile>
     });
     final l10n = AppLocalizations.of(context)!;
     try {
-      await Future<void>.delayed(const Duration(milliseconds: 400));
+      await WidgetsBinding.instance.endOfFrame;
       await AppScope.of(context).billingService.openCustomerPortal();
     } catch (_) {
       if (!mounted) {
