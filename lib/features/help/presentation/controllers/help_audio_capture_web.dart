@@ -1,20 +1,26 @@
 import 'dart:async';
 import 'dart:html' as html;
+import 'dart:js_util' as js_util;
 import 'dart:typed_data';
 
 import 'help_audio_capture.dart';
 
 class WebHelpAudioCapture implements HelpAudioCapture {
   html.MediaStream? _stream;
-  html.MediaRecorder? _recorder;
+  Object? _recorder;
   final List<html.Blob> _chunks = [];
   final Stopwatch _stopwatch = Stopwatch();
   String _mimeType = 'audio/webm';
 
   @override
-  bool get isSupported =>
-      (html.window as dynamic).MediaRecorder != null &&
-      html.window.navigator.mediaDevices != null;
+  bool get isSupported {
+    final window = html.window;
+    if (!js_util.hasProperty(window, 'MediaRecorder')) {
+      return false;
+    }
+    final navigator = window.navigator;
+    return navigator != null && js_util.hasProperty(navigator, 'mediaDevices');
+  }
 
   @override
   Future<void> start() async {
@@ -42,18 +48,26 @@ class WebHelpAudioCapture implements HelpAudioCapture {
       ..start();
 
     _mimeType = _resolveMimeType();
-    final options =
-        _mimeType.isNotEmpty ? <String, dynamic>{'mimeType': _mimeType} : null;
-    _recorder =
-        options == null ? html.MediaRecorder(_stream!) : html.MediaRecorder(_stream!, options);
-    _recorder!.addEventListener('dataavailable', (event) {
-      final blobEvent = event as html.BlobEvent;
-      final data = blobEvent.data;
-      if (data != null) {
-        _chunks.add(data);
-      }
-    });
-    _recorder!.start();
+    final recorderCtor = js_util.getProperty(html.window, 'MediaRecorder');
+    if (recorderCtor == null) {
+      throw HelpAudioCaptureException(HelpAudioCaptureError.notSupported);
+    }
+    final options = _mimeType.isNotEmpty
+        ? js_util.jsify(<String, dynamic>{'mimeType': _mimeType})
+        : null;
+    _recorder = options == null
+        ? js_util.callConstructor(recorderCtor, [_stream])
+        : js_util.callConstructor(recorderCtor, [_stream, options]);
+    js_util.callMethod(_recorder!, 'addEventListener', [
+      'dataavailable',
+      js_util.allowInterop((event) {
+        final data = js_util.getProperty(event, 'data');
+        if (data is html.Blob) {
+          _chunks.add(data);
+        }
+      }),
+    ]);
+    js_util.callMethod(_recorder!, 'start', []);
   }
 
   @override
@@ -63,7 +77,9 @@ class WebHelpAudioCapture implements HelpAudioCapture {
       return null;
     }
     final completer = Completer<HelpAudioRecording?>();
-    recorder.addEventListener('stop', (_) async {
+    js_util.callMethod(recorder, 'addEventListener', [
+      'stop',
+      js_util.allowInterop((_) async {
       _stopwatch.stop();
       final blob = html.Blob(_chunks, _mimeType);
       final bytes = await _blobToBytes(blob);
@@ -78,8 +94,9 @@ class WebHelpAudioCapture implements HelpAudioCapture {
           duration: duration,
         ),
       );
-    });
-    recorder.stop();
+      }),
+    ]);
+    js_util.callMethod(recorder, 'stop', []);
     return completer.future;
   }
 
@@ -116,8 +133,14 @@ class WebHelpAudioCapture implements HelpAudioCapture {
       'audio/mp4',
       'audio/m4a',
     ];
+    final recorderCtor = js_util.getProperty(html.window, 'MediaRecorder');
+    if (recorderCtor == null) {
+      return '';
+    }
     for (final mime in preferred) {
-      if (html.MediaRecorder.isTypeSupported(mime)) {
+      final supported =
+          js_util.callMethod(recorderCtor, 'isTypeSupported', [mime]) == true;
+      if (supported) {
         return mime;
       }
     }
