@@ -30,14 +30,14 @@ class SettingsScreen extends StatelessWidget {
       builder: (context, snapshot) {
         final vehicles = snapshot.data ?? [];
         return Scaffold(
-          appBar: AppBar(title: Text(l10n.settingsTabLabel)),
-          body: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              _SettingsSectionContainer(
-                child: SettingsProfileCard(user: user, profile: profile),
-              ),
-              const SizedBox(height: 12),
+          body: SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                _SettingsSectionContainer(
+                  child: SettingsProfileCard(user: user, profile: profile),
+                ),
+                const SizedBox(height: 12),
               _SettingsSectionContainer(
                 child: SettingsLanguageCard(user: user, profile: profile),
               ),
@@ -63,7 +63,8 @@ class SettingsScreen extends StatelessWidget {
                   onSignOut: () => services.authRepository.signOut(),
                 ),
               ),
-            ],
+              ],
+            ),
           ),
         );
       },
