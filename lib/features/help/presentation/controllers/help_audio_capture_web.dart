@@ -77,6 +77,11 @@ class WebHelpAudioCapture implements HelpAudioCapture {
       return null;
     }
     final completer = Completer<HelpAudioRecording?>();
+    if (js_util.hasProperty(recorder, 'requestData')) {
+      try {
+        js_util.callMethod(recorder, 'requestData', []);
+      } catch (_) {}
+    }
     js_util.callMethod(recorder, 'addEventListener', [
       'stop',
       js_util.allowInterop((_) async {

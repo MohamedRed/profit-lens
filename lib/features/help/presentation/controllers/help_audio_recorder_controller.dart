@@ -46,8 +46,7 @@ class HelpAudioRecorderController {
 
   Future<HelpAudioError?> toggle() async {
     if (state.value.isRecording) {
-      await stop();
-      return null;
+      return stop();
     }
     return start();
   }
@@ -77,20 +76,23 @@ class HelpAudioRecorderController {
     }
   }
 
-  Future<void> stop() async {
-    if (!state.value.isRecording) return;
+  Future<HelpAudioError?> stop() async {
+    if (!state.value.isRecording) return null;
+    state.value = state.value.copyWith(isRecording: false, error: null);
     try {
-      final recording = await _capture.stop();
+      final recording = await _capture
+          .stop()
+          .timeout(const Duration(seconds: 5), onTimeout: () => null);
       state.value = state.value.copyWith(
-        isRecording: false,
         recording: recording ?? state.value.recording,
         error: null,
       );
+      return null;
     } catch (_) {
       state.value = state.value.copyWith(
-        isRecording: false,
         error: HelpAudioError.failed,
       );
+      return HelpAudioError.failed;
     }
   }
 
