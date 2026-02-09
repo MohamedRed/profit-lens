@@ -819,6 +819,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpAudioRecordingLabel => 'Recording…';
 
   @override
+  String get helpAudioProcessingLabel => 'Saving voice note…';
+
+  @override
   String get helpAudioReadyLabel => 'Voice note ready';
 
   @override

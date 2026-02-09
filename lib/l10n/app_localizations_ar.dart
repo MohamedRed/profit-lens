@@ -813,6 +813,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpAudioRecordingLabel => 'جارٍ التسجيل…';
 
   @override
+  String get helpAudioProcessingLabel => 'جارٍ حفظ الملاحظة الصوتية…';
+
+  @override
   String get helpAudioReadyLabel => 'الملاحظة الصوتية جاهزة';
 
   @override

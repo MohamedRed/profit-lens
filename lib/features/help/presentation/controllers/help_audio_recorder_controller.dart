@@ -6,22 +6,26 @@ enum HelpAudioError { permissionDenied, notSupported, failed }
 
 class HelpAudioRecorderState {
   final bool isRecording;
+  final bool isProcessing;
   final HelpAudioRecording? recording;
   final HelpAudioError? error;
 
   const HelpAudioRecorderState({
     required this.isRecording,
+    required this.isProcessing,
     required this.recording,
     required this.error,
   });
 
   HelpAudioRecorderState copyWith({
     bool? isRecording,
+    bool? isProcessing,
     HelpAudioRecording? recording,
     HelpAudioError? error,
   }) {
     return HelpAudioRecorderState(
       isRecording: isRecording ?? this.isRecording,
+      isProcessing: isProcessing ?? this.isProcessing,
       recording: recording ?? this.recording,
       error: error,
     );
@@ -37,6 +41,7 @@ class HelpAudioRecorderController {
         state = ValueNotifier(
           const HelpAudioRecorderState(
             isRecording: false,
+            isProcessing: false,
             recording: null,
             error: null,
           ),
@@ -61,15 +66,24 @@ class HelpAudioRecorderController {
     }
     try {
       await _capture.start();
-      state.value = state.value.copyWith(isRecording: true, error: null);
+      state.value = state.value.copyWith(
+        isRecording: true,
+        isProcessing: false,
+        error: null,
+      );
       return null;
     } on HelpAudioCaptureException catch (error) {
       final mapped = _mapError(error.error);
-      state.value = state.value.copyWith(isRecording: false, error: mapped);
+      state.value = state.value.copyWith(
+        isRecording: false,
+        isProcessing: false,
+        error: mapped,
+      );
       return mapped;
     } catch (_) {
       state.value = state.value.copyWith(
         isRecording: false,
+        isProcessing: false,
         error: HelpAudioError.failed,
       );
       return HelpAudioError.failed;
@@ -78,18 +92,32 @@ class HelpAudioRecorderController {
 
   Future<HelpAudioError?> stop() async {
     if (!state.value.isRecording) return null;
-    state.value = state.value.copyWith(isRecording: false, error: null);
+    state.value = state.value.copyWith(
+      isRecording: false,
+      isProcessing: true,
+      error: null,
+    );
     try {
       final recording = await _capture
           .stop()
           .timeout(const Duration(seconds: 5), onTimeout: () => null);
+      if (recording == null || recording.bytes.isEmpty) {
+        state.value = state.value.copyWith(
+          recording: null,
+          isProcessing: false,
+          error: HelpAudioError.failed,
+        );
+        return HelpAudioError.failed;
+      }
       state.value = state.value.copyWith(
-        recording: recording ?? state.value.recording,
+        recording: recording,
+        isProcessing: false,
         error: null,
       );
       return null;
     } catch (_) {
       state.value = state.value.copyWith(
+        isProcessing: false,
         error: HelpAudioError.failed,
       );
       return HelpAudioError.failed;
@@ -97,7 +125,11 @@ class HelpAudioRecorderController {
   }
 
   void clear() {
-    state.value = state.value.copyWith(recording: null, error: null);
+    state.value = state.value.copyWith(
+      recording: null,
+      isProcessing: false,
+      error: null,
+    );
   }
 
   void dispose() {

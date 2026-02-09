@@ -1618,6 +1618,12 @@ abstract class AppLocalizations {
   /// **'Recording…'**
   String get helpAudioRecordingLabel;
 
+  /// No description provided for @helpAudioProcessingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving voice note…'**
+  String get helpAudioProcessingLabel;
+
   /// No description provided for @helpAudioReadyLabel.
   ///
   /// In en, this message translates to:

@@ -827,6 +827,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpAudioRecordingLabel => 'Enregistrement…';
 
   @override
+  String get helpAudioProcessingLabel => 'Enregistrement de la note vocale…';
+
+  @override
   String get helpAudioReadyLabel => 'Note vocale prête';
 
   @override

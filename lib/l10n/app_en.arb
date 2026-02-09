@@ -303,6 +303,7 @@
   "helpAudioRecordButton": "Record voice note",
   "helpAudioStopButton": "Stop recording",
   "helpAudioRecordingLabel": "Recording…",
+  "helpAudioProcessingLabel": "Saving voice note…",
   "helpAudioReadyLabel": "Voice note ready",
   "helpAudioReadyWithDuration": "Voice note ready ({duration})",
   "@helpAudioReadyWithDuration": {

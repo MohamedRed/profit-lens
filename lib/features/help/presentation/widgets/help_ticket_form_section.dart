@@ -14,6 +14,7 @@ class HelpTicketFormSection extends StatelessWidget {
   final List<HelpLocalAttachment> screenshots;
   final bool isAudioSupported;
   final bool isAudioRecording;
+  final bool isAudioProcessing;
   final bool hasAudioRecording;
   final Duration? audioDuration;
   final bool isSubmitting;
@@ -31,6 +32,7 @@ class HelpTicketFormSection extends StatelessWidget {
     required this.screenshots,
     required this.isAudioSupported,
     required this.isAudioRecording,
+    required this.isAudioProcessing,
     required this.hasAudioRecording,
     required this.audioDuration,
     required this.isSubmitting,
@@ -60,7 +62,9 @@ class HelpTicketFormSection extends StatelessWidget {
                   labelText: l10n.helpDescriptionLabel,
                   hintText: l10n.helpDescriptionHint,
                   suffixIcon: IconButton(
-                    onPressed: isSubmitting || !isAudioSupported
+                    onPressed: isSubmitting ||
+                            !isAudioSupported ||
+                            isAudioProcessing
                         ? null
                         : onToggleAudio,
                     icon: Icon(
@@ -99,6 +103,25 @@ class HelpTicketFormSection extends StatelessWidget {
                         color: ShadcnColors.textSecondary,
                       ),
                 ),
+                if (isAudioProcessing) ...[
+                  const SizedBox(height: ShadcnSpacing.sm),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      const SizedBox(width: ShadcnSpacing.sm),
+                      Text(
+                        l10n.helpAudioProcessingLabel,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: ShadcnColors.textSecondary,
+                            ),
+                      ),
+                    ],
+                  ),
+                ],
                 if (isAudioRecording) ...[
                   const SizedBox(height: ShadcnSpacing.sm),
                   Row(

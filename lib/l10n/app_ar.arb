@@ -303,6 +303,7 @@
   "helpAudioRecordButton": "تسجيل ملاحظة صوتية",
   "helpAudioStopButton": "إيقاف التسجيل",
   "helpAudioRecordingLabel": "جارٍ التسجيل…",
+  "helpAudioProcessingLabel": "جارٍ حفظ الملاحظة الصوتية…",
   "helpAudioReadyLabel": "الملاحظة الصوتية جاهزة",
   "helpAudioReadyWithDuration": "الملاحظة الصوتية جاهزة ({duration})",
   "@helpAudioReadyWithDuration": {

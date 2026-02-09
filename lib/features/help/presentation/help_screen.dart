@@ -96,6 +96,7 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
                   screenshots: List.unmodifiable(_screenshots),
                   isAudioSupported: _audioController.isSupported,
                   isAudioRecording: audioState.isRecording,
+                  isAudioProcessing: audioState.isProcessing,
                   hasAudioRecording: audioState.recording != null,
                   audioDuration: audioState.recording?.duration,
                   isSubmitting: _isSubmitting,
