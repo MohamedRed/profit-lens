@@ -88,6 +88,37 @@ class OfferFlowForm extends StatelessWidget {
             selectedVehicleId: selectedVehicleId,
             onChanged: onVehicleChanged,
           ),
+          OfferProfitabilityTargetSection(
+            minProfitabilityEuro: minProfitabilityEuro,
+            onSaved: onMinProfitabilityChanged,
+          ),
+          const SizedBox(height: 16),
+          OfferUsageCard(uid: userId),
+          const SizedBox(height: 16),
+          if (showOverview) ...[
+            ProfitabilityDecisionCard(
+              record: previewRecord!,
+              minProfitabilityEuro: minProfitabilityEuro,
+            ),
+            const SizedBox(height: 12),
+            ProfitabilityOverviewCard(
+              record: previewRecord!,
+              minProfitabilityEuro: minProfitabilityEuro,
+              onViewDetails: onViewDetails,
+            ),
+          ],
+          if (showDetailsSection) ...[
+            const SizedBox(height: 16),
+            OfferDetailsSection(
+              controller: controller,
+              requiresDuration: requiresDuration,
+              showAllAddressFields: allowManualEntry && isManualEntryRequested,
+              showAnalyzeAction: allowManualEntry && isManualEntryRequested,
+              onAnalyze: onAnalyzeManual,
+              onPickupSelected: onPickupSelected,
+              onDropoffSelected: onDropoffSelected,
+            ),
+          ],
           const SizedBox(height: 16),
           OfferLimitImportButton(
             userId: userId,
@@ -119,37 +150,6 @@ class OfferFlowForm extends StatelessWidget {
           if (controller.screenshotThumbnail != null) ...[
             OfferScreenshotPreview(thumbnail: controller.screenshotThumbnail!),
             const SizedBox(height: 16),
-          ],
-          OfferProfitabilityTargetSection(
-            minProfitabilityEuro: minProfitabilityEuro,
-            onSaved: onMinProfitabilityChanged,
-          ),
-          const SizedBox(height: 16),
-          OfferUsageCard(uid: userId),
-          const SizedBox(height: 16),
-          if (showOverview) ...[
-            ProfitabilityDecisionCard(
-              record: previewRecord!,
-              minProfitabilityEuro: minProfitabilityEuro,
-            ),
-            const SizedBox(height: 12),
-            ProfitabilityOverviewCard(
-              record: previewRecord!,
-              minProfitabilityEuro: minProfitabilityEuro,
-              onViewDetails: onViewDetails,
-            ),
-          ],
-          if (showDetailsSection) ...[
-            const SizedBox(height: 16),
-            OfferDetailsSection(
-              controller: controller,
-              requiresDuration: requiresDuration,
-              showAllAddressFields: allowManualEntry && isManualEntryRequested,
-              showAnalyzeAction: allowManualEntry && isManualEntryRequested,
-              onAnalyze: onAnalyzeManual,
-              onPickupSelected: onPickupSelected,
-              onDropoffSelected: onDropoffSelected,
-            ),
           ],
         ],
       ),
