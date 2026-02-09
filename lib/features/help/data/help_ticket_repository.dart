@@ -1,9 +1,9 @@
 import '../domain/help_ticket.dart';
 import '../domain/help_ticket_attachment.dart';
 import '../domain/help_ticket_draft.dart';
+import '../domain/help_ticket_page.dart';
 
 abstract class HelpTicketRepository {
-  Stream<List<HelpTicket>> watchTickets(String uid);
   Stream<HelpTicket?> watchTicket({
     required String uid,
     required String ticketId,
@@ -11,6 +11,12 @@ abstract class HelpTicketRepository {
   Stream<List<HelpTicketAttachment>> watchAttachments({
     required String uid,
     required String ticketId,
+  });
+
+  Future<HelpTicketPage> fetchTicketsPage({
+    required String uid,
+    HelpTicketPageCursor? cursor,
+    int limit = 20,
   });
 
   Future<HelpTicket> createTicket({

@@ -849,6 +849,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpNoTicketsMessage => 'لا توجد تذاكر بعد.';
 
   @override
+  String get helpTicketsLoadFailed => 'تعذر تحميل التذاكر الآن.';
+
+  @override
+  String get helpLoadMoreButton => 'تحميل المزيد';
+
+  @override
+  String get helpLoadingMoreLabel => 'جارٍ التحميل…';
+
+  @override
   String get helpStatusOpen => 'مفتوحة';
 
   @override

@@ -860,6 +860,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpNoTicketsMessage => 'No tickets yet.';
 
   @override
+  String get helpTicketsLoadFailed => 'We couldn’t load tickets right now.';
+
+  @override
+  String get helpLoadMoreButton => 'Load more';
+
+  @override
+  String get helpLoadingMoreLabel => 'Loading more…';
+
+  @override
   String get helpStatusOpen => 'Open';
 
   @override

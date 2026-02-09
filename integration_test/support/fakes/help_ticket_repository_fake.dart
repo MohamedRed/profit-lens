@@ -5,21 +5,14 @@ import 'package:profit_lens/features/help/domain/help_ticket.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_attachment.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_attachment_type.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_draft.dart';
+import 'package:profit_lens/features/help/domain/help_ticket_page.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_status.dart';
 import 'package:uuid/uuid.dart';
 
 class InMemoryHelpTicketRepository implements HelpTicketRepository {
   final List<HelpTicket> _tickets = [];
-  final StreamController<List<HelpTicket>> _controller =
-      StreamController<List<HelpTicket>>.broadcast();
   final Map<String, StreamController<HelpTicket?>> _ticketControllers = {};
   final Uuid _uuid = const Uuid();
-
-  @override
-  Stream<List<HelpTicket>> watchTickets(String uid) async* {
-    yield List<HelpTicket>.unmodifiable(_tickets);
-    yield* _controller.stream;
-  }
 
   @override
   Stream<HelpTicket?> watchTicket({
@@ -39,6 +32,38 @@ class InMemoryHelpTicketRepository implements HelpTicketRepository {
     required String ticketId,
   }) async* {
     yield const [];
+  }
+
+  @override
+  Future<HelpTicketPage> fetchTicketsPage({
+    required String uid,
+    HelpTicketPageCursor? cursor,
+    int limit = 20,
+  }) async {
+    var startIndex = 0;
+    if (cursor != null) {
+      final cursorIndex = _tickets.indexWhere(
+        (ticket) => ticket.id == cursor.id,
+      );
+      if (cursorIndex != -1) {
+        startIndex = cursorIndex + 1;
+      } else {
+        startIndex = _tickets.length;
+      }
+    }
+    final pageTickets = _tickets.skip(startIndex).take(limit).toList();
+    HelpTicketPageCursor? nextCursor;
+    if (pageTickets.length == limit) {
+      final last = pageTickets.last;
+      final updatedAt = last.updatedAt;
+      if (updatedAt != null) {
+        nextCursor = HelpTicketPageCursor(updatedAt: updatedAt, id: last.id);
+      }
+    }
+    return HelpTicketPage(
+      tickets: List<HelpTicket>.unmodifiable(pageTickets),
+      nextCursor: nextCursor,
+    );
   }
 
   @override
@@ -65,7 +90,6 @@ class InMemoryHelpTicketRepository implements HelpTicketRepository {
       aiNeedsUserAction: null,
     );
     _tickets.insert(0, ticket);
-    _controller.add(List<HelpTicket>.unmodifiable(_tickets));
     _controllerForTicket(ticket.id).add(ticket);
     return ticket;
   }

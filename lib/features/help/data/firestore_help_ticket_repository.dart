@@ -4,6 +4,7 @@ import '../domain/help_ticket.dart';
 import '../domain/help_ticket_attachment.dart';
 import '../domain/help_ticket_attachment_type.dart';
 import '../domain/help_ticket_draft.dart';
+import '../domain/help_ticket_page.dart';
 import '../domain/help_ticket_status.dart';
 import 'help_ticket_attachment_mapper.dart';
 import 'help_ticket_mapper.dart';
@@ -43,20 +44,6 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
   }
 
   @override
-  Stream<List<HelpTicket>> watchTickets(String uid) {
-    _ensureConfigured();
-    return _collection(uid)
-        .orderBy('updatedAt', descending: true)
-        .snapshots()
-        .map(
-          (snapshot) => snapshot.docs
-              .map((doc) => _mapper.fromDocument(doc.id, doc.data()))
-              .whereType<HelpTicket>()
-              .toList(),
-        );
-  }
-
-  @override
   Stream<HelpTicket?> watchTicket({
     required String uid,
     required String ticketId,
@@ -85,6 +72,43 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
               .whereType<HelpTicketAttachment>()
               .toList(),
         );
+  }
+
+  @override
+  Future<HelpTicketPage> fetchTicketsPage({
+    required String uid,
+    HelpTicketPageCursor? cursor,
+    int limit = 20,
+  }) async {
+    _ensureConfigured();
+    Query<Map<String, dynamic>> query = _collection(uid)
+        .orderBy('updatedAt', descending: true)
+        .orderBy(FieldPath.documentId)
+        .limit(limit);
+    if (cursor != null) {
+      query = query.startAfter([
+        Timestamp.fromDate(cursor.updatedAt),
+        cursor.id,
+      ]);
+    }
+    final snapshot = await query.get();
+    final tickets = snapshot.docs
+        .map((doc) => _mapper.fromDocument(doc.id, doc.data()))
+        .whereType<HelpTicket>()
+        .toList();
+    HelpTicketPageCursor? nextCursor;
+    if (snapshot.docs.length == limit) {
+      final lastDoc = snapshot.docs.last;
+      final updatedAt =
+          (lastDoc.data()['updatedAt'] as Timestamp?)?.toDate();
+      if (updatedAt != null) {
+        nextCursor = HelpTicketPageCursor(
+          updatedAt: updatedAt,
+          id: lastDoc.id,
+        );
+      }
+    }
+    return HelpTicketPage(tickets: tickets, nextCursor: nextCursor);
   }
 
   @override

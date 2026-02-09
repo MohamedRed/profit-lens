@@ -5,42 +5,117 @@ import '../../../core/design_system/shadcn_tokens.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../domain/help_ticket.dart';
+import '../domain/help_ticket_page.dart';
 import 'help_ticket_detail_screen.dart';
 import 'widgets/help_ticket_list_section.dart';
 
-class HelpTicketsScreen extends StatelessWidget {
+class HelpTicketsScreen extends StatefulWidget {
   final AuthUser user;
 
   const HelpTicketsScreen({super.key, required this.user});
 
   @override
+  State<HelpTicketsScreen> createState() => _HelpTicketsScreenState();
+}
+
+class _HelpTicketsScreenState extends State<HelpTicketsScreen> {
+  static const int pageSize = 12;
+
+  final List<HelpTicket> _tickets = [];
+  HelpTicketPageCursor? _cursor;
+  bool _isLoading = true;
+  bool _isLoadingMore = false;
+  bool _hasMore = true;
+  bool _loadFailed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitial();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final repository = AppScope.of(context).helpTicketRepository;
-    final ticketStream = repository.watchTickets(user.uid);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.helpTicketsTitle)),
       backgroundColor: ShadcnColors.background,
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(ShadcnSpacing.lg),
-          children: [
-            HelpTicketListSection(
-              ticketStream: ticketStream,
-              onSelected: (ticket) => _openTicketDetail(context, ticket),
-            ),
-          ],
+        child: RefreshIndicator(
+          onRefresh: _loadInitial,
+          child: ListView(
+            padding: const EdgeInsets.all(ShadcnSpacing.lg),
+            physics: const AlwaysScrollableScrollPhysics(),
+            children: [
+              HelpTicketListSection(
+                tickets: List<HelpTicket>.unmodifiable(_tickets),
+                isLoading: _isLoading,
+                isLoadingMore: _isLoadingMore,
+                hasMore: _hasMore,
+                hasError: _loadFailed,
+                onRetry: _loadInitial,
+                onLoadMore: _loadMore,
+                onSelected: (ticket) => _openTicketDetail(context, ticket),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> _loadInitial() async {
+    setState(() {
+      _isLoading = true;
+      _loadFailed = false;
+      _hasMore = true;
+      _cursor = null;
+      _tickets.clear();
+    });
+    await _fetchPage();
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+  }
+
+  Future<void> _loadMore() async {
+    if (_isLoadingMore || _isLoading || !_hasMore) return;
+    setState(() => _isLoadingMore = true);
+    await _fetchPage();
+    if (!mounted) return;
+    setState(() => _isLoadingMore = false);
+  }
+
+  Future<void> _fetchPage() async {
+    final l10n = AppLocalizations.of(context)!;
+    final repository = AppScope.of(context).helpTicketRepository;
+    try {
+      final page = await repository.fetchTicketsPage(
+        uid: widget.user.uid,
+        cursor: _cursor,
+        limit: pageSize,
+      );
+      if (!mounted) return;
+      setState(() {
+        _tickets.addAll(page.tickets);
+        _cursor = page.nextCursor;
+        _hasMore = page.nextCursor != null;
+        _loadFailed = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _loadFailed = true);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.helpTicketsLoadFailed)),
+      );
+    }
   }
 
   void _openTicketDetail(BuildContext context, HelpTicket ticket) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => HelpTicketDetailScreen(
-          user: user,
+          user: widget.user,
           ticketId: ticket.id,
         ),
       ),

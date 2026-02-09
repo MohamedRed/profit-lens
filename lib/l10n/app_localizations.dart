@@ -1690,6 +1690,24 @@ abstract class AppLocalizations {
   /// **'No tickets yet.'**
   String get helpNoTicketsMessage;
 
+  /// No description provided for @helpTicketsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn’t load tickets right now.'**
+  String get helpTicketsLoadFailed;
+
+  /// No description provided for @helpLoadMoreButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more'**
+  String get helpLoadMoreButton;
+
+  /// No description provided for @helpLoadingMoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading more…'**
+  String get helpLoadingMoreLabel;
+
   /// No description provided for @helpStatusOpen.
   ///
   /// In en, this message translates to:
