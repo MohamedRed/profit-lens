@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/app_scope.dart';
 import '../../../core/design_system/shadcn_tokens.dart';
 import '../../../core/widgets/section_card.dart';
+import '../../../core/widgets/stripe_launch_overlay.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/billing_plan.dart';
 
@@ -72,10 +73,15 @@ class _PlanCard extends StatelessWidget {
 
   Future<void> _startCheckout(BuildContext context, BillingPlan plan) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final overlay = StripeLaunchOverlay.show(context, l10n.managePlanButton);
     try {
+      await Future<void>.delayed(const Duration(milliseconds: 400));
       await AppScope.of(context).billingService.startCheckout(plan.priceId);
     } catch (error) {
       messenger.showSnackBar(SnackBar(content: Text(error.toString())));
+    } finally {
+      overlay.remove();
     }
   }
 }

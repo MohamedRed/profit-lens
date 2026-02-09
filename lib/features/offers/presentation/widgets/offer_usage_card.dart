@@ -199,6 +199,7 @@ class _ManagePlanButtonState extends State<_ManagePlanButton>
     });
     final l10n = AppLocalizations.of(context)!;
     try {
+      await Future<void>.delayed(const Duration(milliseconds: 400));
       await widget.onManage();
     } catch (_) {
       if (!mounted) {
