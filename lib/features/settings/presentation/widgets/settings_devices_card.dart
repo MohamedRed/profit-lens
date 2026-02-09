@@ -16,16 +16,14 @@ class SettingsDevicesCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final l10n = AppLocalizations.of(context)!;
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.devices),
-        title: Text(l10n.devicesSectionTitle),
-        subtitle: Text(l10n.devicesSectionSubtitle),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => DeviceManagementScreen(user: user),
-          ),
+    return ListTile(
+      leading: const Icon(Icons.devices),
+      title: Text(l10n.devicesSectionTitle),
+      subtitle: Text(l10n.devicesSectionSubtitle),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => DeviceManagementScreen(user: user),
         ),
       ),
     );

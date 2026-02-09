@@ -10,12 +10,10 @@ class SettingsSignOutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Card(
-      child: ListTile(
-        title: Text(l10n.signOutButton),
-        leading: const Icon(Icons.logout),
-        onTap: onSignOut,
-      ),
+    return ListTile(
+      title: Text(l10n.signOutButton),
+      leading: const Icon(Icons.logout),
+      onTap: onSignOut,
     );
   }
 }

@@ -101,37 +101,35 @@ class _SettingsLanguageCardState extends State<SettingsLanguageCard> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.languageSectionTitle,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: _selected,
-              items: _supported
-                  .map(
-                    (code) => DropdownMenuItem(
-                      value: code,
-                      child: Row(
-                        children: [
-                          Text(_flagFor(code)),
-                          const SizedBox(width: 8),
-                          Text(_labelFor(code, l10n)),
-                        ],
-                      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.languageSectionTitle,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 12),
+          DropdownButtonFormField<String>(
+            value: _selected,
+            items: _supported
+                .map(
+                  (code) => DropdownMenuItem(
+                    value: code,
+                    child: Row(
+                      children: [
+                        Text(_flagFor(code)),
+                        const SizedBox(width: 8),
+                        Text(_labelFor(code, l10n)),
+                      ],
                     ),
-                  )
-                  .toList(),
-              onChanged: _isSaving ? null : _applySelection,
-            ),
-          ],
-        ),
+                  ),
+                )
+                .toList(),
+            onChanged: _isSaving ? null : _applySelection,
+          ),
+        ],
       ),
     );
   }

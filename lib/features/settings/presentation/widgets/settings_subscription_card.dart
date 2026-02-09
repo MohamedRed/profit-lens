@@ -115,25 +115,23 @@ class _SubscriptionTileState extends State<_SubscriptionTile>
   Widget build(BuildContext context) {
     final entitlement = widget.entitlement;
     final l10n = AppLocalizations.of(context)!;
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.payment),
-        title: Text(_resolvePlanTitle(context, entitlement)),
-        subtitle: Text(_resolvePlanSubtitle(context, entitlement)),
-        trailing: TextButton(
-          onPressed: _openingPortal ? null : _handleAction,
-          child: _openingPortal
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(
-                  entitlement.isFree
-                      ? l10n.upgradePlanButton
-                      : l10n.managePlanButton,
-                ),
-        ),
+    return ListTile(
+      leading: const Icon(Icons.payment),
+      title: Text(_resolvePlanTitle(context, entitlement)),
+      subtitle: Text(_resolvePlanSubtitle(context, entitlement)),
+      trailing: TextButton(
+        onPressed: _openingPortal ? null : _handleAction,
+        child: _openingPortal
+            ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Text(
+                entitlement.isFree
+                    ? l10n.upgradePlanButton
+                    : l10n.managePlanButton,
+              ),
       ),
     );
   }

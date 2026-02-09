@@ -20,23 +20,21 @@ class SettingsProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final localeTag = Localizations.localeOf(context).toString();
-    return Card(
-      child: ListTile(
-        title: Text(l10n.profileSectionTitle),
-        subtitle: Text(
-          '${l10n.socialRateLabel}: ${(profile.socialContributionRate * 100).toStringAsFixed(1)}%\n'
-          '${l10n.monthlyFixedCostsLabel}: ${CurrencyFormat.euro(profile.monthlyFixedCosts, localeTag)}',
-        ),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  ProfileEditScreen(user: user, profile: profile),
-            ),
-          );
-        },
+    return ListTile(
+      title: Text(l10n.profileSectionTitle),
+      subtitle: Text(
+        '${l10n.socialRateLabel}: ${(profile.socialContributionRate * 100).toStringAsFixed(1)}%\n'
+        '${l10n.monthlyFixedCostsLabel}: ${CurrencyFormat.euro(profile.monthlyFixedCosts, localeTag)}',
       ),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                ProfileEditScreen(user: user, profile: profile),
+          ),
+        );
+      },
     );
   }
 }

@@ -15,17 +15,15 @@ class SettingsInstallCard extends StatelessWidget {
         if (!available && !isAppleInstallManualAvailable) {
           return const SizedBox.shrink();
         }
-        return Card(
-          child: ListTile(
-            leading: Icon(
-              isAppleInstallManualAvailable
-                  ? Icons.ios_share
-                  : Icons.add_to_home_screen,
-            ),
-            title: Text(l10n.installAppTitle),
-            subtitle: Text(l10n.installAppSubtitle),
-            onTap: () => showPwaInstallDialog(),
+        return ListTile(
+          leading: Icon(
+            isAppleInstallManualAvailable
+                ? Icons.ios_share
+                : Icons.add_to_home_screen,
           ),
+          title: Text(l10n.installAppTitle),
+          subtitle: Text(l10n.installAppSubtitle),
+          onTap: () => showPwaInstallDialog(),
         );
       },
     );
