@@ -117,6 +117,15 @@ class HelpTicketFormSection extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: ShadcnSpacing.sm),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: OutlinedButton.icon(
+                      onPressed: isSubmitting ? null : onToggleAudio,
+                      icon: const Icon(Icons.stop_circle_outlined),
+                      label: Text(l10n.helpAudioStopButton),
+                    ),
+                  ),
                 ],
                 if (!isAudioRecording && hasAudioRecording) ...[
                   const SizedBox(height: ShadcnSpacing.sm),
