@@ -30,29 +30,6 @@ class SettingsSubscriptionCard extends StatelessWidget {
       },
     );
   }
-
-  String _resolvePlanTitle(BuildContext context, Entitlement entitlement) {
-    final l10n = AppLocalizations.of(context)!;
-    if (entitlement.isFree) {
-      return l10n.subscriptionFreeTitle;
-    }
-    return l10n.subscriptionActiveTitle;
-  }
-
-  String _resolvePlanSubtitle(BuildContext context, Entitlement entitlement) {
-    final l10n = AppLocalizations.of(context)!;
-    if (entitlement.isFree) {
-      return l10n.subscriptionFreeSubtitle;
-    }
-    final plan = BillingPlans.all.cast<BillingPlan?>().firstWhere(
-      (item) => item?.id == entitlement.planId,
-      orElse: () => null,
-    );
-    if (plan == null) {
-      return l10n.subscriptionActiveSubtitle;
-    }
-    return l10n.subscriptionActivePlan(plan.priceLabel);
-  }
 }
 
 class _SubscriptionTile extends StatefulWidget {
