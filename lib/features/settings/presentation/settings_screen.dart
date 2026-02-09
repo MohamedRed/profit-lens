@@ -33,29 +33,57 @@ class SettingsScreen extends StatelessWidget {
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              SettingsProfileCard(user: user, profile: profile),
-              const SizedBox(height: 12),
-              SettingsLanguageCard(user: user, profile: profile),
-              const SizedBox(height: 12),
-              const SettingsInstallCard(),
-              const SizedBox(height: 12),
-              SettingsSubscriptionCard(user: user),
-              const SizedBox(height: 12),
-              SettingsDevicesCard(user: user),
-              const SizedBox(height: 12),
-              SettingsVehicleCard(
-                user: user,
-                profile: profile,
-                vehicles: vehicles,
+              _SettingsSectionContainer(
+                child: SettingsProfileCard(user: user, profile: profile),
               ),
               const SizedBox(height: 12),
-              SettingsSignOutCard(
-                onSignOut: () => services.authRepository.signOut(),
+              _SettingsSectionContainer(
+                child: SettingsLanguageCard(user: user, profile: profile),
+              ),
+              const SizedBox(height: 12),
+              const _SettingsSectionContainer(child: SettingsInstallCard()),
+              const SizedBox(height: 12),
+              _SettingsSectionContainer(
+                child: SettingsSubscriptionCard(user: user),
+              ),
+              const SizedBox(height: 12),
+              _SettingsSectionContainer(child: SettingsDevicesCard(user: user)),
+              const SizedBox(height: 12),
+              _SettingsSectionContainer(
+                child: SettingsVehicleCard(
+                  user: user,
+                  profile: profile,
+                  vehicles: vehicles,
+                ),
+              ),
+              const SizedBox(height: 12),
+              _SettingsSectionContainer(
+                child: SettingsSignOutCard(
+                  onSignOut: () => services.authRepository.signOut(),
+                ),
               ),
             ],
           ),
         );
       },
+    );
+  }
+}
+
+class _SettingsSectionContainer extends StatelessWidget {
+  final Widget child;
+
+  const _SettingsSectionContainer({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor = Theme.of(context).colorScheme.outline;
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: borderColor),
+      ),
+      child: child,
     );
   }
 }
