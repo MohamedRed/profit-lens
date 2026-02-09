@@ -41,14 +41,10 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
 }) {
   return OfferFlowCallbacks(
     onImportScreenshot: () async {
-      final option = await showOfferImportSourceSheet(context);
-      if (option == null) {
+      final source = await _resolveImportSource(context);
+      if (source == null) {
         return;
       }
-      final source = switch (option) {
-        OfferImportSourceOption.camera => ImageSource.camera,
-        OfferImportSourceOption.gallery => ImageSource.gallery,
-      };
       await importOfferScreenshot(
         context: context,
         userId: user.uid,
@@ -119,4 +115,18 @@ OfferFlowCallbacks buildOfferFlowCallbacks({
       );
     },
   );
+}
+
+Future<ImageSource?> _resolveImportSource(BuildContext context) async {
+  if (Theme.of(context).platform == TargetPlatform.iOS) {
+    return ImageSource.gallery;
+  }
+  final option = await showOfferImportSourceSheet(context);
+  if (option == null) {
+    return null;
+  }
+  return switch (option) {
+    OfferImportSourceOption.camera => ImageSource.camera,
+    OfferImportSourceOption.gallery => ImageSource.gallery,
+  };
 }
