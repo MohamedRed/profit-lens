@@ -49,7 +49,10 @@ class FirebaseBillingService implements BillingService {
   Future<void> _launch(String url) async {
     final uri = Uri.parse(url);
     if (kIsWeb) {
-      web_navigator.navigateToUrl(url);
+      final opened = web_navigator.openExternalUrl(url);
+      if (!opened) {
+        throw StateError('Could not launch $url');
+      }
       return;
     }
     if (!await canLaunchUrl(uri)) {
