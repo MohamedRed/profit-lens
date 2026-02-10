@@ -151,7 +151,10 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
     if (!mounted) return;
     final state = _audioController.state.value;
     if (state.recording != null) {
-      _formKey.currentState?.validate();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _formKey.currentState?.validate();
+      });
     }
   }
 }
