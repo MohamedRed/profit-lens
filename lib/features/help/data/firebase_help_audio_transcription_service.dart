@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_functions/cloud_functions.dart';
 
 import '../../../core/config/app_config.dart';
-import '../../../core/config/firebase_config.dart';
+import '../../../core/config/firebase_regions.dart';
 import 'help_audio_transcription_service.dart';
 
 class FirebaseHelpAudioTranscriptionService
