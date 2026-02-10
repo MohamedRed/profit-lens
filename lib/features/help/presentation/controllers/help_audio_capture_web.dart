@@ -90,11 +90,9 @@ class WebHelpAudioCapture implements HelpAudioCapture {
         js_util.callMethod(recorder, 'requestData', []);
       } catch (_) {}
     }
-    timeout = Timer(const Duration(seconds: 5), () async {
-      _stopwatch.stop();
-      final recording = await _buildRecordingFromChunks();
+    timeout = Timer(const Duration(seconds: 5), () {
       _disposeStream();
-      completeOnce(recording);
+      completeOnce(null);
     });
     js_util.callMethod(recorder, 'addEventListener', [
       'stop',
@@ -108,10 +106,8 @@ class WebHelpAudioCapture implements HelpAudioCapture {
     try {
       js_util.callMethod(recorder, 'stop', []);
     } catch (_) {
-      _stopwatch.stop();
-      final recording = await _buildRecordingFromChunks();
       _disposeStream();
-      completeOnce(recording);
+      completeOnce(null);
     }
     return completer.future;
   }
@@ -199,7 +195,19 @@ class WebHelpAudioCapture implements HelpAudioCapture {
   }
 }
 
-Future<Uint8List> _blobToBytes(html.Blob blob) {
+Future<Uint8List> _blobToBytes(html.Blob blob) async {
+  try {
+    if (js_util.hasProperty(blob, 'arrayBuffer')) {
+      final promise = js_util.callMethod(blob, 'arrayBuffer', []);
+      final buffer = await js_util
+          .promiseToFuture(promise)
+          .timeout(const Duration(seconds: 3), onTimeout: () => null);
+      if (buffer is ByteBuffer) {
+        return Uint8List.view(buffer);
+      }
+    }
+  } catch (_) {}
+
   final reader = html.FileReader();
   final completer = Completer<Uint8List>();
   reader.onLoadEnd.listen((_) {
