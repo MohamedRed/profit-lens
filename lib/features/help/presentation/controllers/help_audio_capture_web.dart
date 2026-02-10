@@ -67,7 +67,7 @@ class WebHelpAudioCapture implements HelpAudioCapture {
         }
       }),
     ]);
-    js_util.callMethod(_recorder!, 'start', []);
+    js_util.callMethod(_recorder!, 'start', [1000]);
   }
 
   @override
@@ -90,38 +90,28 @@ class WebHelpAudioCapture implements HelpAudioCapture {
         js_util.callMethod(recorder, 'requestData', []);
       } catch (_) {}
     }
-    timeout = Timer(const Duration(seconds: 5), () {
+    timeout = Timer(const Duration(seconds: 5), () async {
+      _stopwatch.stop();
+      final recording = await _buildRecordingFromChunks();
       _disposeStream();
-      completeOnce(null);
+      completeOnce(recording);
     });
     js_util.callMethod(recorder, 'addEventListener', [
       'stop',
       js_util.allowInterop((_) async {
         _stopwatch.stop();
-        final blob = html.Blob(_chunks, _mimeType);
-        final bytes = await _blobToBytes(blob);
-        final duration = _stopwatch.elapsed;
-        final filename = _buildFilename(_mimeType);
+        final recording = await _buildRecordingFromChunks();
         _disposeStream();
-        if (bytes.isEmpty) {
-          completeOnce(null);
-          return;
-        }
-        completeOnce(
-          HelpAudioRecording(
-            bytes: bytes,
-            contentType: _mimeType,
-            filename: filename,
-            duration: duration,
-          ),
-        );
+        completeOnce(recording);
       }),
     ]);
     try {
       js_util.callMethod(recorder, 'stop', []);
     } catch (_) {
+      _stopwatch.stop();
+      final recording = await _buildRecordingFromChunks();
       _disposeStream();
-      completeOnce(null);
+      completeOnce(recording);
     }
     return completer.future;
   }
@@ -154,6 +144,8 @@ class WebHelpAudioCapture implements HelpAudioCapture {
 
   String _resolveMimeType() {
     const preferred = [
+      'audio/mp4;codecs=mp4a.40.2',
+      'audio/mp4;codecs=mp4a.40.5',
       'audio/webm;codecs=opus',
       'audio/webm',
       'audio/mp4',
@@ -171,6 +163,31 @@ class WebHelpAudioCapture implements HelpAudioCapture {
       }
     }
     return '';
+  }
+
+  Future<HelpAudioRecording?> _buildRecordingFromChunks() async {
+    if (_chunks.isEmpty) {
+      return null;
+    }
+    final blob = _mimeType.isNotEmpty
+        ? html.Blob(_chunks, _mimeType)
+        : html.Blob(_chunks);
+    final bytes = await _blobToBytes(blob);
+    if (bytes.isEmpty) {
+      return null;
+    }
+    final contentType = _mimeType.isNotEmpty ? _mimeType : blob.type;
+    if (contentType.isEmpty) {
+      return null;
+    }
+    final duration = _stopwatch.elapsed;
+    final filename = _buildFilename(contentType);
+    return HelpAudioRecording(
+      bytes: bytes,
+      contentType: contentType,
+      filename: filename,
+      duration: duration,
+    );
   }
 
   String _buildFilename(String mimeType) {
