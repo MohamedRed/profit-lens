@@ -1726,6 +1726,12 @@ abstract class AppLocalizations {
   /// **'Remove attachment'**
   String get removeAttachmentTooltip;
 
+  /// No description provided for @helpAttachmentProcessingFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to prepare the screenshot. Please try again.'**
+  String get helpAttachmentProcessingFailed;
+
   /// No description provided for @helpSubmittingLabel.
   ///
   /// In en, this message translates to:

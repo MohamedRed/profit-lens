@@ -40,20 +40,32 @@ mixin _HelpScreenActions on State<HelpScreen> {
   }
 
   Future<void> _addImageAttachment(XFile image) async {
-    final bytes = await image.readAsBytes();
-    if (!mounted) return;
-    final attachment = HelpLocalAttachment(
-      id: _state._uuid.v4(),
-      type: HelpTicketAttachmentType.image,
-      filename: image.name,
-      contentType: resolveHelpImageContentType(image.name),
-      bytes: bytes,
-      sizeBytes: bytes.length,
-      durationSeconds: null,
-    );
-    setState(() {
-      _state._screenshots.add(attachment);
-    });
+    try {
+      final bytes = await image.readAsBytes();
+      if (!mounted) return;
+      final processed = await processHelpImageForUpload(
+        bytes: bytes,
+        filename: image.name,
+        contentType: resolveHelpImageContentType(image.name),
+      );
+      if (!mounted) return;
+      final attachment = HelpLocalAttachment(
+        id: _state._uuid.v4(),
+        type: HelpTicketAttachmentType.image,
+        filename: processed.filename,
+        contentType: processed.contentType,
+        bytes: processed.bytes,
+        sizeBytes: processed.bytes.length,
+        durationSeconds: null,
+      );
+      setState(() {
+        _state._screenshots.add(attachment);
+      });
+    } catch (_) {
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      _showSnackBar(l10n.helpAttachmentProcessingFailed);
+    }
   }
 
   void _removeScreenshot(String id) {

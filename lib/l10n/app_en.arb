@@ -331,6 +331,7 @@
     }
   },
   "removeAttachmentTooltip": "Remove attachment",
+  "helpAttachmentProcessingFailed": "Unable to prepare the screenshot. Please try again.",
   "helpSubmittingLabel": "Submitting...",
   "helpSubmitButton": "Submit ticket",
   "helpTicketSubmitted": "Ticket submitted. We’ll keep you posted.",

@@ -881,6 +881,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get removeAttachmentTooltip => 'Remove attachment';
 
   @override
+  String get helpAttachmentProcessingFailed =>
+      'Unable to prepare the screenshot. Please try again.';
+
+  @override
   String get helpSubmittingLabel => 'Submitting...';
 
   @override

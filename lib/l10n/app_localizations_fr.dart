@@ -890,6 +890,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get removeAttachmentTooltip => 'Supprimer la pièce jointe';
 
   @override
+  String get helpAttachmentProcessingFailed =>
+      'Impossible de préparer la capture. Réessayez.';
+
+  @override
   String get helpSubmittingLabel => 'Envoi…';
 
   @override

@@ -16,6 +16,7 @@ import '../domain/help_ticket_draft.dart';
 import '../presentation/controllers/help_audio_capture.dart';
 import '../presentation/controllers/help_audio_recorder_controller.dart';
 import '../presentation/controllers/help_ticket_form_controller.dart';
+import '../presentation/helpers/help_image_processing.dart';
 import '../presentation/models/help_local_attachment.dart';
 import 'help_screen_helpers.dart';
 import 'help_tickets_screen.dart';

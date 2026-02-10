@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'help_image_processing.dart';
 
 const double _maxDimension = 1600;
+const double _jpegQuality = 0.82;
 
 Future<HelpProcessedImage> processHelpImageForUploadInternal({
   required Uint8List bytes,
@@ -75,7 +76,7 @@ String _stripExtension(String name) {
 }
 
 Future<html.Blob?> _canvasToBlob(html.CanvasElement canvas) {
-  return canvas.toBlob('image/jpeg');
+  return canvas.toBlob('image/jpeg', _jpegQuality);
 }
 
 Future<Uint8List> _blobToBytes(html.Blob blob) {

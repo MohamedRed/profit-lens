@@ -331,6 +331,7 @@
     }
   },
   "removeAttachmentTooltip": "إزالة المرفق",
+  "helpAttachmentProcessingFailed": "تعذر تجهيز لقطة الشاشة. حاول مرة أخرى.",
   "helpSubmittingLabel": "جارٍ الإرسال...",
   "helpSubmitButton": "إرسال التذكرة",
   "helpTicketSubmitted": "تم إرسال التذكرة. سنوافيك بالتحديثات.",

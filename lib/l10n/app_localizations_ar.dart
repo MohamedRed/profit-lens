@@ -873,6 +873,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get removeAttachmentTooltip => 'إزالة المرفق';
 
   @override
+  String get helpAttachmentProcessingFailed =>
+      'تعذر تجهيز لقطة الشاشة. حاول مرة أخرى.';
+
+  @override
   String get helpSubmittingLabel => 'جارٍ الإرسال...';
 
   @override

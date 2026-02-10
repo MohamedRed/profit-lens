@@ -331,6 +331,7 @@
     }
   },
   "removeAttachmentTooltip": "Supprimer la pièce jointe",
+  "helpAttachmentProcessingFailed": "Impossible de préparer la capture. Réessayez.",
   "helpSubmittingLabel": "Envoi…",
   "helpSubmitButton": "Envoyer le ticket",
   "helpTicketSubmitted": "Ticket envoyé. Nous vous tiendrons informé.",
