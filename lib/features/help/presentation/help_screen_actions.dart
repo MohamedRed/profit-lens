@@ -141,7 +141,7 @@ mixin _HelpScreenActions on State<HelpScreen> {
             bytes: screenshot.bytes,
             filename: screenshot.filename,
             contentType: screenshot.contentType,
-          );
+          ).timeout(_HelpScreenState._imageProcessingTimeout);
           processedScreenshots.add(
             HelpTicketAttachmentDraft(
               id: screenshot.id,
@@ -173,11 +173,13 @@ mixin _HelpScreenActions on State<HelpScreen> {
             durationSeconds: audioRecording.duration.inSeconds,
           ).toDraft(),
       ];
-      await _state._ticketRepository!.createTicket(
-        uid: widget.user.uid,
-        draft: draft,
-        attachments: attachments,
-      );
+      await _state._ticketRepository!
+          .createTicket(
+            uid: widget.user.uid,
+            draft: draft,
+            attachments: attachments,
+          )
+          .timeout(_HelpScreenState._submissionTimeout);
       if (!mounted) return;
       _state._formController.reset();
       _state._screenshots.clear();
