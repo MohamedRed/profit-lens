@@ -40,32 +40,20 @@ mixin _HelpScreenActions on State<HelpScreen> {
   }
 
   Future<void> _addImageAttachment(XFile image) async {
-    try {
-      final bytes = await image.readAsBytes();
-      if (!mounted) return;
-      final processed = await processHelpImageForUpload(
-        bytes: bytes,
-        filename: image.name,
-        contentType: resolveHelpImageContentType(image.name),
-      );
-      if (!mounted) return;
-      final attachment = HelpLocalAttachment(
-        id: _state._uuid.v4(),
-        type: HelpTicketAttachmentType.image,
-        filename: processed.filename,
-        contentType: processed.contentType,
-        bytes: processed.bytes,
-        sizeBytes: processed.bytes.length,
-        durationSeconds: null,
-      );
-      setState(() {
-        _state._screenshots.add(attachment);
-      });
-    } catch (_) {
-      if (!mounted) return;
-      final l10n = AppLocalizations.of(context)!;
-      _showSnackBar(l10n.helpAttachmentProcessingFailed);
-    }
+    final bytes = await image.readAsBytes();
+    if (!mounted) return;
+    final attachment = HelpLocalAttachment(
+      id: _state._uuid.v4(),
+      type: HelpTicketAttachmentType.image,
+      filename: image.name,
+      contentType: resolveHelpImageContentType(image.name),
+      bytes: bytes,
+      sizeBytes: bytes.length,
+      durationSeconds: null,
+    );
+    setState(() {
+      _state._screenshots.add(attachment);
+    });
   }
 
   void _removeScreenshot(String id) {
@@ -146,8 +134,34 @@ mixin _HelpScreenActions on State<HelpScreen> {
         platform: platform,
         locale: localeTag,
       );
+      final processedScreenshots = <HelpTicketAttachmentDraft>[];
+      for (final screenshot in _state._screenshots) {
+        try {
+          final processed = await processHelpImageForUpload(
+            bytes: screenshot.bytes,
+            filename: screenshot.filename,
+            contentType: screenshot.contentType,
+          );
+          processedScreenshots.add(
+            HelpTicketAttachmentDraft(
+              id: screenshot.id,
+              type: screenshot.type,
+              filename: processed.filename,
+              contentType: processed.contentType,
+              bytes: processed.bytes,
+              sizeBytes: processed.bytes.length,
+              durationSeconds: screenshot.durationSeconds,
+            ),
+          );
+        } catch (_) {
+          if (!mounted) return;
+          _showSnackBar(l10n.helpAttachmentProcessingFailed);
+          return;
+        }
+      }
+
       final attachments = <HelpTicketAttachmentDraft>[
-        for (final screenshot in _state._screenshots) screenshot.toDraft(),
+        ...processedScreenshots,
         if (_HelpScreenState._audioEnabled && audioRecording != null)
           HelpLocalAttachment(
             id: _state._uuid.v4(),
