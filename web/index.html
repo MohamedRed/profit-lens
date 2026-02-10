@@ -42,13 +42,27 @@
   <style>
     html,
     body {
-      height: var(--app-height, 100%);
+      height: 100vh;
+      min-height: 100vh;
       margin: 0;
       overscroll-behavior-x: none;
       touch-action: pan-y;
       position: fixed;
       width: 100%;
       overflow: hidden;
+    }
+
+    #flutter_view,
+    #flutter_container,
+    flt-glass-pane,
+    flt-scene-host,
+    flt-semantics-host {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: 100vw !important;
+      max-height: 100vh !important;
     }
 
     #edge-swipe-guard-left,
@@ -173,13 +187,12 @@
     });
 
     (function () {
-      var setAppHeight = function () {
-        var height = window.screen.height;
-        document.documentElement.style.setProperty("--app-height", height + "px");
+      var lockViewport = function () {
+        var root = document.documentElement;
+        root.style.setProperty("--app-height", window.screen.height + "px");
       };
-
-      setAppHeight();
-      window.addEventListener("orientationchange", setAppHeight);
+      lockViewport();
+      window.addEventListener("orientationchange", lockViewport);
     })();
 
     (function () {
