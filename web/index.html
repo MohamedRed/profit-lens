@@ -171,11 +171,7 @@
 
     (function () {
       var setAppHeight = function () {
-        var isStandalone =
-          (window.matchMedia &&
-            window.matchMedia("(display-mode: standalone)").matches) ||
-          window.navigator.standalone === true;
-        var height = isStandalone ? window.screen.height : window.innerHeight;
+        var height = window.screen.height;
         document.documentElement.style.setProperty("--app-height", height + "px");
       };
 
