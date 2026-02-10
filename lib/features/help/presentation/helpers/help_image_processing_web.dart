@@ -51,9 +51,16 @@ Future<HelpProcessedImage> processHelpImageForUploadInternal({
   final context = canvas.context2D;
   context.drawImageScaled(image, 0, 0, targetWidth, targetHeight);
 
-  final blobResult = await _canvasToBlob(canvas);
+  var blobResult = await _canvasToBlob(canvas);
   if (blobResult == null) {
-    throw StateError('Unable to process image.');
+    blobResult = _dataUrlToBlob(canvas.toDataUrl('image/jpeg', _jpegQuality));
+    if (blobResult == null) {
+      return HelpProcessedImage(
+        bytes: bytes,
+        filename: filename,
+        contentType: contentType,
+      );
+    }
   }
 
   final processedBytes = await _blobToBytes(blobResult);
@@ -73,6 +80,26 @@ String _stripExtension(String name) {
   final index = name.lastIndexOf('.');
   if (index <= 0) return name;
   return name.substring(0, index);
+}
+
+html.Blob? _dataUrlToBlob(String dataUrl) {
+  final commaIndex = dataUrl.indexOf(',');
+  if (commaIndex <= 0) return null;
+  final metadata = dataUrl.substring(0, commaIndex);
+  final base64Data = dataUrl.substring(commaIndex + 1);
+  if (!metadata.contains('base64')) return null;
+  try {
+    final decoded = html.window.atob(base64Data);
+    final bytes = Uint8List(decoded.length);
+    for (var i = 0; i < decoded.length; i++) {
+      bytes[i] = decoded.codeUnitAt(i);
+    }
+    final mimeMatch = RegExp(r'data:([^;]+);base64').firstMatch(metadata);
+    final mimeType = mimeMatch?.group(1) ?? 'image/jpeg';
+    return html.Blob([bytes], mimeType);
+  } catch (_) {
+    return null;
+  }
 }
 
 Future<html.Blob?> _canvasToBlob(html.CanvasElement canvas) {
