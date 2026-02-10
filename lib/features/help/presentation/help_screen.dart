@@ -48,6 +48,7 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
     super.initState();
     _formController = HelpTicketFormController.empty();
     _audioController = HelpAudioRecorderController();
+    _audioController.state.addListener(_handleAudioStateChanged);
   }
 
   @override
@@ -61,6 +62,7 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
 
   @override
   void dispose() {
+    _audioController.state.removeListener(_handleAudioStateChanged);
     _formController.dispose();
     _audioController.dispose();
     super.dispose();
@@ -143,5 +145,13 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
         ),
       ),
     );
+  }
+
+  void _handleAudioStateChanged() {
+    if (!mounted) return;
+    final state = _audioController.state.value;
+    if (state.recording != null) {
+      _formKey.currentState?.validate();
+    }
   }
 }
