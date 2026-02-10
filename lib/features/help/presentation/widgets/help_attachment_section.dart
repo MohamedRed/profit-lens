@@ -46,6 +46,7 @@ class HelpAttachmentSection extends StatelessWidget {
                 .map(
                   (attachment) => _AttachmentThumbnail(
                     attachment: attachment,
+                    isSubmitting: isSubmitting,
                     onRemove: () => onRemove(attachment.id),
                   ),
                 )
@@ -77,10 +78,12 @@ class HelpAttachmentSection extends StatelessWidget {
 class _AttachmentThumbnail extends StatelessWidget {
   final HelpLocalAttachment attachment;
   final VoidCallback onRemove;
+  final bool isSubmitting;
 
   const _AttachmentThumbnail({
     required this.attachment,
     required this.onRemove,
+    required this.isSubmitting,
   });
 
   void _openPreview(BuildContext context) {
@@ -124,7 +127,7 @@ class _AttachmentThumbnail extends StatelessWidget {
         Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: () => _openPreview(context),
+            onTap: isSubmitting ? null : () => _openPreview(context),
             borderRadius: BorderRadius.circular(ShadcnRadius.md),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(ShadcnRadius.md),
@@ -150,7 +153,7 @@ class _AttachmentThumbnail extends StatelessWidget {
             ),
             child: IconButton(
               icon: const Icon(Icons.close, size: 16, color: Colors.white),
-              onPressed: onRemove,
+              onPressed: isSubmitting ? null : onRemove,
               constraints: const BoxConstraints.tightFor(width: 28, height: 28),
               padding: EdgeInsets.zero,
               tooltip: AppLocalizations.of(context)!.removeAttachmentTooltip,

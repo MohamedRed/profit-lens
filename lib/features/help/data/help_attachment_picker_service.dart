@@ -7,17 +7,28 @@ abstract class HelpAttachmentPickerService {
 
 class DeviceHelpAttachmentPickerService implements HelpAttachmentPickerService {
   final ImagePicker _picker;
+  static const int _imageQuality = 80;
+  static const double _maxDimension = 1600;
 
   DeviceHelpAttachmentPickerService({ImagePicker? picker})
     : _picker = picker ?? ImagePicker();
 
   @override
   Future<XFile?> pickImage({required ImageSource source}) {
-    return _picker.pickImage(source: source);
+    return _picker.pickImage(
+      source: source,
+      imageQuality: _imageQuality,
+      maxWidth: _maxDimension,
+      maxHeight: _maxDimension,
+    );
   }
 
   @override
   Future<List<XFile>> pickImages() async {
-    return _picker.pickMultiImage();
+    return _picker.pickMultiImage(
+      imageQuality: _imageQuality,
+      maxWidth: _maxDimension,
+      maxHeight: _maxDimension,
+    );
   }
 }
