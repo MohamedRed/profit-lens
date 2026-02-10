@@ -109,7 +109,7 @@ class _OfferDetailsSectionState extends State<OfferDetailsSection> {
     }
     return SectionCard(
       title: l10n.offerDetailsSection,
-      showSurface: false,
+      showSurface: true,
       showBorder: true,
       children: [
         OfferDetailsFormFields(

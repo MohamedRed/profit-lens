@@ -27,7 +27,7 @@ class OfferUsageCard extends StatelessWidget {
         if (entitlement == null) {
           return SectionCard(
             title: l10n.offersRemainingTitle,
-            showSurface: false,
+            showSurface: true,
             showBorder: true,
             children: [
               Text(
@@ -92,7 +92,7 @@ class _OfferUsageContent extends StatelessWidget {
     final statusLabel = _resolveStatusLabel(context, l10n, entitlement);
     return SectionCard(
       title: l10n.offersRemainingTitle,
-      showSurface: false,
+      showSurface: true,
       showBorder: true,
       children: [
         Text(label, style: Theme.of(context).textTheme.headlineSmall),

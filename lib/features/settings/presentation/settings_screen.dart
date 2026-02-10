@@ -43,31 +43,33 @@ class SettingsScreen extends StatelessWidget {
                   child: SettingsProfileCard(user: user, profile: profile),
                 ),
                 const SizedBox(height: 12),
-              _SettingsSectionContainer(
-                child: SettingsLanguageCard(user: user, profile: profile),
-              ),
-              const SizedBox(height: 12),
-              const _SettingsSectionContainer(child: SettingsInstallCard()),
-              const SizedBox(height: 12),
-              _SettingsSectionContainer(
-                child: SettingsSubscriptionCard(user: user),
-              ),
-              const SizedBox(height: 12),
-              _SettingsSectionContainer(child: SettingsDevicesCard(user: user)),
-              const SizedBox(height: 12),
-              _SettingsSectionContainer(
-                child: SettingsVehicleCard(
-                  user: user,
-                  profile: profile,
-                  vehicles: vehicles,
+                _SettingsSectionContainer(
+                  child: SettingsLanguageCard(user: user, profile: profile),
                 ),
-              ),
-              const SizedBox(height: 12),
-              _SettingsSectionContainer(
-                child: SettingsSignOutCard(
-                  onSignOut: () => services.authRepository.signOut(),
+                const SizedBox(height: 12),
+                const _SettingsSectionContainer(child: SettingsInstallCard()),
+                const SizedBox(height: 12),
+                _SettingsSectionContainer(
+                  child: SettingsSubscriptionCard(user: user),
                 ),
-              ),
+                const SizedBox(height: 12),
+                _SettingsSectionContainer(
+                  child: SettingsDevicesCard(user: user),
+                ),
+                const SizedBox(height: 12),
+                _SettingsSectionContainer(
+                  child: SettingsVehicleCard(
+                    user: user,
+                    profile: profile,
+                    vehicles: vehicles,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _SettingsSectionContainer(
+                  child: SettingsSignOutCard(
+                    onSignOut: () => services.authRepository.signOut(),
+                  ),
+                ),
               ],
             ),
           ),
@@ -88,6 +90,7 @@ class _SettingsSectionContainer extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(ShadcnRadius.xl),
         border: Border.all(color: ShadcnColors.outline),
+        color: ShadcnColors.surface,
       ),
       child: child,
     );
