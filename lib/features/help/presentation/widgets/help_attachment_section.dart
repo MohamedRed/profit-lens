@@ -83,20 +83,61 @@ class _AttachmentThumbnail extends StatelessWidget {
     required this.onRemove,
   });
 
+  void _openPreview(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.all(ShadcnSpacing.lg),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(ShadcnRadius.lg),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+              Flexible(
+                child: InteractiveViewer(
+                  minScale: 0.8,
+                  maxScale: 4,
+                  child: Image.memory(attachment.bytes, fit: BoxFit.contain),
+                ),
+              ),
+              const SizedBox(height: ShadcnSpacing.sm),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(ShadcnRadius.md),
-          child: Image.memory(
-            attachment.bytes,
-            width: 96,
-            height: 96,
-            fit: BoxFit.cover,
-            cacheWidth: 192,
-            cacheHeight: 192,
-            filterQuality: FilterQuality.medium,
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => _openPreview(context),
+            borderRadius: BorderRadius.circular(ShadcnRadius.md),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(ShadcnRadius.md),
+              child: Image.memory(
+                attachment.bytes,
+                width: 96,
+                height: 96,
+                fit: BoxFit.cover,
+                cacheWidth: 192,
+                cacheHeight: 192,
+                filterQuality: FilterQuality.medium,
+              ),
+            ),
           ),
         ),
         Positioned(

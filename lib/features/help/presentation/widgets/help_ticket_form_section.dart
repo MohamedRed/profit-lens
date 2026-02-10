@@ -62,6 +62,7 @@ class HelpTicketFormSection extends StatelessWidget {
                 controller: controller.descriptionController,
                 maxLines: 6,
                 minLines: 4,
+                enabled: !isSubmitting,
                 decoration: InputDecoration(
                   labelText: l10n.helpDescriptionLabel,
                   hintText: l10n.helpDescriptionHint,
