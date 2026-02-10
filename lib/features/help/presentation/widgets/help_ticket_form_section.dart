@@ -15,6 +15,7 @@ class HelpTicketFormSection extends StatelessWidget {
   final bool isAudioSupported;
   final bool isAudioRecording;
   final bool isAudioProcessing;
+  final bool isAudioTranscribing;
   final bool hasAudioRecording;
   final Duration? audioDuration;
   final bool isSubmitting;
@@ -33,6 +34,7 @@ class HelpTicketFormSection extends StatelessWidget {
     required this.isAudioSupported,
     required this.isAudioRecording,
     required this.isAudioProcessing,
+    required this.isAudioTranscribing,
     required this.hasAudioRecording,
     required this.audioDuration,
     required this.isSubmitting,
@@ -64,7 +66,8 @@ class HelpTicketFormSection extends StatelessWidget {
                   suffixIcon: IconButton(
                     onPressed: isSubmitting ||
                             !isAudioSupported ||
-                            isAudioProcessing
+                            isAudioProcessing ||
+                            isAudioTranscribing
                         ? null
                         : onToggleAudio,
                     icon: Icon(
@@ -115,6 +118,25 @@ class HelpTicketFormSection extends StatelessWidget {
                       const SizedBox(width: ShadcnSpacing.sm),
                       Text(
                         l10n.helpAudioProcessingLabel,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: ShadcnColors.textSecondary,
+                            ),
+                      ),
+                    ],
+                  ),
+                ],
+                if (isAudioTranscribing) ...[
+                  const SizedBox(height: ShadcnSpacing.sm),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      const SizedBox(width: ShadcnSpacing.sm),
+                      Text(
+                        l10n.helpAudioTranscribingLabel,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: ShadcnColors.textSecondary,
                             ),

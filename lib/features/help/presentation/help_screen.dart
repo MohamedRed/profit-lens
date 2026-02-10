@@ -7,9 +7,11 @@ import '../../../core/design_system/shadcn_tokens.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../data/help_attachment_picker_service.dart';
+import '../data/help_audio_transcription_service.dart';
 import '../data/help_ticket_repository.dart';
 import '../domain/help_ticket_attachment_type.dart';
 import '../domain/help_ticket_draft.dart';
+import '../presentation/controllers/help_audio_capture.dart';
 import '../presentation/controllers/help_audio_recorder_controller.dart';
 import '../presentation/controllers/help_ticket_form_controller.dart';
 import '../presentation/models/help_local_attachment.dart';
@@ -39,9 +41,12 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
 
   HelpTicketRepository? _ticketRepository;
   HelpAttachmentPickerService? _attachmentPicker;
+  HelpAudioTranscriptionService? _audioTranscriptionService;
 
   final List<HelpLocalAttachment> _screenshots = [];
   bool _isSubmitting = false;
+  bool _isTranscribingAudio = false;
+  String? _lastTranscribedRecording;
 
   @override
   void initState() {
@@ -58,6 +63,7 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
     final services = AppScope.of(context);
     _ticketRepository = services.helpTicketRepository;
     _attachmentPicker = services.helpAttachmentPickerService;
+    _audioTranscriptionService = services.helpAudioTranscriptionService;
   }
 
   @override
@@ -99,6 +105,7 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
                   isAudioSupported: _audioController.isSupported,
                   isAudioRecording: audioState.isRecording,
                   isAudioProcessing: audioState.isProcessing,
+                  isAudioTranscribing: _isTranscribingAudio,
                   hasAudioRecording: audioState.recording != null,
                   audioDuration: audioState.recording?.duration,
                   isSubmitting: _isSubmitting,
@@ -155,6 +162,48 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
         if (!mounted) return;
         _formKey.currentState?.validate();
       });
+      _maybeTranscribeRecording(state.recording!);
+    }
+  }
+
+  Future<void> _maybeTranscribeRecording(HelpAudioRecording recording) async {
+    if (_isTranscribingAudio) return;
+    if (_lastTranscribedRecording == recording.filename) return;
+    final service = _audioTranscriptionService;
+    if (service == null) return;
+    _lastTranscribedRecording = recording.filename;
+    setState(() => _isTranscribingAudio = true);
+    try {
+      final localeTag = Localizations.localeOf(context).toLanguageTag();
+      final transcript = await service.transcribeAudio(
+        bytes: recording.bytes,
+        contentType: recording.contentType,
+        locale: localeTag,
+      );
+      if (!mounted) return;
+      if (transcript != null && transcript.isNotEmpty) {
+        final current = _formController.descriptionController.text.trim();
+        final next = current.isEmpty
+            ? transcript
+            : '$current\n\n$transcript';
+        _formController.descriptionController.value =
+            _formController.descriptionController.value.copyWith(
+          text: next,
+          selection: TextSelection.collapsed(offset: next.length),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.helpAudioTranscriptionFailed)),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isTranscribingAudio = false);
+        _formKey.currentState?.validate();
+      }
     }
   }
 }

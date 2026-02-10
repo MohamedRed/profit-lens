@@ -22,7 +22,9 @@ import '../features/offers/data/offer_stats_repository.dart';
 import '../features/profile/data/firestore_user_profile_repository.dart';
 import '../features/profile/data/user_profile_repository.dart';
 import '../features/help/data/firestore_help_ticket_repository.dart';
+import '../features/help/data/firebase_help_audio_transcription_service.dart';
 import '../features/help/data/help_attachment_picker_service.dart';
+import '../features/help/data/help_audio_transcription_service.dart';
 import '../features/help/data/help_ticket_repository.dart';
 import '../features/notifications/data/firestore_notification_token_repository.dart';
 import '../features/notifications/data/notification_token_repository.dart';
@@ -50,6 +52,7 @@ class AppServices {
   final OfferImagePickerService offerImagePickerService;
   final OfferAnalysisService offerAnalysisService;
   final HelpTicketRepository helpTicketRepository;
+  final HelpAudioTranscriptionService helpAudioTranscriptionService;
   final HelpAttachmentPickerService helpAttachmentPickerService;
   final NotificationTokenRepository notificationTokenRepository;
   final VehicleModelLookupService vehicleModelLookupService;
@@ -71,6 +74,7 @@ class AppServices {
     OfferImagePickerService? offerImagePickerService,
     OfferAnalysisService? offerAnalysisService,
     HelpTicketRepository? helpTicketRepository,
+    HelpAudioTranscriptionService? helpAudioTranscriptionService,
     HelpAttachmentPickerService? helpAttachmentPickerService,
     NotificationTokenRepository? notificationTokenRepository,
     VehicleModelLookupService? vehicleModelLookupService,
@@ -97,6 +101,9 @@ class AppServices {
            offerAnalysisService ?? FirebaseOfferAnalysisService(),
        helpTicketRepository =
            helpTicketRepository ?? FirestoreHelpTicketRepository(),
+       helpAudioTranscriptionService =
+           helpAudioTranscriptionService ??
+           FirebaseHelpAudioTranscriptionService(),
        helpAttachmentPickerService =
            helpAttachmentPickerService ?? DeviceHelpAttachmentPickerService(),
        notificationTokenRepository =

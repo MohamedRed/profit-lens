@@ -16,6 +16,7 @@ export { registerDevice, revokeDevice } from "./device_registry";
 export { triageHelpTicket } from "./help_ticket_triage";
 export { triageHelpTicketAfterTranscription } from "./help_ticket_triage";
 export { transcribeHelpTicketAudio } from "./help_ticket_transcription";
+export { transcribeHelpDraftAudio } from "./help_ticket_draft_transcription";
 export { notifyHelpTicketStatus } from "./help_ticket_notifications";
 export {
   createCheckoutSession,
