@@ -1,6 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
-import { v2 } from "@google-cloud/speech";
+import { v2, protos } from "@google-cloud/speech";
 import { normalizeSpeechLocale } from "./speech_locale";
 
 const REGION = "europe-west1";
@@ -23,6 +23,8 @@ export const transcribeHelpDraftAudio = onCall(
       audio?: string;
       contentType?: string;
       locale?: string;
+      sampleRate?: number;
+      channelCount?: number;
     };
     if (!data?.audio) {
       throw new HttpsError("invalid-argument", "Missing audio data.");
@@ -44,12 +46,27 @@ export const transcribeHelpDraftAudio = onCall(
     }
 
     const language = normalizeSpeechLocale(data.locale);
+    const sampleRate =
+      typeof data.sampleRate === "number" ? data.sampleRate : undefined;
+    const channelCount =
+      typeof data.channelCount === "number" ? data.channelCount : undefined;
+    const decodingConfig = sampleRate
+      ? {
+          explicitDecodingConfig: {
+            encoding:
+              protos.google.cloud.speech.v2.ExplicitDecodingConfig.AudioEncoding
+                .LINEAR16,
+            sampleRateHertz: sampleRate,
+            audioChannelCount: channelCount ?? 1,
+          },
+        }
+      : { autoDecodingConfig: {} };
 
     try {
-      const [response] = await speechClient.recognize({
+      const response = await speechClient.recognize({
         recognizer: `projects/${projectId}/locations/${LOCATION}/recognizers/_`,
         config: {
-          autoDecodingConfig: {},
+          ...decodingConfig,
           languageCodes: [language],
           model: "latest_long",
           features: { enableAutomaticPunctuation: true },
@@ -57,13 +74,19 @@ export const transcribeHelpDraftAudio = onCall(
         content: bytes,
       });
 
-      const transcript = (response.results ?? [])
-        .map((result) => result.alternatives?.[0]?.transcript ?? "")
+      const transcript = (
+        response[0] as protos.google.cloud.speech.v2.IRecognizeResponse
+      )?.results ?? [];
+      const text = transcript
+        .map(
+          (result: protos.google.cloud.speech.v2.ISpeechRecognitionResult) =>
+            result.alternatives?.[0]?.transcript ?? ""
+        )
         .join(" ")
         .trim();
 
       return {
-        transcript,
+        transcript: text,
       };
     } catch (error) {
       logger.error("Draft audio transcription failed", { error });

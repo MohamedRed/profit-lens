@@ -183,17 +183,20 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
         locale: localeTag,
       );
       if (!mounted || requestId != _transcriptionRequestId) return;
-      if (transcript != null && transcript.isNotEmpty) {
-        final current = _formController.descriptionController.text.trim();
-        final next = current.isEmpty
-            ? transcript
-            : '$current\n\n$transcript';
-        _formController.descriptionController.value =
-            _formController.descriptionController.value.copyWith(
-          text: next,
-          selection: TextSelection.collapsed(offset: next.length),
+      if (transcript == null || transcript.isEmpty) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.helpAudioTranscriptionFailed)),
         );
+        return;
       }
+      final current = _formController.descriptionController.text.trim();
+      final next = current.isEmpty ? transcript : '$current\n\n$transcript';
+      _formController.descriptionController.value =
+          _formController.descriptionController.value.copyWith(
+        text: next,
+        selection: TextSelection.collapsed(offset: next.length),
+      );
     } catch (_) {
       if (mounted && requestId == _transcriptionRequestId) {
         final l10n = AppLocalizations.of(context)!;
