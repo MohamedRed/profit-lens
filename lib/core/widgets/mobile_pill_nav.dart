@@ -28,14 +28,10 @@ class MobilePillNav extends StatelessWidget {
       currentIndex >= 0 && currentIndex < items.length,
       'MobilePillNav currentIndex must be within item range.',
     );
-    return SafeArea(
-      top: false,
-      left: false,
-      right: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
           const baseHorizontalPadding = 12.0;
           const compactHorizontalPadding = 6.0;
           final baseItemWidth =
@@ -47,60 +43,59 @@ class MobilePillNav extends StatelessWidget {
           final verticalPadding = isCompact ? 6.0 : 8.0;
           final height = isCompact ? 64.0 : 72.0;
 
-            return Container(
-              height: height,
-              decoration: BoxDecoration(
-                color: ShadcnColors.surface,
-                borderRadius: BorderRadius.circular(ShadcnRadius.pill),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x14000000),
-                    blurRadius: 12,
-                    offset: Offset(0, 6),
-                  ),
-                ],
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: verticalPadding,
-              ),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final indicatorWidth = constraints.maxWidth / items.length;
-                  return Stack(
-                    children: [
-                      AnimatedPositioned(
-                        duration: ShadcnDurations.short,
-                        curve: Curves.easeOut,
-                        left: indicatorWidth * currentIndex,
-                        top: 0,
-                        bottom: 0,
-                        child: Container(
-                          width: indicatorWidth,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(28),
-                          ),
+          return Container(
+            height: height,
+            decoration: BoxDecoration(
+              color: ShadcnColors.surface,
+              borderRadius: BorderRadius.circular(ShadcnRadius.pill),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x14000000),
+                  blurRadius: 12,
+                  offset: Offset(0, 6),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: horizontalPadding,
+              vertical: verticalPadding,
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final indicatorWidth = constraints.maxWidth / items.length;
+                return Stack(
+                  children: [
+                    AnimatedPositioned(
+                      duration: ShadcnDurations.short,
+                      curve: Curves.easeOut,
+                      left: indicatorWidth * currentIndex,
+                      top: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: indicatorWidth,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(28),
                         ),
                       ),
-                      Row(
-                        children: [
-                          for (int i = 0; i < items.length; i++)
-                            _NavButton(
-                              item: items[i],
-                              isActive: i == currentIndex,
-                              isCompact: isCompact,
-                              onTap: () => onChanged(i),
-                            ),
-                        ],
-                      ),
-                    ],
-                  );
-                },
-              ),
-            );
-          },
-        ),
+                    ),
+                    Row(
+                      children: [
+                        for (int i = 0; i < items.length; i++)
+                          _NavButton(
+                            item: items[i],
+                            isActive: i == currentIndex,
+                            isCompact: isCompact,
+                            onTap: () => onChanged(i),
+                          ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
