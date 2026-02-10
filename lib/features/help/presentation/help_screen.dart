@@ -47,6 +47,7 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
   bool _isSubmitting = false;
   bool _isTranscribingAudio = false;
   String? _lastTranscribedRecording;
+  int _transcriptionRequestId = 0;
 
   @override
   void initState() {
@@ -172,6 +173,7 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
     final service = _audioTranscriptionService;
     if (service == null) return;
     _lastTranscribedRecording = recording.filename;
+    final requestId = ++_transcriptionRequestId;
     setState(() => _isTranscribingAudio = true);
     try {
       final localeTag = Localizations.localeOf(context).toLanguageTag();
@@ -180,7 +182,7 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
         contentType: recording.contentType,
         locale: localeTag,
       );
-      if (!mounted) return;
+      if (!mounted || requestId != _transcriptionRequestId) return;
       if (transcript != null && transcript.isNotEmpty) {
         final current = _formController.descriptionController.text.trim();
         final next = current.isEmpty
@@ -193,14 +195,14 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
         );
       }
     } catch (_) {
-      if (mounted) {
+      if (mounted && requestId == _transcriptionRequestId) {
         final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.helpAudioTranscriptionFailed)),
         );
       }
     } finally {
-      if (mounted) {
+      if (mounted && requestId == _transcriptionRequestId) {
         setState(() => _isTranscribingAudio = false);
         _formKey.currentState?.validate();
       }

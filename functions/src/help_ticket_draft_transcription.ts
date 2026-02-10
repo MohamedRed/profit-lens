@@ -1,6 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { v2 } from "@google-cloud/speech";
+import { normalizeSpeechLocale } from "./speech_locale";
 
 const REGION = "europe-west1";
 const LOCATION = "global";
@@ -42,7 +43,7 @@ export const transcribeHelpDraftAudio = onCall(
       throw new HttpsError("internal", "Missing project id.");
     }
 
-    const language = normalizeLocale(data.locale);
+    const language = normalizeSpeechLocale(data.locale);
 
     try {
       const [response] = await speechClient.recognize({
@@ -50,7 +51,7 @@ export const transcribeHelpDraftAudio = onCall(
         config: {
           autoDecodingConfig: {},
           languageCodes: [language],
-          model: "latest_short",
+          model: "latest_long",
           features: { enableAutomaticPunctuation: true },
         },
         content: bytes,
@@ -70,8 +71,3 @@ export const transcribeHelpDraftAudio = onCall(
     }
   }
 );
-
-function normalizeLocale(locale?: string) {
-  if (!locale) return "en-US";
-  return locale.replace("_", "-");
-}

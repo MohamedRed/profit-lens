@@ -21,12 +21,13 @@ class HelpAudioRecorderState {
     bool? isRecording,
     bool? isProcessing,
     HelpAudioRecording? recording,
+    bool clearRecording = false,
     HelpAudioError? error,
   }) {
     return HelpAudioRecorderState(
       isRecording: isRecording ?? this.isRecording,
       isProcessing: isProcessing ?? this.isProcessing,
-      recording: recording ?? this.recording,
+      recording: clearRecording ? null : (recording ?? this.recording),
       error: error,
     );
   }
@@ -101,7 +102,7 @@ class HelpAudioRecorderController {
       final recording = await _capture.stop();
       if (recording == null || recording.bytes.isEmpty) {
         state.value = state.value.copyWith(
-          recording: null,
+          clearRecording: true,
           isProcessing: false,
           error: HelpAudioError.failed,
         );
@@ -124,7 +125,7 @@ class HelpAudioRecorderController {
 
   void clear() {
     state.value = state.value.copyWith(
-      recording: null,
+      clearRecording: true,
       isProcessing: false,
       error: null,
     );

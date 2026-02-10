@@ -89,9 +89,8 @@ mixin _HelpScreenActions on State<HelpScreen> {
   void _clearAudioRecording() {
     _state._audioController.clear();
     _state._lastTranscribedRecording = null;
-    if (_state._isTranscribingAudio) {
-      setState(() => _state._isTranscribingAudio = false);
-    }
+    _state._transcriptionRequestId++;
+    setState(() => _state._isTranscribingAudio = false);
     _state._formKey.currentState?.validate();
   }
 

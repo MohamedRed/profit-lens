@@ -3,6 +3,7 @@ import * as logger from "firebase-functions/logger";
 import { v2 } from "@google-cloud/speech";
 import { FieldValue } from "firebase-admin/firestore";
 import { db, storage } from "./firebase_admin";
+import { normalizeSpeechLocale } from "./speech_locale";
 
 const REGION = "europe-west1";
 const LOCATION = "global";
@@ -66,7 +67,9 @@ export const transcribeHelpTicketAudio = onDocumentCreated(
 
     const bucketName = storage.bucket().name;
     const uri = `gs://${bucketName}/${storagePath}`;
-    const language = normalizeLocale(ticketData.locale as string | undefined);
+    const language = normalizeSpeechLocale(
+      ticketData.locale as string | undefined
+    );
 
     try {
       const [response] = await speechClient.recognize({
@@ -131,8 +134,3 @@ export const transcribeHelpTicketAudio = onDocumentCreated(
     }
   }
 );
-
-function normalizeLocale(locale?: string) {
-  if (!locale) return "en-US";
-  return locale.replace("_", "-");
-}
