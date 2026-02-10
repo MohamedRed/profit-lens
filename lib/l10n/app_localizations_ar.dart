@@ -253,8 +253,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stripeReturnTitle => 'العودة من Stripe';
 
   @override
-  String get stripeReturnBody =>
-      'جارٍ تحديث اشتراكك. قد يستغرق ذلك بضع ثوانٍ.';
+  String get stripeReturnBody => 'جارٍ تحديث اشتراكك. قد يستغرق ذلك بضع ثوانٍ.';
 
   @override
   String get signInTitle => 'تسجيل الدخول';
@@ -787,7 +786,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'أبلغ عن الأخطاء أو المشكلات مع لقطات الشاشة أو الملاحظات الصوتية. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.';
+      'أبلغ عن الأخطاء أو المشكلات مع لقطات الشاشة ووصف مكتوب. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.';
 
   @override
   String get helpFormTitle => 'إرسال تذكرة';
@@ -797,11 +796,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpDescriptionHint =>
-      'الخطوات، النتيجة المتوقعة، وما حدث فعليًا (أو سجّل ملاحظة صوتية)';
+      'الخطوات، النتيجة المتوقعة، وما حدث فعليًا.';
 
   @override
-  String get helpDescriptionRequired =>
-      'أضف وصفًا مختصرًا أو سجّل ملاحظة صوتية.';
+  String get helpDescriptionRequired => 'أضف وصفًا مختصرًا.';
 
   @override
   String get helpAudioTitle => 'ملاحظة صوتية';

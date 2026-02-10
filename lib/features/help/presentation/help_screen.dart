@@ -33,6 +33,7 @@ class HelpScreen extends StatefulWidget {
 
 class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
   static const int maxScreenshots = 5;
+  static const bool _audioEnabled = false;
 
   final _formKey = GlobalKey<FormState>();
   final _uuid = const Uuid();
@@ -54,7 +55,9 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
     super.initState();
     _formController = HelpTicketFormController.empty();
     _audioController = HelpAudioRecorderController();
-    _audioController.state.addListener(_handleAudioStateChanged);
+    if (_audioEnabled) {
+      _audioController.state.addListener(_handleAudioStateChanged);
+    }
   }
 
   @override
@@ -69,7 +72,9 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
 
   @override
   void dispose() {
-    _audioController.state.removeListener(_handleAudioStateChanged);
+    if (_audioEnabled) {
+      _audioController.state.removeListener(_handleAudioStateChanged);
+    }
     _formController.dispose();
     _audioController.dispose();
     super.dispose();
@@ -103,12 +108,15 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
                   formKey: _formKey,
                   controller: _formController,
                   screenshots: List.unmodifiable(_screenshots),
-                  isAudioSupported: _audioController.isSupported,
-                  isAudioRecording: audioState.isRecording,
-                  isAudioProcessing: audioState.isProcessing,
-                  isAudioTranscribing: _isTranscribingAudio,
-                  hasAudioRecording: audioState.recording != null,
-                  audioDuration: audioState.recording?.duration,
+                  enableAudio: _audioEnabled,
+                  isAudioSupported: _audioEnabled && _audioController.isSupported,
+                  isAudioRecording: _audioEnabled && audioState.isRecording,
+                  isAudioProcessing: _audioEnabled && audioState.isProcessing,
+                  isAudioTranscribing: _audioEnabled && _isTranscribingAudio,
+                  hasAudioRecording:
+                      _audioEnabled && audioState.recording != null,
+                  audioDuration:
+                      _audioEnabled ? audioState.recording?.duration : null,
                   isSubmitting: _isSubmitting,
                   onAddFromCamera: _addScreenshotFromCamera,
                   onAddFromGallery: _addScreenshotsFromGallery,

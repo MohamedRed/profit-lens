@@ -1573,7 +1573,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpIntroBody.
   ///
   /// In en, this message translates to:
-  /// **'Report bugs or issues with screenshots or voice notes. A coding AI agent will triage and keep you updated.'**
+  /// **'Report bugs or issues with screenshots and written details. A coding AI agent will triage and keep you updated.'**
   String get helpIntroBody;
 
   /// No description provided for @helpFormTitle.
@@ -1591,13 +1591,13 @@ abstract class AppLocalizations {
   /// No description provided for @helpDescriptionHint.
   ///
   /// In en, this message translates to:
-  /// **'Steps, expected result, and what actually happened (or record a voice note)'**
+  /// **'Steps, expected result, and what actually happened.'**
   String get helpDescriptionHint;
 
   /// No description provided for @helpDescriptionRequired.
   ///
   /// In en, this message translates to:
-  /// **'Add a short description or record a voice note.'**
+  /// **'Add a short description.'**
   String get helpDescriptionRequired;
 
   /// No description provided for @helpAudioTitle.

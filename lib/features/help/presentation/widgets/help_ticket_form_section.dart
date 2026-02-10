@@ -12,6 +12,7 @@ class HelpTicketFormSection extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final HelpTicketFormController controller;
   final List<HelpLocalAttachment> screenshots;
+  final bool enableAudio;
   final bool isAudioSupported;
   final bool isAudioRecording;
   final bool isAudioProcessing;
@@ -31,6 +32,7 @@ class HelpTicketFormSection extends StatelessWidget {
     required this.formKey,
     required this.controller,
     required this.screenshots,
+    required this.enableAudio,
     required this.isAudioSupported,
     required this.isAudioRecording,
     required this.isAudioProcessing,
@@ -63,142 +65,142 @@ class HelpTicketFormSection extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: l10n.helpDescriptionLabel,
                   hintText: l10n.helpDescriptionHint,
-                  suffixIcon: IconButton(
-                    onPressed: isSubmitting ||
-                            !isAudioSupported ||
-                            isAudioProcessing ||
-                            isAudioTranscribing
-                        ? null
-                        : onToggleAudio,
-                    icon: Icon(
-                      isAudioRecording ? Icons.stop : Icons.mic_none,
-                      color: isAudioRecording
-                          ? ShadcnColors.purple
-                          : ShadcnColors.textSecondary,
-                    ),
-                    tooltip: isAudioRecording
-                        ? l10n.helpAudioStopButton
-                        : l10n.helpAudioRecordButton,
-                  ),
+                  suffixIcon: enableAudio
+                      ? IconButton(
+                          onPressed: isSubmitting ||
+                                  !isAudioSupported ||
+                                  isAudioProcessing ||
+                                  isAudioTranscribing
+                              ? null
+                              : onToggleAudio,
+                          icon: Icon(
+                            isAudioRecording ? Icons.stop : Icons.mic_none,
+                            color: isAudioRecording
+                                ? ShadcnColors.purple
+                                : ShadcnColors.textSecondary,
+                          ),
+                          tooltip: isAudioRecording
+                              ? l10n.helpAudioStopButton
+                              : l10n.helpAudioRecordButton,
+                        )
+                      : null,
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    if (hasAudioRecording) {
-                      return null;
-                    }
                     return l10n.helpDescriptionRequired;
                   }
                   return null;
                 },
               ),
               const SizedBox(height: ShadcnSpacing.sm),
-              if (!isAudioSupported)
-                Text(
-                  l10n.helpAudioNotSupported,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: ShadcnColors.textSecondary,
-                      ),
-                )
-              else ...[
-                Text(
-                  l10n.helpAudioSubtitle,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: ShadcnColors.textSecondary,
-                      ),
-                ),
-                if (isAudioProcessing) ...[
-                  const SizedBox(height: ShadcnSpacing.sm),
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                      const SizedBox(width: ShadcnSpacing.sm),
-                      Text(
-                        l10n.helpAudioProcessingLabel,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: ShadcnColors.textSecondary,
-                            ),
-                      ),
-                    ],
-                  ),
-                ],
-                if (isAudioTranscribing) ...[
-                  const SizedBox(height: ShadcnSpacing.sm),
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                      const SizedBox(width: ShadcnSpacing.sm),
-                      Text(
-                        l10n.helpAudioTranscribingLabel,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: ShadcnColors.textSecondary,
-                            ),
-                      ),
-                    ],
-                  ),
-                ],
-                if (isAudioRecording) ...[
-                  const SizedBox(height: ShadcnSpacing.sm),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.mic,
-                        size: 16,
-                        color: ShadcnColors.pink,
-                      ),
-                      const SizedBox(width: ShadcnSpacing.sm),
-                      Text(
-                        l10n.helpAudioRecordingLabel,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: ShadcnColors.textSecondary,
-                            ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: ShadcnSpacing.sm),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: OutlinedButton.icon(
-                      onPressed: isSubmitting ? null : onToggleAudio,
-                      icon: const Icon(Icons.stop_circle_outlined),
-                      label: Text(l10n.helpAudioStopButton),
-                    ),
-                  ),
-                ],
-                if (!isAudioRecording && hasAudioRecording) ...[
-                  const SizedBox(height: ShadcnSpacing.sm),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.check_circle,
-                        size: 16,
-                        color: ShadcnColors.teal,
-                      ),
-                      const SizedBox(width: ShadcnSpacing.sm),
-                      Expanded(
-                        child: Text(
-                          _formatReadyLabel(l10n, audioDuration),
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: ShadcnColors.textSecondary,
-                                  ),
+              if (enableAudio)
+                if (!isAudioSupported)
+                  Text(
+                    l10n.helpAudioNotSupported,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: ShadcnColors.textSecondary,
                         ),
-                      ),
-                      TextButton(
-                        onPressed: isSubmitting ? null : onClearAudio,
-                        child: Text(l10n.helpAudioDeleteButton),
-                      ),
-                    ],
+                  )
+                else ...[
+                  Text(
+                    l10n.helpAudioSubtitle,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: ShadcnColors.textSecondary,
+                        ),
                   ),
+                  if (isAudioProcessing) ...[
+                    const SizedBox(height: ShadcnSpacing.sm),
+                    Row(
+                      children: [
+                        const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                        const SizedBox(width: ShadcnSpacing.sm),
+                        Text(
+                          l10n.helpAudioProcessingLabel,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: ShadcnColors.textSecondary,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (isAudioTranscribing) ...[
+                    const SizedBox(height: ShadcnSpacing.sm),
+                    Row(
+                      children: [
+                        const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                        const SizedBox(width: ShadcnSpacing.sm),
+                        Text(
+                          l10n.helpAudioTranscribingLabel,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: ShadcnColors.textSecondary,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (isAudioRecording) ...[
+                    const SizedBox(height: ShadcnSpacing.sm),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.mic,
+                          size: 16,
+                          color: ShadcnColors.pink,
+                        ),
+                        const SizedBox(width: ShadcnSpacing.sm),
+                        Text(
+                          l10n.helpAudioRecordingLabel,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: ShadcnColors.textSecondary,
+                              ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: ShadcnSpacing.sm),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: OutlinedButton.icon(
+                        onPressed: isSubmitting ? null : onToggleAudio,
+                        icon: const Icon(Icons.stop_circle_outlined),
+                        label: Text(l10n.helpAudioStopButton),
+                      ),
+                    ),
+                  ],
+                  if (!isAudioRecording && hasAudioRecording) ...[
+                    const SizedBox(height: ShadcnSpacing.sm),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.check_circle,
+                          size: 16,
+                          color: ShadcnColors.teal,
+                        ),
+                        const SizedBox(width: ShadcnSpacing.sm),
+                        Expanded(
+                          child: Text(
+                            _formatReadyLabel(l10n, audioDuration),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: ShadcnColors.textSecondary,
+                                    ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: isSubmitting ? null : onClearAudio,
+                          child: Text(l10n.helpAudioDeleteButton),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
-              ],
               const SizedBox(height: ShadcnSpacing.lg),
               HelpAttachmentSection(
                 screenshots: screenshots,

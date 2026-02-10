@@ -801,7 +801,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'Signalez des bugs ou des problèmes avec des captures ou des notes vocales. Un agent IA de développement les analysera et vous tiendra informé.';
+      'Signalez des bugs ou des problèmes avec des captures et une description écrite. Un agent IA de développement les analysera et vous tiendra informé.';
 
   @override
   String get helpFormTitle => 'Soumettre un ticket';
@@ -811,11 +811,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpDescriptionHint =>
-      'Étapes, résultat attendu et ce qui s’est passé (ou enregistrez une note vocale)';
+      'Étapes, résultat attendu et ce qui s’est passé.';
 
   @override
-  String get helpDescriptionRequired =>
-      'Ajoutez une courte description ou enregistrez une note vocale.';
+  String get helpDescriptionRequired => 'Ajoutez une courte description.';
 
   @override
   String get helpAudioTitle => 'Note vocale';
