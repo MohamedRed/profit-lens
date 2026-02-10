@@ -42,7 +42,7 @@
   <style>
     html,
     body {
-      height: 100%;
+      height: var(--app-height, 100%);
       margin: 0;
       overscroll-behavior-x: none;
       touch-action: pan-y;
@@ -168,6 +168,20 @@
       event.preventDefault();
       window.defferedPromptEvent = event;
     });
+
+    (function () {
+      var setAppHeight = function () {
+        var isStandalone =
+          (window.matchMedia &&
+            window.matchMedia("(display-mode: standalone)").matches) ||
+          window.navigator.standalone === true;
+        var height = isStandalone ? window.screen.height : window.innerHeight;
+        document.documentElement.style.setProperty("--app-height", height + "px");
+      };
+
+      setAppHeight();
+      window.addEventListener("orientationchange", setAppHeight);
+    })();
 
     (function () {
       // In iOS PWAs, an edge swipe can trigger browser history navigation.
