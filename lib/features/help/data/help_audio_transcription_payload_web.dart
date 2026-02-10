@@ -2,6 +2,7 @@ import 'dart:html' as html;
 import 'dart:js_util' as js_util;
 import 'dart:math' as math;
 import 'dart:typed_data';
+import 'dart:async';
 
 import 'help_audio_transcription_payload.dart';
 
@@ -27,6 +28,7 @@ Future<HelpAudioTranscriptionPayload> prepareWebHelpAudioTranscriptionPayload({
 
   final context = _createAudioContext();
   try {
+    await _resumeAudioContext(context);
     final decoded = await _decodeAudio(context, bytes);
     final resampled = await _resample(decoded, _targetSampleRate);
     final mono = _mixToMono(resampled);
@@ -54,10 +56,54 @@ Object _createAudioContext() {
   return js_util.callConstructor(ctor, []);
 }
 
+Future<void> _resumeAudioContext(Object context) async {
+  if (!js_util.hasProperty(context, 'resume')) return;
+  try {
+    final result = js_util.callMethod(context, 'resume', []);
+    if (result != null && js_util.hasProperty(result, 'then')) {
+      await js_util.promiseToFuture(result);
+    }
+  } catch (_) {}
+}
+
 Future<Object> _decodeAudio(Object context, Uint8List bytes) async {
   final buffer = _normalizeBuffer(bytes);
-  final promise = js_util.callMethod(context, 'decodeAudioData', [buffer]);
-  return js_util.promiseToFuture(promise);
+  final completer = Completer<Object>();
+
+  void complete(Object? result) {
+    if (result == null) return;
+    if (!completer.isCompleted) {
+      completer.complete(result);
+    }
+  }
+
+  void fail(Object? error) {
+    if (!completer.isCompleted) {
+      completer.completeError(error ?? StateError('decodeAudioData failed'));
+    }
+  }
+
+  Object? returned;
+  try {
+    returned = js_util.callMethod(context, 'decodeAudioData', [
+      buffer,
+      js_util.allowInterop(complete),
+      js_util.allowInterop(fail),
+    ]);
+  } catch (error) {
+    fail(error);
+  }
+
+  if (returned != null && js_util.hasProperty(returned, 'then')) {
+    try {
+      final decoded = await js_util.promiseToFuture(returned);
+      complete(decoded);
+    } catch (error) {
+      fail(error);
+    }
+  }
+
+  return completer.future;
 }
 
 Future<Object> _resample(Object buffer, int targetSampleRate) async {
@@ -66,13 +112,53 @@ Future<Object> _resample(Object buffer, int targetSampleRate) async {
   final duration = _audioBufferDuration(buffer);
   final frameCount = (duration * targetSampleRate).ceil();
   final offline = _createOfflineAudioContext(frameCount, targetSampleRate);
+  final completer = Completer<Object>();
   final source = js_util.callMethod(offline, 'createBufferSource', []);
   js_util.setProperty(source, 'buffer', buffer);
   final destination = js_util.getProperty(offline, 'destination');
   js_util.callMethod(source, 'connect', [destination]);
   js_util.callMethod(source, 'start', [0]);
-  final promise = js_util.callMethod(offline, 'startRendering', []);
-  return js_util.promiseToFuture(promise);
+
+  void complete(Object? result) {
+    if (result == null) return;
+    if (!completer.isCompleted) {
+      completer.complete(result);
+    }
+  }
+
+  void fail(Object? error) {
+    if (!completer.isCompleted) {
+      completer.completeError(error ?? StateError('startRendering failed'));
+    }
+  }
+
+  js_util.setProperty(
+    offline,
+    'oncomplete',
+    js_util.allowInterop((event) {
+      final rendered = js_util.getProperty(event, 'renderedBuffer') ??
+          js_util.getProperty(event, 'buffer');
+      complete(rendered);
+    }),
+  );
+
+  Object? returned;
+  try {
+    returned = js_util.callMethod(offline, 'startRendering', []);
+  } catch (error) {
+    fail(error);
+  }
+
+  if (returned != null && js_util.hasProperty(returned, 'then')) {
+    try {
+      final rendered = await js_util.promiseToFuture(returned);
+      complete(rendered);
+    } catch (error) {
+      fail(error);
+    }
+  }
+
+  return completer.future;
 }
 
 Object _createOfflineAudioContext(int frameCount, int sampleRate) {
