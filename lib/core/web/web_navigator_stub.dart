@@ -1,3 +1,3 @@
-bool openExternalUrl(String url) {
+void navigateToUrl(String url) {
   throw UnsupportedError('Web navigation not available.');
 }
