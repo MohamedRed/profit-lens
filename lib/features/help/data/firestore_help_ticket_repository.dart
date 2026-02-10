@@ -17,6 +17,7 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
   final HelpTicketMapper _mapper;
   final HelpTicketAttachmentMapper _attachmentMapper;
   final HelpTicketStorage _storage;
+  static const Duration _commitTimeout = Duration(seconds: 15);
   FirestoreHelpTicketRepository({
     FirebaseFirestore? firestore,
     HelpTicketMapper? mapper,
@@ -164,7 +165,7 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
         'uploadedAt': FieldValue.serverTimestamp(),
       });
     }
-    await batch.commit();
+    await batch.commit().timeout(_commitTimeout);
 
     return HelpTicket(
       id: ticketId,

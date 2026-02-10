@@ -13,6 +13,8 @@ abstract class HelpTicketStorage {
 
 class FirebaseHelpTicketStorage implements HelpTicketStorage {
   final FirebaseStorage _storage;
+  static const Duration _uploadTimeout = Duration(seconds: 45);
+  static const Duration _downloadUrlTimeout = Duration(seconds: 15);
 
   FirebaseHelpTicketStorage({FirebaseStorage? storage})
     : _storage = storage ?? FirebaseStorage.instance;
@@ -28,8 +30,8 @@ class FirebaseHelpTicketStorage implements HelpTicketStorage {
         'users/$uid/helpTickets/$ticketId/attachments/${attachment.id}-$safeName';
     final ref = _storage.ref(objectPath);
     final metadata = SettableMetadata(contentType: attachment.contentType);
-    await ref.putData(attachment.bytes, metadata);
-    final url = await ref.getDownloadURL();
+    await ref.putData(attachment.bytes, metadata).timeout(_uploadTimeout);
+    final url = await ref.getDownloadURL().timeout(_downloadUrlTimeout);
     return HelpTicketAttachment(
       id: attachment.id,
       type: attachment.type,

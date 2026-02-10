@@ -885,6 +885,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpSubmissionFailed => 'تعذر إرسال التذكرة. حاول مرة أخرى.';
 
   @override
+  String get helpSubmissionTimeout =>
+      'انتهت مهلة الإرسال. تحقق من الاتصال وحاول مرة أخرى.';
+
+  @override
   String get helpViewTicketsButton => 'عرض التذاكر';
 
   @override

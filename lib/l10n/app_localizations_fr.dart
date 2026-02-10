@@ -904,6 +904,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible d’envoyer le ticket. Réessayez.';
 
   @override
+  String get helpSubmissionTimeout =>
+      'Le délai d’envoi est dépassé. Vérifiez votre connexion et réessayez.';
+
+  @override
   String get helpViewTicketsButton => 'Voir les tickets';
 
   @override

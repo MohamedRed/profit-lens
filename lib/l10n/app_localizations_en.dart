@@ -894,6 +894,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Unable to submit ticket. Please try again.';
 
   @override
+  String get helpSubmissionTimeout =>
+      'Submission timed out. Check your connection and try again.';
+
+  @override
   String get helpViewTicketsButton => 'View tickets';
 
   @override

@@ -335,6 +335,7 @@
   "helpSubmitButton": "Envoyer le ticket",
   "helpTicketSubmitted": "Ticket envoyé. Nous vous tiendrons informé.",
   "helpSubmissionFailed": "Impossible d’envoyer le ticket. Réessayez.",
+  "helpSubmissionTimeout": "Le délai d’envoi est dépassé. Vérifiez votre connexion et réessayez.",
   "helpViewTicketsButton": "Voir les tickets",
   "helpTicketsTitle": "Tickets",
   "helpRecentTicketsTitle": "Tickets récents",

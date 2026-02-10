@@ -158,6 +158,9 @@ mixin _HelpScreenActions on State<HelpScreen> {
       _state._audioController.clear();
       _showSnackBar(l10n.helpTicketSubmitted);
       setState(() {});
+    } on TimeoutException {
+      if (!mounted) return;
+      _showSnackBar(l10n.helpSubmissionTimeout);
     } catch (_) {
       if (!mounted) return;
       _showSnackBar(l10n.helpSubmissionFailed);

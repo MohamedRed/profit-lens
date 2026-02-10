@@ -1750,6 +1750,12 @@ abstract class AppLocalizations {
   /// **'Unable to submit ticket. Please try again.'**
   String get helpSubmissionFailed;
 
+  /// No description provided for @helpSubmissionTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Submission timed out. Check your connection and try again.'**
+  String get helpSubmissionTimeout;
+
   /// No description provided for @helpViewTicketsButton.
   ///
   /// In en, this message translates to:
