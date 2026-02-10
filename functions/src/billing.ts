@@ -61,8 +61,8 @@ export const createCheckoutSession = onCall(
           planId: plan.planId,
         },
       },
-      success_url: `${origin}/`,
-      cancel_url: `${origin}/`,
+      success_url: `${origin}/?stripe_return=1`,
+      cancel_url: `${origin}/?stripe_return=1`,
       client_reference_id: uid,
       allow_promotion_codes: true,
       metadata: {
@@ -99,7 +99,7 @@ export const createCustomerPortalSession = onCall(
     const customerId = await getOrCreateCustomerId(uid, stripe);
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: `${origin}/`,
+      return_url: `${origin}/?stripe_return=1`,
     });
     return { url: session.url };
   }

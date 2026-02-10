@@ -251,6 +251,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get okButton => 'OK';
 
   @override
+  String get stripeReturnTitle => 'Back from Stripe';
+
+  @override
+  String get stripeReturnBody =>
+      'Updating your subscription. This can take a few seconds.';
+
+  @override
   String get signInTitle => 'Sign in';
 
   @override

@@ -88,6 +88,8 @@
   "missingDataTitle": "Informations manquantes",
   "missingDataDescription": "Pour calculer la rentabilité, complétez :",
   "okButton": "OK",
+  "stripeReturnTitle": "Retour depuis Stripe",
+  "stripeReturnBody": "Mise à jour de votre abonnement. Cela peut prendre quelques secondes.",
   "signInTitle": "Connexion",
   "signInSubtitle": "Analysez vos offres de livraison plus vite et gardez chaque euro.",
   "registerTitle": "Créer un compte",

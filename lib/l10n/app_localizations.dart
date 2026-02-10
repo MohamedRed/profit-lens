@@ -568,6 +568,18 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get okButton;
 
+  /// No description provided for @stripeReturnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Back from Stripe'**
+  String get stripeReturnTitle;
+
+  /// No description provided for @stripeReturnBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating your subscription. This can take a few seconds.'**
+  String get stripeReturnBody;
+
   /// No description provided for @signInTitle.
   ///
   /// In en, this message translates to:

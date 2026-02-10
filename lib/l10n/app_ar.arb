@@ -88,6 +88,8 @@
   "missingDataTitle": "معلومات ناقصة",
   "missingDataDescription": "لحساب الربحية، يرجى إكمال:",
   "okButton": "حسنًا",
+  "stripeReturnTitle": "العودة من Stripe",
+  "stripeReturnBody": "جارٍ تحديث اشتراكك. قد يستغرق ذلك بضع ثوانٍ.",
   "signInTitle": "تسجيل الدخول",
   "signInSubtitle": "حلّل عروض التوصيل بسرعة واحتفِ بكل يورو.",
   "registerTitle": "إنشاء حساب",

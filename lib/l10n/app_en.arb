@@ -88,6 +88,8 @@
   "missingDataTitle": "Missing information",
   "missingDataDescription": "To compute profitability, please complete:",
   "okButton": "OK",
+  "stripeReturnTitle": "Back from Stripe",
+  "stripeReturnBody": "Updating your subscription. This can take a few seconds.",
   "signInTitle": "Sign in",
   "signInSubtitle": "Analyze delivery offers faster and keep every euro.",
   "registerTitle": "Create account",

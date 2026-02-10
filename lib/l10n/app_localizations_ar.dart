@@ -250,6 +250,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get okButton => 'حسنًا';
 
   @override
+  String get stripeReturnTitle => 'العودة من Stripe';
+
+  @override
+  String get stripeReturnBody =>
+      'جارٍ تحديث اشتراكك. قد يستغرق ذلك بضع ثوانٍ.';
+
+  @override
   String get signInTitle => 'تسجيل الدخول';
 
   @override
