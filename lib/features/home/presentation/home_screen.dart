@@ -118,30 +118,33 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     ];
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      resizeToAvoidBottomInset: false,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: tabs.map((tab) => SafeArea(child: tab.page)).toList(),
-      ),
-      bottomNavigationBar: MediaQuery.removePadding(
-        context: context,
-        removeBottom: true,
-        child: MediaQuery.removeViewInsets(
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(viewInsets: EdgeInsets.zero),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        resizeToAvoidBottomInset: false,
+        body: IndexedStack(
+          index: _currentIndex,
+          children: tabs.map((tab) => SafeArea(child: tab.page)).toList(),
+        ),
+        bottomNavigationBar: MediaQuery.removePadding(
           context: context,
           removeBottom: true,
-          child: MobilePillNav(
-            currentIndex: _currentIndex,
-            items: tabs
-                .map(
-                  (tab) => MobilePillNavItem(
-                    icon: tab.icon,
-                    label: tab.labelBuilder(l10n),
-                  ),
-                )
-                .toList(),
-            onChanged: (index) => setState(() => _currentIndex = index),
+          child: MediaQuery.removeViewInsets(
+            context: context,
+            removeBottom: true,
+            child: MobilePillNav(
+              currentIndex: _currentIndex,
+              items: tabs
+                  .map(
+                    (tab) => MobilePillNavItem(
+                      icon: tab.icon,
+                      label: tab.labelBuilder(l10n),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (index) => setState(() => _currentIndex = index),
+            ),
           ),
         ),
       ),
