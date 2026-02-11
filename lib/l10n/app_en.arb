@@ -337,6 +337,7 @@
   "helpTicketSubmitted": "Ticket submitted. We’ll keep you posted.",
   "helpSubmissionFailed": "Unable to submit ticket. Please try again.",
   "helpSubmissionTimeout": "Submission timed out. Check your connection and try again.",
+  "helpSubmissionUploadTimeout": "Uploading screenshots took too long. Try fewer or smaller screenshots.",
   "helpViewTicketsButton": "View tickets",
   "helpTicketsTitle": "Tickets",
   "helpRecentTicketsTitle": "Recent tickets",

@@ -912,6 +912,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le délai d’envoi est dépassé. Vérifiez votre connexion et réessayez.';
 
   @override
+  String get helpSubmissionUploadTimeout =>
+      'Le téléversement des captures a pris trop de temps. Essayez avec moins de captures ou plus petites.';
+
+  @override
   String get helpViewTicketsButton => 'Voir les tickets';
 
   @override

@@ -182,13 +182,11 @@ mixin _HelpScreenActions on State<HelpScreen> {
             durationSeconds: audioRecording.duration.inSeconds,
           ).toDraft(),
       ];
-      await _state._ticketRepository!
-          .createTicket(
-            uid: widget.user.uid,
-            draft: draft,
-            attachments: attachments,
-          )
-          .timeout(_HelpScreenState._submissionTimeout);
+      await _state._ticketRepository!.createTicket(
+        uid: widget.user.uid,
+        draft: draft,
+        attachments: attachments,
+      );
       if (!mounted) return;
       _state._formController.reset();
       _state._screenshots.clear();
@@ -197,7 +195,11 @@ mixin _HelpScreenActions on State<HelpScreen> {
       setState(() {});
     } on TimeoutException {
       if (!mounted) return;
-      _showSnackBar(l10n.helpSubmissionTimeout);
+      if (_state._screenshots.isNotEmpty) {
+        _showSnackBar(l10n.helpSubmissionUploadTimeout);
+      } else {
+        _showSnackBar(l10n.helpSubmissionTimeout);
+      }
     } on FirebaseException catch (error) {
       if (!mounted) return;
       _showSnackBar('${l10n.helpSubmissionFailed} (${error.code})');

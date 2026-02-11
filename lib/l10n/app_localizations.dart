@@ -1762,6 +1762,12 @@ abstract class AppLocalizations {
   /// **'Submission timed out. Check your connection and try again.'**
   String get helpSubmissionTimeout;
 
+  /// No description provided for @helpSubmissionUploadTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading screenshots took too long. Try fewer or smaller screenshots.'**
+  String get helpSubmissionUploadTimeout;
+
   /// No description provided for @helpViewTicketsButton.
   ///
   /// In en, this message translates to:

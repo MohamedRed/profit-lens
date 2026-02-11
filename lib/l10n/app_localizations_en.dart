@@ -902,6 +902,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Submission timed out. Check your connection and try again.';
 
   @override
+  String get helpSubmissionUploadTimeout =>
+      'Uploading screenshots took too long. Try fewer or smaller screenshots.';
+
+  @override
   String get helpViewTicketsButton => 'View tickets';
 
   @override

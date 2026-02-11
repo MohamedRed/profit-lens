@@ -893,6 +893,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'انتهت مهلة الإرسال. تحقق من الاتصال وحاول مرة أخرى.';
 
   @override
+  String get helpSubmissionUploadTimeout =>
+      'استغرق رفع لقطات الشاشة وقتًا طويلاً. جرّب عددًا أقل أو لقطات أصغر.';
+
+  @override
   String get helpViewTicketsButton => 'عرض التذاكر';
 
   @override

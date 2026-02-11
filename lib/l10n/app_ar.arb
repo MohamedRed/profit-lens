@@ -337,6 +337,7 @@
   "helpTicketSubmitted": "تم إرسال التذكرة. سنوافيك بالتحديثات.",
   "helpSubmissionFailed": "تعذر إرسال التذكرة. حاول مرة أخرى.",
   "helpSubmissionTimeout": "انتهت مهلة الإرسال. تحقق من الاتصال وحاول مرة أخرى.",
+  "helpSubmissionUploadTimeout": "استغرق رفع لقطات الشاشة وقتًا طويلاً. جرّب عددًا أقل أو لقطات أصغر.",
   "helpViewTicketsButton": "عرض التذاكر",
   "helpTicketsTitle": "التذاكر",
   "helpRecentTicketsTitle": "أحدث التذاكر",

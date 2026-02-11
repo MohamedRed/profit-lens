@@ -38,7 +38,6 @@ class HelpScreen extends StatefulWidget {
 class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
   static const int maxScreenshots = 5;
   static const bool _audioEnabled = false;
-  static const Duration _submissionTimeout = Duration(seconds: 60);
   static const Duration _imageProcessingTimeout = Duration(seconds: 20);
 
   final _formKey = GlobalKey<FormState>();

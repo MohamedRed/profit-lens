@@ -337,6 +337,7 @@
   "helpTicketSubmitted": "Ticket envoyé. Nous vous tiendrons informé.",
   "helpSubmissionFailed": "Impossible d’envoyer le ticket. Réessayez.",
   "helpSubmissionTimeout": "Le délai d’envoi est dépassé. Vérifiez votre connexion et réessayez.",
+  "helpSubmissionUploadTimeout": "Le téléversement des captures a pris trop de temps. Essayez avec moins de captures ou plus petites.",
   "helpViewTicketsButton": "Voir les tickets",
   "helpTicketsTitle": "Tickets",
   "helpRecentTicketsTitle": "Tickets récents",
