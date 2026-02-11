@@ -124,7 +124,7 @@ export const createHelpTicketCodexIssue = onDocumentUpdated(
       logger.error("Failed to create Codex help ticket issue", {
         uid,
         ticketId,
-        error,
+        error: error instanceof Error ? error.message : String(error),
       });
       await ticketRef.set(
         {
