@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   ai_agent:
-    if: contains(github.event.issue.labels.*.name, 'ai:run')
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.issue.labels.*.name, 'ai:run')
     runs-on: ubuntu-latest
     env:
       FIREBASE_HELP_TICKET_WEBHOOK_URL: ${{ secrets.FIREBASE_HELP_TICKET_WEBHOOK_URL }}
@@ -39,22 +39,24 @@ jobs:
           else
             printf "%s" "${{ github.event.issue.body }}" > prompt.txt
           fi
-          cat <<'EOF' >> prompt.txt
+          cat <<'EOF' > prompt_append.txt
+          ---
+          You are an autonomous coding agent operating inside this repository.
 
----
-You are an autonomous coding agent operating inside this repository.
+          Goal:
+          - Fix the issue described above by making real code changes in this repo.
 
-Goal:
-- Fix the issue described above by making real code changes in this repo.
+          Requirements:
+          - You MUST open and read the relevant files before editing.
+          - You MUST apply concrete edits to files (not just describe them).
+          - Keep changes minimal and targeted.
+          - If you cannot make a fix, explain why and list the files you checked.
+          - Run relevant tests or checks if possible; otherwise state why not.
+          - Provide a short final summary, tests run, and files changed.
 
-Requirements:
-- You MUST open and read the relevant files before editing.
-- You MUST apply concrete edits to files (not just describe them).
-- Keep changes minimal and targeted.
-- If you cannot make a fix, explain why and list the files you checked.
-- Run relevant tests or checks if possible; otherwise state why not.
-- Provide a short final summary, tests run, and files changed.
-EOF
+          EOF
+          sed -E 's/^ {10}//' prompt_append.txt >> prompt.txt
+          rm -f prompt_append.txt
           echo "TICKET_ID=$(grep -m1 '^TicketId:' prompt.txt | cut -d':' -f2- | xargs)" >> "$GITHUB_ENV"
           echo "TICKET_UID=$(grep -m1 '^Uid:' prompt.txt | cut -d':' -f2- | xargs)" >> "$GITHUB_ENV"
 
