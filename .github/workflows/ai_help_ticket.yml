@@ -3,6 +3,12 @@ name: AI Help Ticket
 on:
   issues:
     types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "GitHub issue number to process"
+        required: true
+        type: number
 
 permissions:
   contents: write
@@ -27,7 +33,12 @@ jobs:
       - name: Prepare prompt
         id: prompt
         run: |
-          printf "%s" "${{ github.event.issue.body }}" > prompt.txt
+          ISSUE_NUMBER_INPUT="${{ inputs.issue_number }}"
+          if [ -n "$ISSUE_NUMBER_INPUT" ]; then
+            gh issue view "$ISSUE_NUMBER_INPUT" --json body --jq .body > prompt.txt
+          else
+            printf "%s" "${{ github.event.issue.body }}" > prompt.txt
+          fi
           cat <<'EOF' >> prompt.txt
 
 ---
