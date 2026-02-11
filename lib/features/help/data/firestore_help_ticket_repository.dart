@@ -194,14 +194,15 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
     if (attachments.isEmpty) {
       return [];
     }
-    return Future.wait(
-      attachments.map(
-        (attachment) => _storage.uploadAttachment(
-          uid: uid,
-          ticketId: ticketId,
-          attachment: attachment,
-        ),
-      ),
-    );
+    final uploaded = <HelpTicketAttachment>[];
+    for (final attachment in attachments) {
+      final uploadedAttachment = await _storage.uploadAttachment(
+        uid: uid,
+        ticketId: ticketId,
+        attachment: attachment,
+      );
+      uploaded.add(uploadedAttachment);
+    }
+    return uploaded;
   }
 }

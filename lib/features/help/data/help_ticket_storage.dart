@@ -13,8 +13,8 @@ abstract class HelpTicketStorage {
 
 class FirebaseHelpTicketStorage implements HelpTicketStorage {
   final FirebaseStorage _storage;
-  static const Duration _uploadTimeout = Duration(seconds: 45);
-  static const Duration _downloadUrlTimeout = Duration(seconds: 15);
+  static const Duration _uploadTimeout = Duration(seconds: 120);
+  static const Duration _downloadUrlTimeout = Duration(seconds: 30);
 
   FirebaseHelpTicketStorage({FirebaseStorage? storage})
     : _storage = storage ?? FirebaseStorage.instance;
