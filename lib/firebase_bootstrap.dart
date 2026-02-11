@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'core/config/app_config.dart';
 import 'firebase_options.dart';
+import 'firebase_web_plugins.dart';
 
 class FirebaseBootstrap {
   static Future<void> ensureInitialized() async {
@@ -11,5 +12,6 @@ class FirebaseBootstrap {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    registerFirebaseWebPlugins();
   }
 }
