@@ -2,8 +2,7 @@ import { FieldValue } from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
 import { HttpsError } from "firebase-functions/v2/https";
 import { db } from "./firebase_admin";
-import { requestGeminiJson } from "./gemini_client";
-import { parseGeminiJson } from "./gemini_json";
+import { requestGeminiJsonWithRetry } from "./gemini_json_retry";
 import { helpTriagePrompt } from "./help_triage_prompt";
 
 const helpTriageSchema = {
@@ -81,16 +80,15 @@ export async function runHelpTicketTriage(params: {
 
   logger.info("Help ticket triage", { uid, ticketId, model });
 
-  const text = await requestGeminiJson({
+  const parsed = await requestGeminiJsonWithRetry<HelpTriageResult>({
     apiKey,
     model,
     prompt,
     schema: helpTriageSchema,
     temperature: 0.2,
     maxOutputTokens: 1024,
+    context: { uid, ticketId, feature: "help_ticket_triage" },
   });
-
-  const parsed = parseGeminiJson(text) as HelpTriageResult;
 
   await ticketRef.set(
     {

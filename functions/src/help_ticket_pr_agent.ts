@@ -1,6 +1,5 @@
 import * as logger from "firebase-functions/logger";
-import { requestGeminiJson } from "./gemini_client";
-import { parseGeminiJson } from "./gemini_json";
+import { requestGeminiJsonWithRetry } from "./gemini_json_retry";
 import { helpPullRequestPrompt } from "./help_pr_prompt";
 import { getFileContent, searchCode } from "./github_repo";
 
@@ -46,6 +45,8 @@ export async function buildHelpTicketPullRequestDraft(params: {
   aiNextSteps?: string | null;
   platform?: string | null;
   locale?: string | null;
+  uid?: string | null;
+  ticketId?: string | null;
   apiKey: string;
   model: string;
 }) {
@@ -96,16 +97,19 @@ export async function buildHelpTicketPullRequestDraft(params: {
     fileCount: filesContext.length,
   });
 
-  const text = await requestGeminiJson({
+  const parsed = await requestGeminiJsonWithRetry<HelpPullRequestDraft>({
     apiKey: params.apiKey,
     model: params.model,
     prompt,
     schema: helpPrSchema,
     temperature: 0.2,
     maxOutputTokens: 2048,
+    context: {
+      uid: params.uid ?? undefined,
+      ticketId: params.ticketId ?? undefined,
+      feature: "help_ticket_pr",
+    },
   });
-
-  const parsed = parseGeminiJson(text) as HelpPullRequestDraft;
   validateDraft(parsed);
   return parsed;
 }

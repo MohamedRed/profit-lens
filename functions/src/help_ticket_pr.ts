@@ -91,6 +91,8 @@ export const createHelpTicketPullRequest = onDocumentUpdated(
       owner,
       repo,
       ref: baseBranch,
+      uid,
+      ticketId,
       description: (after.description as string | undefined) ?? "",
       aiSummary: after.aiSummary as string | undefined,
       aiNextSteps: after.aiNextSteps as string | undefined,
