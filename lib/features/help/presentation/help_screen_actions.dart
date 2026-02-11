@@ -136,28 +136,37 @@ mixin _HelpScreenActions on State<HelpScreen> {
       );
       final processedScreenshots = <HelpTicketAttachmentDraft>[];
       for (final screenshot in _state._screenshots) {
+        HelpProcessedImage processed;
         try {
-          final processed = await processHelpImageForUpload(
+          processed = await processHelpImageForUpload(
             bytes: screenshot.bytes,
             filename: screenshot.filename,
             contentType: screenshot.contentType,
           ).timeout(_HelpScreenState._imageProcessingTimeout);
-          processedScreenshots.add(
-            HelpTicketAttachmentDraft(
-              id: screenshot.id,
-              type: screenshot.type,
-              filename: processed.filename,
-              contentType: processed.contentType,
-              bytes: processed.bytes,
-              sizeBytes: processed.bytes.length,
-              durationSeconds: screenshot.durationSeconds,
-            ),
+        } on TimeoutException {
+          processed = HelpProcessedImage(
+            bytes: screenshot.bytes,
+            filename: screenshot.filename,
+            contentType: screenshot.contentType,
           );
         } catch (_) {
-          if (!mounted) return;
-          _showSnackBar(l10n.helpAttachmentProcessingFailed);
-          return;
+          processed = HelpProcessedImage(
+            bytes: screenshot.bytes,
+            filename: screenshot.filename,
+            contentType: screenshot.contentType,
+          );
         }
+        processedScreenshots.add(
+          HelpTicketAttachmentDraft(
+            id: screenshot.id,
+            type: screenshot.type,
+            filename: processed.filename,
+            contentType: processed.contentType,
+            bytes: processed.bytes,
+            sizeBytes: processed.bytes.length,
+            durationSeconds: screenshot.durationSeconds,
+          ),
+        );
       }
 
       final attachments = <HelpTicketAttachmentDraft>[
