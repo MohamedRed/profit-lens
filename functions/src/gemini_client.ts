@@ -51,6 +51,7 @@ const offerExtractionSchema = {
 export async function requestGeminiOffer(
   request: GeminiRequest
 ): Promise<string> {
+  const responseSchema = sanitizeResponseSchema(offerExtractionSchema);
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${request.model}:generateContent?key=${request.apiKey}`,
     {
@@ -76,7 +77,7 @@ export async function requestGeminiOffer(
           maxOutputTokens: 2048,
           responseMimeType: "application/json",
           responseJsonSchema: offerExtractionSchema,
-          responseSchema: offerExtractionSchema,
+          responseSchema,
         },
       }),
     }
@@ -136,6 +137,7 @@ export async function requestGeminiOffer(
 export async function requestGeminiJson(
   request: GeminiJsonRequest
 ): Promise<string> {
+  const responseSchema = sanitizeResponseSchema(request.schema);
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${request.model}:generateContent?key=${request.apiKey}`,
     {
@@ -153,7 +155,7 @@ export async function requestGeminiJson(
           maxOutputTokens: request.maxOutputTokens ?? 1024,
           responseMimeType: "application/json",
           responseJsonSchema: request.schema,
-          responseSchema: request.schema,
+          responseSchema,
         },
       }),
     }
@@ -182,4 +184,21 @@ export async function requestGeminiJson(
   }
 
   return text;
+}
+
+function sanitizeResponseSchema<T>(schema: T): T {
+  if (!schema || typeof schema !== "object") {
+    return schema;
+  }
+  if (Array.isArray(schema)) {
+    return schema.map((item) => sanitizeResponseSchema(item)) as T;
+  }
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(schema)) {
+    if (key === "additionalProperties") {
+      continue;
+    }
+    result[key] = sanitizeResponseSchema(value);
+  }
+  return result as T;
 }
