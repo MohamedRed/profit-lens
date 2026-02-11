@@ -106,10 +106,21 @@ jobs:
       - name: Check changes
         id: diff
         run: |
-          if git diff --quiet; then
-            echo "has_changes=false" >> "$GITHUB_OUTPUT"
-          else
+          if [ -f PR_DESCRIPTION.md ]; then
+            rm -f PR_DESCRIPTION.md
+          fi
+          if [ -n "$(git status --porcelain)" ]; then
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "has_uncommitted=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          AHEAD_COUNT=$(git rev-list --count origin/main..HEAD || echo "0")
+          if [ "$AHEAD_COUNT" -gt 0 ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "has_uncommitted=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "has_uncommitted=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: No changes
@@ -131,8 +142,10 @@ jobs:
           git config user.email "ai-agent-bot@users.noreply.github.com"
           BRANCH="ai/help-ticket-$ISSUE_NUMBER-${{ github.run_id }}"
           git checkout -b "$BRANCH"
-          git add -A
-          git commit -m "AI agent fix: $ISSUE_TITLE"
+          if [ "${{ steps.diff.outputs.has_uncommitted }}" = "true" ]; then
+            git add -A
+            git commit -m "AI agent fix: $ISSUE_TITLE"
+          fi
           git push --set-upstream origin "$BRANCH"
           PR_URL=$(gh pr create \
             --title "AI agent fix: $ISSUE_TITLE" \
