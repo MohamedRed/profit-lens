@@ -3,6 +3,8 @@ export const helpTriagePrompt = [
   "Read the ticket details and produce a concise triage update that helps resolve the bug.",
   "Respond in the same language as the ticket locale.",
   "Return ONLY JSON that matches the schema.",
+  "Do not wrap the JSON in markdown or add extra commentary.",
+  "Use double quotes for all JSON keys and string values.",
   "Guidelines:",
   "- Keep statusMessage under 140 characters.",
   "- summary: 1-2 sentences describing the issue and likely root cause.",

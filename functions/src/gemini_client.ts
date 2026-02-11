@@ -76,6 +76,7 @@ export async function requestGeminiOffer(
           maxOutputTokens: 2048,
           responseMimeType: "application/json",
           responseJsonSchema: offerExtractionSchema,
+          responseSchema: offerExtractionSchema,
         },
       }),
     }
@@ -152,6 +153,7 @@ export async function requestGeminiJson(
           maxOutputTokens: request.maxOutputTokens ?? 1024,
           responseMimeType: "application/json",
           responseJsonSchema: request.schema,
+          responseSchema: request.schema,
         },
       }),
     }
