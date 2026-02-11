@@ -44,6 +44,7 @@ jobs:
           sandbox: workspace-write
           safety-strategy: drop-sudo
           codex-args: "--full-auto"
+          allow-bots: true
 
       - name: Check changes
         id: diff
