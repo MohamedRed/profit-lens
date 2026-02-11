@@ -25,10 +25,6 @@ export const notifyHelpTicketStatus = onDocumentUpdated(
       return;
     }
 
-    if (afterStatus === "triaging") {
-      return;
-    }
-
     const uid = event.params.uid as string;
     const ticketId = event.params.ticketId as string;
 

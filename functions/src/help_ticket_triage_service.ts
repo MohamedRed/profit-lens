@@ -60,7 +60,9 @@ export async function runHelpTicketTriage(params: {
   await ticketRef.set(
     {
       status: "triaging",
-      statusMessage: "AI triage in progress",
+      statusMessage: resolveTriageStatusMessage(
+        data.locale as string | undefined
+      ),
       updatedAt: FieldValue.serverTimestamp(),
     },
     { merge: true }
@@ -102,4 +104,16 @@ export async function runHelpTicketTriage(params: {
     },
     { merge: true }
   );
+}
+
+function resolveTriageStatusMessage(locale?: string) {
+  if (!locale) return "AI triage in progress";
+  const normalized = locale.toLowerCase();
+  if (normalized.startsWith("fr")) {
+    return "Analyse IA en cours";
+  }
+  if (normalized.startsWith("ar")) {
+    return "جارٍ تحليل البلاغ بالذكاء الاصطناعي";
+  }
+  return "AI triage in progress";
 }
