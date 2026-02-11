@@ -45,7 +45,6 @@ export const createHelpTicketPullRequest = onDocumentUpdated(
 
     if (after.codingAgentStatus) return;
     if (!after.aiSummary || !after.aiNextSteps) return;
-    if (after.aiNeedsUserAction === true) return;
     if (typeof after.description !== "string" || after.description.trim() === "") {
       return;
     }
