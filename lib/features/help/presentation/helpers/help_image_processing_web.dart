@@ -129,14 +129,36 @@ Future<html.Blob?> _canvasToBlob(html.CanvasElement canvas) {
 Future<Uint8List> _blobToBytes(html.Blob blob) {
   final reader = html.FileReader();
   final completer = Completer<Uint8List>();
+  void completeOnce(Uint8List bytes) {
+    if (completer.isCompleted) return;
+    completer.complete(bytes);
+  }
+
   reader.onLoadEnd.listen((_) {
-    final buffer = reader.result as ByteBuffer?;
-    if (buffer == null) {
-      completer.complete(Uint8List(0));
-      return;
+    try {
+      final result = reader.result;
+      if (result == null) {
+        completeOnce(Uint8List(0));
+        return;
+      }
+      if (result is ByteBuffer) {
+        completeOnce(Uint8List.view(result));
+        return;
+      }
+      if (result is Uint8List) {
+        completeOnce(result);
+        return;
+      }
+      if (result is List<int>) {
+        completeOnce(Uint8List.fromList(result));
+        return;
+      }
+      completeOnce(Uint8List(0));
+    } catch (_) {
+      completeOnce(Uint8List(0));
     }
-    completer.complete(Uint8List.view(buffer));
   });
+  reader.onError.listen((_) => completeOnce(Uint8List(0)));
   reader.readAsArrayBuffer(blob);
   return completer.future;
 }
