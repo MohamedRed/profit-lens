@@ -25,10 +25,20 @@ jobs:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       GOOGLE_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       GEMINI_HELP_TICKET_MODEL: ${{ vars.GEMINI_HELP_TICKET_MODEL }}
-      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CODING_AGENT_APP_ID }}
+          private-key: ${{ secrets.CODING_AGENT_APP_PRIVATE_KEY }}
+
+      - name: Configure GH auth
+        run: |
+          echo "GH_TOKEN=${{ steps.app-token.outputs.token }}" >> "$GITHUB_ENV"
 
       - name: Prepare prompt
         id: prompt
@@ -137,15 +147,9 @@ jobs:
 
       - name: Create PR
         if: steps.diff.outputs.has_changes == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GH_PR_TOKEN }}
         run: |
           git config user.name "ai-agent-bot"
           git config user.email "ai-agent-bot@users.noreply.github.com"
-          if [ -z "$GH_TOKEN" ]; then
-            echo "Missing GH_PR_TOKEN secret. Create a PAT with repo access and set it as GH_PR_TOKEN."
-            exit 1
-          fi
           BRANCH="ai/help-ticket-$ISSUE_NUMBER-${{ github.run_id }}"
           git checkout -b "$BRANCH"
           if [ "${{ steps.diff.outputs.has_uncommitted }}" = "true" ]; then
