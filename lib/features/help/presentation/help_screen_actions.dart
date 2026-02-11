@@ -189,6 +189,9 @@ mixin _HelpScreenActions on State<HelpScreen> {
     } on TimeoutException {
       if (!mounted) return;
       _showSnackBar(l10n.helpSubmissionTimeout);
+    } on FirebaseException catch (error) {
+      if (!mounted) return;
+      _showSnackBar('${l10n.helpSubmissionFailed} (${error.code})');
     } catch (_) {
       if (!mounted) return;
       _showSnackBar(l10n.helpSubmissionFailed);
