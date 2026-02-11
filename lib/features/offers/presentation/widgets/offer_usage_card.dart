@@ -197,6 +197,7 @@ class _ManagePlanButtonState extends State<_ManagePlanButton>
     if (_openingPortal) {
       return;
     }
+    FocusScope.of(context).unfocus();
     setState(() {
       _openingPortal = true;
       _leftApp = false;

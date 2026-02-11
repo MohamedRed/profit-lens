@@ -72,6 +72,7 @@ class _PlanCard extends StatelessWidget {
   }
 
   Future<void> _startCheckout(BuildContext context, BillingPlan plan) async {
+    FocusScope.of(context).unfocus();
     final messenger = ScaffoldMessenger.of(context);
     final l10n = AppLocalizations.of(context)!;
     final overlay = StripeLaunchOverlay.show(context, l10n.managePlanButton);

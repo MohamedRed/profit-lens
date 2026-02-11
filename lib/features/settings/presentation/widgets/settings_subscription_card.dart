@@ -81,6 +81,7 @@ class _SubscriptionTileState extends State<_SubscriptionTile>
       return;
     }
     final entitlement = widget.entitlement;
+    FocusScope.of(context).unfocus();
     if (entitlement.isFree) {
       await showModalBottomSheet<void>(
         context: context,
