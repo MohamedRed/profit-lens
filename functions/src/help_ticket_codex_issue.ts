@@ -10,12 +10,24 @@ import {
   githubRepoOwner,
 } from "./github_app_config";
 import { fetchInstallationToken } from "./github_app_auth";
-import { addIssueLabels, createIssue } from "./github_repo";
+import { addIssueLabels, createIssue, ensureLabels } from "./github_repo";
 
 const REGION = "europe-west1";
 const MAX_IMAGE_ATTACHMENTS = 5;
 const SIGNED_URL_TTL_DAYS = 7;
-const ISSUE_LABELS = ["help-ticket", "codex:run"];
+const ISSUE_LABELS = ["help-ticket", "ai:run"];
+const LABEL_DEFINITIONS = [
+  {
+    name: "help-ticket",
+    color: "0E8A16",
+    description: "Help ticket created from the app.",
+  },
+  {
+    name: "ai:run",
+    color: "5319E7",
+    description: "Trigger AI agent PR automation.",
+  },
+];
 
 type AttachmentData = {
   type?: string;
@@ -95,6 +107,13 @@ export const createHelpTicketCodexIssue = onDocumentUpdated(
         imageLinks,
       });
 
+      await ensureLabels({
+        token: installationToken.token,
+        owner,
+        repo,
+        labels: LABEL_DEFINITIONS,
+      });
+
       const issue = await createIssue({
         token: installationToken.token,
         owner,
@@ -121,7 +140,7 @@ export const createHelpTicketCodexIssue = onDocumentUpdated(
         { merge: true }
       );
     } catch (error) {
-      logger.error("Failed to create Codex help ticket issue", {
+      logger.error("Failed to create AI help ticket issue", {
         uid,
         ticketId,
         error: error instanceof Error ? error.message : String(error),
@@ -228,25 +247,25 @@ function truncate(text: string, maxLength: number) {
 }
 
 function resolveQueuedStatusMessage(locale?: string) {
-  if (!locale) return "Codex agent queued.";
+  if (!locale) return "AI agent queued.";
   const normalized = locale.toLowerCase();
   if (normalized.startsWith("fr")) {
-    return "Agent Codex en file d’attente.";
+    return "Agent IA en file d’attente.";
   }
   if (normalized.startsWith("ar")) {
-    return "تمت جدولة وكيل كودكس.";
+    return "تمت جدولة وكيل الذكاء الاصطناعي.";
   }
-  return "Codex agent queued.";
+  return "AI agent queued.";
 }
 
 function resolveFailedStatusMessage(locale?: string) {
-  if (!locale) return "Codex failed to prepare a fix.";
+  if (!locale) return "AI agent failed to prepare a fix.";
   const normalized = locale.toLowerCase();
   if (normalized.startsWith("fr")) {
-    return "Échec de la préparation du correctif Codex.";
+    return "Échec de la préparation du correctif IA.";
   }
   if (normalized.startsWith("ar")) {
-    return "فشل كودكس في إعداد الإصلاح.";
+    return "فشل وكيل الذكاء الاصطناعي في إعداد الإصلاح.";
   }
-  return "Codex failed to prepare a fix.";
+  return "AI agent failed to prepare a fix.";
 }

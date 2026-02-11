@@ -2,6 +2,12 @@ import { githubRequest } from "./github_api";
 
 type IssueResponse = { html_url: string; number: number };
 
+type LabelDefinition = {
+  name: string;
+  color: string;
+  description?: string;
+};
+
 export async function createIssue(params: {
   token: string;
   owner: string;
@@ -21,6 +27,32 @@ export async function createIssue(params: {
   return data;
 }
 
+export async function ensureLabels(params: {
+  token: string;
+  owner: string;
+  repo: string;
+  labels: LabelDefinition[];
+}) {
+  for (const label of params.labels) {
+    try {
+      await githubRequest<void>({
+        token: params.token,
+        method: "POST",
+        path: `/repos/${params.owner}/${params.repo}/labels`,
+        body: {
+          name: label.name,
+          color: label.color,
+          description: label.description ?? "",
+        },
+      });
+    } catch (error) {
+      if (!isLabelAlreadyExistsError(error)) {
+        throw error;
+      }
+    }
+  }
+}
+
 export async function addIssueLabels(params: {
   token: string;
   owner: string;
@@ -37,4 +69,10 @@ export async function addIssueLabels(params: {
       labels: params.labels,
     },
   });
+}
+
+function isLabelAlreadyExistsError(error: unknown) {
+  if (!(error instanceof Error)) return false;
+  const message = error.message;
+  return message.includes(" 422 ") || message.includes("already_exists");
 }

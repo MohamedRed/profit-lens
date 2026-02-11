@@ -80,7 +80,7 @@ export const codexHelpTicketCallback = onRequest(
     if (payload.branch) updates.codingAgentBranch = payload.branch;
 
     await ticketRef.set(updates, { merge: true });
-    logger.info("Codex webhook updated ticket", {
+    logger.info("AI agent webhook updated ticket", {
       ticketId: payload.ticketId,
       status,
     });
@@ -122,27 +122,27 @@ function resolveStatusMessage(locale: string | undefined, status: string) {
   const isAr = normalized.startsWith("ar");
   switch (status) {
     case "queued":
-      if (isFr) return "Agent Codex en file d’attente.";
-      if (isAr) return "تمت جدولة وكيل كودكس.";
-      return "Codex agent queued.";
+      if (isFr) return "Agent IA en file d’attente.";
+      if (isAr) return "تمت جدولة وكيل الذكاء الاصطناعي.";
+      return "AI agent queued.";
     case "running":
-      if (isFr) return "Agent Codex en cours d’exécution.";
-      if (isAr) return "يعمل وكيل كودكس الآن.";
-      return "Codex agent is running.";
+      if (isFr) return "Agent IA en cours d’exécution.";
+      if (isAr) return "يعمل وكيل الذكاء الاصطناعي الآن.";
+      return "AI agent is running.";
     case "pr_created":
       if (isFr) return "Correctif proposé prêt pour examen.";
       if (isAr) return "اقتراح الإصلاح جاهز للمراجعة.";
       return "Proposed fix is ready for review.";
     case "no_changes":
-      if (isFr) return "Aucun correctif applicable trouvé par Codex.";
-      if (isAr) return "لم يجد كودكس تغييرات قابلة للتطبيق.";
-      return "Codex did not find applicable changes.";
+      if (isFr) return "Aucun correctif applicable trouvé par l’agent IA.";
+      if (isAr) return "لم يجد وكيل الذكاء الاصطناعي تغييرات قابلة للتطبيق.";
+      return "AI agent did not find applicable changes.";
     case "failed":
-      if (isFr) return "Échec de la préparation du correctif Codex.";
-      if (isAr) return "فشل كودكس في إعداد الإصلاح.";
-      return "Codex failed to prepare a fix.";
+      if (isFr) return "Échec de la préparation du correctif IA.";
+      if (isAr) return "فشل وكيل الذكاء الاصطناعي في إعداد الإصلاح.";
+      return "AI agent failed to prepare a fix.";
     default:
-      return "Codex update received.";
+      return "AI agent update received.";
   }
 }
 

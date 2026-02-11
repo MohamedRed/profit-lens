@@ -1,4 +1,4 @@
-name: Codex Help Ticket
+name: AI Help Ticket
 
 on:
   issues:
@@ -10,13 +10,15 @@ permissions:
   issues: write
 
 jobs:
-  codex:
-    if: contains(github.event.issue.labels.*.name, 'codex:run')
+  ai_agent:
+    if: contains(github.event.issue.labels.*.name, 'ai:run')
     runs-on: ubuntu-latest
     env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       FIREBASE_HELP_TICKET_WEBHOOK_URL: ${{ secrets.FIREBASE_HELP_TICKET_WEBHOOK_URL }}
       CODEX_HELP_TICKET_WEBHOOK_SECRET: ${{ secrets.CODEX_HELP_TICKET_WEBHOOK_SECRET }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GOOGLE_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GEMINI_HELP_TICKET_MODEL: ${{ vars.GEMINI_HELP_TICKET_MODEL }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout
@@ -38,15 +40,17 @@ jobs:
               -d "{\"ticketId\":\"$TICKET_ID\",\"uid\":\"$TICKET_UID\",\"status\":\"running\"}"
           fi
 
-      - name: Run Codex
-        uses: openai/codex-action@v1
-        with:
-          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-          prompt-file: prompt.txt
-          sandbox: workspace-write
-          codex-args: '["--full-auto"]'
-          safety-strategy: drop-sudo
-          allow-bots: true
+      - name: Install Gemini CLI
+        run: npm install -g @google/gemini-cli
+
+      - name: Run Gemini
+        run: |
+          MODEL="${GEMINI_HELP_TICKET_MODEL:-gemini-3-pro-preview}"
+          gemini \
+            --approval-mode=yolo \
+            --sandbox \
+            --model "$MODEL" \
+            --prompt "$(cat prompt.txt)"
 
       - name: Check changes
         id: diff
@@ -61,7 +65,7 @@ jobs:
         if: steps.diff.outputs.has_changes == 'false'
         run: |
           gh issue comment "${{ github.event.issue.number }}" \
-            --body "No changes proposed by Codex."
+            --body "No changes proposed by AI agent."
           if [ -n "$TICKET_ID" ] && [ -n "$TICKET_UID" ]; then
             curl -sS -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
               -H "Authorization: Bearer $CODEX_HELP_TICKET_WEBHOOK_SECRET" \
@@ -72,15 +76,15 @@ jobs:
       - name: Create PR
         if: steps.diff.outputs.has_changes == 'true'
         run: |
-          git config user.name "codex-bot"
-          git config user.email "codex-bot@users.noreply.github.com"
-          BRANCH="codex/help-ticket-${{ github.event.issue.number }}"
+          git config user.name "ai-agent-bot"
+          git config user.email "ai-agent-bot@users.noreply.github.com"
+          BRANCH="ai/help-ticket-${{ github.event.issue.number }}"
           git checkout -b "$BRANCH"
           git add -A
-          git commit -m "Codex fix: ${{ github.event.issue.title }}"
+          git commit -m "AI agent fix: ${{ github.event.issue.title }}"
           git push --set-upstream origin "$BRANCH"
           PR_URL=$(gh pr create \
-            --title "Codex fix: ${{ github.event.issue.title }}" \
+            --title "AI agent fix: ${{ github.event.issue.title }}" \
             --body "Fixes #${{ github.event.issue.number }}" \
             --base main \
             --head "$BRANCH")
