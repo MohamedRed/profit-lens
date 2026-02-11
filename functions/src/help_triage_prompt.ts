@@ -5,6 +5,8 @@ export const helpTriagePrompt = [
   "Return ONLY JSON that matches the schema.",
   "Do not wrap the JSON in markdown or add extra commentary.",
   "Use double quotes for all JSON keys and string values.",
+  "Output must match this JSON shape exactly:",
+  "{\"status\":\"in_progress\",\"statusMessage\":\"...\",\"summary\":\"...\",\"nextSteps\":\"...\",\"needsUserAction\":false,\"confidence\":0.7}",
   "Guidelines:",
   "- Keep statusMessage under 140 characters.",
   "- summary: 1-2 sentences describing the issue and likely root cause.",

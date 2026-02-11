@@ -85,7 +85,7 @@ export async function runHelpTicketTriage(params: {
     model,
     prompt,
     schema: helpTriageSchema,
-    temperature: 0.2,
+    temperature: 0.1,
     maxOutputTokens: 1024,
     context: { uid, ticketId, feature: "help_ticket_triage" },
   });
