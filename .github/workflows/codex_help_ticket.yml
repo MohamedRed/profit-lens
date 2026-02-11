@@ -1,0 +1,102 @@
+name: Codex Help Ticket
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  codex:
+    if: contains(github.event.issue.labels.*.name, 'codex:run')
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      FIREBASE_HELP_TICKET_WEBHOOK_URL: ${{ secrets.FIREBASE_HELP_TICKET_WEBHOOK_URL }}
+      CODEX_HELP_TICKET_WEBHOOK_SECRET: ${{ secrets.CODEX_HELP_TICKET_WEBHOOK_SECRET }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare prompt
+        run: |
+          printf "%s" "${{ github.event.issue.body }}" > prompt.txt
+          echo "TICKET_ID=$(grep -m1 '^TicketId:' prompt.txt | cut -d':' -f2- | xargs)" >> "$GITHUB_ENV"
+          echo "TICKET_UID=$(grep -m1 '^Uid:' prompt.txt | cut -d':' -f2- | xargs)" >> "$GITHUB_ENV"
+
+      - name: Notify running
+        run: |
+          if [ -n "$TICKET_ID" ] && [ -n "$TICKET_UID" ]; then
+            curl -sS -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
+              -H "Authorization: Bearer $CODEX_HELP_TICKET_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"ticketId\":\"$TICKET_ID\",\"uid\":\"$TICKET_UID\",\"status\":\"running\"}"
+          fi
+
+      - name: Run Codex
+        uses: openai/codex-action@v1
+        with:
+          prompt-file: prompt.txt
+          sandbox: workspace-write
+          safety-strategy: drop-sudo
+          codex-args: "--full-auto"
+
+      - name: Check changes
+        id: diff
+        run: |
+          if git diff --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: No changes
+        if: steps.diff.outputs.has_changes == 'false'
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" \
+            --body "No changes proposed by Codex."
+          if [ -n "$TICKET_ID" ] && [ -n "$TICKET_UID" ]; then
+            curl -sS -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
+              -H "Authorization: Bearer $CODEX_HELP_TICKET_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"ticketId\":\"$TICKET_ID\",\"uid\":\"$TICKET_UID\",\"status\":\"no_changes\"}"
+          fi
+
+      - name: Create PR
+        if: steps.diff.outputs.has_changes == 'true'
+        run: |
+          git config user.name "codex-bot"
+          git config user.email "codex-bot@users.noreply.github.com"
+          BRANCH="codex/help-ticket-${{ github.event.issue.number }}"
+          git checkout -b "$BRANCH"
+          git add -A
+          git commit -m "Codex fix: ${{ github.event.issue.title }}"
+          git push --set-upstream origin "$BRANCH"
+          PR_URL=$(gh pr create \
+            --title "Codex fix: ${{ github.event.issue.title }}" \
+            --body "Fixes #${{ github.event.issue.number }}" \
+            --base main \
+            --head "$BRANCH")
+          gh issue comment "${{ github.event.issue.number }}" \
+            --body "Opened PR: $PR_URL"
+          PR_NUMBER=$(echo "$PR_URL" | sed -E 's#.*/pull/([0-9]+).*#\\1#')
+          if [ -n "$TICKET_ID" ] && [ -n "$TICKET_UID" ]; then
+            curl -sS -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
+              -H "Authorization: Bearer $CODEX_HELP_TICKET_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"ticketId\":\"$TICKET_ID\",\"uid\":\"$TICKET_UID\",\"status\":\"pr_created\",\"prUrl\":\"$PR_URL\",\"prNumber\":$PR_NUMBER,\"branch\":\"$BRANCH\"}"
+          fi
+
+      - name: Notify failure
+        if: failure()
+        run: |
+          if [ -n "$TICKET_ID" ] && [ -n "$TICKET_UID" ]; then
+            curl -sS -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
+              -H "Authorization: Bearer $CODEX_HELP_TICKET_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"ticketId\":\"$TICKET_ID\",\"uid\":\"$TICKET_UID\",\"status\":\"failed\"}"
+          fi
