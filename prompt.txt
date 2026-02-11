@@ -1,0 +1,30 @@
+TicketId: tbpLyvcd3QxrEVfiB3Hd
+Uid: t0C8huKjKHXXlxxOjuzb25Rk02n2
+Platform: web
+Locale: fr
+
+Description:
+after I open gestion of subscription in first page and browser opens, the tabs move up and stay up even after I close the browser
+
+AI Summary:
+L'utilisateur signale un décalage persistant des onglets vers le haut après l'ouverture de la page de gestion des abonnements.
+
+AI Next Steps:
+Pour nous aider à corriger ce problème, veuillez préciser : 1. Quel navigateur et système d'exploitation utilisez-vous ? 2. S'agit-il des onglets du navigateur ou du menu de navigation du site ? 3. Le problème persiste-t-il si vous rafraîchissez la page ?
+
+Attachments:
+- scaled_IMG_5871.jpg: https://firebasestorage.googleapis.com/v0/b/profit-lens-prod-2e417.firebasestorage.app/o/users%2Ft0C8huKjKHXXlxxOjuzb25Rk02n2%2FhelpTickets%2FtbpLyvcd3QxrEVfiB3Hd%2Fattachments%2F6ce71e6b-5790-4e95-9e46-8c19847ec268-scaled_IMG_5871.jpg?alt=media&token=e4d72a93-c35d-4570-84c3-beb919322bf1
+---
+You are an autonomous coding agent operating inside this repository.
+
+Goal:
+- Fix the issue described above by making real code changes in this repo.
+
+Requirements:
+- You MUST open and read the relevant files before editing.
+- You MUST apply concrete edits to files (not just describe them).
+- Keep changes minimal and targeted.
+- If you cannot make a fix, explain why and list the files you checked.
+- Run relevant tests or checks if possible; otherwise state why not.
+- Provide a short final summary, tests run, and files changed.
+
