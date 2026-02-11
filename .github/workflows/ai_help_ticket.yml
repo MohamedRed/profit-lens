@@ -129,7 +129,7 @@ jobs:
         run: |
           git config user.name "ai-agent-bot"
           git config user.email "ai-agent-bot@users.noreply.github.com"
-          BRANCH="ai/help-ticket-$ISSUE_NUMBER"
+          BRANCH="ai/help-ticket-$ISSUE_NUMBER-${{ github.run_id }}"
           git checkout -b "$BRANCH"
           git add -A
           git commit -m "AI agent fix: $ISSUE_TITLE"
