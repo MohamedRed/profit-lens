@@ -1,0 +1,16 @@
+{
+  "name": "profit-lens-coding-agent",
+  "description": "Auto-creates PRs for help tickets in ProfitLens.",
+  "url": "https://github.com/MohamedRed/profit-lens",
+  "public": false,
+  "hook_attributes": {
+    "url": "https://profit-lens-prod-2e417.web.app/github-webhook",
+    "active": false
+  },
+  "default_permissions": {
+    "contents": "write",
+    "pull_requests": "write",
+    "metadata": "read"
+  },
+  "default_events": []
+}

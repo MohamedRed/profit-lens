@@ -18,6 +18,7 @@ export { triageHelpTicketAfterTranscription } from "./help_ticket_triage";
 export { transcribeHelpTicketAudio } from "./help_ticket_transcription";
 export { transcribeHelpDraftAudio } from "./help_ticket_draft_transcription";
 export { notifyHelpTicketStatus } from "./help_ticket_notifications";
+export { createHelpTicketPullRequest } from "./help_ticket_pr";
 export {
   createCheckoutSession,
   createCustomerPortalSession,
