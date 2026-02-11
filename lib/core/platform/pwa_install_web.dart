@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:html' as html;
+import 'dart:js_util' as js_util;
 
 import 'package:flutter/foundation.dart';
 
@@ -146,6 +147,16 @@ Future<void> _waitForUserChoice(dynamic deferredEvent) async {
 }
 
 Future<bool> _showAppleInstallDialog() async {
+  final customElements = js_util.getProperty(html.window, 'customElements');
+  if (customElements != null &&
+      js_util.hasProperty(customElements, 'whenDefined')) {
+    try {
+      await js_util.promiseToFuture(
+        js_util.callMethod(customElements, 'whenDefined', ['pwa-install']),
+      );
+    } catch (_) {}
+  }
+
   final element = html.document.querySelector('pwa-install');
   if (element == null) {
     html.window.console.warn('pwa-install element not found');
@@ -157,17 +168,24 @@ Future<bool> _showAppleInstallDialog() async {
   } catch (_) {}
 
   try {
-    final updateComplete = (element as dynamic).updateComplete;
-    if (updateComplete is Future) {
-      await updateComplete.timeout(
-        const Duration(seconds: 2),
-        onTimeout: () {},
-      );
+    final updateComplete = js_util.getProperty(element, 'updateComplete');
+    if (updateComplete != null) {
+      await js_util
+          .promiseToFuture(updateComplete)
+          .timeout(const Duration(seconds: 2), onTimeout: () {});
     }
   } catch (_) {}
 
   try {
-    (element as dynamic).showDialog(true);
+    if (js_util.hasProperty(element, 'showDialog')) {
+      js_util.callMethod(element, 'showDialog', [true]);
+    } else {
+      (element as dynamic).showDialog(true);
+    }
+    try {
+      js_util.setProperty(element, 'isDialogHidden', false);
+      js_util.setProperty(element, 'isInstallAvailable', true);
+    } catch (_) {}
     return true;
   } catch (_) {
     html.window.console.warn('pwa-install showDialog not available');
