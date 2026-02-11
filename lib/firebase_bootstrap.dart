@@ -9,9 +9,9 @@ class FirebaseBootstrap {
     if (!AppConfig.firebaseConfigured) {
       return;
     }
+    registerFirebaseWebPlugins();
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    registerFirebaseWebPlugins();
   }
 }
