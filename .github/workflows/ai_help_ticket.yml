@@ -28,6 +28,22 @@ jobs:
         id: prompt
         run: |
           printf "%s" "${{ github.event.issue.body }}" > prompt.txt
+          cat <<'EOF' >> prompt.txt
+
+---
+You are an autonomous coding agent operating inside this repository.
+
+Goal:
+- Fix the issue described above by making real code changes in this repo.
+
+Requirements:
+- You MUST open and read the relevant files before editing.
+- You MUST apply concrete edits to files (not just describe them).
+- Keep changes minimal and targeted.
+- If you cannot make a fix, explain why and list the files you checked.
+- Run relevant tests or checks if possible; otherwise state why not.
+- Provide a short final summary, tests run, and files changed.
+EOF
           echo "TICKET_ID=$(grep -m1 '^TicketId:' prompt.txt | cut -d':' -f2- | xargs)" >> "$GITHUB_ENV"
           echo "TICKET_UID=$(grep -m1 '^Uid:' prompt.txt | cut -d':' -f2- | xargs)" >> "$GITHUB_ENV"
 
@@ -46,11 +62,18 @@ jobs:
       - name: Run Gemini
         run: |
           MODEL="${GEMINI_HELP_TICKET_MODEL:-gemini-3-pro-preview}"
+          set -o pipefail
           gemini \
             --approval-mode=yolo \
             --sandbox \
             --model "$MODEL" \
-            --prompt "$(cat prompt.txt)"
+            --prompt "$(cat prompt.txt)" 2>&1 | tee gemini.log
+
+      - name: Debug status
+        if: always()
+        run: |
+          echo "Git status after Gemini:"
+          git status -sb || true
 
       - name: Check changes
         id: diff
