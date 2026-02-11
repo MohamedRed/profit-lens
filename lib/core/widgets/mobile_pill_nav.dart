@@ -28,8 +28,11 @@ class MobilePillNav extends StatelessWidget {
       currentIndex >= 0 && currentIndex < items.length,
       'MobilePillNav currentIndex must be within item range.',
     );
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final effectiveBottomPadding = bottomPadding > 0 ? bottomPadding + 8 : 24.0;
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+      padding: EdgeInsets.fromLTRB(24, 12, 24, effectiveBottomPadding),
       child: LayoutBuilder(
         builder: (context, constraints) {
           const baseHorizontalPadding = 12.0;
