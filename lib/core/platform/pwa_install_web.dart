@@ -153,7 +153,21 @@ Future<bool> _showAppleInstallDialog() async {
   }
 
   try {
-    (element as dynamic).showDialog();
+    html.window.localStorage.remove('pwa-hide-install');
+  } catch (_) {}
+
+  try {
+    final updateComplete = (element as dynamic).updateComplete;
+    if (updateComplete is Future) {
+      await updateComplete.timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {},
+      );
+    }
+  } catch (_) {}
+
+  try {
+    (element as dynamic).showDialog(true);
     return true;
   } catch (_) {
     html.window.console.warn('pwa-install showDialog not available');
