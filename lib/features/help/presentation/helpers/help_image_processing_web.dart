@@ -17,63 +17,83 @@ Future<HelpProcessedImage> processHelpImageForUploadInternal({
     throw StateError('Empty image data.');
   }
 
-  final blob = html.Blob([bytes], contentType);
-  final url = html.Url.createObjectUrlFromBlob(blob);
-  final image = html.ImageElement();
-  final completer = Completer<void>();
+  String? url;
+  try {
+    final blob = html.Blob([bytes], contentType);
+    url = html.Url.createObjectUrlFromBlob(blob);
+    final image = html.ImageElement();
+    final completer = Completer<void>();
 
-  image
-    ..onLoad.first.then((_) => completer.complete())
-    ..onError.first.then((_) {
-      if (!completer.isCompleted) {
-        completer.completeError(StateError('Failed to decode image.'));
-      }
-    })
-    ..src = url;
+    image
+      ..onLoad.first.then((_) => completer.complete())
+      ..onError.first.then((_) {
+        if (!completer.isCompleted) {
+          completer.completeError(StateError('Failed to decode image.'));
+        }
+      })
+      ..src = url;
 
-  await completer.future;
-  html.Url.revokeObjectUrl(url);
+    await completer.future;
 
-  final width = image.naturalWidth ?? image.width ?? 0;
-  final height = image.naturalHeight ?? image.height ?? 0;
-  if (width == 0 || height == 0) {
-    throw StateError('Invalid image dimensions.');
-  }
-
-  final scale = math.min(1, _maxDimension / math.max(width, height));
-  final targetWidth = (width * scale).round();
-  final targetHeight = (height * scale).round();
-
-  final canvas = html.CanvasElement(
-    width: targetWidth,
-    height: targetHeight,
-  );
-  final context = canvas.context2D;
-  context.drawImageScaled(image, 0, 0, targetWidth, targetHeight);
-
-  var blobResult = await _canvasToBlob(canvas);
-  if (blobResult == null) {
-    blobResult = _dataUrlToBlob(canvas.toDataUrl('image/jpeg', _jpegQuality));
-    if (blobResult == null) {
+    final width = image.naturalWidth ?? image.width ?? 0;
+    final height = image.naturalHeight ?? image.height ?? 0;
+    if (width == 0 || height == 0) {
       return HelpProcessedImage(
         bytes: bytes,
         filename: filename,
         contentType: contentType,
       );
     }
-  }
 
-  final processedBytes = await _blobToBytes(blobResult);
-  if (processedBytes.isEmpty) {
-    throw StateError('Processed image is empty.');
-  }
+    final scale = math.min(1, _maxDimension / math.max(width, height));
+    final targetWidth = (width * scale).round();
+    final targetHeight = (height * scale).round();
 
-  final safeBase = _stripExtension(filename);
-  return HelpProcessedImage(
-    bytes: processedBytes,
-    filename: '$safeBase.jpg',
-    contentType: 'image/jpeg',
-  );
+    final canvas = html.CanvasElement(
+      width: targetWidth,
+      height: targetHeight,
+    );
+    final context = canvas.context2D;
+    context.drawImageScaled(image, 0, 0, targetWidth, targetHeight);
+
+    var blobResult = await _canvasToBlob(canvas);
+    if (blobResult == null) {
+      blobResult = _dataUrlToBlob(canvas.toDataUrl('image/jpeg', _jpegQuality));
+      if (blobResult == null) {
+        return HelpProcessedImage(
+          bytes: bytes,
+          filename: filename,
+          contentType: contentType,
+        );
+      }
+    }
+
+    final processedBytes = await _blobToBytes(blobResult);
+    if (processedBytes.isEmpty) {
+      return HelpProcessedImage(
+        bytes: bytes,
+        filename: filename,
+        contentType: contentType,
+      );
+    }
+
+    final safeBase = _stripExtension(filename);
+    return HelpProcessedImage(
+      bytes: processedBytes,
+      filename: '$safeBase.jpg',
+      contentType: 'image/jpeg',
+    );
+  } catch (_) {
+    return HelpProcessedImage(
+      bytes: bytes,
+      filename: filename,
+      contentType: contentType,
+    );
+  } finally {
+    if (url != null) {
+      html.Url.revokeObjectUrl(url);
+    }
+  }
 }
 
 String _stripExtension(String name) {
