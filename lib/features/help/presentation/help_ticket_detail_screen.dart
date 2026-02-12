@@ -66,15 +66,6 @@ class HelpTicketDetailScreen extends StatelessWidget {
               HelpSectionCard(
                 title: l10n.helpTicketProgressTitle,
                 children: [
-                  HelpTicketProgressStepper(
-                    currentStatus: ticket.delivererStatus,
-                  ),
-                ],
-              ),
-              const SizedBox(height: ShadcnSpacing.lg),
-              HelpSectionCard(
-                title: l10n.helpTicketTimelineTitle,
-                children: [
                   StreamBuilder<List<HelpTicketTimelineEvent>>(
                     stream: timeline,
                     builder: (context, snapshot) {
@@ -87,8 +78,21 @@ class HelpTicketDetailScreen extends StatelessWidget {
                           ),
                         );
                       }
-                      return HelpTicketTimelineSection(
-                        events: snapshot.data ?? [],
+                      final timelineData = snapshot.data ?? [];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          HelpTicketProgressStepper(
+                            currentStatus: ticket.delivererStatus,
+                          ),
+                          const SizedBox(height: ShadcnSpacing.xl),
+                          Text(
+                            l10n.helpTicketTimelineTitle,
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                          const SizedBox(height: ShadcnSpacing.md),
+                          HelpTicketTimelineSection(events: timelineData),
+                        ],
                       );
                     },
                   ),
