@@ -3,14 +3,11 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../../../core/widgets/deferred_widget.dart';
 
 import '../../auth/domain/auth_user.dart';
 import '../../offers/presentation/offer_flow_screen.dart';
-import '../../offers/presentation/offer_history_screen.dart';
 import '../../profile/domain/user_profile.dart';
-import '../../settings/presentation/settings_screen.dart';
-import '../../help/presentation/help_screen.dart';
-import '../../help/presentation/help_ticket_detail_screen.dart';
 import '../../notifications/presentation/notification_registration_coordinator.dart';
 import '../../notifications/domain/notification_deep_link.dart';
 import '../../../app/app_scope.dart';
@@ -18,6 +15,13 @@ import '../../../core/config/app_config.dart';
 import '../../../core/widgets/lazy_indexed_stack.dart';
 import '../../../core/widgets/mobile_pill_nav.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../offers/presentation/offer_history_screen.dart'
+    deferred as offer_history_screen;
+import '../../settings/presentation/settings_screen.dart'
+    deferred as settings_screen;
+import '../../help/presentation/help_screen.dart' deferred as help_screen;
+import '../../help/presentation/help_ticket_detail_screen.dart'
+    deferred as help_ticket_detail_screen;
 
 class HomeScreen extends StatefulWidget {
   final AuthUser user;
@@ -104,18 +108,30 @@ class _HomeScreenState extends State<HomeScreen> {
       _HomeTab(
         labelBuilder: (l10n) => l10n.historyTabLabel,
         icon: Icons.history,
-        pageBuilder: (context) => OfferHistoryScreen(user: widget.user),
+        pageBuilder: (context) => DeferredWidget(
+          loadLibrary: offer_history_screen.loadLibrary,
+          builder: () =>
+              offer_history_screen.OfferHistoryScreen(user: widget.user),
+        ),
       ),
       _HomeTab(
         labelBuilder: (l10n) => l10n.settingsTabLabel,
         icon: Icons.settings,
-        pageBuilder: (context) =>
-            SettingsScreen(user: widget.user, profile: widget.profile),
+        pageBuilder: (context) => DeferredWidget(
+          loadLibrary: settings_screen.loadLibrary,
+          builder: () => settings_screen.SettingsScreen(
+            user: widget.user,
+            profile: widget.profile,
+          ),
+        ),
       ),
       _HomeTab(
         labelBuilder: (l10n) => l10n.helpTabLabel,
         icon: Icons.help,
-        pageBuilder: (context) => HelpScreen(user: widget.user),
+        pageBuilder: (context) => DeferredWidget(
+          loadLibrary: help_screen.loadLibrary,
+          builder: () => help_screen.HelpScreen(user: widget.user),
+        ),
       ),
     ];
 
@@ -201,8 +217,16 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context)
         .push(
           MaterialPageRoute(
-            builder: (context) =>
-                HelpTicketDetailScreen(user: widget.user, ticketId: ticketId),
+            builder: (context) => DeferredWidget(
+              loadLibrary: help_ticket_detail_screen.loadLibrary,
+              loading: const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              ),
+              builder: () => help_ticket_detail_screen.HelpTicketDetailScreen(
+                user: widget.user,
+                ticketId: ticketId,
+              ),
+            ),
           ),
         )
         .then((_) {

@@ -384,18 +384,6 @@
       );
     })();
   </script>
-  <script>
-    (function () {
-      var loadInstallBundle = function () {
-        var script = document.createElement("script");
-        script.src = "pwa-install.bundle.js";
-        script.async = true;
-        document.body.appendChild(script);
-      };
-
-      setTimeout(loadInstallBundle, 2000);
-    })();
-  </script>
   <pwa-install manual-apple disable-chrome></pwa-install>
   <script src="flutter_bootstrap.js" async></script>
 </body>

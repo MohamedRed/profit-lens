@@ -6,6 +6,10 @@ import 'package:flutter/foundation.dart';
 
 bool _listenerRegistered = false;
 dynamic _deferredPromptEvent;
+Future<void>? _pwaInstallBundleLoadFuture;
+
+const String _pwaInstallBundleScriptId = 'profit-lens-pwa-install-bundle';
+const String _pwaInstallBundlePath = 'pwa-install.bundle.js';
 
 final ValueNotifier<bool> _pwaInstallAvailability = ValueNotifier(false);
 
@@ -147,6 +151,13 @@ Future<void> _waitForUserChoice(dynamic deferredEvent) async {
 }
 
 Future<bool> _showAppleInstallDialog() async {
+  try {
+    await _ensurePwaInstallBundleLoaded();
+  } catch (_) {
+    html.window.console.warn('pwa-install bundle failed to load');
+    return false;
+  }
+
   final customElements = js_util.getProperty(html.window, 'customElements');
   if (customElements != null &&
       js_util.hasProperty(customElements, 'whenDefined')) {
@@ -191,6 +202,43 @@ Future<bool> _showAppleInstallDialog() async {
     html.window.console.warn('pwa-install showDialog not available');
     return false;
   }
+}
+
+Future<void> _ensurePwaInstallBundleLoaded() {
+  return _pwaInstallBundleLoadFuture ??= _loadPwaInstallBundle();
+}
+
+Future<void> _loadPwaInstallBundle() {
+  if (html.document.getElementById(_pwaInstallBundleScriptId) != null) {
+    return Future<void>.value();
+  }
+
+  final target = html.document.body ?? html.document.head;
+  if (target == null) {
+    return Future<void>.error(
+      StateError('No DOM target for pwa-install script'),
+    );
+  }
+
+  final completer = Completer<void>();
+  final script = html.ScriptElement()
+    ..id = _pwaInstallBundleScriptId
+    ..src = _pwaInstallBundlePath
+    ..async = true;
+
+  script.onLoad.listen((_) {
+    if (!completer.isCompleted) {
+      completer.complete();
+    }
+  });
+  script.onError.listen((_) {
+    if (!completer.isCompleted) {
+      completer.completeError(StateError('Failed to load pwa-install bundle'));
+    }
+  });
+
+  target.append(script);
+  return completer.future;
 }
 
 bool get _isStandalone {
