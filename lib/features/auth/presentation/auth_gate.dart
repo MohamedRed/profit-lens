@@ -10,7 +10,9 @@ import 'sign_in_screen.dart';
 import '../../profile/presentation/profile_gate.dart' deferred as profile_gate;
 
 class AuthGate extends StatefulWidget {
-  const AuthGate({super.key});
+  final bool forceAuthBootstrap;
+
+  const AuthGate({super.key, this.forceAuthBootstrap = false});
 
   @override
   State<AuthGate> createState() => _AuthGateState();
@@ -33,10 +35,12 @@ class _AuthGateState extends State<AuthGate> {
       return;
     }
     _initialized = true;
-    final shouldDeferAuth = shouldShowInstallGate(
-      entryMode: resolveAuthEntryMode(),
-      installPromptAvailable: pwaInstallAvailability.value,
-    );
+    final shouldDeferAuth =
+        !widget.forceAuthBootstrap &&
+        shouldShowInstallGate(
+          entryMode: resolveAuthEntryMode(),
+          installPromptAvailable: pwaInstallAvailability.value,
+        );
     if (!shouldDeferAuth) {
       _startAuthBootstrap(notify: false);
     }
