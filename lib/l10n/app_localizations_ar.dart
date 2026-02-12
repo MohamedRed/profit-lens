@@ -968,6 +968,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpTicketDetailTitle => 'تفاصيل التذكرة';
 
   @override
+  String get helpTicketProgressTitle => 'التقدّم';
+
+  @override
+  String get helpTicketTimelineTitle => 'سجلّ الحالة';
+
+  @override
+  String get helpTicketTimelineEmpty => 'لا يوجد سجل حالة حتى الآن.';
+
+  @override
+  String get helpTicketTimelineAtLabel => 'في';
+
+  @override
   String get helpTicketDescriptionTitle => 'الوصف';
 
   @override

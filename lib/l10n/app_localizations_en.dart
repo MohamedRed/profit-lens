@@ -977,6 +977,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpTicketDetailTitle => 'Ticket details';
 
   @override
+  String get helpTicketProgressTitle => 'Progress';
+
+  @override
+  String get helpTicketTimelineTitle => 'Status history';
+
+  @override
+  String get helpTicketTimelineEmpty => 'No status history yet.';
+
+  @override
+  String get helpTicketTimelineAtLabel => 'At';
+
+  @override
   String get helpTicketDescriptionTitle => 'Description';
 
   @override

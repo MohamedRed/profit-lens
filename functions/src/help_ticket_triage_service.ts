@@ -1,11 +1,11 @@
-import { FieldValue } from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
 import { HttpsError } from "firebase-functions/v2/https";
 import { db } from "./firebase_admin";
 import { requestGeminiJsonWithRetry } from "./gemini_json_retry";
 import { helpTriagePrompt } from "./help_triage_prompt";
-import { resolveDelivererStatus } from "./help_ticket_deliverer_status";
 import { resolveHelpTicketTitle } from "./help_ticket_title";
+import { applyDelivererStatusUpdate } from "./help_ticket_timeline";
+import { logDelivererStatusResolution } from "./help_ticket_status_logger";
 
 const helpTriageSchema = {
   type: "object",
@@ -61,22 +61,21 @@ export async function runHelpTicketTriage(params: {
     .collection("helpTickets")
     .doc(ticketId);
 
-  await ticketRef.set(
-    {
+  const triagingUpdate = await applyDelivererStatusUpdate({
+    ticketRef,
+    source: "triage",
+    updates: {
       status: "triaging",
       statusMessage: resolveTriageStatusMessage(
         data.locale as string | undefined
       ),
-      ...buildDelivererStatusUpdates({
-        status: "triaging",
-        codingAgentStatus: data.codingAgentStatus as string | undefined,
-        aiNeedsUserAction: data.aiNeedsUserAction as boolean | undefined,
-        locale: data.locale as string | undefined,
-      }),
-      updatedAt: FieldValue.serverTimestamp(),
     },
-    { merge: true }
-  );
+  });
+  logDelivererStatusResolution({
+    source: "triage",
+    ticketId,
+    ...triagingUpdate,
+  });
 
   const prompt = [
     helpTriagePrompt,
@@ -101,8 +100,10 @@ export async function runHelpTicketTriage(params: {
     context: { uid, ticketId, feature: "help_ticket_triage" },
   });
 
-  await ticketRef.set(
-    {
+  const triageResultUpdate = await applyDelivererStatusUpdate({
+    ticketRef,
+    source: "triage",
+    updates: {
       title: resolveHelpTicketTitle({
         title: parsed.title,
         summary: parsed.summary,
@@ -114,16 +115,13 @@ export async function runHelpTicketTriage(params: {
       aiNextSteps: parsed.nextSteps,
       aiConfidence: parsed.confidence,
       aiNeedsUserAction: parsed.needsUserAction,
-      ...buildDelivererStatusUpdates({
-        status: parsed.status,
-        codingAgentStatus: data.codingAgentStatus as string | undefined,
-        aiNeedsUserAction: parsed.needsUserAction,
-        locale: data.locale as string | undefined,
-      }),
-      updatedAt: FieldValue.serverTimestamp(),
     },
-    { merge: true }
-  );
+  });
+  logDelivererStatusResolution({
+    source: "triage",
+    ticketId,
+    ...triageResultUpdate,
+  });
 }
 
 function resolveTriageStatusMessage(locale?: string) {
@@ -136,28 +134,4 @@ function resolveTriageStatusMessage(locale?: string) {
     return "جارٍ تحليل البلاغ بالذكاء الاصطناعي";
   }
   return "AI triage in progress";
-}
-
-function buildDelivererStatusUpdates(input: {
-  status?: string;
-  codingAgentStatus?: string;
-  aiNeedsUserAction?: boolean;
-  locale?: string;
-}) {
-  const resolution = resolveDelivererStatus(input);
-  if (resolution.warnings.length > 0) {
-    logger.warn("Help ticket deliverer status warning", {
-      ...input,
-      warnings: resolution.warnings,
-    });
-  }
-  logger.info("Help ticket deliverer status resolved", {
-    ...input,
-    delivererStatus: resolution.delivererStatus,
-  });
-  return {
-    delivererStatus: resolution.delivererStatus,
-    delivererStatusMessage: resolution.delivererStatusMessage,
-    delivererStatusUpdatedAt: FieldValue.serverTimestamp(),
-  };
 }

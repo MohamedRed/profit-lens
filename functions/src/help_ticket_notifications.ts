@@ -13,15 +13,20 @@ export const notifyHelpTicketStatus = onDocumentUpdated(
     const after = event.data?.after.data();
     if (!before || !after) return;
 
-    const beforeMessage =
-      (before.delivererStatusMessage as string | undefined) ?? null;
     const afterMessage =
       (after.delivererStatusMessage as string | undefined) ?? null;
+    const beforeDelivererStatus =
+      (before.delivererStatus as string | undefined) ?? null;
     const afterStatus = (after.status as string | undefined) ?? null;
     const afterDelivererStatus =
       (after.delivererStatus as string | undefined) ?? null;
 
-    if (beforeMessage === afterMessage) {
+    if (
+      !hasDelivererStatusChanged(
+        beforeDelivererStatus,
+        afterDelivererStatus
+      )
+    ) {
       return;
     }
 
@@ -99,4 +104,11 @@ async function sendPushNotifications(params: {
       )
     );
   }
+}
+
+export function hasDelivererStatusChanged(
+  beforeDelivererStatus: string | null,
+  afterDelivererStatus: string | null
+) {
+  return beforeDelivererStatus !== afterDelivererStatus;
 }

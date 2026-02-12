@@ -6,11 +6,14 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../domain/help_ticket.dart';
 import '../domain/help_ticket_attachment.dart';
+import '../domain/help_ticket_timeline_event.dart';
 import '../domain/help_ticket_transcription_status.dart';
 import 'widgets/help_ai_triage_section.dart';
+import 'widgets/help_ticket_progress_stepper.dart';
 import 'widgets/help_section_card.dart';
 import 'widgets/help_ticket_attachment_gallery.dart';
 import 'widgets/help_ticket_detail_header.dart';
+import 'widgets/help_ticket_timeline_section.dart';
 
 class HelpTicketDetailScreen extends StatelessWidget {
   final AuthUser user;
@@ -31,6 +34,10 @@ class HelpTicketDetailScreen extends StatelessWidget {
       ticketId: ticketId,
     );
     final attachments = repository.watchAttachments(
+      uid: user.uid,
+      ticketId: ticketId,
+    );
+    final timeline = repository.watchTimeline(
       uid: user.uid,
       ticketId: ticketId,
     );
@@ -55,6 +62,38 @@ class HelpTicketDetailScreen extends StatelessWidget {
             padding: const EdgeInsets.all(ShadcnSpacing.lg),
             children: [
               HelpTicketDetailHeader(ticket: ticket),
+              const SizedBox(height: ShadcnSpacing.lg),
+              HelpSectionCard(
+                title: l10n.helpTicketProgressTitle,
+                children: [
+                  HelpTicketProgressStepper(
+                    currentStatus: ticket.delivererStatus,
+                  ),
+                ],
+              ),
+              const SizedBox(height: ShadcnSpacing.lg),
+              HelpSectionCard(
+                title: l10n.helpTicketTimelineTitle,
+                children: [
+                  StreamBuilder<List<HelpTicketTimelineEvent>>(
+                    stream: timeline,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting &&
+                          !snapshot.hasData) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(ShadcnSpacing.lg),
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                      return HelpTicketTimelineSection(
+                        events: snapshot.data ?? [],
+                      );
+                    },
+                  ),
+                ],
+              ),
               const SizedBox(height: ShadcnSpacing.lg),
               HelpSectionCard(
                 title: l10n.helpTicketDescriptionTitle,

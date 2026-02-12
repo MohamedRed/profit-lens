@@ -7,26 +7,31 @@ import '../domain/help_ticket_deliverer_status.dart';
 import '../domain/help_ticket_draft.dart';
 import '../domain/help_ticket_page.dart';
 import '../domain/help_ticket_status.dart';
+import '../domain/help_ticket_timeline_event.dart';
 import '../domain/help_ticket_transcription_status.dart';
 import 'help_ticket_attachment_mapper.dart';
 import 'help_ticket_mapper.dart';
 import 'help_ticket_repository.dart';
 import 'help_ticket_storage.dart';
+import 'help_ticket_timeline_mapper.dart';
 
 class FirestoreHelpTicketRepository implements HelpTicketRepository {
   final FirebaseFirestore _firestore;
   final HelpTicketMapper _mapper;
   final HelpTicketAttachmentMapper _attachmentMapper;
+  final HelpTicketTimelineMapper _timelineMapper;
   final HelpTicketStorage _storage;
   static const Duration _commitTimeout = Duration(seconds: 15);
   FirestoreHelpTicketRepository({
     FirebaseFirestore? firestore,
     HelpTicketMapper? mapper,
     HelpTicketAttachmentMapper? attachmentMapper,
+    HelpTicketTimelineMapper? timelineMapper,
     HelpTicketStorage? storage,
   }) : _firestore = firestore ?? FirebaseFirestore.instance,
        _mapper = mapper ?? HelpTicketMapper(),
        _attachmentMapper = attachmentMapper ?? HelpTicketAttachmentMapper(),
+       _timelineMapper = timelineMapper ?? HelpTicketTimelineMapper(),
        _storage = storage ?? FirebaseHelpTicketStorage();
 
   void _ensureConfigured() {
@@ -44,6 +49,13 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
     required String ticketId,
   }) {
     return _collection(uid).doc(ticketId).collection('attachments');
+  }
+
+  CollectionReference<Map<String, dynamic>> _timelineCollection({
+    required String uid,
+    required String ticketId,
+  }) {
+    return _collection(uid).doc(ticketId).collection('delivererTimeline');
   }
 
   @override
@@ -73,6 +85,24 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
           (snapshot) => snapshot.docs
               .map((doc) => _attachmentMapper.fromDocument(doc.id, doc.data()))
               .whereType<HelpTicketAttachment>()
+              .toList(),
+        );
+  }
+
+  @override
+  Stream<List<HelpTicketTimelineEvent>> watchTimeline({
+    required String uid,
+    required String ticketId,
+  }) {
+    _ensureConfigured();
+    return _timelineCollection(uid: uid, ticketId: ticketId)
+        .orderBy('at', descending: true)
+        .orderBy(FieldPath.documentId, descending: true)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => _timelineMapper.fromDocument(doc.id, doc.data()))
+              .whereType<HelpTicketTimelineEvent>()
               .toList(),
         );
   }

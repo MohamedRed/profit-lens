@@ -988,6 +988,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpTicketDetailTitle => 'Détails du ticket';
 
   @override
+  String get helpTicketProgressTitle => 'Progression';
+
+  @override
+  String get helpTicketTimelineTitle => 'Historique des statuts';
+
+  @override
+  String get helpTicketTimelineEmpty =>
+      'Aucun historique de statut pour l’instant.';
+
+  @override
+  String get helpTicketTimelineAtLabel => 'Le';
+
+  @override
   String get helpTicketDescriptionTitle => 'Description';
 
   @override

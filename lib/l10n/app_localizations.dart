@@ -1906,6 +1906,30 @@ abstract class AppLocalizations {
   /// **'Ticket details'**
   String get helpTicketDetailTitle;
 
+  /// No description provided for @helpTicketProgressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get helpTicketProgressTitle;
+
+  /// No description provided for @helpTicketTimelineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Status history'**
+  String get helpTicketTimelineTitle;
+
+  /// No description provided for @helpTicketTimelineEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No status history yet.'**
+  String get helpTicketTimelineEmpty;
+
+  /// No description provided for @helpTicketTimelineAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'At'**
+  String get helpTicketTimelineAtLabel;
+
   /// No description provided for @helpTicketDescriptionTitle.
   ///
   /// In en, this message translates to:

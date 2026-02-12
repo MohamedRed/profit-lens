@@ -46,6 +46,11 @@ service cloud.firestore {
         match /attachments/{attachmentId} {
           allow read, write: if isOwner(uid);
         }
+
+        match /delivererTimeline/{eventId} {
+          allow read: if isOwner(uid);
+          allow write: if false;
+        }
       }
 
       match /notificationTokens/{tokenId} {
