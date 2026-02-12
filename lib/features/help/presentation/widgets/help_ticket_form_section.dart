@@ -20,7 +20,6 @@ class HelpTicketFormSection extends StatelessWidget {
   final bool hasAudioRecording;
   final Duration? audioDuration;
   final bool isSubmitting;
-  final VoidCallback onAddFromCamera;
   final VoidCallback onAddFromGallery;
   final ValueChanged<String> onRemoveScreenshot;
   final VoidCallback onToggleAudio;
@@ -40,7 +39,6 @@ class HelpTicketFormSection extends StatelessWidget {
     required this.hasAudioRecording,
     required this.audioDuration,
     required this.isSubmitting,
-    required this.onAddFromCamera,
     required this.onAddFromGallery,
     required this.onRemoveScreenshot,
     required this.onToggleAudio,
@@ -68,7 +66,8 @@ class HelpTicketFormSection extends StatelessWidget {
                   hintText: l10n.helpDescriptionHint,
                   suffixIcon: enableAudio
                       ? IconButton(
-                          onPressed: isSubmitting ||
+                          onPressed:
+                              isSubmitting ||
                                   !isAudioSupported ||
                                   isAudioProcessing ||
                                   isAudioTranscribing
@@ -99,15 +98,15 @@ class HelpTicketFormSection extends StatelessWidget {
                   Text(
                     l10n.helpAudioNotSupported,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: ShadcnColors.textSecondary,
-                        ),
+                      color: ShadcnColors.textSecondary,
+                    ),
                   )
                 else ...[
                   Text(
                     l10n.helpAudioSubtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: ShadcnColors.textSecondary,
-                        ),
+                      color: ShadcnColors.textSecondary,
+                    ),
                   ),
                   if (isAudioProcessing) ...[
                     const SizedBox(height: ShadcnSpacing.sm),
@@ -121,9 +120,8 @@ class HelpTicketFormSection extends StatelessWidget {
                         const SizedBox(width: ShadcnSpacing.sm),
                         Text(
                           l10n.helpAudioProcessingLabel,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: ShadcnColors.textSecondary,
-                              ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: ShadcnColors.textSecondary),
                         ),
                       ],
                     ),
@@ -140,9 +138,8 @@ class HelpTicketFormSection extends StatelessWidget {
                         const SizedBox(width: ShadcnSpacing.sm),
                         Text(
                           l10n.helpAudioTranscribingLabel,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: ShadcnColors.textSecondary,
-                              ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: ShadcnColors.textSecondary),
                         ),
                       ],
                     ),
@@ -159,9 +156,8 @@ class HelpTicketFormSection extends StatelessWidget {
                         const SizedBox(width: ShadcnSpacing.sm),
                         Text(
                           l10n.helpAudioRecordingLabel,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: ShadcnColors.textSecondary,
-                              ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: ShadcnColors.textSecondary),
                         ),
                       ],
                     ),
@@ -188,10 +184,8 @@ class HelpTicketFormSection extends StatelessWidget {
                         Expanded(
                           child: Text(
                             _formatReadyLabel(l10n, audioDuration),
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: ShadcnColors.textSecondary,
-                                    ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: ShadcnColors.textSecondary),
                           ),
                         ),
                         TextButton(
@@ -206,7 +200,6 @@ class HelpTicketFormSection extends StatelessWidget {
               HelpAttachmentSection(
                 screenshots: screenshots,
                 isSubmitting: isSubmitting,
-                onAddFromCamera: onAddFromCamera,
                 onAddFromGallery: onAddFromGallery,
                 onRemove: onRemoveScreenshot,
               ),

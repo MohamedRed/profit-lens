@@ -856,9 +856,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpAttachmentSubtitle => 'أضف لقطات شاشة لتسريع التشخيص.';
 
   @override
-  String get helpAttachmentCameraButton => 'الكاميرا';
-
-  @override
   String get helpAttachmentGalleryButton => 'المعرض';
 
   @override

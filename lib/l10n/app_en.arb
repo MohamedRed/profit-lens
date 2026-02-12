@@ -321,7 +321,6 @@
   "helpAudioTranscriptionFailed": "We couldn’t transcribe the voice note.",
   "helpAttachmentTitle": "Screenshots",
   "helpAttachmentSubtitle": "Add screenshots to speed up troubleshooting.",
-  "helpAttachmentCameraButton": "Camera",
   "helpAttachmentGalleryButton": "Gallery",
   "helpAttachmentLimitReached": "Screenshot limit reached.",
   "helpAttachmentLimitTrimmed": "Added {count} screenshots. Remove one to add more.",

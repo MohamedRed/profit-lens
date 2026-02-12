@@ -7,7 +7,6 @@ import '../models/help_local_attachment.dart';
 class HelpAttachmentSection extends StatelessWidget {
   final List<HelpLocalAttachment> screenshots;
   final bool isSubmitting;
-  final VoidCallback onAddFromCamera;
   final VoidCallback onAddFromGallery;
   final ValueChanged<String> onRemove;
 
@@ -15,7 +14,6 @@ class HelpAttachmentSection extends StatelessWidget {
     super.key,
     required this.screenshots,
     required this.isSubmitting,
-    required this.onAddFromCamera,
     required this.onAddFromGallery,
     required this.onRemove,
   });
@@ -58,11 +56,6 @@ class HelpAttachmentSection extends StatelessWidget {
           spacing: ShadcnSpacing.sm,
           runSpacing: ShadcnSpacing.sm,
           children: [
-            OutlinedButton.icon(
-              onPressed: isSubmitting ? null : onAddFromCamera,
-              icon: const Icon(Icons.photo_camera),
-              label: Text(l10n.helpAttachmentCameraButton),
-            ),
             OutlinedButton.icon(
               onPressed: isSubmitting ? null : onAddFromGallery,
               icon: const Icon(Icons.photo_library),

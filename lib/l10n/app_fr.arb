@@ -321,7 +321,6 @@
   "helpAudioTranscriptionFailed": "Impossible de transcrire la note vocale.",
   "helpAttachmentTitle": "Captures d’écran",
   "helpAttachmentSubtitle": "Ajoutez des captures pour accélérer le diagnostic.",
-  "helpAttachmentCameraButton": "Caméra",
   "helpAttachmentGalleryButton": "Galerie",
   "helpAttachmentLimitReached": "Limite de captures atteinte.",
   "helpAttachmentLimitTrimmed": "Ajouté {count} captures. Supprimez-en une pour en ajouter.",

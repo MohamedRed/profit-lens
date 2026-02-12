@@ -873,9 +873,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ajoutez des captures pour accélérer le diagnostic.';
 
   @override
-  String get helpAttachmentCameraButton => 'Caméra';
-
-  @override
   String get helpAttachmentGalleryButton => 'Galerie';
 
   @override

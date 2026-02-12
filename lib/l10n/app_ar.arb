@@ -321,7 +321,6 @@
   "helpAudioTranscriptionFailed": "تعذر تحويل الملاحظة الصوتية إلى نص.",
   "helpAttachmentTitle": "لقطات الشاشة",
   "helpAttachmentSubtitle": "أضف لقطات شاشة لتسريع التشخيص.",
-  "helpAttachmentCameraButton": "الكاميرا",
   "helpAttachmentGalleryButton": "المعرض",
   "helpAttachmentLimitReached": "تم الوصول إلى حد لقطات الشاشة.",
   "helpAttachmentLimitTrimmed": "تمت إضافة {count} لقطات. احذف واحدة لإضافة المزيد.",

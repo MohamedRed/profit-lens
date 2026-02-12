@@ -1696,12 +1696,6 @@ abstract class AppLocalizations {
   /// **'Add screenshots to speed up troubleshooting.'**
   String get helpAttachmentSubtitle;
 
-  /// No description provided for @helpAttachmentCameraButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Camera'**
-  String get helpAttachmentCameraButton;
-
   /// No description provided for @helpAttachmentGalleryButton.
   ///
   /// In en, this message translates to:

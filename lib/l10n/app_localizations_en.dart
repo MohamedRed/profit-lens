@@ -864,9 +864,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add screenshots to speed up troubleshooting.';
 
   @override
-  String get helpAttachmentCameraButton => 'Camera';
-
-  @override
   String get helpAttachmentGalleryButton => 'Gallery';
 
   @override
