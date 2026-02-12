@@ -2,7 +2,9 @@ import {
   onDocumentCreated,
   onDocumentUpdated,
 } from "firebase-functions/v2/firestore";
+import { FieldValue } from "firebase-admin/firestore";
 import { defineSecret, defineString } from "firebase-functions/params";
+import { db } from "./firebase_admin";
 import { runHelpTicketTriage } from "./help_ticket_triage_service";
 
 const REGION = "europe-west1";
@@ -26,6 +28,21 @@ export const triageHelpTicket = onDocumentCreated(
     if (!data) return;
     if (data.transcriptionStatus === "pending") return;
     if (typeof data.description !== "string" || data.description.trim().length === 0) {
+      return;
+    }
+
+    if (data.description.trim().toLowerCase() === "test") {
+      await db
+        .collection("users")
+        .doc(uid)
+        .collection("helpTickets")
+        .doc(ticketId)
+        .update({
+          status: "closed",
+          aiSummary:
+            "This ticket was automatically closed because it was identified as a test.",
+          updatedAt: FieldValue.serverTimestamp(),
+        });
       return;
     }
 
@@ -63,6 +80,22 @@ export const triageHelpTicketAfterTranscription = onDocumentUpdated(
     }
     const uid = event.params.uid as string;
     const ticketId = event.params.ticketId as string;
+
+    if (after.description.trim().toLowerCase() === "test") {
+      await db
+        .collection("users")
+        .doc(uid)
+        .collection("helpTickets")
+        .doc(ticketId)
+        .update({
+          status: "closed",
+          aiSummary:
+            "This ticket was automatically closed because it was identified as a test.",
+          updatedAt: FieldValue.serverTimestamp(),
+        });
+      return;
+    }
+
     const apiKey = geminiApiKey.value();
     const model = geminiModel.value();
     await runHelpTicketTriage({
