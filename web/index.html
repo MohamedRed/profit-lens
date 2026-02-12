@@ -39,7 +39,6 @@
   <link rel="dns-prefetch" href="https://checkout.stripe.com">
   <link rel="preload" href="main.dart.js" as="script">
   <link rel="manifest" href="manifest.json">
-  <script src="pwa-install.bundle.js" defer></script>
   <style>
     html,
     body {
@@ -189,6 +188,30 @@
   <div id="edge-swipe-guard-left" aria-hidden="true"></div>
   <div id="edge-swipe-guard-right" aria-hidden="true"></div>
   <script>
+    (function () {
+      var normalizeViewportMeta = function () {
+        var metas = document.querySelectorAll("meta[name='viewport']");
+        metas.forEach(function (meta) {
+          if (!meta) return;
+          var content = meta.getAttribute("content");
+          if (!content) return;
+          var normalized = content
+            .replace(/,?\s*maximum-scale\s*=\s*[^,]+/gi, "")
+            .replace(/,?\s*user-scalable\s*=\s*no/gi, "")
+            .replace(/,\s*,/g, ",")
+            .replace(/^\s*,\s*|\s*,\s*$/g, "")
+            .trim();
+          if (normalized !== content) {
+            meta.setAttribute("content", normalized);
+          }
+        });
+      };
+
+      normalizeViewportMeta();
+      var observer = new MutationObserver(normalizeViewportMeta);
+      observer.observe(document.head, { childList: true, subtree: true });
+    })();
+
     window.addEventListener("beforeinstallprompt", function (event) {
       event.preventDefault();
       window.defferedPromptEvent = event;
@@ -313,13 +336,18 @@
     (function () {
       if (!("serviceWorker" in navigator)) return;
 
-      var isReloading = false;
+      var hasPendingControllerChange = false;
       var updateScheduled = false;
       navigator.serviceWorker.addEventListener("controllerchange", function () {
-        if (isReloading) return;
-        isReloading = true;
-        window.location.reload();
+        hasPendingControllerChange = true;
       });
+
+      var maybeReloadForUpdatedController = function () {
+        if (!hasPendingControllerChange) return;
+        if (document.visibilityState !== "hidden") return;
+        window.location.reload();
+      };
+      document.addEventListener("visibilitychange", maybeReloadForUpdatedController);
 
       var runUpdate = function () {
         if (updateScheduled) return;
@@ -348,20 +376,24 @@
       };
 
       window.addEventListener(
-        "flutter-first-frame",
-        function () {
-          setTimeout(runUpdate, 1200);
-        },
-        { once: true }
-      );
-
-      window.addEventListener(
         "load",
         function () {
-          setTimeout(runUpdate, 4000);
+          setTimeout(runUpdate, 30000);
         },
         { once: true }
       );
+    })();
+  </script>
+  <script>
+    (function () {
+      var loadInstallBundle = function () {
+        var script = document.createElement("script");
+        script.src = "pwa-install.bundle.js";
+        script.async = true;
+        document.body.appendChild(script);
+      };
+
+      setTimeout(loadInstallBundle, 2000);
     })();
   </script>
   <pwa-install manual-apple disable-chrome></pwa-install>
