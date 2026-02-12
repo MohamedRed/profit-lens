@@ -10,6 +10,20 @@ import 'register_screen.dart';
 import 'sign_in_fields.dart';
 import 'widgets/pwa_install_banner.dart';
 
+enum _AuthEntryMode { auto, install, login }
+
+_AuthEntryMode _resolveAuthEntryMode() {
+  final entry = Uri.base.queryParameters['entry']?.trim().toLowerCase();
+  switch (entry) {
+    case 'install':
+      return _AuthEntryMode.install;
+    case 'login':
+      return _AuthEntryMode.login;
+    default:
+      return _AuthEntryMode.auto;
+  }
+}
+
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
 
@@ -78,8 +92,13 @@ class _SignInFormState extends State<SignInForm> {
           return ValueListenableBuilder<bool>(
             valueListenable: pwaInstallAvailability,
             builder: (context, available, __) {
-              final shouldGate =
-                  !isPwaInstalled || available || isAppleInstallManualAvailable;
+              final entryMode = _resolveAuthEntryMode();
+              final shouldGate = switch (entryMode) {
+                _AuthEntryMode.install => true,
+                _AuthEntryMode.login => false,
+                _AuthEntryMode.auto =>
+                  !isPwaInstalled || available || isAppleInstallManualAvailable,
+              };
               if (shouldGate) {
                 return ListView(
                   keyboardDismissBehavior:

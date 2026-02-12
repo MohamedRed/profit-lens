@@ -55,3 +55,10 @@ Update cadence: add a scheduled backend task later if you want live updates.
 
 ## Structure
 `lib/features` is organized by domain (offers, profitability, vehicles, auth). Keep files small and move UI sections into sub-widgets to stay modular.
+
+## Lighthouse flow modes (web)
+To benchmark specific auth entry flows on web, use the `entry` query param:
+- Install gate flow: `https://profit-lens-prod-2e417.web.app/?entry=install`
+- Login flow: `https://profit-lens-prod-2e417.web.app/?entry=login`
+
+If `entry` is omitted, default runtime behavior is used.
