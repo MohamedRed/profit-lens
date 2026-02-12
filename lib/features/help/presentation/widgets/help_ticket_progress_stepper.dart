@@ -21,16 +21,17 @@ class HelpTicketProgressStepper extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final steps = _steps(l10n);
     final eventsByStatus = _latestEventByStatus(events);
-    final currentIndex = steps.indexWhere(
-      (step) => step.status == currentStatus,
-    );
 
     return Column(
       children: [
         for (var i = 0; i < steps.length; i++) ...[
           _ProgressStepRow(
             label: steps[i].label,
-            status: _stateForStep(i, currentIndex),
+            status: _stateForStep(
+              stepStatus: steps[i].status,
+              currentStatus: currentStatus,
+              hasEvent: eventsByStatus.containsKey(steps[i].status),
+            ),
             color: helpTicketStatusColor(steps[i].status),
             event: eventsByStatus[steps[i].status],
             isLast: i == steps.length - 1,
@@ -190,11 +191,15 @@ List<_ProgressStepDef> _steps(AppLocalizations l10n) {
   ];
 }
 
-_ProgressStepState _stateForStep(int stepIndex, int currentIndex) {
-  if (stepIndex == currentIndex) {
+_ProgressStepState _stateForStep({
+  required HelpTicketDelivererStatus stepStatus,
+  required HelpTicketDelivererStatus currentStatus,
+  required bool hasEvent,
+}) {
+  if (stepStatus == currentStatus) {
     return _ProgressStepState.current;
   }
-  if (stepIndex < currentIndex) {
+  if (hasEvent) {
     return _ProgressStepState.done;
   }
   return _ProgressStepState.upcoming;

@@ -10,15 +10,39 @@ void main() {
   testWidgets('renders expected done/current/upcoming progression', (
     tester,
   ) async {
+    final events = <HelpTicketTimelineEvent>[
+      HelpTicketTimelineEvent(
+        id: 'evt-received',
+        status: HelpTicketDelivererStatus.received,
+        message: 'Ticket reçu.',
+        at: DateTime.utc(2026, 2, 12, 11, 0),
+        source: HelpTicketTimelineSource.submission,
+      ),
+      HelpTicketTimelineEvent(
+        id: 'evt-analyzing',
+        status: HelpTicketDelivererStatus.analyzing,
+        message: 'Analyse en cours.',
+        at: DateTime.utc(2026, 2, 12, 11, 5),
+        source: HelpTicketTimelineSource.triage,
+      ),
+      HelpTicketTimelineEvent(
+        id: 'evt-needs-info',
+        status: HelpTicketDelivererStatus.needsInfo,
+        message: 'Nous avons besoin d’informations supplémentaires.',
+        at: DateTime.utc(2026, 2, 12, 11, 10),
+        source: HelpTicketTimelineSource.agent,
+      ),
+    ];
+
     await tester.pumpWidget(
       MaterialApp(
         locale: const Locale('fr'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: const Scaffold(
+        home: Scaffold(
           body: HelpTicketProgressStepper(
             currentStatus: HelpTicketDelivererStatus.fixReady,
-            events: [],
+            events: events,
           ),
         ),
       ),
@@ -32,6 +56,44 @@ void main() {
     expect(find.text('Résolu'), findsOneWidget);
 
     expect(find.byIcon(Icons.check), findsNWidgets(3));
+  });
+
+  testWidgets('does not mark untracked intermediate statuses as done', (
+    tester,
+  ) async {
+    final events = <HelpTicketTimelineEvent>[
+      HelpTicketTimelineEvent(
+        id: 'evt-received',
+        status: HelpTicketDelivererStatus.received,
+        message: 'Ticket reçu.',
+        at: DateTime.utc(2026, 2, 12, 11, 0),
+        source: HelpTicketTimelineSource.submission,
+      ),
+      HelpTicketTimelineEvent(
+        id: 'evt-fix-ready',
+        status: HelpTicketDelivererStatus.fixReady,
+        message: 'Une correction est prête et en validation.',
+        at: DateTime.utc(2026, 2, 12, 11, 18),
+        source: HelpTicketTimelineSource.agent,
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('fr'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: HelpTicketProgressStepper(
+            currentStatus: HelpTicketDelivererStatus.fixReady,
+            events: events,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.check), findsOneWidget);
   });
 
   testWidgets('renders timeline message on matching progression step', (
