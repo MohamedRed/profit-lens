@@ -809,6 +809,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpDescriptionRequired => 'Add a short description.';
 
   @override
+  String get helpDescriptionTooShort => 'Description is too short.';
+
+  @override
   String get helpAudioTitle => 'Voice note';
 
   @override

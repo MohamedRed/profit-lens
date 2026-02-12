@@ -817,6 +817,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpDescriptionRequired => 'Ajoutez une courte description.';
 
   @override
+  String get helpDescriptionTooShort => 'La description est trop courte.';
+
+  @override
   String get helpAudioTitle => 'Note vocale';
 
   @override

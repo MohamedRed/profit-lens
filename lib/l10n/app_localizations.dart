@@ -1600,6 +1600,12 @@ abstract class AppLocalizations {
   /// **'Add a short description.'**
   String get helpDescriptionRequired;
 
+  /// No description provided for @helpDescriptionTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Description is too short.'**
+  String get helpDescriptionTooShort;
+
   /// No description provided for @helpAudioTitle.
   ///
   /// In en, this message translates to:
