@@ -8,38 +8,59 @@ import '../../../billing/domain/entitlement.dart';
 import '../../../billing/domain/offer_usage.dart';
 import '../../../billing/presentation/subscription_plans_sheet.dart';
 
-class OfferUsageCard extends StatelessWidget {
+class OfferUsageCard extends StatefulWidget {
   final String uid;
 
   const OfferUsageCard({super.key, required this.uid});
 
   @override
+  State<OfferUsageCard> createState() => _OfferUsageCardState();
+}
+
+class _OfferUsageCardState extends State<OfferUsageCard> {
+  static const _activationDelay = Duration(milliseconds: 1200);
+
+  bool _activateStreams = false;
+  bool _activationScheduled = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_activationScheduled) {
+      return;
+    }
+    _activationScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future<void>.delayed(_activationDelay, () {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          _activateStreams = true;
+        });
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final services = AppScope.of(context);
     if (!AppConfig.firebaseConfigured) {
       return const SizedBox.shrink();
     }
+    if (!_activateStreams) {
+      return const _OfferUsageLoadingCard();
+    }
+    final services = AppScope.of(context);
     return StreamBuilder<Entitlement?>(
-      stream: services.entitlementRepository.watchEntitlement(uid),
+      stream: services.entitlementRepository.watchEntitlement(widget.uid),
       builder: (context, snapshot) {
-        final l10n = AppLocalizations.of(context)!;
         final entitlement = snapshot.data;
         if (entitlement == null) {
-          return SectionCard(
-            title: l10n.offersRemainingTitle,
-            showSurface: true,
-            showBorder: true,
-            children: [
-              Text(
-                l10n.loadingLabel,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
-          );
+          return const _OfferUsageLoadingCard();
         }
         return StreamBuilder<OfferUsage?>(
           stream: services.usageRepository.watchUsage(
-            uid,
+            widget.uid,
             entitlement.periodKey,
           ),
           builder: (context, usageSnapshot) {
@@ -61,6 +82,23 @@ class OfferUsageCard extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       builder: (context) => const SubscriptionPlansSheet(),
+    );
+  }
+}
+
+class _OfferUsageLoadingCard extends StatelessWidget {
+  const _OfferUsageLoadingCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return SectionCard(
+      title: l10n.offersRemainingTitle,
+      showSurface: true,
+      showBorder: true,
+      children: [
+        Text(l10n.loadingLabel, style: Theme.of(context).textTheme.bodyMedium),
+      ],
     );
   }
 }

@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/widgets/deferred_widget.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/offer_record.dart';
 import '../domain/place_selection.dart';
 import '../../vehicles/domain/vehicle_profile.dart';
 import 'controllers/offer_flow_controller.dart';
-import 'sections/offer_details_section.dart';
 import 'sections/offer_profitability_target_section.dart';
 import 'sections/vehicle_picker_section.dart';
-import 'widgets/profitability_overview_card.dart';
 import 'widgets/offer_usage_card.dart';
 import 'widgets/offer_limit_import_button.dart';
 import 'offer_flow_keys.dart';
 import 'offer_flow_loading_action.dart';
 import 'offer_analysis_status.dart';
 import 'offer_flow_feature_flags.dart';
-import 'widgets/offer_screenshot_preview.dart';
+import 'sections/offer_details_section.dart' deferred as offer_details_section;
+import 'widgets/profitability_overview_card.dart'
+    deferred as profitability_overview_card;
+import 'widgets/offer_screenshot_preview.dart'
+    deferred as offer_screenshot_preview;
 
 class OfferFlowForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -97,32 +100,44 @@ class OfferFlowForm extends StatelessWidget {
           OfferUsageCard(uid: userId),
           const SizedBox(height: 16),
           if (showOverview) ...[
-            ProfitabilityDecisionCard(
-              record: previewRecord!,
-              minProfitabilityEuro: minProfitabilityEuro,
-            ),
-            const SizedBox(height: 12),
-            ProfitabilityOverviewCard(
-              record: previewRecord!,
-              minProfitabilityEuro: minProfitabilityEuro,
-              onViewDetails: onViewDetails,
+            DeferredWidget(
+              loadLibrary: profitability_overview_card.loadLibrary,
+              loading: const Center(child: CircularProgressIndicator()),
+              builder: () => Column(
+                children: [
+                  profitability_overview_card.ProfitabilityDecisionCard(
+                    record: previewRecord!,
+                    minProfitabilityEuro: minProfitabilityEuro,
+                  ),
+                  const SizedBox(height: 12),
+                  profitability_overview_card.ProfitabilityOverviewCard(
+                    record: previewRecord!,
+                    minProfitabilityEuro: minProfitabilityEuro,
+                    onViewDetails: onViewDetails,
+                  ),
+                ],
+              ),
             ),
           ],
           if (showDetailsSection) ...[
             const SizedBox(height: 16),
-            OfferDetailsSection(
-              controller: controller,
-              requiresDuration: requiresDuration,
-              showAllAddressFields: allowManualEntry && isManualEntryRequested,
-              showAnalyzeAction: allowManualEntry && isManualEntryRequested,
-              onAnalyze: onAnalyzeManual,
-              onPickupSelected: onPickupSelected,
-              onDropoffSelected: onDropoffSelected,
+            DeferredWidget(
+              loadLibrary: offer_details_section.loadLibrary,
+              loading: const Center(child: CircularProgressIndicator()),
+              builder: () => offer_details_section.OfferDetailsSection(
+                controller: controller,
+                requiresDuration: requiresDuration,
+                showAllAddressFields:
+                    allowManualEntry && isManualEntryRequested,
+                showAnalyzeAction: allowManualEntry && isManualEntryRequested,
+                onAnalyze: onAnalyzeManual,
+                onPickupSelected: onPickupSelected,
+                onDropoffSelected: onDropoffSelected,
+              ),
             ),
           ],
           const SizedBox(height: 16),
           OfferLimitImportButton(
-            userId: userId,
             buttonKey: OfferFlowKeys.importScreenshotButton,
             label: l10n.importScreenshotButton,
             icon: Icons.upload_file,
@@ -149,7 +164,13 @@ class OfferFlowForm extends StatelessWidget {
           ],
           const SizedBox(height: 16),
           if (controller.screenshotThumbnail != null) ...[
-            OfferScreenshotPreview(thumbnail: controller.screenshotThumbnail!),
+            DeferredWidget(
+              loadLibrary: offer_screenshot_preview.loadLibrary,
+              loading: const Center(child: CircularProgressIndicator()),
+              builder: () => offer_screenshot_preview.OfferScreenshotPreview(
+                thumbnail: controller.screenshotThumbnail!,
+              ),
+            ),
             const SizedBox(height: 16),
           ],
         ],
