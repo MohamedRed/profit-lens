@@ -801,7 +801,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'Signalez des bugs ou des problèmes avec des captures et une description écrite. Un agent IA de développement les analysera et vous tiendra informé.';
+      'Signalez des bugs ou des problèmes avec des captures et une description écrite. Notre équipe les analysera et vous tiendra informé.';
 
   @override
   String get helpFormTitle => 'Soumettre un ticket';
@@ -1037,7 +1037,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpAudioOpenFailed => 'Impossible d’ouvrir la note vocale.';
 
   @override
-  String get helpAiTriageTitle => 'Analyse IA';
+  String get helpAiTriageTitle => 'Analyse du ticket';
 
   @override
   String get helpAiSummaryLabel => 'Résumé';

@@ -1573,7 +1573,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpIntroBody.
   ///
   /// In en, this message translates to:
-  /// **'Report bugs or issues with screenshots and written details. A coding AI agent will triage and keep you updated.'**
+  /// **'Report bugs or issues with screenshots and written details. Our team will review them and keep you updated.'**
   String get helpIntroBody;
 
   /// No description provided for @helpFormTitle.
@@ -2005,7 +2005,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpAiTriageTitle.
   ///
   /// In en, this message translates to:
-  /// **'AI triage'**
+  /// **'Ticket analysis'**
   String get helpAiTriageTitle;
 
   /// No description provided for @helpAiSummaryLabel.

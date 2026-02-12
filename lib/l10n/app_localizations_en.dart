@@ -793,7 +793,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'Report bugs or issues with screenshots and written details. A coding AI agent will triage and keep you updated.';
+      'Report bugs or issues with screenshots and written details. Our team will review them and keep you updated.';
 
   @override
   String get helpFormTitle => 'Submit a ticket';
@@ -1025,7 +1025,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpAudioOpenFailed => 'Unable to open voice note.';
 
   @override
-  String get helpAiTriageTitle => 'AI triage';
+  String get helpAiTriageTitle => 'Ticket analysis';
 
   @override
   String get helpAiSummaryLabel => 'Summary';

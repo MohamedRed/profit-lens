@@ -786,7 +786,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'أبلغ عن الأخطاء أو المشكلات مع لقطات الشاشة ووصف مكتوب. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.';
+      'أبلغ عن الأخطاء أو المشكلات مع لقطات الشاشة ووصف مكتوب. سيقوم فريقنا بمراجعتها وإبقائك على اطلاع.';
 
   @override
   String get helpFormTitle => 'إرسال تذكرة';
@@ -1016,7 +1016,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpAudioOpenFailed => 'تعذر فتح الملاحظة الصوتية.';
 
   @override
-  String get helpAiTriageTitle => 'فرز الذكاء الاصطناعي';
+  String get helpAiTriageTitle => 'تحليل التذكرة';
 
   @override
   String get helpAiSummaryLabel => 'الملخص';

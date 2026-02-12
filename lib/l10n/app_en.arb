@@ -295,7 +295,7 @@
   "retryButtonLabel": "Retry",
   "helpTabLabel": "Help",
   "helpIntroTitle": "Get help fast",
-  "helpIntroBody": "Report bugs or issues with screenshots and written details. A coding AI agent will triage and keep you updated.",
+  "helpIntroBody": "Report bugs or issues with screenshots and written details. Our team will review them and keep you updated.",
   "helpFormTitle": "Submit a ticket",
   "helpDescriptionLabel": "Describe the issue",
   "helpDescriptionHint": "Steps, expected result, and what actually happened.",
@@ -377,7 +377,7 @@
   "helpAudioAttachmentLabel": "Voice note",
   "helpAudioPlayTooltip": "Play voice note",
   "helpAudioOpenFailed": "Unable to open voice note.",
-  "helpAiTriageTitle": "AI triage",
+  "helpAiTriageTitle": "Ticket analysis",
   "helpAiSummaryLabel": "Summary",
   "helpAiNextStepsLabel": "Next steps"
 }

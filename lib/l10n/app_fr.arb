@@ -295,7 +295,7 @@
   "retryButtonLabel": "Réessayer",
   "helpTabLabel": "Aide",
   "helpIntroTitle": "Obtenir de l’aide rapidement",
-  "helpIntroBody": "Signalez des bugs ou des problèmes avec des captures et une description écrite. Un agent IA de développement les analysera et vous tiendra informé.",
+  "helpIntroBody": "Signalez des bugs ou des problèmes avec des captures et une description écrite. Notre équipe les analysera et vous tiendra informé.",
   "helpFormTitle": "Soumettre un ticket",
   "helpDescriptionLabel": "Décrivez le problème",
   "helpDescriptionHint": "Étapes, résultat attendu et ce qui s’est passé.",
@@ -377,7 +377,7 @@
   "helpAudioAttachmentLabel": "Note vocale",
   "helpAudioPlayTooltip": "Lire la note vocale",
   "helpAudioOpenFailed": "Impossible d’ouvrir la note vocale.",
-  "helpAiTriageTitle": "Analyse IA",
+  "helpAiTriageTitle": "Analyse du ticket",
   "helpAiSummaryLabel": "Résumé",
   "helpAiNextStepsLabel": "Prochaines étapes"
 }

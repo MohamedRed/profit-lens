@@ -295,7 +295,7 @@
   "retryButtonLabel": "إعادة المحاولة",
   "helpTabLabel": "المساعدة",
   "helpIntroTitle": "احصل على الدعم بسرعة",
-  "helpIntroBody": "أبلغ عن الأخطاء أو المشكلات مع لقطات الشاشة ووصف مكتوب. سيقوم وكيل ذكاء اصطناعي بالمعالجة وإبقائك على اطلاع.",
+  "helpIntroBody": "أبلغ عن الأخطاء أو المشكلات مع لقطات الشاشة ووصف مكتوب. سيقوم فريقنا بمراجعتها وإبقائك على اطلاع.",
   "helpFormTitle": "إرسال تذكرة",
   "helpDescriptionLabel": "صف المشكلة",
   "helpDescriptionHint": "الخطوات، النتيجة المتوقعة، وما حدث فعليًا.",
@@ -377,7 +377,7 @@
   "helpAudioAttachmentLabel": "ملاحظة صوتية",
   "helpAudioPlayTooltip": "تشغيل الملاحظة الصوتية",
   "helpAudioOpenFailed": "تعذر فتح الملاحظة الصوتية.",
-  "helpAiTriageTitle": "فرز الذكاء الاصطناعي",
+  "helpAiTriageTitle": "تحليل التذكرة",
   "helpAiSummaryLabel": "الملخص",
   "helpAiNextStepsLabel": "الخطوات التالية"
 }
