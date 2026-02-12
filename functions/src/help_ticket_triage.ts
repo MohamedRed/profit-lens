@@ -25,7 +25,7 @@ export const triageHelpTicket = onDocumentCreated(
     const data = event.data?.data();
     if (!data) return;
     if (data.transcriptionStatus === "pending") return;
-    if (typeof data.description !== "string" || data.description.trim().length === 0) {
+    if (typeof data.description !== "string" || data.description.trim().length < 10) {
       return;
     }
 
@@ -55,7 +55,7 @@ export const triageHelpTicketAfterTranscription = onDocumentUpdated(
     if (!before || !after) return;
     if (before.transcriptionStatus === after.transcriptionStatus) return;
     if (after.transcriptionStatus !== "completed") return;
-    if (typeof after.description !== "string" || after.description.trim().length === 0) {
+    if (typeof after.description !== "string" || after.description.trim().length < 10) {
       return;
     }
     if (after.aiSummary) {
