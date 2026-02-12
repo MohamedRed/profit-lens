@@ -15,6 +15,7 @@ import '../../notifications/presentation/notification_registration_coordinator.d
 import '../../notifications/domain/notification_deep_link.dart';
 import '../../../app/app_scope.dart';
 import '../../../core/config/app_config.dart';
+import '../../../core/widgets/lazy_indexed_stack.dart';
 import '../../../core/widgets/mobile_pill_nav.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/platform/google_maps_preloader.dart';
@@ -42,8 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    preloadGoogleMaps();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(preloadGoogleMaps());
       _handleTicketDeepLinkFromUrl();
 
       if (!AppConfig.firebaseConfigured || kIsWeb) {
@@ -99,31 +100,38 @@ class _HomeScreenState extends State<HomeScreen> {
       _HomeTab(
         labelBuilder: (l10n) => l10n.offerTabLabel,
         icon: Icons.add_circle_outline,
-        page: OfferFlowScreen(user: widget.user, profile: widget.profile),
+        pageBuilder: (context) =>
+            OfferFlowScreen(user: widget.user, profile: widget.profile),
       ),
       _HomeTab(
         labelBuilder: (l10n) => l10n.historyTabLabel,
         icon: Icons.history,
-        page: OfferHistoryScreen(user: widget.user),
+        pageBuilder: (context) => OfferHistoryScreen(user: widget.user),
       ),
       _HomeTab(
         labelBuilder: (l10n) => l10n.settingsTabLabel,
         icon: Icons.settings,
-        page: SettingsScreen(user: widget.user, profile: widget.profile),
+        pageBuilder: (context) =>
+            SettingsScreen(user: widget.user, profile: widget.profile),
       ),
       _HomeTab(
         labelBuilder: (l10n) => l10n.helpTabLabel,
         icon: Icons.help,
-        page: HelpScreen(user: widget.user),
+        pageBuilder: (context) => HelpScreen(user: widget.user),
       ),
     ];
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       resizeToAvoidBottomInset: false,
-      body: IndexedStack(
+      body: LazyIndexedStack(
         index: _currentIndex,
-        children: tabs.map((tab) => SafeArea(child: tab.page)).toList(),
+        builders: tabs
+            .map(
+              (tab) =>
+                  (context) => SafeArea(child: tab.pageBuilder(context)),
+            )
+            .toList(),
       ),
       bottomNavigationBar: MediaQuery.removePadding(
         context: context,
@@ -207,12 +215,12 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _HomeTab {
-  final Widget page;
+  final WidgetBuilder pageBuilder;
   final IconData icon;
   final String Function(AppLocalizations l10n) labelBuilder;
 
   _HomeTab({
-    required this.page,
+    required this.pageBuilder,
     required this.icon,
     required this.labelBuilder,
   });

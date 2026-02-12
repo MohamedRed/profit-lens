@@ -38,26 +38,47 @@ import '../core/localization/app_locale_controller.dart';
 import '../core/device/device_id_service.dart';
 
 class AppServices {
-  final AuthRepository authRepository;
-  final EntitlementRepository entitlementRepository;
-  final UsageRepository usageRepository;
-  final BillingService billingService;
-  final DeviceRegistryService deviceRegistryService;
-  final DeviceRepository deviceRepository;
-  final DeviceIdService deviceIdService;
-  final UserProfileRepository userProfileRepository;
-  final VehicleRepository vehicleRepository;
-  final OfferRepository offerRepository;
-  final OfferStatsRepository offerStatsRepository;
-  final OfferImagePickerService offerImagePickerService;
-  final OfferAnalysisService offerAnalysisService;
-  final HelpTicketRepository helpTicketRepository;
-  final HelpAudioTranscriptionService helpAudioTranscriptionService;
-  final HelpAttachmentPickerService helpAttachmentPickerService;
-  final NotificationTokenRepository notificationTokenRepository;
-  final VehicleModelLookupService vehicleModelLookupService;
-  final VehiclePlateLookupService vehiclePlateLookupService;
-  final AppLocaleController localeController;
+  final AuthRepository? _authRepositoryOverride;
+  final EntitlementRepository? _entitlementRepositoryOverride;
+  final UsageRepository? _usageRepositoryOverride;
+  final BillingService? _billingServiceOverride;
+  final DeviceRegistryService? _deviceRegistryServiceOverride;
+  final DeviceRepository? _deviceRepositoryOverride;
+  final DeviceIdService? _deviceIdServiceOverride;
+  final UserProfileRepository? _userProfileRepositoryOverride;
+  final VehicleRepository? _vehicleRepositoryOverride;
+  final OfferRepository? _offerRepositoryOverride;
+  final OfferStatsRepository? _offerStatsRepositoryOverride;
+  final OfferImagePickerService? _offerImagePickerServiceOverride;
+  final OfferAnalysisService? _offerAnalysisServiceOverride;
+  final HelpTicketRepository? _helpTicketRepositoryOverride;
+  final HelpAudioTranscriptionService? _helpAudioTranscriptionServiceOverride;
+  final HelpAttachmentPickerService? _helpAttachmentPickerServiceOverride;
+  final NotificationTokenRepository? _notificationTokenRepositoryOverride;
+  final VehicleModelLookupService? _vehicleModelLookupServiceOverride;
+  final VehiclePlateLookupService? _vehiclePlateLookupServiceOverride;
+  final AppLocaleController? _localeControllerOverride;
+
+  AuthRepository? _authRepository;
+  EntitlementRepository? _entitlementRepository;
+  UsageRepository? _usageRepository;
+  BillingService? _billingService;
+  DeviceRegistryService? _deviceRegistryService;
+  DeviceRepository? _deviceRepository;
+  DeviceIdService? _deviceIdService;
+  UserProfileRepository? _userProfileRepository;
+  VehicleRepository? _vehicleRepository;
+  OfferRepository? _offerRepository;
+  OfferStatsRepository? _offerStatsRepository;
+  OfferImagePickerService? _offerImagePickerService;
+  OfferAnalysisService? _offerAnalysisService;
+  HelpTicketRepository? _helpTicketRepository;
+  HelpAudioTranscriptionService? _helpAudioTranscriptionService;
+  HelpAttachmentPickerService? _helpAttachmentPickerService;
+  NotificationTokenRepository? _notificationTokenRepository;
+  VehicleModelLookupService? _vehicleModelLookupService;
+  VehiclePlateLookupService? _vehiclePlateLookupService;
+  AppLocaleController? _localeController;
 
   AppServices({
     AuthRepository? authRepository,
@@ -80,40 +101,97 @@ class AppServices {
     VehicleModelLookupService? vehicleModelLookupService,
     VehiclePlateLookupService? vehiclePlateLookupService,
     AppLocaleController? localeController,
-  }) : authRepository = authRepository ?? FirebaseAuthRepository(),
-       entitlementRepository =
-           entitlementRepository ?? FirestoreEntitlementRepository(),
-       usageRepository = usageRepository ?? FirestoreUsageRepository(),
-       billingService = billingService ?? FirebaseBillingService(),
-       deviceRegistryService =
-           deviceRegistryService ?? FirebaseDeviceRegistryService(),
-       deviceRepository = deviceRepository ?? FirestoreDeviceRepository(),
-       deviceIdService = deviceIdService ?? DeviceIdService(),
-       userProfileRepository =
-           userProfileRepository ?? FirestoreUserProfileRepository(),
-       vehicleRepository = vehicleRepository ?? FirestoreVehicleRepository(),
-       offerRepository = offerRepository ?? FirestoreOfferRepository(),
-       offerStatsRepository =
-           offerStatsRepository ?? FirestoreOfferStatsRepository(),
-       offerImagePickerService =
-           offerImagePickerService ?? DeviceOfferImagePickerService(),
-       offerAnalysisService =
-           offerAnalysisService ?? FirebaseOfferAnalysisService(),
-       helpTicketRepository =
-           helpTicketRepository ?? FirestoreHelpTicketRepository(),
-       helpAudioTranscriptionService =
-           helpAudioTranscriptionService ??
-           FirebaseHelpAudioTranscriptionService(),
-       helpAttachmentPickerService =
-           helpAttachmentPickerService ?? DeviceHelpAttachmentPickerService(),
-       notificationTokenRepository =
-           notificationTokenRepository ??
-           FirestoreNotificationTokenRepository(),
-       vehicleModelLookupService =
-           vehicleModelLookupService ?? FirebaseVehicleModelLookupService(),
-       vehiclePlateLookupService =
-           vehiclePlateLookupService ?? FirebaseVehiclePlateLookupService(),
-       localeController = localeController ?? AppLocaleController();
+  }) : _authRepositoryOverride = authRepository,
+       _entitlementRepositoryOverride = entitlementRepository,
+       _usageRepositoryOverride = usageRepository,
+       _billingServiceOverride = billingService,
+       _deviceRegistryServiceOverride = deviceRegistryService,
+       _deviceRepositoryOverride = deviceRepository,
+       _deviceIdServiceOverride = deviceIdService,
+       _userProfileRepositoryOverride = userProfileRepository,
+       _vehicleRepositoryOverride = vehicleRepository,
+       _offerRepositoryOverride = offerRepository,
+       _offerStatsRepositoryOverride = offerStatsRepository,
+       _offerImagePickerServiceOverride = offerImagePickerService,
+       _offerAnalysisServiceOverride = offerAnalysisService,
+       _helpTicketRepositoryOverride = helpTicketRepository,
+       _helpAudioTranscriptionServiceOverride = helpAudioTranscriptionService,
+       _helpAttachmentPickerServiceOverride = helpAttachmentPickerService,
+       _notificationTokenRepositoryOverride = notificationTokenRepository,
+       _vehicleModelLookupServiceOverride = vehicleModelLookupService,
+       _vehiclePlateLookupServiceOverride = vehiclePlateLookupService,
+       _localeControllerOverride = localeController;
+
+  AuthRepository get authRepository =>
+      _authRepository ??= _authRepositoryOverride ?? FirebaseAuthRepository();
+
+  EntitlementRepository get entitlementRepository => _entitlementRepository ??=
+      _entitlementRepositoryOverride ?? FirestoreEntitlementRepository();
+
+  UsageRepository get usageRepository => _usageRepository ??=
+      _usageRepositoryOverride ?? FirestoreUsageRepository();
+
+  BillingService get billingService =>
+      _billingService ??= _billingServiceOverride ?? FirebaseBillingService();
+
+  DeviceRegistryService get deviceRegistryService => _deviceRegistryService ??=
+      _deviceRegistryServiceOverride ?? FirebaseDeviceRegistryService();
+
+  DeviceRepository get deviceRepository => _deviceRepository ??=
+      _deviceRepositoryOverride ?? FirestoreDeviceRepository();
+
+  DeviceIdService get deviceIdService =>
+      _deviceIdService ??= _deviceIdServiceOverride ?? DeviceIdService();
+
+  UserProfileRepository get userProfileRepository => _userProfileRepository ??=
+      _userProfileRepositoryOverride ?? FirestoreUserProfileRepository();
+
+  VehicleRepository get vehicleRepository => _vehicleRepository ??=
+      _vehicleRepositoryOverride ?? FirestoreVehicleRepository();
+
+  OfferRepository get offerRepository => _offerRepository ??=
+      _offerRepositoryOverride ?? FirestoreOfferRepository();
+
+  OfferStatsRepository get offerStatsRepository => _offerStatsRepository ??=
+      _offerStatsRepositoryOverride ?? FirestoreOfferStatsRepository();
+
+  OfferImagePickerService get offerImagePickerService =>
+      _offerImagePickerService ??=
+          _offerImagePickerServiceOverride ?? DeviceOfferImagePickerService();
+
+  OfferAnalysisService get offerAnalysisService => _offerAnalysisService ??=
+      _offerAnalysisServiceOverride ?? FirebaseOfferAnalysisService();
+
+  HelpTicketRepository get helpTicketRepository => _helpTicketRepository ??=
+      _helpTicketRepositoryOverride ?? FirestoreHelpTicketRepository();
+
+  HelpAudioTranscriptionService get helpAudioTranscriptionService =>
+      _helpAudioTranscriptionService ??=
+          _helpAudioTranscriptionServiceOverride ??
+          FirebaseHelpAudioTranscriptionService();
+
+  HelpAttachmentPickerService get helpAttachmentPickerService =>
+      _helpAttachmentPickerService ??=
+          _helpAttachmentPickerServiceOverride ??
+          DeviceHelpAttachmentPickerService();
+
+  NotificationTokenRepository get notificationTokenRepository =>
+      _notificationTokenRepository ??=
+          _notificationTokenRepositoryOverride ??
+          FirestoreNotificationTokenRepository();
+
+  VehicleModelLookupService get vehicleModelLookupService =>
+      _vehicleModelLookupService ??=
+          _vehicleModelLookupServiceOverride ??
+          FirebaseVehicleModelLookupService();
+
+  VehiclePlateLookupService get vehiclePlateLookupService =>
+      _vehiclePlateLookupService ??=
+          _vehiclePlateLookupServiceOverride ??
+          FirebaseVehiclePlateLookupService();
+
+  AppLocaleController get localeController =>
+      _localeController ??= _localeControllerOverride ?? AppLocaleController();
 }
 
 class AppScope extends InheritedWidget {
