@@ -17,7 +17,14 @@ permissions:
 
 jobs:
   ai_agent:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.issue.labels.*.name, 'ai:run')
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' &&
+      github.event.action == 'labeled' &&
+      github.event.label.name == 'ai:run')
+    concurrency:
+      group: ai-help-ticket-${{ github.event.issue.number || inputs.issue_number || github.run_id }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     env:
       FIREBASE_HELP_TICKET_WEBHOOK_URL: ${{ secrets.FIREBASE_HELP_TICKET_WEBHOOK_URL }}
