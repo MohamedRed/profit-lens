@@ -3,17 +3,24 @@ import 'package:flutter/material.dart';
 import '../../../../core/design_system/shadcn_tokens.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/help_ticket_deliverer_status.dart';
+import '../../domain/help_ticket_timeline_event.dart';
 import '../help_ticket_status_presentation.dart';
 
 class HelpTicketProgressStepper extends StatelessWidget {
   final HelpTicketDelivererStatus currentStatus;
+  final List<HelpTicketTimelineEvent> events;
 
-  const HelpTicketProgressStepper({super.key, required this.currentStatus});
+  const HelpTicketProgressStepper({
+    super.key,
+    required this.currentStatus,
+    required this.events,
+  });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final steps = _steps(l10n);
+    final eventsByStatus = _latestEventByStatus(events);
     final currentIndex = steps.indexWhere(
       (step) => step.status == currentStatus,
     );
@@ -25,6 +32,7 @@ class HelpTicketProgressStepper extends StatelessWidget {
             label: steps[i].label,
             status: _stateForStep(i, currentIndex),
             color: helpTicketStatusColor(steps[i].status),
+            event: eventsByStatus[steps[i].status],
             isLast: i == steps.length - 1,
           ),
           if (i != steps.length - 1) const SizedBox(height: ShadcnSpacing.sm),
@@ -38,17 +46,20 @@ class _ProgressStepRow extends StatelessWidget {
   final String label;
   final _ProgressStepState status;
   final Color color;
+  final HelpTicketTimelineEvent? event;
   final bool isLast;
 
   const _ProgressStepRow({
     required this.label,
     required this.status,
     required this.color,
+    required this.event,
     required this.isLast,
   });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final circleColor = switch (status) {
       _ProgressStepState.done => color,
       _ProgressStepState.current => color,
@@ -113,14 +124,39 @@ class _ProgressStepRow extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(top: 1),
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: textColor,
-                fontWeight: status == _ProgressStepState.current
-                    ? FontWeight.w600
-                    : FontWeight.w500,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: textColor,
+                    fontWeight: status == _ProgressStepState.current
+                        ? FontWeight.w600
+                        : FontWeight.w500,
+                  ),
+                ),
+                if (event != null) ...[
+                  const SizedBox(height: ShadcnSpacing.xs),
+                  Text(
+                    _formatDateTimeLine(
+                      context: context,
+                      l10n: l10n,
+                      dateTime: event!.at,
+                    ),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: ShadcnColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: ShadcnSpacing.xs),
+                  Text(
+                    event!.message,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: ShadcnColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
         ),
@@ -172,3 +208,31 @@ class _ProgressStepDef {
 }
 
 enum _ProgressStepState { done, current, upcoming }
+
+Map<HelpTicketDelivererStatus, HelpTicketTimelineEvent> _latestEventByStatus(
+  List<HelpTicketTimelineEvent> events,
+) {
+  final latestByStatus = <HelpTicketDelivererStatus, HelpTicketTimelineEvent>{};
+  for (final event in events) {
+    final current = latestByStatus[event.status];
+    if (current == null || event.at.isAfter(current.at)) {
+      latestByStatus[event.status] = event;
+    }
+  }
+  return latestByStatus;
+}
+
+String _formatDateTimeLine({
+  required BuildContext context,
+  required AppLocalizations l10n,
+  required DateTime dateTime,
+}) {
+  final localizations = MaterialLocalizations.of(context);
+  final localDateTime = dateTime.toLocal();
+  final date = localizations.formatShortDate(localDateTime);
+  final time = localizations.formatTimeOfDay(
+    TimeOfDay.fromDateTime(localDateTime),
+    alwaysUse24HourFormat: true,
+  );
+  return '${l10n.helpTicketTimelineAtLabel} $date $time';
+}

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_deliverer_status.dart';
+import 'package:profit_lens/features/help/domain/help_ticket_timeline_event.dart';
+import 'package:profit_lens/features/help/domain/help_ticket_timeline_source.dart';
 import 'package:profit_lens/features/help/presentation/widgets/help_ticket_progress_stepper.dart';
 import 'package:profit_lens/l10n/app_localizations.dart';
 
@@ -16,6 +18,7 @@ void main() {
         home: const Scaffold(
           body: HelpTicketProgressStepper(
             currentStatus: HelpTicketDelivererStatus.fixReady,
+            events: [],
           ),
         ),
       ),
@@ -29,5 +32,38 @@ void main() {
     expect(find.text('Résolu'), findsOneWidget);
 
     expect(find.byIcon(Icons.check), findsNWidgets(3));
+  });
+
+  testWidgets('renders timeline message on matching progression step', (
+    tester,
+  ) async {
+    final event = HelpTicketTimelineEvent(
+      id: 'evt-1',
+      status: HelpTicketDelivererStatus.fixReady,
+      message: 'Une correction est prête et en validation.',
+      at: DateTime.utc(2026, 2, 12, 11, 18),
+      source: HelpTicketTimelineSource.agent,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('fr'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: HelpTicketProgressStepper(
+            currentStatus: HelpTicketDelivererStatus.fixReady,
+            events: <HelpTicketTimelineEvent>[event],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Une correction est prête et en validation.'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Le'), findsOneWidget);
   });
 }

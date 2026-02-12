@@ -13,7 +13,6 @@ import 'widgets/help_ticket_progress_stepper.dart';
 import 'widgets/help_section_card.dart';
 import 'widgets/help_ticket_attachment_gallery.dart';
 import 'widgets/help_ticket_detail_header.dart';
-import 'widgets/help_ticket_timeline_section.dart';
 
 class HelpTicketDetailScreen extends StatelessWidget {
   final AuthUser user;
@@ -71,28 +70,14 @@ class HelpTicketDetailScreen extends StatelessWidget {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting &&
                           !snapshot.hasData) {
-                        return const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(ShadcnSpacing.lg),
-                            child: CircularProgressIndicator(),
-                          ),
+                        return HelpTicketProgressStepper(
+                          currentStatus: ticket.delivererStatus,
+                          events: const [],
                         );
                       }
-                      final timelineData = snapshot.data ?? [];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          HelpTicketProgressStepper(
-                            currentStatus: ticket.delivererStatus,
-                          ),
-                          const SizedBox(height: ShadcnSpacing.xl),
-                          Text(
-                            l10n.helpTicketTimelineTitle,
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                          const SizedBox(height: ShadcnSpacing.md),
-                          HelpTicketTimelineSection(events: timelineData),
-                        ],
+                      return HelpTicketProgressStepper(
+                        currentStatus: ticket.delivererStatus,
+                        events: snapshot.data ?? const [],
                       );
                     },
                   ),
