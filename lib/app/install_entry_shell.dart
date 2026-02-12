@@ -1,5 +1,8 @@
-import 'package:flutter/widgets.dart';
+import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
+
+import '../core/design_system/shadcn_tokens.dart';
 import '../core/platform/pwa_install.dart';
 
 class InstallEntryShell extends StatelessWidget {
@@ -16,88 +19,228 @@ class InstallEntryShell extends StatelessWidget {
     return Directionality(
       textDirection: textDirection,
       child: ColoredBox(
-        color: const Color(0xFFF5F7FB),
+        color: ShadcnColors.background,
         child: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 520),
+          child: Stack(
+            children: [
+              Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x140B1220),
-                        blurRadius: 24,
-                        offset: Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-                    child: ValueListenableBuilder<bool>(
-                      valueListenable: pwaInstallAvailability,
-                      builder: (context, available, _) {
-                        final installEnabled =
-                            available || isAppleInstallManualAvailable;
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              copy.title,
-                              textAlign: TextAlign.start,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                height: 1.2,
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xFF0F172A),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              copy.subtitle,
-                              textAlign: TextAlign.start,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                height: 1.4,
-                                color: Color(0xFF334155),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            Wrap(
-                              spacing: 12,
-                              runSpacing: 12,
-                              children: [
-                                _ShellButton(
-                                  label: copy.installCta,
-                                  primary: true,
-                                  enabled: installEnabled,
-                                  onPressed: () {
-                                    showPwaInstallDialog();
-                                  },
-                                ),
-                                _ShellButton(
-                                  label: copy.signInCta,
-                                  primary: false,
-                                  enabled: true,
-                                  onPressed: onContinueToSignIn,
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [ShadcnColors.background, ShadcnColors.surface],
                     ),
                   ),
                 ),
               ),
-            ),
+              Positioned(
+                top: -40,
+                right: -40,
+                child: _GlowBlob(color: ShadcnColors.teal),
+              ),
+              Positioned(
+                bottom: -60,
+                left: -20,
+                child: _GlowBlob(color: ShadcnColors.pink),
+              ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final maxWidth = constraints.maxWidth;
+                  final horizontalPadding = math.max(
+                    ShadcnSpacing.lg,
+                    (maxWidth - 420) / 2,
+                  );
+                  return Column(
+                    children: [
+                      _InstallEntryAppBar(title: copy.signInTitle),
+                      Expanded(
+                        child: ListView(
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior.onDrag,
+                          padding: EdgeInsets.fromLTRB(
+                            horizontalPadding,
+                            ShadcnSpacing.section,
+                            horizontalPadding,
+                            ShadcnSpacing.section,
+                          ),
+                          children: [
+                            _InstallBannerCard(
+                              copy: copy,
+                              onContinueToSignIn: onContinueToSignIn,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _InstallEntryAppBar extends StatelessWidget {
+  final String title;
+
+  const _InstallEntryAppBar({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        ShadcnSpacing.lg,
+        ShadcnSpacing.md,
+        ShadcnSpacing.lg,
+        ShadcnSpacing.sm,
+      ),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            color: ShadcnColors.textPrimary,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InstallBannerCard extends StatelessWidget {
+  final _InstallCopy copy;
+  final VoidCallback onContinueToSignIn;
+
+  const _InstallBannerCard({
+    required this.copy,
+    required this.onContinueToSignIn,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: pwaInstallAvailability,
+      builder: (context, available, _) {
+        final isApple = isAppleInstallManualAvailable;
+        final isEnabled = available || isApple;
+        return Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: ShadcnColors.surface,
+            borderRadius: BorderRadius.circular(ShadcnRadius.xl),
+            border: Border.all(color: ShadcnColors.outline),
+          ),
+          padding: const EdgeInsets.all(ShadcnSpacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _InstallBannerIcon(isApple: isApple),
+                  const SizedBox(width: ShadcnSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          copy.title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: ShadcnColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: ShadcnSpacing.xs),
+                        Text(
+                          copy.subtitle,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            height: 1.4,
+                            color: ShadcnColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: ShadcnSpacing.md),
+              Wrap(
+                spacing: ShadcnSpacing.sm,
+                runSpacing: ShadcnSpacing.sm,
+                children: [
+                  _ShellButton(
+                    label: copy.installCta,
+                    primary: true,
+                    enabled: isEnabled,
+                    onPressed: () {
+                      showPwaInstallDialog();
+                    },
+                  ),
+                  _ShellButton(
+                    label: copy.signInCta,
+                    primary: false,
+                    enabled: true,
+                    onPressed: onContinueToSignIn,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _InstallBannerIcon extends StatelessWidget {
+  final bool isApple;
+
+  const _InstallBannerIcon({required this.isApple});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        color: ShadcnColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(ShadcnRadius.lg),
+      ),
+      child: Center(
+        child: Text(
+          isApple ? '↑' : '+',
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: ShadcnColors.textPrimary,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _GlowBlob extends StatelessWidget {
+  final Color color;
+
+  const _GlowBlob({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 180,
+      height: 180,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color.withValues(alpha: 0.18),
       ),
     );
   }
@@ -119,12 +262,10 @@ class _ShellButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final background = primary
-        ? const Color(0xFF0EA5E9)
-        : const Color(0xFFEEF2FF);
-    final border = primary ? const Color(0xFF0EA5E9) : const Color(0xFFCBD5E1);
-    final foreground = primary
-        ? const Color(0xFFFFFFFF)
-        : const Color(0xFF0F172A);
+        ? ShadcnColors.purple
+        : ShadcnColors.surfaceElevated;
+    final border = primary ? ShadcnColors.purple : ShadcnColors.outline;
+    final foreground = primary ? Colors.white : ShadcnColors.textPrimary;
     return Opacity(
       opacity: enabled ? 1 : 0.5,
       child: GestureDetector(
@@ -136,11 +277,14 @@ class _ShellButton extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: background,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(ShadcnRadius.md),
             border: Border.all(color: border),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+            padding: const EdgeInsets.symmetric(
+              horizontal: ShadcnSpacing.md,
+              vertical: ShadcnSpacing.sm,
+            ),
             child: Text(
               label,
               style: TextStyle(
@@ -157,6 +301,7 @@ class _ShellButton extends StatelessWidget {
 }
 
 class _InstallCopy {
+  final String signInTitle;
   final String title;
   final String subtitle;
   final String installCta;
@@ -164,6 +309,7 @@ class _InstallCopy {
   final bool isRtl;
 
   const _InstallCopy({
+    required this.signInTitle,
     required this.title,
     required this.subtitle,
     required this.installCta,
@@ -175,6 +321,7 @@ class _InstallCopy {
     switch (languageCode) {
       case 'fr':
         return const _InstallCopy(
+          signInTitle: 'Connexion',
           title: 'Installez ProfitLens',
           subtitle:
               'Ajoutez ProfitLens à votre écran d’accueil pour un démarrage plus rapide.',
@@ -183,6 +330,7 @@ class _InstallCopy {
         );
       case 'ar':
         return const _InstallCopy(
+          signInTitle: 'تسجيل الدخول',
           title: 'ثبّت ProfitLens',
           subtitle: 'أضف ProfitLens إلى الشاشة الرئيسية لتجربة أسرع.',
           installCta: 'تثبيت',
@@ -191,6 +339,7 @@ class _InstallCopy {
         );
       default:
         return const _InstallCopy(
+          signInTitle: 'Sign in',
           title: 'Install ProfitLens',
           subtitle:
               'Add ProfitLens to your home screen for faster startup performance.',
