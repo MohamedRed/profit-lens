@@ -27,25 +27,15 @@ class _AuthGateState extends State<AuthGate> {
     }
     _initialized = true;
     final services = AppScope.of(context);
-    try {
-      _initialUser = services.authRepository.currentUser();
-    } catch (_) {
-      _initialUser = null;
-    }
+    _initialUser = services.authRepository.currentUser();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future<void>.delayed(_authStartupDelay, () {
         if (!mounted) {
           return;
         }
-        try {
-          setState(() {
-            _authStream = services.authRepository.authStateChanges();
-          });
-        } catch (_) {
-          setState(() {
-            _authStream = null;
-          });
-        }
+        setState(() {
+          _authStream = services.authRepository.authStateChanges();
+        });
       });
     });
   }

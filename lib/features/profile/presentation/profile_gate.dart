@@ -32,42 +32,25 @@ class _ProfileGateState extends State<ProfileGate> {
     }
     _initialized = true;
     final services = AppScope.of(context);
-    services.userProfileRepository
-        .fetchProfile(widget.user.uid)
-        .then((value) {
-          if (!mounted) {
-            return;
-          }
-          setState(() {
-            _initialProfile = value;
-            _initialFetchDone = true;
-          });
-        })
-        .catchError((_) {
-          if (!mounted) {
-            return;
-          }
-          setState(() {
-            _initialProfile = null;
-            _initialFetchDone = true;
-          });
-        });
+    services.userProfileRepository.fetchProfile(widget.user.uid).then((value) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _initialProfile = value;
+        _initialFetchDone = true;
+      });
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future<void>.delayed(_profileStartupDelay, () {
         if (!mounted) {
           return;
         }
-        try {
-          setState(() {
-            _profileStream = services.userProfileRepository.watchProfile(
-              widget.user.uid,
-            );
-          });
-        } catch (_) {
-          setState(() {
-            _profileStream = null;
-          });
-        }
+        setState(() {
+          _profileStream = services.userProfileRepository.watchProfile(
+            widget.user.uid,
+          );
+        });
       });
     });
   }
