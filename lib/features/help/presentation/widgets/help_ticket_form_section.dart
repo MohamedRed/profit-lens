@@ -90,6 +90,9 @@ class HelpTicketFormSection extends StatelessWidget {
                   if (value == null || value.trim().isEmpty) {
                     return l10n.helpDescriptionRequired;
                   }
+                  if (value.trim().length < 10) {
+                    return l10n.helpDescriptionTooShort;
+                  }
                   return null;
                 },
               ),

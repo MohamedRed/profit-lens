@@ -300,6 +300,7 @@
   "helpDescriptionLabel": "Describe the issue",
   "helpDescriptionHint": "Steps, expected result, and what actually happened.",
   "helpDescriptionRequired": "Add a short description.",
+  "helpDescriptionTooShort": "Description is too short.",
   "helpAudioTitle": "Voice note",
   "helpAudioSubtitle": "Record a voice note and we’ll transcribe it into your description.",
   "helpAudioRecordButton": "Record voice note",

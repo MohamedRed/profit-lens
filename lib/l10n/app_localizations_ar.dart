@@ -802,6 +802,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpDescriptionRequired => 'أضف وصفًا مختصرًا.';
 
   @override
+  String get helpDescriptionTooShort => 'الوصف قصير جدًا.';
+
+  @override
   String get helpAudioTitle => 'ملاحظة صوتية';
 
   @override

@@ -300,6 +300,7 @@
   "helpDescriptionLabel": "صف المشكلة",
   "helpDescriptionHint": "الخطوات، النتيجة المتوقعة، وما حدث فعليًا.",
   "helpDescriptionRequired": "أضف وصفًا مختصرًا.",
+  "helpDescriptionTooShort": "الوصف قصير جدًا.",
   "helpAudioTitle": "ملاحظة صوتية",
   "helpAudioSubtitle": "سجّل ملاحظة صوتية وسنحوّلها إلى نص في الوصف.",
   "helpAudioRecordButton": "تسجيل ملاحظة صوتية",
