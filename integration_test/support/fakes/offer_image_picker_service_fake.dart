@@ -1,22 +1,22 @@
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:profit_lens/features/offers/data/offer_image_picker_service.dart';
 
-class AssetOfferImagePickerService implements OfferImagePickerService {
-  final Map<ImageSource, String> assetsBySource;
+import '../fixtures/offer_image_fixture.dart';
 
-  const AssetOfferImagePickerService({required this.assetsBySource});
+class AssetOfferImagePickerService implements OfferImagePickerService {
+  final Map<ImageSource, OfferImageFixture> fixturesBySource;
+
+  const AssetOfferImagePickerService({required this.fixturesBySource});
 
   @override
   Future<XFile?> pickImage({required ImageSource source}) async {
-    final assetPath = assetsBySource[source];
-    if (assetPath == null) {
+    final fixture = fixturesBySource[source];
+    if (fixture == null) {
       throw StateError('No asset configured for $source.');
     }
-    final data = await rootBundle.load(assetPath);
     return XFile.fromData(
-      data.buffer.asUint8List(),
-      name: assetPath.split('/').last,
+      fixture.bytes,
+      name: fixture.fileName,
       mimeType: 'image/jpeg',
     );
   }

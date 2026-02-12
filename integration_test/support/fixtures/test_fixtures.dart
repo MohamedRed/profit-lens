@@ -15,10 +15,8 @@ class TestFixtures {
     email: 'driver@example.com',
   );
 
-  static const String galleryScreenshotPath =
-      'tool/fixtures/source_images/IMG-20260122-WA0020.JPG';
-  static const String cameraScreenshotPath =
-      'tool/fixtures/source_images/IMG-20260122-WA0021.JPG';
+  static const String galleryScreenshotFileName = 'IMG-20260122-WA0020.JPG';
+  static const String cameraScreenshotFileName = 'IMG-20260122-WA0021.JPG';
 
   static UserProfile profile({String uid = 'test-user'}) {
     return UserProfile(
@@ -81,7 +79,7 @@ class TestFixtures {
   );
 
   static const Map<String, Offer> offerByFileName = {
-    'IMG-20260122-WA0020.JPG': galleryOffer,
-    'IMG-20260122-WA0021.JPG': cameraOffer,
+    galleryScreenshotFileName: galleryOffer,
+    cameraScreenshotFileName: cameraOffer,
   };
 }

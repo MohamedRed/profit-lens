@@ -10,6 +10,7 @@ import 'support/fakes/offer_analysis_service_fake.dart';
 import 'support/fakes/offer_image_picker_service_fake.dart';
 import 'support/fakes/user_profile_repository_fake.dart';
 import 'support/fakes/vehicle_repository_fake.dart';
+import 'support/fixtures/offer_image_fixture.dart';
 import 'support/fixtures/test_fixtures.dart';
 import 'support/test_app_services.dart';
 
@@ -27,9 +28,9 @@ void main() {
       ),
       vehicleRepository: InMemoryVehicleRepository(initialVehicles: [vehicle]),
       offerImagePickerService: AssetOfferImagePickerService(
-        assetsBySource: {
-          ImageSource.gallery: TestFixtures.galleryScreenshotPath,
-          ImageSource.camera: TestFixtures.cameraScreenshotPath,
+        fixturesBySource: {
+          ImageSource.gallery: OfferImageFixtures.gallery,
+          ImageSource.camera: OfferImageFixtures.camera,
         },
       ),
       offerAnalysisService: FakeOfferAnalysisService(
