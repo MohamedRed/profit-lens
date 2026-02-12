@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/app_scope.dart';
+import '../../../core/widgets/deferred_widget.dart';
 import '../domain/auth_user.dart';
 import 'sign_in_screen.dart';
-import '../../profile/presentation/profile_gate.dart';
+import '../../profile/presentation/profile_gate.dart' deferred as profile_gate;
 
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
@@ -47,7 +48,13 @@ class _AuthGateState extends State<AuthGate> {
       if (initialUser == null) {
         return const SignInScreen();
       }
-      return ProfileGate(user: initialUser);
+      return DeferredWidget(
+        loadLibrary: profile_gate.loadLibrary,
+        loading: const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
+        builder: () => profile_gate.ProfileGate(user: initialUser),
+      );
     }
 
     return StreamBuilder<AuthUser?>(
@@ -58,7 +65,13 @@ class _AuthGateState extends State<AuthGate> {
         if (user == null) {
           return const SignInScreen();
         }
-        return ProfileGate(user: user);
+        return DeferredWidget(
+          loadLibrary: profile_gate.loadLibrary,
+          loading: const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          ),
+          builder: () => profile_gate.ProfileGate(user: user),
+        );
       },
     );
   }

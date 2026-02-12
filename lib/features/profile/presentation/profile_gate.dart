@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/app_scope.dart';
+import '../../../app/app_service_defaults_deferred.dart';
+import '../../../core/widgets/deferred_widget.dart';
 import '../../auth/domain/auth_user.dart';
 import '../domain/user_profile.dart';
 import '../../devices/presentation/device_access_gate.dart';
-import 'profile_setup_screen.dart';
-import '../../home/presentation/home_screen.dart';
+import 'profile_setup_screen.dart' deferred as profile_setup_screen;
+import '../../home/presentation/home_screen.dart' deferred as home_screen;
 
 class ProfileGate extends StatefulWidget {
   final AuthUser user;
@@ -31,6 +33,7 @@ class _ProfileGateState extends State<ProfileGate> {
       return;
     }
     _initialized = true;
+    configureDeferredAppServiceFactories();
     final services = AppScope.of(context);
     services.userProfileRepository.fetchProfile(widget.user.uid).then((value) {
       if (!mounted) {
@@ -76,7 +79,12 @@ class _ProfileGateState extends State<ProfileGate> {
     if (profile == null) {
       return DeviceAccessGate(
         user: widget.user,
-        child: ProfileSetupScreen(user: widget.user),
+        child: DeferredWidget(
+          loadLibrary: profile_setup_screen.loadLibrary,
+          loading: const Center(child: CircularProgressIndicator()),
+          builder: () =>
+              profile_setup_screen.ProfileSetupScreen(user: widget.user),
+        ),
       );
     }
     final localeController = AppScope.of(context).localeController;
@@ -86,7 +94,12 @@ class _ProfileGateState extends State<ProfileGate> {
     }
     return DeviceAccessGate(
       user: widget.user,
-      child: HomeScreen(user: widget.user, profile: profile),
+      child: DeferredWidget(
+        loadLibrary: home_screen.loadLibrary,
+        loading: const Center(child: CircularProgressIndicator()),
+        builder: () =>
+            home_screen.HomeScreen(user: widget.user, profile: profile),
+      ),
     );
   }
 }

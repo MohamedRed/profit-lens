@@ -2,37 +2,23 @@ import 'package:flutter/widgets.dart';
 
 import '../features/auth/data/firebase_auth_repository.dart';
 import '../features/auth/domain/auth_repository.dart';
+import 'app_service_factories.dart';
 import '../features/billing/data/billing_service.dart';
 import '../features/billing/data/entitlement_repository.dart';
-import '../features/billing/data/firestore_entitlement_repository.dart';
-import '../features/billing/data/firestore_usage_repository.dart';
-import '../features/billing/data/firebase_billing_service.dart';
 import '../features/billing/data/usage_repository.dart';
 import '../features/devices/data/device_registry_service.dart';
 import '../features/devices/data/device_repository.dart';
-import '../features/devices/data/firebase_device_registry_service.dart';
-import '../features/devices/data/firestore_device_repository.dart';
-import '../features/offers/data/firestore_offer_repository.dart';
-import '../features/offers/data/firestore_offer_stats_repository.dart';
 import '../features/offers/data/offer_analysis_service.dart';
-import '../features/offers/data/firebase_offer_analysis_service.dart';
 import '../features/offers/data/offer_image_picker_service.dart';
 import '../features/offers/data/offer_repository.dart';
 import '../features/offers/data/offer_stats_repository.dart';
-import '../features/profile/data/firestore_user_profile_repository.dart';
 import '../features/profile/data/user_profile_repository.dart';
-import '../features/help/data/firestore_help_ticket_repository.dart';
-import '../features/help/data/firebase_help_audio_transcription_service.dart';
 import '../features/help/data/help_attachment_picker_service.dart';
 import '../features/help/data/help_audio_transcription_service.dart';
 import '../features/help/data/help_ticket_repository.dart';
-import '../features/notifications/data/firestore_notification_token_repository.dart';
 import '../features/notifications/data/notification_token_repository.dart';
-import '../features/vehicles/data/firebase_vehicle_model_lookup_service.dart';
-import '../features/vehicles/data/firebase_vehicle_plate_lookup_service.dart';
 import '../features/vehicles/data/vehicle_model_lookup_service.dart';
 import '../features/vehicles/data/vehicle_plate_lookup_service.dart';
-import '../features/vehicles/data/firestore_vehicle_repository.dart';
 import '../features/vehicles/data/vehicle_repository.dart';
 import '../core/localization/app_locale_controller.dart';
 import '../core/device/device_id_service.dart';
@@ -126,69 +112,77 @@ class AppServices {
       _authRepository ??= _authRepositoryOverride ?? FirebaseAuthRepository();
 
   EntitlementRepository get entitlementRepository => _entitlementRepository ??=
-      _entitlementRepositoryOverride ?? FirestoreEntitlementRepository();
+      _entitlementRepositoryOverride ??
+      AppServiceFactories.createEntitlementRepository();
 
   UsageRepository get usageRepository => _usageRepository ??=
-      _usageRepositoryOverride ?? FirestoreUsageRepository();
+      _usageRepositoryOverride ?? AppServiceFactories.createUsageRepository();
 
-  BillingService get billingService =>
-      _billingService ??= _billingServiceOverride ?? FirebaseBillingService();
+  BillingService get billingService => _billingService ??=
+      _billingServiceOverride ?? AppServiceFactories.createBillingService();
 
   DeviceRegistryService get deviceRegistryService => _deviceRegistryService ??=
-      _deviceRegistryServiceOverride ?? FirebaseDeviceRegistryService();
+      _deviceRegistryServiceOverride ??
+      AppServiceFactories.createDeviceRegistryService();
 
   DeviceRepository get deviceRepository => _deviceRepository ??=
-      _deviceRepositoryOverride ?? FirestoreDeviceRepository();
+      _deviceRepositoryOverride ?? AppServiceFactories.createDeviceRepository();
 
-  DeviceIdService get deviceIdService =>
-      _deviceIdService ??= _deviceIdServiceOverride ?? DeviceIdService();
+  DeviceIdService get deviceIdService => _deviceIdService ??=
+      _deviceIdServiceOverride ?? AppServiceFactories.createDeviceIdService();
 
   UserProfileRepository get userProfileRepository => _userProfileRepository ??=
-      _userProfileRepositoryOverride ?? FirestoreUserProfileRepository();
+      _userProfileRepositoryOverride ??
+      AppServiceFactories.createUserProfileRepository();
 
   VehicleRepository get vehicleRepository => _vehicleRepository ??=
-      _vehicleRepositoryOverride ?? FirestoreVehicleRepository();
+      _vehicleRepositoryOverride ??
+      AppServiceFactories.createVehicleRepository();
 
   OfferRepository get offerRepository => _offerRepository ??=
-      _offerRepositoryOverride ?? FirestoreOfferRepository();
+      _offerRepositoryOverride ?? AppServiceFactories.createOfferRepository();
 
   OfferStatsRepository get offerStatsRepository => _offerStatsRepository ??=
-      _offerStatsRepositoryOverride ?? FirestoreOfferStatsRepository();
+      _offerStatsRepositoryOverride ??
+      AppServiceFactories.createOfferStatsRepository();
 
   OfferImagePickerService get offerImagePickerService =>
       _offerImagePickerService ??=
-          _offerImagePickerServiceOverride ?? DeviceOfferImagePickerService();
+          _offerImagePickerServiceOverride ??
+          AppServiceFactories.createOfferImagePickerService();
 
   OfferAnalysisService get offerAnalysisService => _offerAnalysisService ??=
-      _offerAnalysisServiceOverride ?? FirebaseOfferAnalysisService();
+      _offerAnalysisServiceOverride ??
+      AppServiceFactories.createOfferAnalysisService();
 
   HelpTicketRepository get helpTicketRepository => _helpTicketRepository ??=
-      _helpTicketRepositoryOverride ?? FirestoreHelpTicketRepository();
+      _helpTicketRepositoryOverride ??
+      AppServiceFactories.createHelpTicketRepository();
 
   HelpAudioTranscriptionService get helpAudioTranscriptionService =>
       _helpAudioTranscriptionService ??=
           _helpAudioTranscriptionServiceOverride ??
-          FirebaseHelpAudioTranscriptionService();
+          AppServiceFactories.createHelpAudioTranscriptionService();
 
   HelpAttachmentPickerService get helpAttachmentPickerService =>
       _helpAttachmentPickerService ??=
           _helpAttachmentPickerServiceOverride ??
-          DeviceHelpAttachmentPickerService();
+          AppServiceFactories.createHelpAttachmentPickerService();
 
   NotificationTokenRepository get notificationTokenRepository =>
       _notificationTokenRepository ??=
           _notificationTokenRepositoryOverride ??
-          FirestoreNotificationTokenRepository();
+          AppServiceFactories.createNotificationTokenRepository();
 
   VehicleModelLookupService get vehicleModelLookupService =>
       _vehicleModelLookupService ??=
           _vehicleModelLookupServiceOverride ??
-          FirebaseVehicleModelLookupService();
+          AppServiceFactories.createVehicleModelLookupService();
 
   VehiclePlateLookupService get vehiclePlateLookupService =>
       _vehiclePlateLookupService ??=
           _vehiclePlateLookupServiceOverride ??
-          FirebaseVehiclePlateLookupService();
+          AppServiceFactories.createVehiclePlateLookupService();
 
   AppLocaleController get localeController =>
       _localeController ??= _localeControllerOverride ?? AppLocaleController();

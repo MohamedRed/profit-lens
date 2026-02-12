@@ -6,6 +6,7 @@ import '../integration_test/support/test_app_services.dart';
 void main() {
   testWidgets('App boots', (tester) async {
     await tester.pumpWidget(ProfitLensApp(services: TestAppServices()));
+    await tester.pump(const Duration(milliseconds: 800));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('ProfitLens'), findsWidgets);
