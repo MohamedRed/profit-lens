@@ -73,12 +73,12 @@ class _AuthGateState extends State<AuthGate> {
 
   Future<void> _bootstrapAuth() async {
     final services = AppScope.of(context);
-    final authRepository = services.authRepository;
 
     try {
-      if (authRepository.requiresFirebaseBootstrap) {
+      if (services.authRequiresFirebaseBootstrap) {
         await FirebaseBootstrap.ensureInitialized();
       }
+      final authRepository = services.authRepository;
       if (!mounted) {
         return;
       }
@@ -98,6 +98,7 @@ class _AuthGateState extends State<AuthGate> {
       return;
     }
 
+    final authRepository = services.authRepository;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future<void>.delayed(_authStartupDelay, () {
         if (!mounted) {

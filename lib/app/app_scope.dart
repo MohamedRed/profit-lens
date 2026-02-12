@@ -111,6 +111,9 @@ class AppServices {
   AuthRepository get authRepository =>
       _authRepository ??= _authRepositoryOverride ?? FirebaseAuthRepository();
 
+  bool get authRequiresFirebaseBootstrap =>
+      _authRepositoryOverride?.requiresFirebaseBootstrap ?? true;
+
   EntitlementRepository get entitlementRepository => _entitlementRepository ??=
       _entitlementRepositoryOverride ??
       AppServiceFactories.createEntitlementRepository();
