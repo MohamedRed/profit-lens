@@ -6,26 +6,15 @@ import '../../../app/app_scope.dart';
 import '../../../core/design_system/shadcn_tokens.dart';
 import '../../../core/platform/pwa_install.dart';
 import '../../../l10n/app_localizations.dart';
+import 'auth_entry_mode.dart';
 import 'register_screen.dart';
 import 'sign_in_fields.dart';
 import 'widgets/pwa_install_banner.dart';
 
-enum _AuthEntryMode { auto, install, login }
-
-_AuthEntryMode _resolveAuthEntryMode() {
-  final entry = Uri.base.queryParameters['entry']?.trim().toLowerCase();
-  switch (entry) {
-    case 'install':
-      return _AuthEntryMode.install;
-    case 'login':
-      return _AuthEntryMode.login;
-    default:
-      return _AuthEntryMode.auto;
-  }
-}
-
 class SignInForm extends StatefulWidget {
-  const SignInForm({super.key});
+  final VoidCallback? onContinueToSignIn;
+
+  const SignInForm({super.key, this.onContinueToSignIn});
 
   @override
   State<SignInForm> createState() => _SignInFormState();
@@ -36,6 +25,7 @@ class _SignInFormState extends State<SignInForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _forceLoginView = false;
 
   @override
   void dispose() {
@@ -77,6 +67,13 @@ class _SignInFormState extends State<SignInForm> {
     ).push(MaterialPageRoute(builder: (context) => const RegisterScreen()));
   }
 
+  void _continueToSignIn() {
+    setState(() {
+      _forceLoginView = true;
+    });
+    widget.onContinueToSignIn?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -91,14 +88,13 @@ class _SignInFormState extends State<SignInForm> {
           );
           return ValueListenableBuilder<bool>(
             valueListenable: pwaInstallAvailability,
-            builder: (context, available, __) {
-              final entryMode = _resolveAuthEntryMode();
-              final shouldGate = switch (entryMode) {
-                _AuthEntryMode.install => true,
-                _AuthEntryMode.login => false,
-                _AuthEntryMode.auto =>
-                  !isPwaInstalled || available || isAppleInstallManualAvailable,
-              };
+            builder: (context, available, _) {
+              final shouldGate =
+                  !_forceLoginView &&
+                  shouldShowInstallGate(
+                    entryMode: resolveAuthEntryMode(),
+                    installPromptAvailable: available,
+                  );
               if (shouldGate) {
                 return ListView(
                   keyboardDismissBehavior:
@@ -109,7 +105,9 @@ class _SignInFormState extends State<SignInForm> {
                     horizontalPadding,
                     ShadcnSpacing.section,
                   ),
-                  children: const [PwaInstallBanner()],
+                  children: [
+                    PwaInstallBanner(onContinueToSignIn: _continueToSignIn),
+                  ],
                 );
               }
 

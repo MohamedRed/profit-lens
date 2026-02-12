@@ -5,7 +5,9 @@ import '../../../../core/platform/pwa_install.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class PwaInstallBanner extends StatelessWidget {
-  const PwaInstallBanner({super.key});
+  final VoidCallback? onContinueToSignIn;
+
+  const PwaInstallBanner({super.key, this.onContinueToSignIn});
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +35,10 @@ class PwaInstallBanner extends StatelessWidget {
             title: l10n.installAppTitle,
             subtitle: l10n.installAppSubtitle,
             ctaLabel: l10n.installAppCta,
+            continueLabel: l10n.signInButton,
             isCompact: isCompact,
             isEnabled: isEnabled,
+            onContinueToSignIn: onContinueToSignIn,
           ),
         );
       },
@@ -47,16 +51,20 @@ class _InstallBannerContent extends StatelessWidget {
   final String title;
   final String subtitle;
   final String ctaLabel;
+  final String continueLabel;
   final bool isCompact;
   final bool isEnabled;
+  final VoidCallback? onContinueToSignIn;
 
   const _InstallBannerContent({
     required this.isApple,
     required this.title,
     required this.subtitle,
     required this.ctaLabel,
+    required this.continueLabel,
     required this.isCompact,
     required this.isEnabled,
+    required this.onContinueToSignIn,
   });
 
   @override
@@ -82,7 +90,18 @@ class _InstallBannerContent extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: SizedBox(
             width: isCompact ? double.infinity : null,
-            child: _InstallBannerButton(label: ctaLabel, isEnabled: isEnabled),
+            child: Wrap(
+              spacing: ShadcnSpacing.sm,
+              runSpacing: ShadcnSpacing.sm,
+              children: [
+                _InstallBannerButton(label: ctaLabel, isEnabled: isEnabled),
+                if (onContinueToSignIn != null)
+                  TextButton(
+                    onPressed: onContinueToSignIn,
+                    child: Text(continueLabel),
+                  ),
+              ],
+            ),
           ),
         ),
       ],
