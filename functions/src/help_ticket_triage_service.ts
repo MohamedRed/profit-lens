@@ -5,10 +5,12 @@ import { db } from "./firebase_admin";
 import { requestGeminiJsonWithRetry } from "./gemini_json_retry";
 import { helpTriagePrompt } from "./help_triage_prompt";
 import { resolveDelivererStatus } from "./help_ticket_deliverer_status";
+import { resolveHelpTicketTitle } from "./help_ticket_title";
 
 const helpTriageSchema = {
   type: "object",
   properties: {
+    title: { type: "string" },
     status: {
       type: "string",
       enum: ["in_progress", "awaiting_response"],
@@ -20,6 +22,7 @@ const helpTriageSchema = {
     confidence: { type: "number" },
   },
   required: [
+    "title",
     "status",
     "statusMessage",
     "summary",
@@ -31,6 +34,7 @@ const helpTriageSchema = {
 } as const;
 
 type HelpTriageResult = {
+  title: string;
   status: "in_progress" | "awaiting_response";
   statusMessage: string;
   summary: string;
@@ -99,6 +103,11 @@ export async function runHelpTicketTriage(params: {
 
   await ticketRef.set(
     {
+      title: resolveHelpTicketTitle({
+        title: parsed.title,
+        summary: parsed.summary,
+        locale: data.locale as string | undefined,
+      }),
       status: parsed.status,
       statusMessage: parsed.statusMessage,
       aiSummary: parsed.summary,

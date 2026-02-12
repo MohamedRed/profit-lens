@@ -9,6 +9,7 @@ void main() {
     test('reads persisted deliverer status fields', () {
       final mapper = HelpTicketMapper();
       final ticket = mapper.fromDocument('ticket-1', {
+        'title': 'Subscription issue',
         'description': 'Issue detail',
         'status': 'in_progress',
         'delivererStatus': 'fix_ready',
@@ -17,7 +18,8 @@ void main() {
       });
 
       expect(ticket, isNotNull);
-      expect(ticket!.status, HelpTicketStatus.inProgress);
+      expect(ticket!.title, 'Subscription issue');
+      expect(ticket.status, HelpTicketStatus.inProgress);
       expect(ticket.delivererStatus, HelpTicketDelivererStatus.fixReady);
       expect(
         ticket.delivererStatusMessage,

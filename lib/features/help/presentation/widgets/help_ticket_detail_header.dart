@@ -4,7 +4,7 @@ import '../../../../core/design_system/shadcn_tokens.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/help_ticket.dart';
 import '../../domain/help_ticket_deliverer_status.dart';
-import '../help_ticket_title_generator.dart';
+import '../help_ticket_display_title.dart';
 import 'help_ticket_status_chip.dart';
 
 class HelpTicketDetailHeader extends StatelessWidget {
@@ -33,7 +33,7 @@ class HelpTicketDetailHeader extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  buildHelpTicketTitle(ticket: ticket, l10n: l10n),
+                  resolveHelpTicketDisplayTitle(ticket: ticket, l10n: l10n),
                   style: Theme.of(context).textTheme.titleMedium,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

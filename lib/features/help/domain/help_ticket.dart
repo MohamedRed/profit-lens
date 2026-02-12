@@ -4,6 +4,7 @@ import 'help_ticket_transcription_status.dart';
 
 class HelpTicket {
   final String id;
+  final String? title;
   final String description;
   final HelpTicketStatus status;
   final String? statusMessage;
@@ -23,6 +24,7 @@ class HelpTicket {
 
   const HelpTicket({
     required this.id,
+    this.title,
     required this.description,
     required this.status,
     required this.statusMessage,

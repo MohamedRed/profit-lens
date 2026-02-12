@@ -44,11 +44,12 @@ void main() {
     expect(find.text('Technical running message'), findsNothing);
   });
 
-  testWidgets('generates ticket title from description keywords', (
+  testWidgets('renders backend generated ticket title when available', (
     tester,
   ) async {
     final ticket = HelpTicket(
       id: 'ticket-id-2',
+      title: 'Problème d’abonnement',
       description:
           'After I open subscription settings, checkout does not complete.',
       status: HelpTicketStatus.inProgress,
@@ -78,6 +79,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Subscription issue'), findsOneWidget);
+    expect(find.text('Problème d’abonnement'), findsOneWidget);
   });
 }

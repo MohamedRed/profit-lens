@@ -106,6 +106,7 @@ export const createHelpTicketCodexIssue = onDocumentUpdated(
       const issueBody = buildIssueBody({
         uid,
         ticketId,
+        title: (after.title as string | undefined) ?? "",
         description: after.description as string,
         aiSummary: after.aiSummary as string,
         aiNextSteps: after.aiNextSteps as string,
@@ -213,6 +214,10 @@ async function buildImageLinks(attachments: AttachmentData[]) {
 }
 
 function buildIssueTitle(data: Record<string, unknown>) {
+  const ticketTitle = (data.title as string | undefined)?.trim();
+  if (ticketTitle) {
+    return truncate(`Help ticket: ${ticketTitle}`, 120);
+  }
   const summary = (data.aiSummary as string | undefined)?.trim();
   if (summary) {
     return truncate(`Help ticket: ${summary}`, 120);
@@ -225,6 +230,7 @@ function buildIssueTitle(data: Record<string, unknown>) {
 function buildIssueBody(params: {
   uid: string;
   ticketId: string;
+  title: string;
   description: string;
   aiSummary: string;
   aiNextSteps: string;
@@ -239,6 +245,7 @@ function buildIssueBody(params: {
     `Uid: ${params.uid}`,
     `Platform: ${params.platform}`,
     `Locale: ${params.locale}`,
+    `Title: ${params.title}`,
     "",
     "Description:",
     params.description,

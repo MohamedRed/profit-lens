@@ -175,6 +175,7 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
 
     return HelpTicket(
       id: ticketId,
+      title: null,
       description: draft.description,
       status: HelpTicketStatus.open,
       statusMessage: null,

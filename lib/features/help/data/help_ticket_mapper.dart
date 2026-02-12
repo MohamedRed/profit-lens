@@ -24,6 +24,7 @@ class HelpTicketMapper {
         );
     return HelpTicket(
       id: id,
+      title: data['title'] as String?,
       description: description,
       status: status,
       statusMessage: data['statusMessage'] as String?,
