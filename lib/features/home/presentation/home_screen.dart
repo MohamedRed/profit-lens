@@ -18,7 +18,6 @@ import '../../../core/config/app_config.dart';
 import '../../../core/widgets/lazy_indexed_stack.dart';
 import '../../../core/widgets/mobile_pill_nav.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../core/platform/google_maps_preloader.dart';
 
 class HomeScreen extends StatefulWidget {
   final AuthUser user;
@@ -44,7 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      unawaited(preloadGoogleMaps());
       _handleTicketDeepLinkFromUrl();
 
       if (!AppConfig.firebaseConfigured || kIsWeb) {
