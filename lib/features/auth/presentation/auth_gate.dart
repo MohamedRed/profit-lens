@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/app_scope.dart';
 import '../../../core/platform/pwa_install.dart';
 import '../../../core/widgets/deferred_widget.dart';
+import '../../../firebase_bootstrap.dart';
 import '../domain/auth_user.dart';
 import 'auth_entry_mode.dart';
 import 'sign_in_screen.dart';
@@ -19,6 +20,8 @@ class _AuthGateState extends State<AuthGate> {
   static const _authStartupDelay = Duration(milliseconds: 700);
 
   bool _authBootstrapStarted = false;
+  bool _authBootstrapInProgress = false;
+  Object? _authBootstrapError;
   Stream<AuthUser?>? _authStream;
   AuthUser? _initialUser;
   bool _initialized = false;
@@ -43,21 +46,52 @@ class _AuthGateState extends State<AuthGate> {
     if (_authBootstrapStarted) {
       return;
     }
-    _authBootstrapStarted = true;
-    final services = AppScope.of(context);
-    final authRepository = services.authRepository;
 
-    void applyState() {
-      _initialUser = authRepository.currentUser();
+    void startState() {
+      _authBootstrapStarted = true;
+      _authBootstrapInProgress = true;
+      _authBootstrapError = null;
+      _authStream = null;
+      _initialUser = null;
     }
 
     if (notify) {
       if (!mounted) {
         return;
       }
-      setState(applyState);
+      setState(startState);
     } else {
-      applyState();
+      startState();
+    }
+
+    _bootstrapAuth();
+  }
+
+  Future<void> _bootstrapAuth() async {
+    final services = AppScope.of(context);
+    final authRepository = services.authRepository;
+
+    try {
+      if (authRepository.requiresFirebaseBootstrap) {
+        await FirebaseBootstrap.ensureInitialized();
+      }
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _initialUser = authRepository.currentUser();
+        _authBootstrapInProgress = false;
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _authBootstrapStarted = false;
+        _authBootstrapInProgress = false;
+        _authBootstrapError = error;
+      });
+      return;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -72,12 +106,43 @@ class _AuthGateState extends State<AuthGate> {
     });
   }
 
+  Widget _buildAuthBootstrapError() {
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Authentication startup failed. Please retry.'),
+              const SizedBox(height: 12),
+              Text(_authBootstrapError.toString(), textAlign: TextAlign.center),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () => _startAuthBootstrap(notify: true),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!_authBootstrapStarted) {
       return SignInScreen(
         onContinueToSignIn: () => _startAuthBootstrap(notify: true),
       );
+    }
+
+    if (_authBootstrapInProgress) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (_authBootstrapError != null) {
+      return _buildAuthBootstrapError();
     }
 
     if (_authStream == null) {

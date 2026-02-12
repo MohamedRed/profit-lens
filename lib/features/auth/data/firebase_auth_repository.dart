@@ -10,6 +10,9 @@ class FirebaseAuthRepository implements AuthRepository {
   FirebaseAuthRepository({FirebaseAuth? auth})
     : _auth = auth ?? FirebaseAuth.instance;
 
+  @override
+  bool get requiresFirebaseBootstrap => true;
+
   void _ensureConfigured() {
     if (!AppConfig.firebaseConfigured) {
       throw StateError('Firebase is not configured.');

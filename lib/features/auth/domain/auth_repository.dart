@@ -1,6 +1,8 @@
 import 'auth_user.dart';
 
 abstract class AuthRepository {
+  bool get requiresFirebaseBootstrap;
+
   Stream<AuthUser?> authStateChanges();
   AuthUser? currentUser();
   Future<AuthUser> signInWithEmail({

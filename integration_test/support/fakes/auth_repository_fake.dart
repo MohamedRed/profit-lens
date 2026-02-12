@@ -11,6 +11,9 @@ class InMemoryAuthRepository implements AuthRepository {
       StreamController<AuthUser?>.broadcast();
 
   @override
+  bool get requiresFirebaseBootstrap => false;
+
+  @override
   Stream<AuthUser?> authStateChanges() async* {
     yield _currentUser;
     yield* _controller.stream;
