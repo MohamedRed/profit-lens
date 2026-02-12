@@ -3,20 +3,6 @@ part of 'help_screen.dart';
 mixin _HelpScreenActions on State<HelpScreen> {
   _HelpScreenState get _state => this as _HelpScreenState;
 
-  Future<void> _addScreenshotFromCamera() async {
-    if (_state._isSubmitting) return;
-    final l10n = AppLocalizations.of(context)!;
-    if (_state._screenshots.length >= _HelpScreenState.maxScreenshots) {
-      _showSnackBar(l10n.helpAttachmentLimitReached);
-      return;
-    }
-    final picker = _state._attachmentPicker;
-    if (picker == null) return;
-    final image = await picker.pickImage(source: ImageSource.camera);
-    if (!mounted || image == null) return;
-    await _addImageAttachment(image);
-  }
-
   Future<void> _addScreenshotsFromGallery() async {
     if (_state._isSubmitting) return;
     final l10n = AppLocalizations.of(context)!;
@@ -226,5 +212,4 @@ mixin _HelpScreenActions on State<HelpScreen> {
       ),
     );
   }
-
 }

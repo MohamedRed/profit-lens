@@ -20,6 +20,7 @@ export { transcribeHelpDraftAudio } from "./help_ticket_draft_transcription";
 export { notifyHelpTicketStatus } from "./help_ticket_notifications";
 export { createHelpTicketCodexIssue } from "./help_ticket_codex_issue";
 export { codexHelpTicketCallback } from "./help_ticket_codex_webhook";
+export { seedHelpTicketTimeline } from "./help_ticket_timeline_seed";
 export {
   createCheckoutSession,
   createCustomerPortalSession,

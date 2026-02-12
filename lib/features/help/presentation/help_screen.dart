@@ -108,22 +108,23 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
             final introSection = const HelpIntroSection();
             final formSection = ValueListenableBuilder<HelpAudioRecorderState>(
               valueListenable: _audioController.state,
-              builder: (context, audioState, __) {
+              builder: (context, audioState, _) {
                 return HelpTicketFormSection(
                   formKey: _formKey,
                   controller: _formController,
                   screenshots: List.unmodifiable(_screenshots),
                   enableAudio: _audioEnabled,
-                  isAudioSupported: _audioEnabled && _audioController.isSupported,
+                  isAudioSupported:
+                      _audioEnabled && _audioController.isSupported,
                   isAudioRecording: _audioEnabled && audioState.isRecording,
                   isAudioProcessing: _audioEnabled && audioState.isProcessing,
                   isAudioTranscribing: _audioEnabled && _isTranscribingAudio,
                   hasAudioRecording:
                       _audioEnabled && audioState.recording != null,
-                  audioDuration:
-                      _audioEnabled ? audioState.recording?.duration : null,
+                  audioDuration: _audioEnabled
+                      ? audioState.recording?.duration
+                      : null,
                   isSubmitting: _isSubmitting,
-                  onAddFromCamera: _addScreenshotFromCamera,
                   onAddFromGallery: _addScreenshotsFromGallery,
                   onRemoveScreenshot: _removeScreenshot,
                   onToggleAudio: _toggleAudioRecording,
@@ -205,11 +206,13 @@ class _HelpScreenState extends State<HelpScreen> with _HelpScreenActions {
       }
       final current = _formController.descriptionController.text.trim();
       final next = current.isEmpty ? transcript : '$current\n\n$transcript';
-      _formController.descriptionController.value =
-          _formController.descriptionController.value.copyWith(
-        text: next,
-        selection: TextSelection.collapsed(offset: next.length),
-      );
+      _formController.descriptionController.value = _formController
+          .descriptionController
+          .value
+          .copyWith(
+            text: next,
+            selection: TextSelection.collapsed(offset: next.length),
+          );
     } catch (_) {
       if (mounted && requestId == _transcriptionRequestId) {
         final l10n = AppLocalizations.of(context)!;

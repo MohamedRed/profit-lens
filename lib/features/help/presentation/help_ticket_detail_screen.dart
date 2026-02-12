@@ -6,8 +6,10 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_user.dart';
 import '../domain/help_ticket.dart';
 import '../domain/help_ticket_attachment.dart';
+import '../domain/help_ticket_timeline_event.dart';
 import '../domain/help_ticket_transcription_status.dart';
 import 'widgets/help_ai_triage_section.dart';
+import 'widgets/help_ticket_progress_stepper.dart';
 import 'widgets/help_section_card.dart';
 import 'widgets/help_ticket_attachment_gallery.dart';
 import 'widgets/help_ticket_detail_header.dart';
@@ -34,6 +36,10 @@ class HelpTicketDetailScreen extends StatelessWidget {
       uid: user.uid,
       ticketId: ticketId,
     );
+    final timeline = repository.watchTimeline(
+      uid: user.uid,
+      ticketId: ticketId,
+    );
     return Scaffold(
       appBar: AppBar(title: Text(l10n.helpTicketDetailTitle)),
       backgroundColor: ShadcnColors.background,
@@ -55,6 +61,28 @@ class HelpTicketDetailScreen extends StatelessWidget {
             padding: const EdgeInsets.all(ShadcnSpacing.lg),
             children: [
               HelpTicketDetailHeader(ticket: ticket),
+              const SizedBox(height: ShadcnSpacing.lg),
+              HelpSectionCard(
+                title: l10n.helpTicketProgressTitle,
+                children: [
+                  StreamBuilder<List<HelpTicketTimelineEvent>>(
+                    stream: timeline,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting &&
+                          !snapshot.hasData) {
+                        return HelpTicketProgressStepper(
+                          currentStatus: ticket.delivererStatus,
+                          events: const [],
+                        );
+                      }
+                      return HelpTicketProgressStepper(
+                        currentStatus: ticket.delivererStatus,
+                        events: snapshot.data ?? const [],
+                      );
+                    },
+                  ),
+                ],
+              ),
               const SizedBox(height: ShadcnSpacing.lg),
               HelpSectionCard(
                 title: l10n.helpTicketDescriptionTitle,

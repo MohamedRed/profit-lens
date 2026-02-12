@@ -10,6 +10,7 @@
     "lint": "eslint --max-warnings=0 .",
     "test": "vitest run",
     "backfill:help-ticket-deliverer-status": "npm run build && node lib/scripts/backfill_help_ticket_deliverer_status.js",
+    "backfill:help-ticket-timeline": "npm run build && node lib/scripts/backfill_help_ticket_timeline.js",
     "serve": "npm run build && firebase emulators:start --only functions",
     "deploy": "npm run build && firebase deploy --only functions",
     "logs": "firebase functions:log"

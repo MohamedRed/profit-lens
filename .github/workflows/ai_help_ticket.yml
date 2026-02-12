@@ -94,7 +94,7 @@ jobs:
       - name: Notify running
         run: |
           if [ -n "$TICKET_ID" ] && [ -n "$TICKET_UID" ]; then
-            curl -sS -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
+            curl -sS --fail-with-body -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
               -H "Authorization: Bearer $CODEX_HELP_TICKET_WEBHOOK_SECRET" \
               -H "Content-Type: application/json" \
               -d "{\"ticketId\":\"$TICKET_ID\",\"uid\":\"$TICKET_UID\",\"status\":\"running\"}"
@@ -146,7 +146,7 @@ jobs:
           gh issue comment "$ISSUE_NUMBER" \
             --body "No changes proposed by AI agent."
           if [ -n "$TICKET_ID" ] && [ -n "$TICKET_UID" ]; then
-            curl -sS -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
+            curl -sS --fail-with-body -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
               -H "Authorization: Bearer $CODEX_HELP_TICKET_WEBHOOK_SECRET" \
               -H "Content-Type: application/json" \
               -d "{\"ticketId\":\"$TICKET_ID\",\"uid\":\"$TICKET_UID\",\"status\":\"no_changes\"}"
@@ -173,7 +173,7 @@ jobs:
               gh issue comment "$ISSUE_NUMBER" \
                 --body "PR creation failed because GitHub Actions is not permitted to create PRs. Enable the repository setting or open manually: $PR_CREATE_URL"
               if [ -n "$TICKET_ID" ] && [ -n "$TICKET_UID" ]; then
-                curl -sS -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
+                curl -sS --fail-with-body -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
                   -H "Authorization: Bearer $CODEX_HELP_TICKET_WEBHOOK_SECRET" \
                   -H "Content-Type: application/json" \
                   -d "{\"ticketId\":\"$TICKET_ID\",\"uid\":\"$TICKET_UID\",\"status\":\"failed\",\"message\":\"PR creation blocked by GitHub Actions permissions.\"}"
@@ -182,19 +182,26 @@ jobs:
             }
           gh issue comment "$ISSUE_NUMBER" \
             --body "Opened PR: $PR_URL"
-          PR_NUMBER=$(echo "$PR_URL" | sed -E 's#.*/pull/([0-9]+).*#\\1#')
+          PR_NUMBER=$(gh pr view "$PR_URL" --json number --jq .number)
           if [ -n "$TICKET_ID" ] && [ -n "$TICKET_UID" ]; then
-            curl -sS -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
+            CALLBACK_PAYLOAD=$(jq -n \
+              --arg ticketId "$TICKET_ID" \
+              --arg uid "$TICKET_UID" \
+              --arg prUrl "$PR_URL" \
+              --arg branch "$BRANCH" \
+              --argjson prNumber "$PR_NUMBER" \
+              '{ticketId: $ticketId, uid: $uid, status: "pr_created", prUrl: $prUrl, prNumber: $prNumber, branch: $branch}')
+            curl -sS --fail-with-body -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
               -H "Authorization: Bearer $CODEX_HELP_TICKET_WEBHOOK_SECRET" \
               -H "Content-Type: application/json" \
-              -d "{\"ticketId\":\"$TICKET_ID\",\"uid\":\"$TICKET_UID\",\"status\":\"pr_created\",\"prUrl\":\"$PR_URL\",\"prNumber\":$PR_NUMBER,\"branch\":\"$BRANCH\"}"
+              -d "$CALLBACK_PAYLOAD"
           fi
 
       - name: Notify failure
         if: failure()
         run: |
           if [ -n "$TICKET_ID" ] && [ -n "$TICKET_UID" ]; then
-            curl -sS -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
+            curl -sS --fail-with-body -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
               -H "Authorization: Bearer $CODEX_HELP_TICKET_WEBHOOK_SECRET" \
               -H "Content-Type: application/json" \
               -d "{\"ticketId\":\"$TICKET_ID\",\"uid\":\"$TICKET_UID\",\"status\":\"failed\"}"

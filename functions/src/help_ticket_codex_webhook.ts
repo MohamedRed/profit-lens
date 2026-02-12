@@ -1,9 +1,9 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
 import { FieldValue } from "firebase-admin/firestore";
-import * as logger from "firebase-functions/logger";
 import { db } from "./firebase_admin";
-import { resolveDelivererStatus } from "./help_ticket_deliverer_status";
+import { applyDelivererStatusUpdate } from "./help_ticket_timeline";
+import { logDelivererStatusResolution } from "./help_ticket_status_logger";
 
 const REGION = "europe-west1";
 const codexWebhookSecret = defineSecret("CODEX_HELP_TICKET_WEBHOOK_SECRET");
@@ -73,23 +73,21 @@ export const codexHelpTicketCallback = onRequest(
     const updates: Record<string, unknown> = {
       codingAgentStatus: status,
       codingAgentUpdatedAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
       statusMessage: message,
-      ...buildDelivererStatusUpdates({
-        status: ticketData.status as string | undefined,
-        codingAgentStatus: status,
-        aiNeedsUserAction: ticketData.aiNeedsUserAction as boolean | undefined,
-        locale: ticketData.locale as string | undefined,
-      }),
     };
     if (payload.prUrl) updates.codingAgentPrUrl = payload.prUrl;
     if (payload.prNumber) updates.codingAgentPrNumber = payload.prNumber;
     if (payload.branch) updates.codingAgentBranch = payload.branch;
 
-    await ticketRef.set(updates, { merge: true });
-    logger.info("AI agent webhook updated ticket", {
+    const updateResult = await applyDelivererStatusUpdate({
+      ticketRef,
+      source: "agent",
+      updates,
+    });
+    logDelivererStatusResolution({
+      source: "agent",
       ticketId: payload.ticketId,
-      status,
+      ...updateResult,
     });
 
     res.status(200).send("ok");
@@ -161,28 +159,4 @@ function safeEqual(a: string, b: string) {
   } catch {
     return false;
   }
-}
-
-function buildDelivererStatusUpdates(input: {
-  status?: string;
-  codingAgentStatus?: string;
-  aiNeedsUserAction?: boolean;
-  locale?: string;
-}) {
-  const resolution = resolveDelivererStatus(input);
-  if (resolution.warnings.length > 0) {
-    logger.warn("Help ticket deliverer status warning", {
-      ...input,
-      warnings: resolution.warnings,
-    });
-  }
-  logger.info("Help ticket deliverer status resolved", {
-    ...input,
-    delivererStatus: resolution.delivererStatus,
-  });
-  return {
-    delivererStatus: resolution.delivererStatus,
-    delivererStatusMessage: resolution.delivererStatusMessage,
-    delivererStatusUpdatedAt: FieldValue.serverTimestamp(),
-  };
 }

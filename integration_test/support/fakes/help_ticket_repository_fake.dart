@@ -4,9 +4,11 @@ import 'package:profit_lens/features/help/data/help_ticket_repository.dart';
 import 'package:profit_lens/features/help/domain/help_ticket.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_attachment.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_attachment_type.dart';
+import 'package:profit_lens/features/help/domain/help_ticket_deliverer_status.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_draft.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_page.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_status.dart';
+import 'package:profit_lens/features/help/domain/help_ticket_timeline_event.dart';
 import 'package:profit_lens/features/help/domain/help_ticket_transcription_status.dart';
 import 'package:uuid/uuid.dart';
 
@@ -29,6 +31,14 @@ class InMemoryHelpTicketRepository implements HelpTicketRepository {
 
   @override
   Stream<List<HelpTicketAttachment>> watchAttachments({
+    required String uid,
+    required String ticketId,
+  }) async* {
+    yield const [];
+  }
+
+  @override
+  Stream<List<HelpTicketTimelineEvent>> watchTimeline({
     required String uid,
     required String ticketId,
   }) async* {
@@ -85,6 +95,9 @@ class InMemoryHelpTicketRepository implements HelpTicketRepository {
       description: draft.description,
       status: HelpTicketStatus.open,
       statusMessage: null,
+      delivererStatus: HelpTicketDelivererStatus.received,
+      delivererStatusMessage: 'Ticket received.',
+      delivererStatusUpdatedAt: now,
       createdAt: now,
       updatedAt: now,
       imageCount: imageCount,

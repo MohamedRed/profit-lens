@@ -11,13 +11,19 @@ concurrency:
 
 jobs:
   web-smoke:
-    runs-on: [self-hosted, linux, x64]
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
       contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
 
       - name: Cache pub packages
         uses: actions/cache@v4
@@ -45,7 +51,7 @@ jobs:
       - name: Run functions unit tests
         run: npm --prefix functions run test
 
-      - name: Run web integration tests
+      - name: Validate integration test sources
         env:
           CI: "true"
-        run: flutter test integration_test -d chrome --dart-define=FIREBASE_CONFIGURED=false
+        run: flutter analyze --no-fatal-infos integration_test

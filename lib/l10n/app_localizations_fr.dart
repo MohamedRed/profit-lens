@@ -801,7 +801,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpIntroBody =>
-      'Signalez des bugs ou des problèmes avec des captures et une description écrite. Un agent IA de développement les analysera et vous tiendra informé.';
+      'Signalez des bugs ou des problèmes avec des captures et une description écrite. Notre équipe les analysera et vous tiendra informé.';
 
   @override
   String get helpFormTitle => 'Soumettre un ticket';
@@ -871,9 +871,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get helpAttachmentSubtitle =>
       'Ajoutez des captures pour accélérer le diagnostic.';
-
-  @override
-  String get helpAttachmentCameraButton => 'Caméra';
 
   @override
   String get helpAttachmentGalleryButton => 'Galerie';
@@ -988,6 +985,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpTicketDetailTitle => 'Détails du ticket';
 
   @override
+  String get helpTicketProgressTitle => 'Progression';
+
+  @override
+  String get helpTicketTimelineTitle => 'Historique des statuts';
+
+  @override
+  String get helpTicketTimelineEmpty =>
+      'Aucun historique de statut pour l’instant.';
+
+  @override
+  String get helpTicketTimelineAtLabel => 'Le';
+
+  @override
   String get helpTicketDescriptionTitle => 'Description';
 
   @override
@@ -1024,7 +1034,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpAudioOpenFailed => 'Impossible d’ouvrir la note vocale.';
 
   @override
-  String get helpAiTriageTitle => 'Analyse IA';
+  String get helpAiTriageTitle => 'Analyse du ticket';
 
   @override
   String get helpAiSummaryLabel => 'Résumé';

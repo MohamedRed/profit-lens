@@ -1573,7 +1573,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpIntroBody.
   ///
   /// In en, this message translates to:
-  /// **'Report bugs or issues with screenshots and written details. A coding AI agent will triage and keep you updated.'**
+  /// **'Report bugs or issues with screenshots and written details. Our team will review them and keep you updated.'**
   String get helpIntroBody;
 
   /// No description provided for @helpFormTitle.
@@ -1695,12 +1695,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add screenshots to speed up troubleshooting.'**
   String get helpAttachmentSubtitle;
-
-  /// No description provided for @helpAttachmentCameraButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Camera'**
-  String get helpAttachmentCameraButton;
 
   /// No description provided for @helpAttachmentGalleryButton.
   ///
@@ -1906,6 +1900,30 @@ abstract class AppLocalizations {
   /// **'Ticket details'**
   String get helpTicketDetailTitle;
 
+  /// No description provided for @helpTicketProgressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get helpTicketProgressTitle;
+
+  /// No description provided for @helpTicketTimelineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Status history'**
+  String get helpTicketTimelineTitle;
+
+  /// No description provided for @helpTicketTimelineEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No status history yet.'**
+  String get helpTicketTimelineEmpty;
+
+  /// No description provided for @helpTicketTimelineAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'At'**
+  String get helpTicketTimelineAtLabel;
+
   /// No description provided for @helpTicketDescriptionTitle.
   ///
   /// In en, this message translates to:
@@ -1981,7 +1999,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpAiTriageTitle.
   ///
   /// In en, this message translates to:
-  /// **'AI triage'**
+  /// **'Ticket analysis'**
   String get helpAiTriageTitle;
 
   /// No description provided for @helpAiSummaryLabel.
