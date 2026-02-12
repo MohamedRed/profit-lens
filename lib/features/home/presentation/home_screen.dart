@@ -125,10 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _currentIndex,
         children: tabs.map((tab) => SafeArea(child: tab.page)).toList(),
       ),
-      bottomNavigationBar: MediaQuery.removePadding(
-        context: context,
-        removeBottom: true,
-        child: MediaQuery.removeViewInsets(
+      bottomNavigationBar: MediaQuery.removeViewInsets(
           context: context,
           removeBottom: true,
           child: MobilePillNav(
@@ -144,7 +141,6 @@ class _HomeScreenState extends State<HomeScreen> {
             onChanged: (index) => setState(() => _currentIndex = index),
           ),
         ),
-      ),
     );
   }
 
