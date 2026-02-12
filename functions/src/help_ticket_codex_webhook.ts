@@ -3,6 +3,7 @@ import { defineSecret } from "firebase-functions/params";
 import { FieldValue } from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
 import { db } from "./firebase_admin";
+import { resolveDelivererStatus } from "./help_ticket_deliverer_status";
 
 const REGION = "europe-west1";
 const codexWebhookSecret = defineSecret("CODEX_HELP_TICKET_WEBHOOK_SECRET");
@@ -74,6 +75,12 @@ export const codexHelpTicketCallback = onRequest(
       codingAgentUpdatedAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
       statusMessage: message,
+      ...buildDelivererStatusUpdates({
+        status: ticketData.status as string | undefined,
+        codingAgentStatus: status,
+        aiNeedsUserAction: ticketData.aiNeedsUserAction as boolean | undefined,
+        locale: ticketData.locale as string | undefined,
+      }),
     };
     if (payload.prUrl) updates.codingAgentPrUrl = payload.prUrl;
     if (payload.prNumber) updates.codingAgentPrNumber = payload.prNumber;
@@ -154,4 +161,28 @@ function safeEqual(a: string, b: string) {
   } catch {
     return false;
   }
+}
+
+function buildDelivererStatusUpdates(input: {
+  status?: string;
+  codingAgentStatus?: string;
+  aiNeedsUserAction?: boolean;
+  locale?: string;
+}) {
+  const resolution = resolveDelivererStatus(input);
+  if (resolution.warnings.length > 0) {
+    logger.warn("Help ticket deliverer status warning", {
+      ...input,
+      warnings: resolution.warnings,
+    });
+  }
+  logger.info("Help ticket deliverer status resolved", {
+    ...input,
+    delivererStatus: resolution.delivererStatus,
+  });
+  return {
+    delivererStatus: resolution.delivererStatus,
+    delivererStatusMessage: resolution.delivererStatusMessage,
+    delivererStatusUpdatedAt: FieldValue.serverTimestamp(),
+  };
 }

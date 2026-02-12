@@ -13,9 +13,13 @@ export const notifyHelpTicketStatus = onDocumentUpdated(
     const after = event.data?.after.data();
     if (!before || !after) return;
 
-    const beforeMessage = (before.statusMessage as string | undefined) ?? null;
-    const afterMessage = (after.statusMessage as string | undefined) ?? null;
+    const beforeMessage =
+      (before.delivererStatusMessage as string | undefined) ?? null;
+    const afterMessage =
+      (after.delivererStatusMessage as string | undefined) ?? null;
     const afterStatus = (after.status as string | undefined) ?? null;
+    const afterDelivererStatus =
+      (after.delivererStatus as string | undefined) ?? null;
 
     if (beforeMessage === afterMessage) {
       return;
@@ -34,6 +38,7 @@ export const notifyHelpTicketStatus = onDocumentUpdated(
       body: afterMessage,
       ticketId,
       status: afterStatus,
+      delivererStatus: afterDelivererStatus,
     });
   }
 );
@@ -44,6 +49,7 @@ async function sendPushNotifications(params: {
   body: string;
   ticketId: string;
   status: string | null;
+  delivererStatus: string | null;
 }) {
   const tokensSnap = await db
     .collection("users")
@@ -65,6 +71,7 @@ async function sendPushNotifications(params: {
     data: {
       ticketId: params.ticketId,
       status: params.status ?? "",
+      delivererStatus: params.delivererStatus ?? "",
     },
   });
 

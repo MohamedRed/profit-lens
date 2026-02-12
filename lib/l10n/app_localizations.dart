@@ -1840,6 +1840,66 @@ abstract class AppLocalizations {
   /// **'Status updated'**
   String get helpStatusUpdatedLabel;
 
+  /// No description provided for @helpDelivererStatusReceivedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get helpDelivererStatusReceivedLabel;
+
+  /// No description provided for @helpDelivererStatusAnalyzingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing'**
+  String get helpDelivererStatusAnalyzingLabel;
+
+  /// No description provided for @helpDelivererStatusNeedsInfoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs info'**
+  String get helpDelivererStatusNeedsInfoLabel;
+
+  /// No description provided for @helpDelivererStatusFixReadyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix ready'**
+  String get helpDelivererStatusFixReadyLabel;
+
+  /// No description provided for @helpDelivererStatusResolvedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get helpDelivererStatusResolvedLabel;
+
+  /// No description provided for @helpDelivererStatusReceivedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket received.'**
+  String get helpDelivererStatusReceivedMessage;
+
+  /// No description provided for @helpDelivererStatusAnalyzingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis in progress.'**
+  String get helpDelivererStatusAnalyzingMessage;
+
+  /// No description provided for @helpDelivererStatusNeedsInfoMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We need additional information to continue.'**
+  String get helpDelivererStatusNeedsInfoMessage;
+
+  /// No description provided for @helpDelivererStatusFixReadyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A fix is ready and under validation.'**
+  String get helpDelivererStatusFixReadyMessage;
+
+  /// No description provided for @helpDelivererStatusResolvedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This ticket is resolved.'**
+  String get helpDelivererStatusResolvedMessage;
+
   /// No description provided for @helpTicketDetailTitle.
   ///
   /// In en, this message translates to:

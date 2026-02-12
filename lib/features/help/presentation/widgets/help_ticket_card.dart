@@ -4,7 +4,7 @@ import '../../../../core/design_system/shadcn_tokens.dart';
 import '../../../../core/widgets/shadcn_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/help_ticket.dart';
-import '../../domain/help_ticket_status.dart';
+import '../../domain/help_ticket_deliverer_status.dart';
 import 'help_ticket_status_chip.dart';
 
 class HelpTicketCard extends StatelessWidget {
@@ -32,12 +32,13 @@ class HelpTicketCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            HelpTicketStatusChip(status: ticket.status),
+            HelpTicketStatusChip(status: ticket.delivererStatus),
           ],
         ),
         const SizedBox(height: ShadcnSpacing.sm),
         Text(
-          ticket.statusMessage ?? _defaultStatusMessage(l10n, ticket.status),
+          ticket.delivererStatusMessage ??
+              _defaultDelivererStatusMessage(l10n, ticket.delivererStatus),
           style: Theme.of(
             context,
           ).textTheme.bodySmall?.copyWith(color: ShadcnColors.textSecondary),
@@ -84,19 +85,20 @@ String _headlineFromDescription(String description) {
   return firstLine.isEmpty ? trimmed : firstLine;
 }
 
-String _defaultStatusMessage(AppLocalizations l10n, HelpTicketStatus status) {
+String _defaultDelivererStatusMessage(
+  AppLocalizations l10n,
+  HelpTicketDelivererStatus status,
+) {
   switch (status) {
-    case HelpTicketStatus.open:
-      return l10n.helpStatusOpen;
-    case HelpTicketStatus.triaging:
-      return l10n.helpStatusTriaging;
-    case HelpTicketStatus.inProgress:
-      return l10n.helpStatusInProgress;
-    case HelpTicketStatus.awaitingResponse:
-      return l10n.helpStatusAwaitingResponse;
-    case HelpTicketStatus.resolved:
-      return l10n.helpStatusResolved;
-    case HelpTicketStatus.closed:
-      return l10n.helpStatusClosed;
+    case HelpTicketDelivererStatus.received:
+      return l10n.helpDelivererStatusReceivedMessage;
+    case HelpTicketDelivererStatus.analyzing:
+      return l10n.helpDelivererStatusAnalyzingMessage;
+    case HelpTicketDelivererStatus.needsInfo:
+      return l10n.helpDelivererStatusNeedsInfoMessage;
+    case HelpTicketDelivererStatus.fixReady:
+      return l10n.helpDelivererStatusFixReadyMessage;
+    case HelpTicketDelivererStatus.resolved:
+      return l10n.helpDelivererStatusResolvedMessage;
   }
 }

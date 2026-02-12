@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/design_system/shadcn_tokens.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/help_ticket.dart';
+import '../../domain/help_ticket_deliverer_status.dart';
 import 'help_ticket_status_chip.dart';
 
 class HelpTicketDetailHeader extends StatelessWidget {
@@ -41,12 +42,13 @@ class HelpTicketDetailHeader extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              HelpTicketStatusChip(status: ticket.status),
+              HelpTicketStatusChip(status: ticket.delivererStatus),
             ],
           ),
           const SizedBox(height: ShadcnSpacing.sm),
           Text(
-            ticket.statusMessage ?? l10n.helpStatusUpdatedLabel,
+            ticket.delivererStatusMessage ??
+                _defaultDelivererStatusMessage(l10n, ticket.delivererStatus),
             style: Theme.of(
               context,
             ).textTheme.bodySmall?.copyWith(color: ShadcnColors.textSecondary),
@@ -83,4 +85,22 @@ String _headlineFromDescription(
   }
   final firstLine = trimmed.split('\n').first.trim();
   return firstLine.isEmpty ? trimmed : firstLine;
+}
+
+String _defaultDelivererStatusMessage(
+  AppLocalizations l10n,
+  HelpTicketDelivererStatus status,
+) {
+  switch (status) {
+    case HelpTicketDelivererStatus.received:
+      return l10n.helpDelivererStatusReceivedMessage;
+    case HelpTicketDelivererStatus.analyzing:
+      return l10n.helpDelivererStatusAnalyzingMessage;
+    case HelpTicketDelivererStatus.needsInfo:
+      return l10n.helpDelivererStatusNeedsInfoMessage;
+    case HelpTicketDelivererStatus.fixReady:
+      return l10n.helpDelivererStatusFixReadyMessage;
+    case HelpTicketDelivererStatus.resolved:
+      return l10n.helpDelivererStatusResolvedMessage;
+  }
 }

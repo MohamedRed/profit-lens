@@ -3,6 +3,7 @@ import '../../../core/config/app_config.dart';
 import '../domain/help_ticket.dart';
 import '../domain/help_ticket_attachment.dart';
 import '../domain/help_ticket_attachment_type.dart';
+import '../domain/help_ticket_deliverer_status.dart';
 import '../domain/help_ticket_draft.dart';
 import '../domain/help_ticket_page.dart';
 import '../domain/help_ticket_status.dart';
@@ -101,13 +102,9 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
     HelpTicketPageCursor? nextCursor;
     if (snapshot.docs.length == limit) {
       final lastDoc = snapshot.docs.last;
-      final updatedAt =
-          (lastDoc.data()['updatedAt'] as Timestamp?)?.toDate();
+      final updatedAt = (lastDoc.data()['updatedAt'] as Timestamp?)?.toDate();
       if (updatedAt != null) {
-        nextCursor = HelpTicketPageCursor(
-          updatedAt: updatedAt,
-          id: lastDoc.id,
-        );
+        nextCursor = HelpTicketPageCursor(updatedAt: updatedAt, id: lastDoc.id);
       }
     }
     return HelpTicketPage(tickets: tickets, nextCursor: nextCursor);
@@ -136,11 +133,20 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
         .length;
     final needsTranscription =
         audioCount > 0 && draft.description.trim().isEmpty;
+    final initialDelivererStatus = HelpTicketDelivererStatus.received;
+    final initialDelivererMessage = _initialDelivererStatusMessage(
+      draft.locale,
+    );
 
     final batch = _firestore.batch();
     batch.set(ticketRef, {
       'description': draft.description,
       'status': helpTicketStatusToString(HelpTicketStatus.open),
+      'delivererStatus': helpTicketDelivererStatusToString(
+        initialDelivererStatus,
+      ),
+      'delivererStatusMessage': initialDelivererMessage,
+      'delivererStatusUpdatedAt': FieldValue.serverTimestamp(),
       'deviceId': draft.deviceId,
       'platform': draft.platform,
       'locale': draft.locale,
@@ -172,6 +178,9 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
       description: draft.description,
       status: HelpTicketStatus.open,
       statusMessage: null,
+      delivererStatus: initialDelivererStatus,
+      delivererStatusMessage: initialDelivererMessage,
+      delivererStatusUpdatedAt: DateTime.now(),
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       imageCount: imageCount,
@@ -180,10 +189,22 @@ class FirestoreHelpTicketRepository implements HelpTicketRepository {
       aiNextSteps: null,
       aiConfidence: null,
       aiNeedsUserAction: null,
-      transcriptionStatus:
-          needsTranscription ? HelpTicketTranscriptionStatus.pending : null,
+      transcriptionStatus: needsTranscription
+          ? HelpTicketTranscriptionStatus.pending
+          : null,
       transcriptionError: null,
     );
+  }
+
+  String _initialDelivererStatusMessage(String locale) {
+    final normalized = locale.toLowerCase();
+    if (normalized.startsWith('fr')) {
+      return 'Ticket reçu.';
+    }
+    if (normalized.startsWith('ar')) {
+      return 'تم استلام التذكرة.';
+    }
+    return 'Ticket received.';
   }
 
   Future<List<HelpTicketAttachment>> _uploadAttachments({

@@ -953,6 +953,38 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpStatusUpdatedLabel => 'Statut mis à jour';
 
   @override
+  String get helpDelivererStatusReceivedLabel => 'Reçu';
+
+  @override
+  String get helpDelivererStatusAnalyzingLabel => 'Analyse';
+
+  @override
+  String get helpDelivererStatusNeedsInfoLabel => 'Info requise';
+
+  @override
+  String get helpDelivererStatusFixReadyLabel => 'Correctif prêt';
+
+  @override
+  String get helpDelivererStatusResolvedLabel => 'Résolu';
+
+  @override
+  String get helpDelivererStatusReceivedMessage => 'Ticket reçu.';
+
+  @override
+  String get helpDelivererStatusAnalyzingMessage => 'Analyse en cours.';
+
+  @override
+  String get helpDelivererStatusNeedsInfoMessage =>
+      'Nous avons besoin d’informations supplémentaires.';
+
+  @override
+  String get helpDelivererStatusFixReadyMessage =>
+      'Une correction est prête et en validation.';
+
+  @override
+  String get helpDelivererStatusResolvedMessage => 'Le ticket est résolu.';
+
+  @override
   String get helpTicketDetailTitle => 'Détails du ticket';
 
   @override

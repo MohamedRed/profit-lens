@@ -36,6 +36,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Run Flutter help unit tests
+        run: flutter test test/features/help
+
       - name: Install functions dependencies
         run: npm --prefix functions install
 

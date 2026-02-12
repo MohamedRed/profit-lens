@@ -942,6 +942,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpStatusUpdatedLabel => 'Status updated';
 
   @override
+  String get helpDelivererStatusReceivedLabel => 'Received';
+
+  @override
+  String get helpDelivererStatusAnalyzingLabel => 'Analyzing';
+
+  @override
+  String get helpDelivererStatusNeedsInfoLabel => 'Needs info';
+
+  @override
+  String get helpDelivererStatusFixReadyLabel => 'Fix ready';
+
+  @override
+  String get helpDelivererStatusResolvedLabel => 'Resolved';
+
+  @override
+  String get helpDelivererStatusReceivedMessage => 'Ticket received.';
+
+  @override
+  String get helpDelivererStatusAnalyzingMessage => 'Analysis in progress.';
+
+  @override
+  String get helpDelivererStatusNeedsInfoMessage =>
+      'We need additional information to continue.';
+
+  @override
+  String get helpDelivererStatusFixReadyMessage =>
+      'A fix is ready and under validation.';
+
+  @override
+  String get helpDelivererStatusResolvedMessage => 'This ticket is resolved.';
+
+  @override
   String get helpTicketDetailTitle => 'Ticket details';
 
   @override

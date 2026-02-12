@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/design_system/shadcn_tokens.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../domain/help_ticket_status.dart';
+import '../../domain/help_ticket_deliverer_status.dart';
 
 class HelpTicketStatusChip extends StatelessWidget {
-  final HelpTicketStatus status;
+  final HelpTicketDelivererStatus status;
 
   const HelpTicketStatusChip({super.key, required this.status});
 
@@ -30,36 +30,32 @@ class HelpTicketStatusChip extends StatelessWidget {
   }
 }
 
-Color _statusColor(HelpTicketStatus status) {
+Color _statusColor(HelpTicketDelivererStatus status) {
   switch (status) {
-    case HelpTicketStatus.open:
+    case HelpTicketDelivererStatus.received:
       return ShadcnColors.teal;
-    case HelpTicketStatus.triaging:
-      return ShadcnColors.purple;
-    case HelpTicketStatus.inProgress:
+    case HelpTicketDelivererStatus.analyzing:
       return ShadcnColors.pink;
-    case HelpTicketStatus.awaitingResponse:
+    case HelpTicketDelivererStatus.needsInfo:
       return ShadcnColors.teal;
-    case HelpTicketStatus.resolved:
-      return ShadcnColors.textSecondary;
-    case HelpTicketStatus.closed:
+    case HelpTicketDelivererStatus.fixReady:
+      return ShadcnColors.purple;
+    case HelpTicketDelivererStatus.resolved:
       return ShadcnColors.textSecondary;
   }
 }
 
-String _statusLabel(HelpTicketStatus status, AppLocalizations l10n) {
+String _statusLabel(HelpTicketDelivererStatus status, AppLocalizations l10n) {
   switch (status) {
-    case HelpTicketStatus.open:
-      return l10n.helpStatusOpen;
-    case HelpTicketStatus.triaging:
-      return l10n.helpStatusTriaging;
-    case HelpTicketStatus.inProgress:
-      return l10n.helpStatusInProgress;
-    case HelpTicketStatus.awaitingResponse:
-      return l10n.helpStatusAwaitingResponse;
-    case HelpTicketStatus.resolved:
-      return l10n.helpStatusResolved;
-    case HelpTicketStatus.closed:
-      return l10n.helpStatusClosed;
+    case HelpTicketDelivererStatus.received:
+      return l10n.helpDelivererStatusReceivedLabel;
+    case HelpTicketDelivererStatus.analyzing:
+      return l10n.helpDelivererStatusAnalyzingLabel;
+    case HelpTicketDelivererStatus.needsInfo:
+      return l10n.helpDelivererStatusNeedsInfoLabel;
+    case HelpTicketDelivererStatus.fixReady:
+      return l10n.helpDelivererStatusFixReadyLabel;
+    case HelpTicketDelivererStatus.resolved:
+      return l10n.helpDelivererStatusResolvedLabel;
   }
 }

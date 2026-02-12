@@ -1,4 +1,5 @@
 import 'help_ticket_status.dart';
+import 'help_ticket_deliverer_status.dart';
 import 'help_ticket_transcription_status.dart';
 
 class HelpTicket {
@@ -6,6 +7,9 @@ class HelpTicket {
   final String description;
   final HelpTicketStatus status;
   final String? statusMessage;
+  final HelpTicketDelivererStatus delivererStatus;
+  final String? delivererStatusMessage;
+  final DateTime? delivererStatusUpdatedAt;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final int imageCount;
@@ -22,6 +26,9 @@ class HelpTicket {
     required this.description,
     required this.status,
     required this.statusMessage,
+    required this.delivererStatus,
+    required this.delivererStatusMessage,
+    required this.delivererStatusUpdatedAt,
     required this.createdAt,
     required this.updatedAt,
     required this.imageCount,

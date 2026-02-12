@@ -11,6 +11,7 @@ import {
 } from "./github_app_config";
 import { fetchInstallationToken } from "./github_app_auth";
 import { addIssueLabels, createIssue, ensureLabels } from "./github_repo";
+import { resolveDelivererStatus } from "./help_ticket_deliverer_status";
 
 const REGION = "europe-west1";
 const MAX_IMAGE_ATTACHMENTS = 5;
@@ -80,6 +81,12 @@ export const createHelpTicketCodexIssue = onDocumentUpdated(
         statusMessage: resolveQueuedStatusMessage(
           after.locale as string | undefined
         ),
+        ...buildDelivererStatusUpdates({
+          status: after.status as string | undefined,
+          codingAgentStatus: "queued",
+          aiNeedsUserAction: after.aiNeedsUserAction as boolean | undefined,
+          locale: after.locale as string | undefined,
+        }),
         codingAgentUpdatedAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
       },
@@ -151,6 +158,12 @@ export const createHelpTicketCodexIssue = onDocumentUpdated(
           statusMessage: resolveFailedStatusMessage(
             after.locale as string | undefined
           ),
+          ...buildDelivererStatusUpdates({
+            status: after.status as string | undefined,
+            codingAgentStatus: "failed",
+            aiNeedsUserAction: after.aiNeedsUserAction as boolean | undefined,
+            locale: after.locale as string | undefined,
+          }),
           codingAgentUpdatedAt: FieldValue.serverTimestamp(),
           updatedAt: FieldValue.serverTimestamp(),
         },
@@ -268,4 +281,28 @@ function resolveFailedStatusMessage(locale?: string) {
     return "فشل وكيل الذكاء الاصطناعي في إعداد الإصلاح.";
   }
   return "AI agent failed to prepare a fix.";
+}
+
+function buildDelivererStatusUpdates(input: {
+  status?: string;
+  codingAgentStatus?: string;
+  aiNeedsUserAction?: boolean;
+  locale?: string;
+}) {
+  const resolution = resolveDelivererStatus(input);
+  if (resolution.warnings.length > 0) {
+    logger.warn("Help ticket deliverer status warning", {
+      ...input,
+      warnings: resolution.warnings,
+    });
+  }
+  logger.info("Help ticket deliverer status resolved", {
+    ...input,
+    delivererStatus: resolution.delivererStatus,
+  });
+  return {
+    delivererStatus: resolution.delivererStatus,
+    delivererStatusMessage: resolution.delivererStatusMessage,
+    delivererStatusUpdatedAt: FieldValue.serverTimestamp(),
+  };
 }

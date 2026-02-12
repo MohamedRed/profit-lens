@@ -933,6 +933,38 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpStatusUpdatedLabel => 'تم تحديث الحالة';
 
   @override
+  String get helpDelivererStatusReceivedLabel => 'تم الاستلام';
+
+  @override
+  String get helpDelivererStatusAnalyzingLabel => 'قيد التحليل';
+
+  @override
+  String get helpDelivererStatusNeedsInfoLabel => 'معلومات مطلوبة';
+
+  @override
+  String get helpDelivererStatusFixReadyLabel => 'الإصلاح جاهز';
+
+  @override
+  String get helpDelivererStatusResolvedLabel => 'تم الحل';
+
+  @override
+  String get helpDelivererStatusReceivedMessage => 'تم استلام التذكرة.';
+
+  @override
+  String get helpDelivererStatusAnalyzingMessage => 'جارٍ تحليل البلاغ.';
+
+  @override
+  String get helpDelivererStatusNeedsInfoMessage =>
+      'نحتاج إلى معلومات إضافية للمتابعة.';
+
+  @override
+  String get helpDelivererStatusFixReadyMessage =>
+      'الإصلاح جاهز وهو قيد المراجعة.';
+
+  @override
+  String get helpDelivererStatusResolvedMessage => 'تم حل التذكرة.';
+
+  @override
   String get helpTicketDetailTitle => 'تفاصيل التذكرة';
 
   @override
