@@ -1,7 +1,8 @@
 name: Firebase Hosting Deploy
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches: [main]
     paths:
       - "lib/**"
@@ -19,6 +20,7 @@ permissions:
 
 jobs:
   deploy-hosting:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
