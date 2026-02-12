@@ -986,6 +986,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpTicketAudioHeadline => 'Voice note';
 
   @override
+  String get helpTicketGeneratedTitleGeneric => 'Support request';
+
+  @override
+  String get helpTicketGeneratedTitleSubscription => 'Subscription issue';
+
+  @override
+  String get helpTicketGeneratedTitlePayment => 'Payment issue';
+
+  @override
+  String get helpTicketGeneratedTitleLogin => 'Login issue';
+
+  @override
+  String get helpTicketGeneratedTitleNotification => 'Notification issue';
+
+  @override
+  String get helpTicketGeneratedTitleBug => 'Bug report';
+
+  @override
   String get helpTicketAttachmentsTitle => 'Attachments';
 
   @override

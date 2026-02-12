@@ -43,4 +43,41 @@ void main() {
     expect(find.text('Analysis in progress.'), findsOneWidget);
     expect(find.text('Technical running message'), findsNothing);
   });
+
+  testWidgets('generates ticket title from description keywords', (
+    tester,
+  ) async {
+    final ticket = HelpTicket(
+      id: 'ticket-id-2',
+      description:
+          'After I open subscription settings, checkout does not complete.',
+      status: HelpTicketStatus.inProgress,
+      statusMessage: null,
+      delivererStatus: HelpTicketDelivererStatus.analyzing,
+      delivererStatusMessage: 'Analysis in progress.',
+      delivererStatusUpdatedAt: DateTime(2026, 2, 12),
+      createdAt: DateTime(2026, 2, 12),
+      updatedAt: DateTime(2026, 2, 12),
+      imageCount: 0,
+      audioCount: 0,
+      aiSummary: null,
+      aiNextSteps: null,
+      aiConfidence: null,
+      aiNeedsUserAction: null,
+      transcriptionStatus: null,
+      transcriptionError: null,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: HelpTicketCard(ticket: ticket)),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Subscription issue'), findsOneWidget);
+  });
 }

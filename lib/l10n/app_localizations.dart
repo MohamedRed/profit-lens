@@ -1924,6 +1924,42 @@ abstract class AppLocalizations {
   /// **'Voice note'**
   String get helpTicketAudioHeadline;
 
+  /// No description provided for @helpTicketGeneratedTitleGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Support request'**
+  String get helpTicketGeneratedTitleGeneric;
+
+  /// No description provided for @helpTicketGeneratedTitleSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription issue'**
+  String get helpTicketGeneratedTitleSubscription;
+
+  /// No description provided for @helpTicketGeneratedTitlePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment issue'**
+  String get helpTicketGeneratedTitlePayment;
+
+  /// No description provided for @helpTicketGeneratedTitleLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Login issue'**
+  String get helpTicketGeneratedTitleLogin;
+
+  /// No description provided for @helpTicketGeneratedTitleNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification issue'**
+  String get helpTicketGeneratedTitleNotification;
+
+  /// No description provided for @helpTicketGeneratedTitleBug.
+  ///
+  /// In en, this message translates to:
+  /// **'Bug report'**
+  String get helpTicketGeneratedTitleBug;
+
   /// No description provided for @helpTicketAttachmentsTitle.
   ///
   /// In en, this message translates to:

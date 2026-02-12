@@ -977,6 +977,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpTicketAudioHeadline => 'ملاحظة صوتية';
 
   @override
+  String get helpTicketGeneratedTitleGeneric => 'طلب دعم';
+
+  @override
+  String get helpTicketGeneratedTitleSubscription => 'مشكلة في الاشتراك';
+
+  @override
+  String get helpTicketGeneratedTitlePayment => 'مشكلة في الدفع';
+
+  @override
+  String get helpTicketGeneratedTitleLogin => 'مشكلة في تسجيل الدخول';
+
+  @override
+  String get helpTicketGeneratedTitleNotification => 'مشكلة في الإشعارات';
+
+  @override
+  String get helpTicketGeneratedTitleBug => 'الإبلاغ عن خلل';
+
+  @override
   String get helpTicketAttachmentsTitle => 'المرفقات';
 
   @override

@@ -5,6 +5,7 @@ import '../../../../core/widgets/shadcn_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/help_ticket.dart';
 import '../../domain/help_ticket_deliverer_status.dart';
+import '../help_ticket_title_generator.dart';
 import 'help_ticket_status_chip.dart';
 
 class HelpTicketCard extends StatelessWidget {
@@ -26,7 +27,7 @@ class HelpTicketCard extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                _headlineFromDescription(ticket.description),
+                buildHelpTicketTitle(ticket: ticket, l10n: l10n),
                 style: Theme.of(context).textTheme.titleSmall,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -76,13 +77,6 @@ String? _formatTimestamp(BuildContext context, DateTime? dateTime) {
   if (dateTime == null) return null;
   final localizations = MaterialLocalizations.of(context);
   return localizations.formatShortDate(dateTime.toLocal());
-}
-
-String _headlineFromDescription(String description) {
-  final trimmed = description.trim();
-  if (trimmed.isEmpty) return '';
-  final firstLine = trimmed.split('\n').first.trim();
-  return firstLine.isEmpty ? trimmed : firstLine;
 }
 
 String _defaultDelivererStatusMessage(

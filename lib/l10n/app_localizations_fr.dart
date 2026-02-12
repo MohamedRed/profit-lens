@@ -997,6 +997,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpTicketAudioHeadline => 'Note vocale';
 
   @override
+  String get helpTicketGeneratedTitleGeneric => 'Demande d’assistance';
+
+  @override
+  String get helpTicketGeneratedTitleSubscription => 'Problème d’abonnement';
+
+  @override
+  String get helpTicketGeneratedTitlePayment => 'Problème de paiement';
+
+  @override
+  String get helpTicketGeneratedTitleLogin => 'Problème de connexion';
+
+  @override
+  String get helpTicketGeneratedTitleNotification => 'Problème de notification';
+
+  @override
+  String get helpTicketGeneratedTitleBug => 'Bug signalé';
+
+  @override
   String get helpTicketAttachmentsTitle => 'Pièces jointes';
 
   @override
