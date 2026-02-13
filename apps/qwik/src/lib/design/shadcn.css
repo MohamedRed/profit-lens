@@ -1,0 +1,119 @@
+.ui-card {
+  border: 1px solid color-mix(in srgb, var(--pl-color-outline) 85%, white);
+  background: color-mix(in srgb, white 94%, var(--pl-color-surface) 6%);
+  border-radius: 1rem;
+  box-shadow: 0 10px 24px rgba(20, 16, 36, 0.08);
+}
+
+.ui-card-header {
+  gap: var(--pl-space-xs);
+}
+
+.ui-card-title {
+  letter-spacing: -0.02em;
+}
+
+.ui-card-description {
+  margin-top: 0;
+  margin-bottom: var(--pl-space-lg);
+}
+
+.ui-card-content {
+  gap: var(--pl-space-md);
+}
+
+.ui-badge {
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.ui-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--pl-color-text-primary);
+}
+
+.ui-input,
+.ui-select {
+  border-color: color-mix(in srgb, var(--pl-color-outline) 85%, white);
+  border-radius: 0.875rem;
+  min-height: 44px;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease;
+}
+
+.ui-input::placeholder {
+  color: var(--pl-color-text-muted);
+}
+
+.ui-button {
+  min-height: 42px;
+  border: 1px solid transparent;
+  border-radius: 0.875rem;
+  line-height: 1.1;
+  transition:
+    transform 80ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+}
+
+.ui-button:active {
+  transform: translateY(1px);
+}
+
+.ui-button-sm {
+  min-height: 36px;
+  padding: 8px 12px;
+}
+
+.ui-button-md {
+  min-height: 42px;
+  padding: 10px 16px;
+}
+
+.ui-button-lg {
+  min-height: 48px;
+  padding: 12px 20px;
+}
+
+.ui-button-default {
+  background: var(--pl-color-blue);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+.ui-button-default:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--pl-color-blue) 92%, black);
+}
+
+.ui-button-secondary {
+  background: color-mix(in srgb, var(--pl-color-blue) 10%, white);
+  border-color: color-mix(in srgb, var(--pl-color-blue) 20%, white);
+}
+
+.ui-button-secondary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--pl-color-blue) 14%, white);
+}
+
+.ui-button-outline {
+  background: white;
+  color: var(--pl-color-text-primary);
+  border-color: color-mix(in srgb, var(--pl-color-outline) 85%, white);
+}
+
+.ui-button-outline:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--pl-color-surface) 85%, white);
+}
+
+.ui-button-ghost {
+  border-color: color-mix(in srgb, var(--pl-color-blue) 25%, white);
+}
+
+.ui-button-destructive {
+  background: color-mix(in srgb, var(--pl-color-danger) 12%, white);
+  border-color: color-mix(in srgb, var(--pl-color-danger) 35%, white);
+}

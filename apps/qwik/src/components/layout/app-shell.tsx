@@ -1,6 +1,10 @@
 import { Slot, component$ } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
 import { useAuth } from '../../lib/auth/auth-context';
+import { Badge } from '../../components/ui/badge';
+import { Button } from '../../components/ui/button';
+import { Card } from '../../components/ui/card';
+import { Select } from '../../components/ui/select';
 import { signOutCurrentUser } from '../../lib/firebase/auth';
 import { applyLocale, supportedLocales, t, useI18n } from '../../lib/i18n/i18n-context';
 
@@ -17,7 +21,7 @@ export const AppShell = component$<AppShellProps>(({ title }) => {
     <>
       <header class="pl-tabs">
         <nav class="pl-nav">
-          <span class="pl-badge">ProfitLens</span>
+          <Badge>ProfitLens</Badge>
           <a class="pl-nav-link" href="/next/app/offer" aria-current={location.url.pathname.includes('/app/offer') ? 'page' : undefined}>
             {t(i18n, 'offerTabLabel', 'Offer')}
           </a>
@@ -31,8 +35,7 @@ export const AppShell = component$<AppShellProps>(({ title }) => {
             {t(i18n, 'helpTabLabel', 'Help')}
           </a>
           <span class="pl-nav-spacer" />
-          <select
-            class="pl-select"
+          <Select
             value={i18n.locale.value}
             onChange$={async (_, element) => {
               await applyLocale(i18n, element.value as 'fr' | 'en' | 'ar');
@@ -45,20 +48,20 @@ export const AppShell = component$<AppShellProps>(({ title }) => {
                 {locale.toUpperCase()}
               </option>
             ))}
-          </select>
-          <button class="pl-button pl-button-ghost" onClick$={async () => await signOutCurrentUser()}>
+          </Select>
+          <Button variant="secondary" onClick$={async () => await signOutCurrentUser()}>
             {t(i18n, 'signOutButton', 'Sign out')}
-          </button>
+          </Button>
         </nav>
       </header>
       <main class="pl-page" id="qwik-app-root-marker" data-user={auth.user.value?.uid ?? 'none'}>
-        <section class="pl-card pl-stack">
+        <Card class="pl-stack">
           <h1 class="pl-title">{title}</h1>
           <p class="pl-subtitle">{auth.user.value?.email ?? ''}</p>
-        </section>
-        <section class="pl-card pl-stack" style="margin-top:16px;">
+        </Card>
+        <Card class="pl-stack" style="margin-top:16px;">
           <Slot />
-        </section>
+        </Card>
       </main>
     </>
   );
