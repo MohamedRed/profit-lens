@@ -34,7 +34,16 @@
         ]
       },
       {
-        "source": "/app.html",
+        "source": "/app/index.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/next/index.html",
         "headers": [
           {
             "key": "Cache-Control",
@@ -97,7 +106,7 @@
         ]
       },
       {
-        "source": "/flutter_service_worker.js",
+        "source": "/app/flutter_service_worker.js",
         "headers": [
           {
             "key": "Cache-Control",
@@ -106,7 +115,7 @@
         ]
       },
       {
-        "source": "/main.dart.js",
+        "source": "/app/flutter_bootstrap.js",
         "headers": [
           {
             "key": "Cache-Control",
@@ -115,7 +124,7 @@
         ]
       },
       {
-        "source": "/flutter.js",
+        "source": "/app/main.dart.js",
         "headers": [
           {
             "key": "Cache-Control",
@@ -124,7 +133,7 @@
         ]
       },
       {
-        "source": "/flutter_bootstrap.js",
+        "source": "/app/manifest.json",
         "headers": [
           {
             "key": "Cache-Control",
@@ -133,7 +142,7 @@
         ]
       },
       {
-        "source": "/manifest.json",
+        "source": "/next/sw.js",
         "headers": [
           {
             "key": "Cache-Control",
@@ -142,7 +151,7 @@
         ]
       },
       {
-        "source": "/robots.txt",
+        "source": "/next/registerSW.js",
         "headers": [
           {
             "key": "Cache-Control",
@@ -151,7 +160,7 @@
         ]
       },
       {
-        "source": "/version.json",
+        "source": "/next/manifest.webmanifest",
         "headers": [
           {
             "key": "Cache-Control",
@@ -160,7 +169,52 @@
         ]
       },
       {
-        "source": "**/*.@(css|png|jpg|jpeg|gif|svg|webp|ico|wasm|ttf|otf)",
+        "source": "/next/firebase-web-config.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/next/build/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public,max-age=31536000,immutable"
+          }
+        ]
+      },
+      {
+        "source": "/next/assets/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public,max-age=31536000,immutable"
+          }
+        ]
+      },
+      {
+        "source": "/app/assets/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public,max-age=31536000,immutable"
+          }
+        ]
+      },
+      {
+        "source": "/app/canvaskit/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public,max-age=31536000,immutable"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(png|jpg|jpeg|gif|svg|webp|ico|wasm|ttf|otf)",
         "headers": [
           {
             "key": "Cache-Control",
@@ -172,11 +226,19 @@
     "rewrites": [
       {
         "source": "/app",
-        "destination": "/app.html"
+        "destination": "/app/index.html"
       },
       {
         "source": "/app/**",
-        "destination": "/app.html"
+        "destination": "/app/index.html"
+      },
+      {
+        "source": "/next",
+        "destination": "/next/index.html"
+      },
+      {
+        "source": "/next/**",
+        "destination": "/next/index.html"
       },
       {
         "source": "**",

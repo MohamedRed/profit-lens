@@ -21,6 +21,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -46,6 +51,9 @@ jobs:
 
       - name: Build web bundle
         run: ./tool/build_web.sh
+
+      - name: Run Qwik unit tests
+        run: npm --prefix apps/qwik run test
 
       - name: Verify web bundle layout
         run: ./tool/verify_web_bundle_layout.sh
