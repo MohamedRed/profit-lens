@@ -75,7 +75,7 @@ export default component$(() => {
               <Button variant="secondary" onClick$={() => navigate('/next/register')}>
                 {t(i18n, 'createAccountButton', 'Create an account')}
               </Button>
-              <a class="ui-button ui-button-secondary ui-button-md pl-button pl-button-ghost" href="/app?entry=login">
+              <a class="ui-button ui-button-secondary ui-button-md" href="/app?entry=login">
                 Open Flutter login
               </a>
             </div>

@@ -7,7 +7,7 @@ export const Select = component$<SelectProps>((props) => {
   const { class: className, ...rest } = props;
 
   return (
-    <select {...rest} class={cn('ui-select pl-select', className)}>
+    <select {...rest} class={cn('ui-select', className)}>
       <Slot />
     </select>
   );

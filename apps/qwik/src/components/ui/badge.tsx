@@ -7,7 +7,7 @@ export const Badge = component$<BadgeProps>((props) => {
   const { class: className, ...rest } = props;
 
   return (
-    <span {...rest} class={cn('ui-badge pl-badge', className)}>
+    <span {...rest} class={cn('ui-badge', className)}>
       <Slot />
     </span>
   );

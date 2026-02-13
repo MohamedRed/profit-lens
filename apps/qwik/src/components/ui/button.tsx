@@ -10,11 +10,11 @@ interface ButtonProps extends PropsOf<'button'> {
 }
 
 const variantClass: Record<ButtonVariant, string> = {
-  default: 'ui-button-default pl-button-primary',
-  secondary: 'ui-button-secondary pl-button-ghost',
+  default: 'ui-button-default',
+  secondary: 'ui-button-secondary',
   outline: 'ui-button-outline',
-  ghost: 'ui-button-ghost pl-button-ghost',
-  destructive: 'ui-button-destructive pl-button-danger',
+  ghost: 'ui-button-ghost',
+  destructive: 'ui-button-destructive',
 };
 
 const sizeClass: Record<ButtonSize, string> = {
@@ -29,7 +29,7 @@ export const Button = component$<ButtonProps>((props) => {
   return (
     <button
       {...rest}
-      class={cn('ui-button pl-button', variantClass[variant], sizeClass[size], className)}
+      class={cn('ui-button', variantClass[variant], sizeClass[size], className)}
     >
       <Slot />
     </button>

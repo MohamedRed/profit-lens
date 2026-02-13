@@ -1,4 +1,8 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
+import { Label } from '../../../components/ui/label';
+import { Select } from '../../../components/ui/select';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
@@ -107,52 +111,51 @@ export default component$(() => {
 
       <div class="pl-row">
         <div class="pl-field" style="flex:1; min-width:210px;">
-          <label>{t(i18n, 'offerAmountLabel', 'Payout')}</label>
-          <input class="pl-input" value={payout.value} onInput$={(_, el) => (payout.value = el.value)} />
+          <Label>{t(i18n, 'offerAmountLabel', 'Payout')}</Label>
+          <Input value={payout.value} onInput$={(_event: Event, el: HTMLInputElement) => (payout.value = el.value)} />
         </div>
         <div class="pl-field" style="flex:1; min-width:210px;">
-          <label>{t(i18n, 'distanceKmLabel', 'Distance')}</label>
-          <input class="pl-input" value={distance.value} onInput$={(_, el) => (distance.value = el.value)} />
+          <Label>{t(i18n, 'distanceKmLabel', 'Distance')}</Label>
+          <Input value={distance.value} onInput$={(_event: Event, el: HTMLInputElement) => (distance.value = el.value)} />
         </div>
         <div class="pl-field" style="flex:1; min-width:210px;">
-          <label>{t(i18n, 'durationMinutesLabel', 'Estimated time (minutes)')}</label>
-          <input class="pl-input" value={duration.value} onInput$={(_, el) => (duration.value = el.value)} />
+          <Label>{t(i18n, 'durationMinutesLabel', 'Estimated time (minutes)')}</Label>
+          <Input value={duration.value} onInput$={(_event: Event, el: HTMLInputElement) => (duration.value = el.value)} />
         </div>
       </div>
 
       <div class="pl-row">
         <div class="pl-field" style="flex:1; min-width:260px;">
-          <label>{t(i18n, 'pickupNameLabel', 'Pickup name')}</label>
-          <input class="pl-input" value={pickupName.value} onInput$={(_, el) => (pickupName.value = el.value)} />
+          <Label>{t(i18n, 'pickupNameLabel', 'Pickup name')}</Label>
+          <Input value={pickupName.value} onInput$={(_event: Event, el: HTMLInputElement) => (pickupName.value = el.value)} />
         </div>
         <div class="pl-field" style="flex:1; min-width:260px;">
-          <label>{t(i18n, 'dropoffNameLabel', 'Drop-off name')}</label>
-          <input class="pl-input" value={dropoffName.value} onInput$={(_, el) => (dropoffName.value = el.value)} />
+          <Label>{t(i18n, 'dropoffNameLabel', 'Drop-off name')}</Label>
+          <Input value={dropoffName.value} onInput$={(_event: Event, el: HTMLInputElement) => (dropoffName.value = el.value)} />
         </div>
       </div>
 
       <div class="pl-row">
         <div class="pl-field" style="flex:1; min-width:260px;">
-          <label>{t(i18n, 'pickupAddressLabel', 'Pickup address')}</label>
-          <input class="pl-input" value={pickupAddress.value} onInput$={(_, el) => (pickupAddress.value = el.value)} />
+          <Label>{t(i18n, 'pickupAddressLabel', 'Pickup address')}</Label>
+          <Input value={pickupAddress.value} onInput$={(_event: Event, el: HTMLInputElement) => (pickupAddress.value = el.value)} />
         </div>
         <div class="pl-field" style="flex:1; min-width:260px;">
-          <label>{t(i18n, 'dropoffAddressLabel', 'Drop-off address')}</label>
-          <input class="pl-input" value={dropoffAddress.value} onInput$={(_, el) => (dropoffAddress.value = el.value)} />
+          <Label>{t(i18n, 'dropoffAddressLabel', 'Drop-off address')}</Label>
+          <Input value={dropoffAddress.value} onInput$={(_event: Event, el: HTMLInputElement) => (dropoffAddress.value = el.value)} />
         </div>
       </div>
 
       <div class="pl-field">
-        <label>{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</label>
+        <Label>{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</Label>
         <div class="pl-row">
-          <select
-            class="pl-select"
+          <Select
             style="flex:1; min-width:260px;"
             value={selectedVehicleId.value}
             onFocus$={() => {
               vehicleSubscriptionRequested.value = true;
             }}
-            onChange$={(_, el) => (selectedVehicleId.value = el.value)}
+            onChange$={(_event: Event, el: HTMLSelectElement) => (selectedVehicleId.value = el.value)}
           >
             <option value="">
               {vehiclesLoading.value
@@ -164,17 +167,17 @@ export default component$(() => {
                 {vehicle.name}
               </option>
             ))}
-          </select>
+          </Select>
           {!vehicleSubscriptionRequested.value && (
-            <button
+            <Button
               type="button"
-              class="pl-button pl-button-ghost"
+              variant="secondary"
               onClick$={() => {
                 vehicleSubscriptionRequested.value = true;
               }}
             >
               {t(i18n, 'loadVehiclesButton', 'Load vehicles')}
-            </button>
+            </Button>
           )}
         </div>
         {vehicleSubscriptionRequested.value && !vehiclesHydrated.value && (
@@ -183,8 +186,8 @@ export default component$(() => {
       </div>
 
       <div class="pl-row">
-        <button
-          class="pl-button pl-button-primary"
+        <Button
+          variant="default"
           disabled={loading.value}
           onClick$={async () => {
             const user = auth.user.value;
@@ -220,10 +223,10 @@ export default component$(() => {
           }}
         >
           {t(i18n, 'analyzeOfferButton', 'Analyze offer')}
-        </button>
+        </Button>
 
-        <button
-          class="pl-button pl-button-ghost"
+        <Button
+          variant="secondary"
           disabled={loading.value || !pickupAddress.value || !dropoffAddress.value}
           onClick$={async () => {
             loading.value = true;
@@ -244,9 +247,9 @@ export default component$(() => {
           }}
         >
           Verify route
-        </button>
+        </Button>
 
-        <label class="pl-button pl-button-ghost" style="display:inline-flex; align-items:center; gap:8px;">
+        <label class="ui-button ui-button-secondary ui-button-md" style="display:inline-flex; align-items:center; gap:8px;">
           {t(i18n, 'importScreenshotButton', 'Import screenshot')}
           <input
             type="file"
