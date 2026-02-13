@@ -1,13 +1,31 @@
 import {
+  browserLocalPersistence,
   createUserWithEmailAndPassword,
-  getAuth,
+  initializeAuth,
+  indexedDBLocalPersistence,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  type Auth,
   type User,
 } from 'firebase/auth';
 import { getFirebaseApp } from './client';
 import type { AuthUser } from '../types/auth';
+
+let authClient: Auth | null = null;
+
+const getAuthClient = (): Auth => {
+  if (authClient) {
+    return authClient;
+  }
+
+  authClient = initializeAuth(getFirebaseApp(), {
+    persistence: [indexedDBLocalPersistence, browserLocalPersistence],
+    popupRedirectResolver: undefined,
+  });
+
+  return authClient;
+};
 
 const mapUser = (user: User | null): AuthUser | null => {
   if (!user) {
@@ -20,23 +38,23 @@ const mapUser = (user: User | null): AuthUser | null => {
 };
 
 export const authStateListener = (callback: (user: AuthUser | null) => void) => {
-  const auth = getAuth(getFirebaseApp());
+  const auth = getAuthClient();
   return onAuthStateChanged(auth, (user) => {
     callback(mapUser(user));
   });
 };
 
 export const signInWithEmail = async (email: string, password: string) => {
-  const auth = getAuth(getFirebaseApp());
+  const auth = getAuthClient();
   await signInWithEmailAndPassword(auth, email, password);
 };
 
 export const registerWithEmail = async (email: string, password: string) => {
-  const auth = getAuth(getFirebaseApp());
+  const auth = getAuthClient();
   await createUserWithEmailAndPassword(auth, email, password);
 };
 
 export const signOutCurrentUser = async () => {
-  const auth = getAuth(getFirebaseApp());
+  const auth = getAuthClient();
   await signOut(auth);
 };

@@ -17,6 +17,8 @@ export default component$(() => {
           content="ProfitLens Qwik app with parallel /next deployment and Firebase parity."
         />
         <meta name="profit-lens-next-entry" content="qwik-next" />
+        <link rel="preconnect" href="https://profit-lens-prod-2e417.firebaseapp.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.googleapis.com" crossOrigin="anonymous" />
         <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
         <script src={`${base}firebase-web-config.js`} defer></script>
         {!isDev && <link rel="manifest" href={`${base}manifest.webmanifest`} />}
