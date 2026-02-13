@@ -14,6 +14,8 @@ import '../../../app/app_scope.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/widgets/lazy_indexed_stack.dart';
 import '../../../core/widgets/mobile_pill_nav.dart';
+import '../../../core/widgets/pwa_update_banner.dart';
+import '../../../core/widgets/stripe_return_banner.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../offers/presentation/offer_history_screen.dart'
     deferred as offer_history_screen;
@@ -135,38 +137,44 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     ];
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      resizeToAvoidBottomInset: false,
-      body: LazyIndexedStack(
-        index: _currentIndex,
-        builders: tabs
-            .map(
-              (tab) =>
-                  (context) => SafeArea(child: tab.pageBuilder(context)),
-            )
-            .toList(),
-      ),
-      bottomNavigationBar: MediaQuery.removePadding(
-        context: context,
-        removeBottom: true,
-        child: MediaQuery.removeViewInsets(
-          context: context,
-          removeBottom: true,
-          child: MobilePillNav(
-            currentIndex: _currentIndex,
-            items: tabs
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          resizeToAvoidBottomInset: false,
+          body: LazyIndexedStack(
+            index: _currentIndex,
+            builders: tabs
                 .map(
-                  (tab) => MobilePillNavItem(
-                    icon: tab.icon,
-                    label: tab.labelBuilder(l10n),
-                  ),
+                  (tab) =>
+                      (context) => SafeArea(child: tab.pageBuilder(context)),
                 )
                 .toList(),
-            onChanged: (index) => setState(() => _currentIndex = index),
+          ),
+          bottomNavigationBar: MediaQuery.removePadding(
+            context: context,
+            removeBottom: true,
+            child: MediaQuery.removeViewInsets(
+              context: context,
+              removeBottom: true,
+              child: MobilePillNav(
+                currentIndex: _currentIndex,
+                items: tabs
+                    .map(
+                      (tab) => MobilePillNavItem(
+                        icon: tab.icon,
+                        label: tab.labelBuilder(l10n),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (index) => setState(() => _currentIndex = index),
+              ),
+            ),
           ),
         ),
-      ),
+        const PwaUpdateBanner(),
+        const StripeReturnBanner(),
+      ],
     );
   }
 

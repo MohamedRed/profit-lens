@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../app/app_scope.dart';
 import '../../../core/design_system/shadcn_tokens.dart';
 import '../../../l10n/app_localizations.dart';
-import 'register_screen.dart';
+import 'register_screen.dart' deferred as register_screen;
 import 'sign_in_fields.dart';
 
 class SignInForm extends StatefulWidget {
@@ -56,9 +56,17 @@ class _SignInFormState extends State<SignInForm> {
   }
 
   void _openRegister() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => const RegisterScreen()));
+    _openRegisterDeferred();
+  }
+
+  Future<void> _openRegisterDeferred() async {
+    await register_screen.loadLibrary();
+    if (!mounted) {
+      return;
+    }
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => register_screen.RegisterScreen()),
+    );
   }
 
   @override
