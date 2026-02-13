@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap');
 @import './lib/design/tokens.css';
 @import './lib/design/shadcn.css';
+@import './lib/design/mobile-3-shell.css';
 @import './lib/design/mobile-3-minimalvibrant.css';
 
 * {
@@ -105,53 +106,6 @@ select {
   color: var(--pl-color-purple);
 }
 
-.ui-page-title {
-  margin: 0;
-  font-family: var(--pl-font-display);
-  font-size: clamp(1.35rem, 1.2rem + 0.95vw, 2rem);
-  line-height: 1.1;
-}
-
-.ui-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  backdrop-filter: blur(10px);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.82));
-  border-bottom: 1px solid rgba(212, 212, 216, 0.75);
-}
-
-.ui-topbar-nav {
-  width: min(980px, 100% - 40px);
-  margin: 0 auto;
-  padding: 12px 0;
-  display: flex;
-  align-items: center;
-  gap: var(--pl-space-sm);
-  flex-wrap: wrap;
-}
-
-.ui-topbar-link {
-  border-radius: var(--pl-radius-pill);
-  padding: 8px 12px;
-  font-weight: 600;
-  color: var(--pl-color-text-secondary);
-  transition: color 120ms ease, background-color 120ms ease;
-}
-
-.ui-topbar-link[aria-current='page'] {
-  background: var(--pl-color-purple-soft);
-  color: var(--pl-color-purple);
-}
-
-.ui-topbar-link:hover {
-  color: var(--pl-color-text-primary);
-}
-
-.ui-spacer {
-  flex: 1;
-}
-
 .ui-spinner {
   width: 32px;
   height: 32px;
@@ -171,11 +125,6 @@ select {
   .ui-page {
     width: min(100% - 24px, 980px);
     padding: 24px 0;
-  }
-
-  .ui-topbar-nav {
-    width: min(100% - 24px, 980px);
-    padding: 10px 0;
   }
 }
 

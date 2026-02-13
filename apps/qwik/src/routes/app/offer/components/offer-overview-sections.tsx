@@ -1,0 +1,85 @@
+import { component$, type QRL } from '@builder.io/qwik';
+import { Button } from '../../../../components/ui/button';
+import { t, useI18n } from '../../../../lib/i18n/i18n-context';
+import type { OfferAnalysisRecord } from '../offer-analysis-result';
+import { OfferSectionCard } from './offer-section-card';
+
+interface OfferOverviewSectionsProps {
+  minProfitabilityEuro: number;
+  onViewDetails$: QRL<() => void>;
+  record: OfferAnalysisRecord;
+}
+
+const formatCurrency = (value: number): string => {
+  return new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 2,
+  }).format(value);
+};
+
+const formatDistance = (value: number): string => `${value.toFixed(1)} km`;
+const formatDuration = (value: number): string => `${Math.round(value)} min`;
+
+export const OfferOverviewSections = component$<OfferOverviewSectionsProps>((props) => {
+  const i18n = useI18n();
+  const { minProfitabilityEuro, onViewDetails$, record } = props;
+  const targetDelta = record.breakdown.netProfit - minProfitabilityEuro;
+  const decisionAccept = targetDelta >= 0;
+  const decisionLabel = decisionAccept
+    ? t(i18n, 'offerDecisionAccept', 'Accept')
+    : t(i18n, 'offerDecisionDecline', 'Decline');
+  const decisionDetail = decisionAccept
+    ? t(i18n, 'offerDecisionAbove', 'Above target by {value}')
+    : t(i18n, 'offerDecisionBelow', 'Below target by {value}');
+  const decisionClass = decisionAccept ? 'ui-offer-decision-accept' : 'ui-offer-decision-decline';
+
+  return (
+    <>
+      <section class={['ui-offer-decision', decisionClass]}>
+        <h3 class="ui-offer-decision-title">{decisionLabel}</h3>
+        <p class="ui-offer-decision-detail">
+          {decisionDetail.replace('{value}', formatCurrency(Math.abs(targetDelta)))}
+        </p>
+        <p class="ui-offer-decision-pill">
+          {t(i18n, 'minProfitabilityLabel', 'Minimum profitability')}:{' '}
+          {formatCurrency(minProfitabilityEuro)}
+        </p>
+      </section>
+
+      <OfferSectionCard title={t(i18n, 'profitabilityOverviewTitle', 'Profitability overview')}>
+        <div class="ui-offer-overview">
+          <p class={['ui-offer-overview-profit', record.breakdown.netProfit >= 0 ? 'is-positive' : 'is-negative']}>
+            {formatCurrency(record.breakdown.netProfit)}
+          </p>
+          <p class="ui-offer-overview-label">{t(i18n, 'netProfitLabel', 'Net profit')}</p>
+          <div class="ui-offer-overview-rows">
+            <div class="ui-offer-overview-row">
+              <span>{t(i18n, 'grossRevenueLabel', 'Gross revenue')}</span>
+              <span>{formatCurrency(record.offer.payoutEuro)}</span>
+            </div>
+            {record.offer.routeVerification ? (
+              <>
+                <div class="ui-offer-overview-row">
+                  <span>{t(i18n, 'verifiedDistanceLabel', 'Verified distance')}</span>
+                  <span>{formatDistance(record.offer.routeVerification.distanceKm)}</span>
+                </div>
+                <div class="ui-offer-overview-row">
+                  <span>{t(i18n, 'verifiedDurationLabel', 'Verified duration')}</span>
+                  <span>{formatDuration(record.offer.routeVerification.durationMinutes)}</span>
+                </div>
+              </>
+            ) : null}
+            <div class="ui-offer-overview-row">
+              <span>{t(i18n, 'totalCostsLabel', 'Total costs')}</span>
+              <span>{formatCurrency(record.breakdown.totalCosts)}</span>
+            </div>
+          </div>
+          <Button variant="default" onClick$={onViewDetails$}>
+            {t(i18n, 'viewProfitabilityDetailsButton', 'View profitability details')}
+          </Button>
+        </div>
+      </OfferSectionCard>
+    </>
+  );
+});

@@ -1,45 +1,47 @@
-import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Badge } from '../../../components/ui/badge';
-import { Button } from '../../../components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../../../components/ui/card';
-import { Input } from '../../../components/ui/input';
-import { Label } from '../../../components/ui/label';
-import { Select } from '../../../components/ui/select';
+import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
-import { t, useI18n } from '../../../lib/i18n/i18n-context';
+import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
+import { saveUserProfile, watchUserProfile } from '../../../lib/features/profile/profile-service';
+import { watchVehicles } from '../../../lib/features/vehicles/vehicles-service';
 import {
   analyzeManualOfferAction,
   analyzeScreenshotOfferAction,
-  verifyOfferRouteAction,
 } from './offer-actions';
-import { OfferFeedback } from './offer-feedback';
+import {
+  parseOfferAnalysisRecord,
+  type OfferAnalysisRecord,
+} from './offer-analysis-result';
+import { OfferFlowContent } from './components/offer-flow-content';
+
 type OffersServiceModule = typeof import('../../../lib/features/offers/offers-service');
-type VehiclesServiceModule = typeof import('../../../lib/features/vehicles/vehicles-service');
 let offersServicePromise: Promise<OffersServiceModule> | null = null;
-let vehiclesServicePromise: Promise<VehiclesServiceModule> | null = null;
+
 const loadOffersService = () => {
   if (!offersServicePromise) {
     offersServicePromise = import('../../../lib/features/offers/offers-service');
   }
   return offersServicePromise;
 };
-const loadVehiclesService = () => {
-  if (!vehiclesServicePromise) {
-    vehiclesServicePromise = import('../../../lib/features/vehicles/vehicles-service');
+
+const resolveSelectedVehicleId = (
+  current: string,
+  vehicles: VehicleProfile[],
+  defaultVehicleId: string | null | undefined,
+): string => {
+  if (current && vehicles.some((vehicle) => vehicle.id === current)) {
+    return current;
   }
-  return vehiclesServicePromise;
+  if (defaultVehicleId && vehicles.some((vehicle) => vehicle.id === defaultVehicleId)) {
+    return defaultVehicleId;
+  }
+  return vehicles[0]?.id ?? '';
 };
+
 export default component$(() => {
-  const i18n = useI18n();
   const auth = useAuth();
+
   const payout = useSignal('');
   const distance = useSignal('');
   const duration = useSignal('');
@@ -47,253 +49,189 @@ export default component$(() => {
   const pickupAddress = useSignal('');
   const dropoffName = useSignal('');
   const dropoffAddress = useSignal('');
+
+  const profile = useSignal<UserProfile | null>(null);
+  const minProfitabilityEuro = useSignal(2);
+  const savingProfitTarget = useSignal(false);
+
   const selectedVehicleId = useSignal('');
   const vehicles = useSignal<VehicleProfile[]>([]);
-  const vehicleSubscriptionRequested = useSignal(false);
-  const vehiclesLoading = useSignal(false);
-  const vehiclesHydrated = useSignal(false);
+  const vehiclesLoading = useSignal(true);
+
+  const manualEntryRequested = useSignal(false);
   const loading = useSignal(false);
   const status = useSignal('');
-  const result = useSignal<Record<string, unknown> | null>(null);
+  const analysisRecord = useSignal<OfferAnalysisRecord | null>(null);
+  const screenshotPreviewUrl = useSignal<string | null>(null);
+  const fileInputRef = useSignal<HTMLInputElement>();
+
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
-    const shouldHydrateVehicles = track(() => vehicleSubscriptionRequested.value);
     if (!user) {
+      profile.value = null;
       vehicles.value = [];
       selectedVehicleId.value = '';
       vehiclesLoading.value = false;
-      vehiclesHydrated.value = false;
       return;
     }
-    if (!shouldHydrateVehicles) {
-      return;
-    }
-    let cancelled = false;
-    let unsubscribe: (() => void) | null = null;
+
     vehiclesLoading.value = true;
-    void loadVehiclesService()
-      .then(({ watchVehicles }) => {
-        if (cancelled) {
-          return;
-        }
-        unsubscribe = watchVehicles(user.uid, (items) => {
-          vehicles.value = items;
-          vehiclesLoading.value = false;
-          vehiclesHydrated.value = true;
-          if (!selectedVehicleId.value && items.length > 0) {
-            selectedVehicleId.value = items[0].id;
-          }
-        });
-      })
-      .catch((error) => {
-        if (cancelled) {
-          return;
-        }
-        vehiclesLoading.value = false;
-        status.value = error instanceof Error ? error.message : String(error);
-      });
+
+    const unsubscribeVehicles = watchVehicles(user.uid, (items) => {
+      vehicles.value = items;
+      vehiclesLoading.value = false;
+      selectedVehicleId.value = resolveSelectedVehicleId(
+        selectedVehicleId.value,
+        items,
+        profile.value?.defaultVehicleId,
+      );
+    });
+
+    const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (nextProfile) => {
+      profile.value = nextProfile;
+      minProfitabilityEuro.value = nextProfile.minProfitabilityEuro;
+      selectedVehicleId.value = resolveSelectedVehicleId(
+        selectedVehicleId.value,
+        vehicles.value,
+        nextProfile.defaultVehicleId,
+      );
+    });
+
     cleanup(() => {
-      cancelled = true;
-      if (unsubscribe) {
-        unsubscribe();
+      unsubscribeVehicles();
+      unsubscribeProfile();
+    });
+  });
+
+  useVisibleTask$(({ track, cleanup }) => {
+    const preview = track(() => screenshotPreviewUrl.value);
+    cleanup(() => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
       }
     });
   });
+
+  const saveProfitabilityTarget$ = $(async (rawValue: string) => {
+    const userProfile = profile.value;
+    const parsed = Number(rawValue);
+    if (!userProfile || !Number.isFinite(parsed) || parsed <= 0) {
+      return;
+    }
+    if (parsed === userProfile.minProfitabilityEuro) {
+      return;
+    }
+
+    const nextProfile = { ...userProfile, minProfitabilityEuro: parsed };
+    minProfitabilityEuro.value = parsed;
+    profile.value = nextProfile;
+    savingProfitTarget.value = true;
+
+    try {
+      await saveUserProfile(nextProfile);
+    } catch (error) {
+      status.value = error instanceof Error ? error.message : String(error);
+    } finally {
+      savingProfitTarget.value = false;
+    }
+  });
+
+  const analyzeManual$ = $(async () => {
+    if (!selectedVehicleId.value) {
+      status.value = 'Select vehicle';
+      return;
+    }
+
+    loading.value = true;
+    status.value = '';
+
+    try {
+      const payload = await analyzeManualOfferAction({
+        deviceId: getDeviceId(),
+        payout: payout.value,
+        distance: distance.value,
+        duration: duration.value,
+        pickupName: pickupName.value,
+        pickupAddress: pickupAddress.value,
+        dropoffName: dropoffName.value,
+        dropoffAddress: dropoffAddress.value,
+        vehicleId: selectedVehicleId.value,
+        loadOffersService,
+      });
+      analysisRecord.value = parseOfferAnalysisRecord(payload);
+      status.value = 'Offer analyzed.';
+    } catch (error) {
+      status.value = error instanceof Error ? error.message : String(error);
+    } finally {
+      loading.value = false;
+    }
+  });
+
+  const importScreenshot$ = $(async (input: HTMLInputElement) => {
+    const file = input.files?.[0];
+    if (!file) {
+      return;
+    }
+    if (!selectedVehicleId.value) {
+      status.value = 'Select vehicle';
+      input.value = '';
+      return;
+    }
+
+    if (screenshotPreviewUrl.value) {
+      URL.revokeObjectURL(screenshotPreviewUrl.value);
+    }
+    screenshotPreviewUrl.value = URL.createObjectURL(file);
+
+    loading.value = true;
+    status.value = '';
+
+    try {
+      const payload = await analyzeScreenshotOfferAction({
+        deviceId: getDeviceId(),
+        file,
+        vehicleId: selectedVehicleId.value,
+        loadOffersService,
+      });
+      analysisRecord.value = parseOfferAnalysisRecord(payload);
+      status.value = 'Screenshot analyzed.';
+    } catch (error) {
+      status.value = error instanceof Error ? error.message : String(error);
+    } finally {
+      loading.value = false;
+      input.value = '';
+    }
+  });
+
+  const user = auth.user.value;
+  if (!user) {
+    return null;
+  }
+
   return (
-    <div
-      class="ui-stack ui-offer-page"
-      onPointerDown$={() => {
-        vehicleSubscriptionRequested.value = true;
-      }}
-      onKeyDown$={() => {
-        vehicleSubscriptionRequested.value = true;
-      }}
-    >
-      <Card class="ui-offer-hero">
-        <CardHeader class="ui-offer-hero-header">
-          <div class="ui-offer-badges">
-            <Badge>{t(i18n, 'manualOfferLabel', 'Manual offer')}</Badge>
-            <Badge class="ui-offer-badge-alt">{t(i18n, 'screenshotOfferLabel', 'Screenshot OCR')}</Badge>
-          </div>
-          <CardTitle class="ui-offer-hero-title">{t(i18n, 'offerTitle', 'Analyze offer')}</CardTitle>
-          <CardDescription class="ui-offer-hero-description">
-            {t(i18n, 'manualEntrySubtitle', 'Or enter the offer details manually.')}
-          </CardDescription>
-        </CardHeader>
-      </Card>
-      <Card>
-        <CardContent class="ui-offer-form">
-          <div class="ui-offer-grid ui-offer-grid-3">
-            <div class="ui-field">
-              <Label for="offer-payout">{t(i18n, 'offerAmountLabel', 'Payout')}</Label>
-              <Input id="offer-payout" value={payout.value} onInput$={(_, el) => (payout.value = el.value)} />
-            </div>
-            <div class="ui-field">
-              <Label for="offer-distance">{t(i18n, 'distanceKmLabel', 'Distance')}</Label>
-              <Input id="offer-distance" value={distance.value} onInput$={(_, el) => (distance.value = el.value)} />
-            </div>
-            <div class="ui-field">
-              <Label for="offer-duration">{t(i18n, 'durationMinutesLabel', 'Estimated time (minutes)')}</Label>
-              <Input id="offer-duration" value={duration.value} onInput$={(_, el) => (duration.value = el.value)} />
-            </div>
-          </div>
-          <div class="ui-offer-grid ui-offer-grid-2">
-            <div class="ui-field">
-              <Label for="offer-pickup-name">{t(i18n, 'pickupNameLabel', 'Pickup name')}</Label>
-              <Input id="offer-pickup-name" value={pickupName.value} onInput$={(_, el) => (pickupName.value = el.value)} />
-            </div>
-            <div class="ui-field">
-              <Label for="offer-dropoff-name">{t(i18n, 'dropoffNameLabel', 'Drop-off name')}</Label>
-              <Input id="offer-dropoff-name" value={dropoffName.value} onInput$={(_, el) => (dropoffName.value = el.value)} />
-            </div>
-          </div>
-          <div class="ui-offer-grid ui-offer-grid-2">
-            <div class="ui-field">
-              <Label for="offer-pickup-address">{t(i18n, 'pickupAddressLabel', 'Pickup address')}</Label>
-              <Input id="offer-pickup-address" value={pickupAddress.value} onInput$={(_, el) => (pickupAddress.value = el.value)} />
-            </div>
-            <div class="ui-field">
-              <Label for="offer-dropoff-address">{t(i18n, 'dropoffAddressLabel', 'Drop-off address')}</Label>
-              <Input id="offer-dropoff-address" value={dropoffAddress.value} onInput$={(_, el) => (dropoffAddress.value = el.value)} />
-            </div>
-          </div>
-          <div class="ui-field">
-            <Label for="offer-vehicle">{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</Label>
-            <div class="ui-offer-vehicle-row">
-              <Select
-                id="offer-vehicle"
-                class="ui-offer-vehicle-select"
-                value={selectedVehicleId.value}
-                onFocus$={() => {
-                  vehicleSubscriptionRequested.value = true;
-                }}
-                onChange$={(_, el) => (selectedVehicleId.value = el.value)}
-              >
-                <option value="">
-                  {vehiclesLoading.value
-                    ? t(i18n, 'loadingLabel', 'Loading...')
-                    : t(i18n, 'vehicleOptionalPlaceholder', 'No vehicle (optional)')}
-                </option>
-                {vehicles.value.map((vehicle) => (
-                  <option key={vehicle.id} value={vehicle.id}>
-                    {vehicle.name}
-                  </option>
-                ))}
-              </Select>
-              {!vehicleSubscriptionRequested.value && (
-                <Button
-                  type="button"
-                  variant="secondary"
-                  class="ui-offer-vehicle-button"
-                  onClick$={() => {
-                    vehicleSubscriptionRequested.value = true;
-                  }}
-                >
-                  {t(i18n, 'loadVehiclesButton', 'Load vehicles')}
-                </Button>
-              )}
-            </div>
-            {vehicleSubscriptionRequested.value && !vehiclesHydrated.value && (
-              <div class="ui-status">{t(i18n, 'loadingLabel', 'Loading...')}</div>
-            )}
-          </div>
-          <div class="ui-offer-actions">
-            <Button
-              variant="default"
-              class="ui-offer-action-main"
-              disabled={loading.value}
-              onClick$={async () => {
-                const user = auth.user.value;
-                if (!user) {
-                  status.value = 'Missing authenticated user.';
-                  return;
-                }
-                loading.value = true;
-                status.value = '';
-                try {
-                  const payload = await analyzeManualOfferAction({
-                    deviceId: getDeviceId(),
-                    payout: payout.value,
-                    distance: distance.value,
-                    duration: duration.value,
-                    pickupName: pickupName.value,
-                    pickupAddress: pickupAddress.value,
-                    dropoffName: dropoffName.value,
-                    dropoffAddress: dropoffAddress.value,
-                    vehicleId: selectedVehicleId.value || undefined,
-                    loadOffersService,
-                  });
-                  result.value = payload;
-                  status.value = 'Offer analyzed successfully.';
-                } catch (error) {
-                  status.value = error instanceof Error ? error.message : String(error);
-                } finally {
-                  loading.value = false;
-                }
-              }}
-            >
-              {t(i18n, 'analyzeOfferButton', 'Analyze offer')}
-            </Button>
-            <Button
-              variant="secondary"
-              disabled={loading.value || !pickupAddress.value || !dropoffAddress.value}
-              onClick$={async () => {
-                loading.value = true;
-                status.value = '';
-                try {
-                  const response = await verifyOfferRouteAction({
-                    pickupAddress: pickupAddress.value,
-                    dropoffAddress: dropoffAddress.value,
-                    loadOffersService,
-                  });
-                  result.value = response;
-                  status.value = 'Route verified.';
-                } catch (error) {
-                  status.value = error instanceof Error ? error.message : String(error);
-                } finally {
-                  loading.value = false;
-                }
-              }}
-            >
-              {t(i18n, 'verifyRouteButton', 'Verify route')}
-            </Button>
-            <label class="ui-button ui-button-secondary ui-button-md ui-offer-upload">
-              {t(i18n, 'importScreenshotButton', 'Import screenshot')}
-              <input
-                type="file"
-                accept="image/*"
-                style="display:none"
-                onChange$={async (_, element) => {
-                  const file = element.files?.[0];
-                  if (!file) {
-                    return;
-                  }
-                  loading.value = true;
-                  status.value = '';
-                  try {
-                    const payload = await analyzeScreenshotOfferAction({
-                      deviceId: getDeviceId(),
-                      file,
-                      vehicleId: selectedVehicleId.value || undefined,
-                      loadOffersService,
-                    });
-                    result.value = payload;
-                    status.value = 'Screenshot analyzed.';
-                  } catch (error) {
-                    status.value = error instanceof Error ? error.message : String(error);
-                  } finally {
-                    element.value = '';
-                    loading.value = false;
-                  }
-                }}
-              />
-            </label>
-          </div>
-        </CardContent>
-      </Card>
-      <div class="ui-offer-feedback">
-        <OfferFeedback status={status.value} result={result.value} />
-      </div>
-    </div>
+    <OfferFlowContent
+      userId={user.uid}
+      analysisRecord={analysisRecord}
+      distance={distance}
+      dropoffAddress={dropoffAddress}
+      dropoffName={dropoffName}
+      duration={duration}
+      fileInputRef={fileInputRef}
+      loading={loading}
+      manualEntryRequested={manualEntryRequested}
+      minProfitabilityEuro={minProfitabilityEuro}
+      onAnalyzeManual$={analyzeManual$}
+      onImportScreenshot$={importScreenshot$}
+      onSaveProfitabilityTarget$={saveProfitabilityTarget$}
+      payout={payout}
+      pickupAddress={pickupAddress}
+      pickupName={pickupName}
+      savingProfitTarget={savingProfitTarget}
+      screenshotPreviewUrl={screenshotPreviewUrl}
+      selectedVehicleId={selectedVehicleId}
+      status={status}
+      vehicles={vehicles}
+      vehiclesLoading={vehiclesLoading}
+    />
   );
 });

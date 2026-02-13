@@ -1,0 +1,125 @@
+.ui-mobile-app {
+  min-height: 100vh;
+  background: var(--pl-color-background);
+}
+
+.ui-mobile-page {
+  width: min(402px, 100%);
+  margin: 0 auto;
+  padding-bottom: 116px;
+}
+
+.ui-mobile-header {
+  padding: 16px 24px 10px;
+}
+
+.ui-mobile-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--pl-space-md);
+}
+
+.ui-mobile-brand {
+  margin: 0;
+  color: var(--pl-color-text-secondary);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.ui-mobile-title {
+  margin: 4px 0 0;
+  font-family: var(--pl-font-display);
+  font-size: clamp(1.7rem, 1.3rem + 2vw, 2.15rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.ui-mobile-email {
+  margin: 6px 0 0;
+  color: var(--pl-color-text-secondary);
+  font-size: 0.84rem;
+}
+
+.ui-mobile-signout {
+  min-height: 2.2rem;
+  border-radius: var(--pl-radius-lg);
+  color: var(--pl-color-text-secondary);
+  padding-inline: 0.75rem;
+}
+
+.ui-mobile-content {
+  display: grid;
+  gap: var(--pl-space-lg);
+  padding: 0 24px 24px;
+}
+
+.ui-mobile-tab-shell {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  padding: 12px 21px 21px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.94) 30%,
+    rgba(255, 255, 255, 1)
+  );
+}
+
+.ui-mobile-tab-nav {
+  width: min(360px, 100%);
+  min-height: 62px;
+  background: var(--pl-color-surface);
+  border-radius: var(--pl-radius-pill);
+  padding: 4px;
+  display: flex;
+  gap: 0;
+}
+
+.ui-mobile-tab-link {
+  flex: 1;
+  min-width: 0;
+  border-radius: var(--pl-radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--pl-color-text-tertiary);
+  transition: color 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
+  padding: 8px 6px;
+}
+
+.ui-mobile-tab-link.is-active {
+  background: #fff;
+  color: var(--pl-color-purple);
+  box-shadow: var(--pl-shadow-active);
+}
+
+.ui-mobile-tab-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.ui-mobile-tab-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .ui-mobile-content {
+    padding-inline: 16px;
+  }
+
+  .ui-mobile-header {
+    padding-inline: 16px;
+  }
+}

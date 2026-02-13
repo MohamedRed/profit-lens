@@ -15,12 +15,6 @@ interface AnalyzeManualOfferActionParams {
   vehicleId?: string;
 }
 
-interface VerifyOfferRouteActionParams {
-  dropoffAddress: string;
-  loadOffersService: LoadOffersService;
-  pickupAddress: string;
-}
-
 interface AnalyzeScreenshotOfferActionParams {
   deviceId: string;
   file: File;
@@ -54,18 +48,6 @@ export const analyzeManualOfferAction = async ({
       dropoffName,
       dropoffAddress,
     },
-  });
-};
-
-export const verifyOfferRouteAction = async ({
-  dropoffAddress,
-  loadOffersService,
-  pickupAddress,
-}: VerifyOfferRouteActionParams): Promise<Record<string, unknown>> => {
-  const { verifyOfferRoute } = await loadOffersService();
-  return verifyOfferRoute({
-    pickupAddress,
-    dropoffAddress,
   });
 };
 
