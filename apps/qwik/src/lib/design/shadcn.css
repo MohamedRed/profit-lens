@@ -16,7 +16,7 @@
   margin: 0;
   font-family: var(--pl-font-display);
   font-size: 1.125rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.25;
   letter-spacing: 0;
 }
@@ -42,7 +42,7 @@
   color: var(--pl-color-purple);
   padding: 0.38rem 0.8rem;
   font-size: 0.76rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
@@ -50,7 +50,7 @@
 .ui-label {
   font-family: var(--pl-font-body);
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--pl-color-text-primary);
 }
@@ -97,7 +97,7 @@
   border-radius: var(--pl-radius-lg);
   padding: 0.65rem 1rem;
   font-family: var(--pl-font-body);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.1;
   cursor: pointer;
   text-decoration: none;

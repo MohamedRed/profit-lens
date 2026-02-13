@@ -18,7 +18,7 @@
 
 .ui-offer-section-title {
   font-size: 1.125rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.25;
 }
 
@@ -134,7 +134,7 @@
 .ui-offer-decision-detail {
   margin: 8px 0 0;
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .ui-offer-decision-pill {
@@ -143,7 +143,7 @@
   border-radius: var(--pl-radius-pill);
   padding: 6px 10px;
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 500;
   background: rgba(255, 255, 255, 0.52);
 }
 
@@ -155,7 +155,7 @@
 .ui-offer-overview-profit {
   margin: 0;
   font-family: var(--pl-font-display);
-  font-weight: 800;
+  font-weight: 700;
   font-size: 2rem;
   line-height: 0.95;
 }
