@@ -93,3 +93,15 @@ export const applyLocale = async (store: I18nStore, locale: LocaleCode) => {
 export const t = (store: I18nStore, key: string, fallback?: string): string => {
   return store.dictionary.value[key] ?? fallback ?? key;
 };
+
+export const formatTemplate = (
+  template: string,
+  values: Record<string, string | number>,
+): string => {
+  return template.replace(/\{(\w+)\}/g, (token, key: string) => {
+    if (!(key in values)) {
+      return token;
+    }
+    return String(values[key]);
+  });
+};

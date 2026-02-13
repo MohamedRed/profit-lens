@@ -2,7 +2,7 @@ import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { signOutCurrentUser } from '../../../lib/firebase/auth';
 import { billingPlans } from '../../../lib/config/runtime-config';
-import { applyLocale, t, useI18n } from '../../../lib/i18n/i18n-context';
+import { applyLocale, formatTemplate, t, useI18n } from '../../../lib/i18n/i18n-context';
 import { openCustomerPortal, startCheckout, watchEntitlement, watchUsage } from '../../../lib/features/billing/billing-service';
 import { saveUserProfile, watchUserProfile } from '../../../lib/features/profile/profile-service';
 import { watchDevices } from '../../../lib/features/devices/devices-service';
@@ -186,14 +186,16 @@ export default component$(() => {
             <p class="ui-settings-subtitle">{subscriptionSubtitle}</p>
             {currentEntitlement && usage.value ? (
               <p class="ui-settings-subtitle">
-                {t(i18n, 'offersRemainingValue', '{remaining} remaining this month').replace(
-                  '{remaining}',
-                  String(
+                {formatTemplate(t(i18n, 'offersRemainingValue', '{remaining} remaining this month'), {
+                  remaining:
                     currentEntitlement.offerLimit == null
                       ? t(i18n, 'offersRemainingUnlimited', 'Unlimited')
-                      : Math.max(0, currentEntitlement.offerLimit - usage.value.offerCount),
-                  ),
-                )}
+                      : String(Math.max(0, currentEntitlement.offerLimit - usage.value.offerCount)),
+                  count:
+                    currentEntitlement.offerLimit == null
+                      ? t(i18n, 'offersRemainingUnlimited', 'Unlimited')
+                      : String(Math.max(0, currentEntitlement.offerLimit - usage.value.offerCount)),
+                })}
               </p>
             ) : null}
           </div>

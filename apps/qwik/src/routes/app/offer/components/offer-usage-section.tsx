@@ -1,6 +1,6 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Button } from '../../../../components/ui/button';
-import { t, useI18n } from '../../../../lib/i18n/i18n-context';
+import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import {
   openCustomerPortal,
   startCheckout,
@@ -101,12 +101,16 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
     const offerLimit = entitlement.value.offerLimit;
     const used = usage.value?.offerCount ?? 0;
     const remaining = offerLimit == null ? null : Math.max(0, offerLimit - used);
+    const remainingText = remaining == null ? null : String(remaining);
     const remainingLabel =
       remaining == null
         ? t(i18n, 'offersRemainingUnlimited', 'Unlimited')
-        : t(i18n, 'offersRemainingValue', '{count} offers remaining').replace(
-            '{count}',
-            String(remaining),
+        : formatTemplate(
+            t(i18n, 'offersRemainingValue', '{remaining} offers remaining'),
+            {
+              remaining: remainingText ?? '',
+              count: remainingText ?? '',
+            },
           );
 
     const isFree =

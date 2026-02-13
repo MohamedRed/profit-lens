@@ -15,8 +15,11 @@ export default defineConfig(({ mode }): UserConfig => {
       tsconfigPaths({ root: '.' }),
       VitePWA({
         registerType: 'autoUpdate',
-        injectRegister: false,
+        injectRegister: 'auto',
         workbox: {
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          skipWaiting: true,
           navigateFallbackDenylist: [/^\/app\//, /^\/$/, /^\/index\.html$/],
         },
         manifest: {
