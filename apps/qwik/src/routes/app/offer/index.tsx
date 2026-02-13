@@ -1,14 +1,28 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
-import {
-  analyzeManualOffer,
-  analyzeScreenshotOffer,
-  verifyOfferRoute,
-} from '../../../lib/features/offers/offers-service';
-import { watchVehicles } from '../../../lib/features/vehicles/vehicles-service';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
+
+type OffersServiceModule = typeof import('../../../lib/features/offers/offers-service');
+type VehiclesServiceModule = typeof import('../../../lib/features/vehicles/vehicles-service');
+
+let offersServicePromise: Promise<OffersServiceModule> | null = null;
+let vehiclesServicePromise: Promise<VehiclesServiceModule> | null = null;
+
+const loadOffersService = () => {
+  if (!offersServicePromise) {
+    offersServicePromise = import('../../../lib/features/offers/offers-service');
+  }
+  return offersServicePromise;
+};
+
+const loadVehiclesService = () => {
+  if (!vehiclesServicePromise) {
+    vehiclesServicePromise = import('../../../lib/features/vehicles/vehicles-service');
+  }
+  return vehiclesServicePromise;
+};
 
 export default component$(() => {
   const i18n = useI18n();
@@ -32,18 +46,39 @@ export default component$(() => {
     const user = track(() => auth.user.value);
     if (!user) {
       vehicles.value = [];
+      selectedVehicleId.value = '';
       return;
     }
 
-    const unsubscribe = watchVehicles(user.uid, (items) => {
-      vehicles.value = items;
-      if (!selectedVehicleId.value && items.length > 0) {
-        selectedVehicleId.value = items[0].id;
-      }
-    });
+    let cancelled = false;
+    let unsubscribe: (() => void) | null = null;
+    const delayedStart = window.setTimeout(() => {
+      void loadVehiclesService()
+        .then(({ watchVehicles }) => {
+          if (cancelled) {
+            return;
+          }
+          unsubscribe = watchVehicles(user.uid, (items) => {
+            vehicles.value = items;
+            if (!selectedVehicleId.value && items.length > 0) {
+              selectedVehicleId.value = items[0].id;
+            }
+          });
+        })
+        .catch((error) => {
+          if (cancelled) {
+            return;
+          }
+          status.value = error instanceof Error ? error.message : String(error);
+        });
+    }, 1200);
 
     cleanup(() => {
-      unsubscribe();
+      cancelled = true;
+      window.clearTimeout(delayedStart);
+      if (unsubscribe) {
+        unsubscribe();
+      }
     });
   });
 
@@ -117,6 +152,7 @@ export default component$(() => {
             loading.value = true;
             status.value = '';
             try {
+              const { analyzeManualOffer } = await loadOffersService();
               const payload = await analyzeManualOffer({
                 deviceId: getDeviceId(),
                 vehicleId: selectedVehicleId.value || undefined,
@@ -150,6 +186,7 @@ export default component$(() => {
             loading.value = true;
             status.value = '';
             try {
+              const { verifyOfferRoute } = await loadOffersService();
               const response = await verifyOfferRoute({
                 pickupAddress: pickupAddress.value,
                 dropoffAddress: dropoffAddress.value,
@@ -181,6 +218,7 @@ export default component$(() => {
               loading.value = true;
               status.value = '';
               try {
+                const { analyzeScreenshotOffer } = await loadOffersService();
                 const payload = await analyzeScreenshotOffer({
                   deviceId: getDeviceId(),
                   file,
