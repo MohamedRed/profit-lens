@@ -39,10 +39,10 @@ export const AuthGuard = component$<AuthGuardProps>(({ requireAuth }) => {
 
   if (!auth.ready.value) {
     return (
-      <div class="pl-page">
-        <div class="pl-card pl-stack" style="justify-items:center;">
-          <div class="pl-spinner" />
-          <div class="pl-status">Checking session...</div>
+      <div class="ui-page">
+        <div class="ui-card ui-stack" style="justify-items:center;">
+          <div class="ui-spinner" />
+          <div class="ui-status">Checking session...</div>
         </div>
       </div>
     );

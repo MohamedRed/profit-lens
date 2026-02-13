@@ -23,10 +23,10 @@ export default component$(() => {
   });
 
   return (
-    <div class="pl-page">
-      <div class="pl-card pl-stack" style="justify-items:center;">
-        <div class="pl-spinner" />
-        <div class="pl-status">Loading...</div>
+    <div class="ui-page">
+      <div class="ui-card ui-stack" style="justify-items:center;">
+        <div class="ui-spinner" />
+        <div class="ui-status">Loading...</div>
       </div>
     </div>
   );

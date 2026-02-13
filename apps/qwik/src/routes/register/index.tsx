@@ -20,15 +20,15 @@ export default component$(() => {
 
   return (
     <AuthGuard requireAuth={false}>
-      <div class="pl-page">
-        <Card class="pl-stack">
+      <div class="ui-page">
+        <Card class="ui-stack">
           <CardHeader>
             <Badge>ProfitLens</Badge>
             <CardTitle>{t(i18n, 'registerTitle', 'Create account')}</CardTitle>
           </CardHeader>
 
           <CardContent>
-            <div class="pl-field">
+            <div class="ui-field">
               <Label for="email">{t(i18n, 'emailLabel', 'Email')}</Label>
               <Input
                 id="email"
@@ -39,7 +39,7 @@ export default component$(() => {
               />
             </div>
 
-            <div class="pl-field">
+            <div class="ui-field">
               <Label for="password">{t(i18n, 'passwordLabel', 'Password')}</Label>
               <Input
                 id="password"
@@ -50,7 +50,7 @@ export default component$(() => {
               />
             </div>
 
-            <div class="pl-field">
+            <div class="ui-field">
               <Label for="confirm">{t(i18n, 'confirmPasswordLabel', 'Confirm password')}</Label>
               <Input
                 id="confirm"
@@ -93,7 +93,7 @@ export default component$(() => {
               {t(i18n, 'signInButton', 'Sign in')}
             </Button>
 
-            <div class={{ 'pl-status': true, 'pl-status-error': Boolean(status.value) }}>{status.value}</div>
+            <div class={{ 'ui-status': true, 'ui-status-error': Boolean(status.value) }}>{status.value}</div>
           </CardContent>
         </Card>
       </div>
