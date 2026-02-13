@@ -168,7 +168,10 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
   };
 
   return (
-    <OfferSectionCard title={t(i18n, 'offersRemainingTitle', 'Offers remaining')}>
+    <OfferSectionCard
+      title={t(i18n, 'offersRemainingTitle', 'Offers remaining')}
+      showBorder={true}
+    >
       {content()}
     </OfferSectionCard>
   );

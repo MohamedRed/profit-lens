@@ -21,7 +21,10 @@ export const OfferManualDetailsSection = component$<OfferManualDetailsSectionPro
   const i18n = useI18n();
 
   return (
-    <OfferSectionCard title={t(i18n, 'offerDetailsSection', 'Offer details')}>
+    <OfferSectionCard
+      title={t(i18n, 'offerDetailsSection', 'Offer details')}
+      showBorder={true}
+    >
       <div class="ui-offer-grid ui-offer-grid-3">
         <div class="ui-field">
           <Label for="offer-payout">{t(i18n, 'offerAmountLabel', 'Payout')}</Label>

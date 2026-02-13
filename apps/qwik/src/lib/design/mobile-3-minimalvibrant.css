@@ -7,13 +7,19 @@
   border-radius: var(--pl-radius-xl);
 }
 
+.ui-offer-section.is-bordered {
+  border: 1px solid var(--pl-color-outline);
+}
+
 .ui-offer-section-header {
-  margin-bottom: 0;
+  margin-bottom: var(--pl-space-lg);
   gap: 4px;
 }
 
 .ui-offer-section-title {
-  font-size: 1.15rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.25;
 }
 
 .ui-offer-section-subtitle {
@@ -24,7 +30,7 @@
 }
 
 .ui-offer-section-body {
-  gap: var(--pl-space-md);
+  gap: var(--pl-space-lg);
 }
 
 .ui-offer-grid {
@@ -46,6 +52,15 @@
   color: var(--pl-color-text-secondary);
 }
 
+.ui-offer-no-vehicle-state {
+  min-height: min(52vh, 420px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 var(--pl-space-lg);
+}
+
 .ui-offer-target-input-wrap {
   position: relative;
 }
@@ -59,8 +74,14 @@
   font-size: 0.86rem;
 }
 
+.ui-offer-target-hint {
+  margin: 6px 0 0;
+  color: var(--pl-color-text-secondary);
+  font-size: 0.75rem;
+}
+
 .ui-offer-target-saving {
-  margin: 8px 0 0;
+  margin: 6px 0 0;
   font-size: 0.8rem;
   color: var(--pl-color-text-secondary);
 }
