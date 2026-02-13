@@ -1,0 +1,172 @@
+.ui-history-root {
+  display: grid;
+  gap: 16px;
+}
+
+.ui-history-segmented {
+  width: fit-content;
+  margin: 0 auto;
+  background: var(--pl-color-surface);
+  border-radius: 16px;
+  padding: 2px;
+  display: flex;
+  gap: 2px;
+}
+
+.ui-history-segment-btn {
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--pl-color-text-secondary);
+  min-height: 38px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.96rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ui-history-segment-btn.is-active {
+  background: #fff;
+  color: var(--pl-color-text-primary);
+}
+
+.ui-history-segment-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.ui-history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.ui-history-item {
+  background: var(--pl-color-surface);
+  border-radius: var(--pl-radius-xl);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.ui-history-item-main {
+  min-width: 0;
+}
+
+.ui-history-item-profit {
+  margin: 0;
+  font-family: var(--pl-font-display);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.ui-history-item-meta {
+  margin: 6px 0 0;
+  color: var(--pl-color-text-secondary);
+  font-size: 0.95rem;
+}
+
+.ui-history-item-side {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+}
+
+.ui-history-item-payout {
+  margin: 0;
+  color: var(--pl-color-teal);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.ui-history-item-chevron {
+  color: var(--pl-color-text-tertiary);
+}
+
+.ui-history-empty {
+  margin: 0;
+  color: var(--pl-color-text-secondary);
+}
+
+.ui-history-chart-block {
+  display: grid;
+  gap: 8px;
+}
+
+.ui-history-chart-title {
+  margin: 0;
+  font-family: var(--pl-font-display);
+  font-size: 1.1rem;
+}
+
+.ui-history-chart-subtitle {
+  margin: 0;
+  color: var(--pl-color-text-secondary);
+}
+
+.ui-history-chart-shell {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.ui-history-chart-axis {
+  display: grid;
+  grid-template-rows: repeat(5, 1fr);
+  align-items: center;
+  color: var(--pl-color-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.ui-history-chart-canvas {
+  background: transparent;
+}
+
+.ui-history-chart-canvas svg {
+  width: 100%;
+  height: auto;
+}
+
+.ui-history-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: var(--pl-color-text-secondary);
+}
+
+.ui-history-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ui-history-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.ui-history-dot.is-profit {
+  background: #7c5cf5;
+}
+
+.ui-history-dot.is-threshold {
+  background: #111;
+}
+
+.ui-history-summary-headline,
+.ui-history-summary-subtitle,
+.ui-history-chart-hint {
+  margin: 0;
+  color: var(--pl-color-text-secondary);
+}

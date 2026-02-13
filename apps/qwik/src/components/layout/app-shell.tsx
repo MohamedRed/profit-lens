@@ -4,7 +4,8 @@ import { t, useI18n } from '../../lib/i18n/i18n-context';
 import { useAuth } from '../../lib/auth/auth-context';
 
 interface AppShellProps {
-  title: string;
+  titleKey: string;
+  titleFallback: string;
 }
 
 const navItems = [
@@ -38,7 +39,7 @@ const navItems = [
   },
 ] as const;
 
-export const AppShell = component$<AppShellProps>(({ title }) => {
+export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) => {
   const i18n = useI18n();
   const location = useLocation();
   const auth = useAuth();
@@ -47,7 +48,7 @@ export const AppShell = component$<AppShellProps>(({ title }) => {
     <div class="ui-mobile-app" id="qwik-app-root-marker" data-user={auth.user.value?.uid ?? 'none'}>
       <main class="ui-mobile-page">
         <header class="ui-mobile-header">
-          <h1 class="ui-mobile-title">{title}</h1>
+          <h1 class="ui-mobile-title">{t(i18n, titleKey, titleFallback)}</h1>
         </header>
 
         <section class="ui-mobile-content">

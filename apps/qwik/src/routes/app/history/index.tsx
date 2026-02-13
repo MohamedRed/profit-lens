@@ -1,25 +1,27 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { watchOffers, watchOfferStats } from '../../../lib/features/offers/offers-service';
-import type { OfferRecord, OfferStatsDay } from '../../../lib/types/offer';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
+import type { OfferRecord, OfferStatsDay } from '../../../lib/types/offer';
+import {
+  averageProfit,
+  buildSummaryHeadline,
+  chartHeight,
+  chartPadding,
+  chartWidth,
+  formatChartCurrency,
+  formatCurrency,
+  formatShortDateTime,
+} from './history-helpers';
 
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat(undefined, { style: 'currency', currency: 'EUR' }).format(value);
-};
-
-const formatDate = (value: Date | null) => {
-  if (!value) {
-    return 'n/a';
-  }
-  return value.toLocaleDateString();
-};
+type HistoryViewMode = 'list' | 'charts';
 
 export default component$(() => {
   const i18n = useI18n();
   const auth = useAuth();
   const offers = useSignal<OfferRecord[]>([]);
   const stats = useSignal<OfferStatsDay[]>([]);
+  const viewMode = useSignal<HistoryViewMode>('list');
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
@@ -42,47 +44,188 @@ export default component$(() => {
     });
   });
 
-  const totalNetProfit = offers.value.reduce((sum, item) => sum + (item.netProfitEuro ?? 0), 0);
+  const locale = i18n.locale.value;
+  const sortedStats = [...stats.value].sort((a, b) => a.dayStart.getTime() - b.dayStart.getTime());
+  const chartValues = sortedStats
+    .map((entry) => (entry.offerCount > 0 ? entry.netProfitEuro / entry.offerCount : 0))
+    .filter((value) => Number.isFinite(value));
+
+  const maxAbsValue =
+    chartValues.length > 0
+      ? chartValues.reduce((acc, value) => Math.max(acc, Math.abs(value)), 0)
+      : 0;
+  const normalizedMax = maxAbsValue > 0 ? maxAbsValue : 1;
+  const normalizedMin = -normalizedMax;
+  const usableWidth = chartWidth - chartPadding * 2;
+  const usableHeight = chartHeight - chartPadding * 2;
+  const toY = (value: number): number => {
+    const ratio = (value - normalizedMin) / (normalizedMax - normalizedMin || 1);
+    return chartHeight - chartPadding - ratio * usableHeight;
+  };
+  const thresholdY = toY(0);
+  const chartPoints = chartValues.map((value, index) => {
+    const x =
+      chartPadding +
+      (chartValues.length <= 1 ? usableWidth / 2 : (index / (chartValues.length - 1)) * usableWidth);
+    return {
+      x,
+      y: toY(value),
+      value,
+    };
+  });
+  const pathData = chartPoints
+    .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
+    .join(' ');
+
+  const tickValues = [
+    normalizedMax,
+    normalizedMax / 2,
+    0,
+    normalizedMin / 2,
+    normalizedMin,
+  ];
+  const latestValue = chartValues.length > 0 ? chartValues[chartValues.length - 1] : 0;
+  const summaryHeadline = buildSummaryHeadline(i18n, sortedStats, locale);
+  const averageAll = averageProfit(sortedStats);
+  const averageTemplate = t(i18n, 'historySummaryAverageProfit', 'Average profit: {amount}');
+  const averageText = averageTemplate.replace('{amount}', formatCurrency(locale, averageAll));
 
   return (
-    <div class="pl-stack">
-      <div class="pl-row">
-        <div class="pl-list-item" style="min-width:220px; flex:1;">
-          <strong>{t(i18n, 'historyTabLabel', 'History')}</strong>
-          <div>{offers.value.length} offers</div>
-        </div>
-        <div class="pl-list-item" style="min-width:220px; flex:1;">
-          <strong>{t(i18n, 'netProfitLabel', 'Net profit')}</strong>
-          <div>{formatCurrency(totalNetProfit)}</div>
-        </div>
+    <div class="ui-history-root">
+      <div class="ui-history-segmented">
+        <button
+          type="button"
+          class={{ 'ui-history-segment-btn': true, 'is-active': viewMode.value === 'list' }}
+          onClick$={() => {
+            viewMode.value = 'list';
+          }}
+        >
+          <span class="material-icons-outlined ui-history-segment-icon" aria-hidden="true">
+            list
+          </span>
+          <span>{t(i18n, 'historyViewListLabel', 'List')}</span>
+        </button>
+        <button
+          type="button"
+          class={{ 'ui-history-segment-btn': true, 'is-active': viewMode.value === 'charts' }}
+          onClick$={() => {
+            viewMode.value = 'charts';
+          }}
+        >
+          <span class="material-icons-outlined ui-history-segment-icon" aria-hidden="true">
+            show_chart
+          </span>
+          <span>{t(i18n, 'historyViewChartsLabel', 'Charts')}</span>
+        </button>
       </div>
 
-      <h2 style="margin:0;">Daily stats</h2>
-      <ul class="pl-list">
-        {stats.value.length === 0 && <li class="pl-list-item">No stats yet.</li>}
-        {stats.value.map((item) => (
-          <li key={item.dayStart.toISOString()} class="pl-list-item">
-            <strong>{formatDate(item.dayStart)}</strong>
-            <div>Offers: {item.offerCount}</div>
-            <div>Net: {formatCurrency(item.netProfitEuro)}</div>
-          </li>
-        ))}
-      </ul>
+      {viewMode.value === 'list' ? (
+        <ul class="ui-history-list">
+          {offers.value.length === 0 ? (
+            <li class="ui-history-empty">{t(i18n, 'noHistoryMessage', 'No offers saved yet.')}</li>
+          ) : null}
+          {offers.value.map((item) => {
+            const profit = item.netProfitEuro ?? 0;
+            const distance = item.routeVerifiedDistanceKm ?? item.distanceKm;
+            return (
+              <li key={item.id} class="ui-history-item">
+                <div class="ui-history-item-main">
+                  <p class="ui-history-item-profit">{formatCurrency(locale, profit)}</p>
+                  <p class="ui-history-item-meta">
+                    {distance.toFixed(1)} km • {formatShortDateTime(locale, item.createdAt)}
+                  </p>
+                </div>
+                <div class="ui-history-item-side">
+                  <p class="ui-history-item-payout">{formatCurrency(locale, item.payoutEuro)}</p>
+                  <span class="material-icons-outlined ui-history-item-chevron" aria-hidden="true">
+                    chevron_right
+                  </span>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <div class="ui-history-chart-block">
+          <h2 class="ui-history-chart-title">{t(i18n, 'historyChartTitle', 'Profit trend')}</h2>
+          <p class="ui-history-chart-subtitle">
+            {t(i18n, 'latestProfitLabel', 'Latest profit')}: {formatCurrency(locale, latestValue)}
+          </p>
 
-      <h2 style="margin:0;">Offers</h2>
-      <ul class="pl-list">
-        {offers.value.length === 0 && <li class="pl-list-item">No offers saved yet.</li>}
-        {offers.value.map((item) => (
-          <li key={item.id} class="pl-list-item">
-            <div>
-              <strong>{formatCurrency(item.payoutEuro)}</strong> · {item.distanceKm.toFixed(1)} km
+          {chartValues.length < 2 ? (
+            <p class="ui-history-empty">
+              {t(i18n, 'historyChartEmptyMessage', 'Add at least 2 offers to see the chart.')}
+            </p>
+          ) : (
+            <div class="ui-history-chart-shell">
+              <div class="ui-history-chart-axis">
+                {tickValues.map((value, index) => (
+                  <span key={`${value}-${index}`}>{formatChartCurrency(locale, value)}</span>
+                ))}
+              </div>
+              <div class="ui-history-chart-canvas">
+                <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} aria-label="history chart">
+                  <rect
+                    x="0.5"
+                    y="0.5"
+                    width={chartWidth - 1}
+                    height={chartHeight - 1}
+                    rx="12"
+                    ry="12"
+                    fill="transparent"
+                    stroke="rgba(24, 24, 27, 0.7)"
+                    stroke-width="1"
+                  />
+                  {tickValues.map((value, index) => (
+                    <line
+                      key={`${value}-${index}`}
+                      x1="0"
+                      x2={String(chartWidth)}
+                      y1={String(toY(value))}
+                      y2={String(toY(value))}
+                      stroke="rgba(24, 24, 27, 0.45)"
+                      stroke-width="1"
+                    />
+                  ))}
+                  <line
+                    x1="0"
+                    x2={String(chartWidth)}
+                    y1={String(thresholdY)}
+                    y2={String(thresholdY)}
+                    stroke="#ef4444"
+                    stroke-width="2"
+                  />
+                  <path d={pathData} fill="none" stroke="#7c5cf5" stroke-width="3" />
+                  {chartPoints.map((point, index) => (
+                    <circle key={index} cx={String(point.x)} cy={String(point.y)} r="4" fill="#7c5cf5" />
+                  ))}
+                </svg>
+              </div>
             </div>
-            <div>{item.pickupName ?? 'Pickup'} → {item.dropoffName ?? 'Drop-off'}</div>
-            <div>Created: {formatDate(item.createdAt)}</div>
-            <div>Net: {formatCurrency(item.netProfitEuro ?? 0)}</div>
-          </li>
-        ))}
-      </ul>
+          )}
+
+          <div class="ui-history-legend">
+            <span class="ui-history-legend-item">
+              <span class="ui-history-dot is-profit" />
+              {t(i18n, 'historyChartProfitLabel', 'Profit')}
+            </span>
+            <span class="ui-history-legend-item">
+              <span class="ui-history-dot is-threshold" />
+              {t(i18n, 'profitThresholdLabel', 'Profitability threshold')}
+            </span>
+          </div>
+
+          <p class="ui-history-summary-headline">{summaryHeadline}</p>
+          <p class="ui-history-summary-subtitle">{averageText}</p>
+          <p class="ui-history-chart-hint">
+            {t(
+              i18n,
+              'historyChartHintMessage',
+              'Use this chart to compare profits above or below the profitability threshold.',
+            )}
+          </p>
+        </div>
+      )}
     </div>
   );
 });

@@ -4,6 +4,9 @@
 @import './lib/design/shadcn.css';
 @import './lib/design/mobile-3-shell.css';
 @import './lib/design/mobile-3-minimalvibrant.css';
+@import './lib/design/mobile-3-history.css';
+@import './lib/design/mobile-3-settings.css';
+@import './lib/design/mobile-3-help.css';
 
 * {
   box-sizing: border-box;

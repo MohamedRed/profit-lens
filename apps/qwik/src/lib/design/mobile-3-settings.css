@@ -1,0 +1,122 @@
+.ui-settings-root {
+  display: grid;
+  gap: 12px;
+}
+
+.ui-settings-card {
+  border: 1px solid var(--pl-color-outline);
+  border-radius: var(--pl-radius-xl);
+  background: var(--pl-color-surface);
+}
+
+.ui-settings-tile {
+  min-height: 66px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ui-settings-tile-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ui-settings-title {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--pl-color-text-primary);
+}
+
+.ui-settings-subtitle {
+  margin: 2px 0 0;
+  color: var(--pl-color-text-secondary);
+  font-size: 0.84rem;
+}
+
+.ui-settings-leading {
+  color: var(--pl-color-text-primary);
+  font-size: 22px;
+}
+
+.ui-settings-chevron {
+  color: var(--pl-color-text-secondary);
+}
+
+.ui-settings-language {
+  padding: 14px 16px;
+}
+
+.ui-settings-section-title {
+  margin: 0 0 10px;
+  font-size: 1.6rem;
+  font-family: var(--pl-font-display);
+}
+
+.ui-settings-language-select {
+  min-height: 52px;
+  font-size: 1.05rem;
+}
+
+.ui-settings-pill-button {
+  border: 0;
+  border-radius: var(--pl-radius-pill);
+  min-height: 32px;
+  padding: 0 16px;
+  background: rgba(139, 92, 246, 0.18);
+  color: var(--pl-color-purple);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ui-settings-pill-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.ui-settings-vehicles-head {
+  padding: 14px 16px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ui-settings-plus {
+  color: var(--pl-color-text-primary);
+  font-size: 26px;
+}
+
+.ui-settings-vehicle-row {
+  padding: 8px 16px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ui-settings-vehicle-name {
+  margin: 0;
+  font-size: 1.8rem;
+  font-family: var(--pl-font-display);
+}
+
+.ui-settings-vehicle-type {
+  margin: 2px 0 0;
+  color: var(--pl-color-text-secondary);
+  text-transform: lowercase;
+}
+
+.ui-settings-signout {
+  width: 100%;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  min-height: 56px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--pl-color-text-primary);
+  font-size: 1rem;
+  cursor: pointer;
+}

@@ -3,25 +3,26 @@ import { useLocation } from '@builder.io/qwik-city';
 import { AppShell } from '../../components/layout/app-shell';
 import { AuthGuard } from '../../components/guards/auth-guard';
 
-const titleByPath = (path: string): string => {
+const titleByPath = (path: string): { key: string; fallback: string } => {
   if (path.includes('/app/history')) {
-    return 'History';
+    return { key: 'historyTabLabel', fallback: 'History' };
   }
   if (path.includes('/app/settings')) {
-    return 'Settings';
+    return { key: 'settingsTabLabel', fallback: 'Settings' };
   }
   if (path.includes('/app/help')) {
-    return 'Help';
+    return { key: 'helpTabLabel', fallback: 'Help' };
   }
-  return 'Offer';
+  return { key: 'offerTabLabel', fallback: 'Offer' };
 };
 
 export default component$(() => {
   const location = useLocation();
+  const title = titleByPath(location.url.pathname);
 
   return (
     <AuthGuard requireAuth={true}>
-      <AppShell title={titleByPath(location.url.pathname)}>
+      <AppShell titleKey={title.key} titleFallback={title.fallback}>
         <Slot />
       </AppShell>
     </AuthGuard>

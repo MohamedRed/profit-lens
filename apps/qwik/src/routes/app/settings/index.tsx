@@ -1,53 +1,47 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { useAuth } from '../../../lib/auth/auth-context';
+import { signOutCurrentUser } from '../../../lib/firebase/auth';
+import { billingPlans } from '../../../lib/config/runtime-config';
+import { applyLocale, t, useI18n } from '../../../lib/i18n/i18n-context';
+import { openCustomerPortal, startCheckout, watchEntitlement, watchUsage } from '../../../lib/features/billing/billing-service';
+import { saveUserProfile, watchUserProfile } from '../../../lib/features/profile/profile-service';
+import { watchDevices } from '../../../lib/features/devices/devices-service';
+import { watchVehicles } from '../../../lib/features/vehicles/vehicles-service';
 import type { Entitlement, OfferUsage } from '../../../lib/types/billing';
 import type { DeviceEntry } from '../../../lib/types/device';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
-import { getDeviceId } from '../../../lib/config/device-id';
-import { billingPlans } from '../../../lib/config/runtime-config';
-import {
-  openCustomerPortal,
-  startCheckout,
-  watchEntitlement,
-  watchUsage,
-} from '../../../lib/features/billing/billing-service';
-import {
-  registerDevice,
-  revokeDevice,
-  watchDevices,
-} from '../../../lib/features/devices/devices-service';
-import { saveUserProfile, watchUserProfile } from '../../../lib/features/profile/profile-service';
-import {
-  deleteVehicle,
-  lookupVehicleByPlate,
-  lookupVehicleModel,
-  saveVehicle,
-  watchVehicles,
-} from '../../../lib/features/vehicles/vehicles-service';
-import { useAuth } from '../../../lib/auth/auth-context';
-import { applyLocale, t, useI18n } from '../../../lib/i18n/i18n-context';
-import {
-  asNumber,
-  createId,
-  defaultVehicleDraft,
-  formatDate,
-} from '../../../lib/features/settings/settings-utils';
+
+const formatCurrency = (locale: string, value: number): string => {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+};
+
+const flagForLocale = (code: string): string => {
+  if (code === 'fr') return '🇫🇷';
+  if (code === 'en') return '🇬🇧';
+  if (code === 'ar') return '🇲🇦';
+  return '🏳️';
+};
 
 export default component$(() => {
   const auth = useAuth();
   const i18n = useI18n();
+
   const profile = useSignal<UserProfile | null>(null);
-  const profileStatus = useSignal('');
-  const profileSaving = useSignal(false);
   const vehicles = useSignal<VehicleProfile[]>([]);
-  const vehicleDraft = useSignal<VehicleProfile>(defaultVehicleDraft());
-  const vehicleStatus = useSignal('');
-  const vehicleSaving = useSignal(false);
   const entitlement = useSignal<Entitlement | null>(null);
   const usage = useSignal<OfferUsage | null>(null);
-  const billingStatus = useSignal('');
   const devices = useSignal<DeviceEntry[]>([]);
-  const devicesStatus = useSignal('');
+
+  const selectedLanguage = useSignal<'fr' | 'en' | 'ar'>('fr');
+  const languageSaving = useSignal(false);
+  const openingPortal = useSignal(false);
+  const status = useSignal('');
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
@@ -61,14 +55,14 @@ export default component$(() => {
     }
 
     let unsubscribeUsage: (() => void) | null = null;
-
-    const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (nextProfile: UserProfile) => {
+    const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (nextProfile) => {
       profile.value = nextProfile;
+      selectedLanguage.value = (nextProfile.preferredLocale || 'fr') as 'fr' | 'en' | 'ar';
     });
-    const unsubscribeVehicles = watchVehicles(user.uid, (nextVehicles: VehicleProfile[]) => {
-      vehicles.value = nextVehicles;
+    const unsubscribeVehicles = watchVehicles(user.uid, (items) => {
+      vehicles.value = items;
     });
-    const unsubscribeEntitlement = watchEntitlement(user.uid, (nextEntitlement: Entitlement | null) => {
+    const unsubscribeEntitlement = watchEntitlement(user.uid, (nextEntitlement) => {
       entitlement.value = nextEntitlement;
       usage.value = null;
       if (unsubscribeUsage) {
@@ -76,13 +70,13 @@ export default component$(() => {
         unsubscribeUsage = null;
       }
       if (nextEntitlement?.periodKey) {
-        unsubscribeUsage = watchUsage(user.uid, nextEntitlement.periodKey, (nextUsage: OfferUsage | null) => {
+        unsubscribeUsage = watchUsage(user.uid, nextEntitlement.periodKey, (nextUsage) => {
           usage.value = nextUsage;
         });
       }
     });
-    const unsubscribeDevices = watchDevices(user.uid, (nextDevices: DeviceEntry[]) => {
-      devices.value = nextDevices;
+    const unsubscribeDevices = watchDevices(user.uid, (items) => {
+      devices.value = items;
     });
 
     cleanup(() => {
@@ -96,203 +90,205 @@ export default component$(() => {
     });
   });
 
+  const locale = i18n.locale.value;
+  const currentProfile = profile.value;
+  const currentEntitlement = entitlement.value;
+  const firstVehicle = vehicles.value[0];
+  const currentDevice = devices.value.find((entry) => entry.isCurrent);
+  const paidPlan = billingPlans.find((plan) => plan.offerLimit !== null && Boolean(plan.priceId));
+  const subscriptionTitle = currentEntitlement?.planId.toLowerCase() === 'free'
+    ? t(i18n, 'subscriptionFreeTitle', 'Free plan')
+    : t(i18n, 'subscriptionActiveTitle', 'Subscription active');
+  const subscriptionSubtitle = currentEntitlement?.planId.toLowerCase() === 'free'
+    ? t(i18n, 'subscriptionFreeSubtitle', '10 offers per month')
+    : t(i18n, 'subscriptionActivePlan', 'Current plan: {price}').replace(
+        '{price}',
+        paidPlan?.priceLabel ?? '',
+      );
+
   return (
-    <div class="pl-stack">
-      <section class="pl-list-item pl-stack">
-        <h2 style="margin:0;">{t(i18n, 'profileSectionTitle', 'Business profile')}</h2>
-        <div class="pl-row">
-          <div class="pl-field" style="flex:1; min-width:220px;">
-            <label>{t(i18n, 'countryLabel', 'Country')}</label>
-            <input class="pl-input" value={profile.value?.countryCode ?? ''} onInput$={(_, el) => profile.value && (profile.value = { ...profile.value, countryCode: el.value.toUpperCase() })} />
+    <div class="ui-settings-root">
+      <section class="ui-settings-card">
+        <div class="ui-settings-tile">
+          <div class="ui-settings-tile-content">
+            <p class="ui-settings-title">{t(i18n, 'profileSectionTitle', 'Business profile')}</p>
+            <p class="ui-settings-subtitle">
+              {t(i18n, 'socialRateLabel', 'Social contribution rate')}:{' '}
+              {currentProfile ? `${(currentProfile.socialContributionRate * 100).toFixed(1)}%` : '—'}
+            </p>
+            <p class="ui-settings-subtitle">
+              {t(i18n, 'monthlyFixedCostsLabel', 'Monthly fixed costs')}:{' '}
+              {currentProfile ? formatCurrency(locale, currentProfile.monthlyFixedCosts) : '—'}
+            </p>
           </div>
-          <div class="pl-field" style="flex:1; min-width:220px;">
-            <label>{t(i18n, 'currencyLabel', 'Currency')}</label>
-            <input class="pl-input" value={profile.value?.currencyCode ?? ''} onInput$={(_, el) => profile.value && (profile.value = { ...profile.value, currencyCode: el.value.toUpperCase() })} />
-          </div>
-          <div class="pl-field" style="flex:1; min-width:220px;">
-            <label>{t(i18n, 'languageLabel', 'Language')}</label>
-            <select class="pl-select" value={profile.value?.preferredLocale ?? i18n.locale.value} onChange$={(_, el) => profile.value && (profile.value = { ...profile.value, preferredLocale: el.value })}>
-              <option value="fr">FR</option>
-              <option value="en">EN</option>
-              <option value="ar">AR</option>
-            </select>
-          </div>
+          <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
+            chevron_right
+          </span>
         </div>
-        <div class="pl-row">
-          <div class="pl-field" style="flex:1; min-width:220px;">
-            <label>{t(i18n, 'minProfitabilityLabel', 'Minimum profitability')}</label>
-            <input class="pl-input" value={String(profile.value?.minProfitabilityEuro ?? 0)} onInput$={(_, el) => profile.value && (profile.value = { ...profile.value, minProfitabilityEuro: asNumber(el.value) })} />
-          </div>
-          <div class="pl-field" style="flex:1; min-width:220px;">
-            <label>{t(i18n, 'socialContributionRateLabel', 'Social contribution rate')}</label>
-            <input class="pl-input" value={String(profile.value?.socialContributionRate ?? 0)} onInput$={(_, el) => profile.value && (profile.value = { ...profile.value, socialContributionRate: asNumber(el.value) })} />
-          </div>
-        </div>
-        <button
-          class="pl-button pl-button-primary"
-          disabled={profileSaving.value || !profile.value}
-          onClick$={async () => {
-            if (!profile.value) {
+      </section>
+
+      <section class="ui-settings-card ui-settings-language">
+        <h2 class="ui-settings-section-title">{t(i18n, 'languageSectionTitle', 'Language')}</h2>
+        <select
+          class="ui-select ui-settings-language-select"
+          value={selectedLanguage.value}
+          disabled={languageSaving.value || !currentProfile}
+          onChange$={async (_, el) => {
+            if (!currentProfile) {
               return;
             }
-            profileSaving.value = true;
-            profileStatus.value = '';
+            const next = el.value as 'fr' | 'en' | 'ar';
+            if (next === selectedLanguage.value) {
+              return;
+            }
+            status.value = '';
+            languageSaving.value = true;
+            const previous = selectedLanguage.value;
+            selectedLanguage.value = next;
             try {
-              await saveUserProfile(profile.value);
-              await applyLocale(i18n, profile.value.preferredLocale as 'fr' | 'en' | 'ar');
-              profileStatus.value = t(i18n, 'profileSavedMessage', 'Profile saved.');
+              await applyLocale(i18n, next);
+              await saveUserProfile({ ...currentProfile, preferredLocale: next });
             } catch (error) {
-              profileStatus.value = error instanceof Error ? error.message : String(error);
+              selectedLanguage.value = previous;
+              status.value = error instanceof Error ? error.message : String(error);
             } finally {
-              profileSaving.value = false;
+              languageSaving.value = false;
             }
           }}
         >
-          {profileSaving.value ? t(i18n, 'loadingLabel', 'Loading...') : t(i18n, 'saveProfileButton', 'Save profile')}
-        </button>
-        <div class={{ 'pl-status': true, 'pl-status-error': Boolean(profileStatus.value) && !profileStatus.value.toLowerCase().includes('saved'), 'pl-status-success': profileStatus.value.toLowerCase().includes('saved') }}>{profileStatus.value}</div>
+          <option value="fr">{`${flagForLocale('fr')} ${t(i18n, 'languageFrench', 'French')}`}</option>
+          <option value="en">{`${flagForLocale('en')} ${t(i18n, 'languageEnglish', 'English')}`}</option>
+          <option value="ar">{`${flagForLocale('ar')} ${t(i18n, 'languageArabic', 'Arabic')}`}</option>
+        </select>
       </section>
 
-      <section class="pl-list-item pl-stack">
-        <h2 style="margin:0;">{t(i18n, 'vehiclesSectionTitle', 'Vehicles')}</h2>
-        <div class="pl-row">
-          <select class="pl-select" value={vehicleDraft.value.id} onChange$={(_, el) => {
-            const selected = vehicles.value.find((vehicle) => vehicle.id === el.value);
-            vehicleDraft.value = selected ? { ...selected } : defaultVehicleDraft();
-          }}>
-            <option value="">{t(i18n, 'addVehicleTitle', 'Add vehicle')}</option>
-            {vehicles.value.map((vehicle) => (
-              <option key={vehicle.id} value={vehicle.id}>{vehicle.name || vehicle.id}</option>
-            ))}
-          </select>
-          <button class="pl-button pl-button-ghost" onClick$={() => (vehicleDraft.value = defaultVehicleDraft())}>{t(i18n, 'addVehicleTitle', 'Add vehicle')}</button>
+      <section class="ui-settings-card">
+        <div class="ui-settings-tile">
+          <span class="material-icons-outlined ui-settings-leading" aria-hidden="true">
+            ios_share
+          </span>
+          <div class="ui-settings-tile-content">
+            <p class="ui-settings-title">{t(i18n, 'installAppTitle', "Install the app")}</p>
+            <p class="ui-settings-subtitle">
+              {t(i18n, 'installAppSubtitle', 'Add ProfitLens to your home screen')}
+            </p>
+          </div>
         </div>
-        <div class="pl-row">
-          <div class="pl-field" style="flex:1; min-width:240px;"><label>{t(i18n, 'vehicleNameLabel', 'Vehicle name')}</label><input class="pl-input" value={vehicleDraft.value.name} onInput$={(_, el) => (vehicleDraft.value = { ...vehicleDraft.value, name: el.value })} /></div>
-          <div class="pl-field" style="flex:1; min-width:240px;"><label>{t(i18n, 'vehicleLicensePlateLabel', 'License plate')}</label><input class="pl-input" value={vehicleDraft.value.licensePlate ?? ''} onInput$={(_, el) => (vehicleDraft.value = { ...vehicleDraft.value, licensePlate: el.value })} /></div>
-        </div>
-        <div class="pl-row">
-          <div class="pl-field" style="flex:1; min-width:180px;"><label>{t(i18n, 'vehicleBrandLabel', 'Brand')}</label><input class="pl-input" value={vehicleDraft.value.brand ?? ''} onInput$={(_, el) => (vehicleDraft.value = { ...vehicleDraft.value, brand: el.value })} /></div>
-          <div class="pl-field" style="flex:1; min-width:180px;"><label>{t(i18n, 'vehicleModelLabel', 'Model')}</label><input class="pl-input" value={vehicleDraft.value.model ?? ''} onInput$={(_, el) => (vehicleDraft.value = { ...vehicleDraft.value, model: el.value })} /></div>
-          <div class="pl-field" style="flex:1; min-width:180px;"><label>{t(i18n, 'vehicleTypeLabel', 'Vehicle type')}</label><input class="pl-input" value={vehicleDraft.value.type} onInput$={(_, el) => (vehicleDraft.value = { ...vehicleDraft.value, type: el.value })} /></div>
-          <div class="pl-field" style="flex:1; min-width:180px;"><label>{t(i18n, 'energyTypeLabel', 'Energy type')}</label><input class="pl-input" value={vehicleDraft.value.energyType} onInput$={(_, el) => (vehicleDraft.value = { ...vehicleDraft.value, energyType: el.value })} /></div>
-        </div>
-        <div class="pl-row">
-          <button class="pl-button pl-button-ghost" disabled={!vehicleDraft.value.licensePlate} onClick$={async () => {
-            try {
-              const payload = await lookupVehicleByPlate(vehicleDraft.value.licensePlate ?? '');
-              vehicleDraft.value = { ...vehicleDraft.value, brand: (payload.brand as string | undefined) ?? vehicleDraft.value.brand, model: (payload.model as string | undefined) ?? vehicleDraft.value.model, registrationYear: payload.registrationYear == null ? vehicleDraft.value.registrationYear : Number(payload.registrationYear), energyType: (payload.energyType as string | undefined) ?? vehicleDraft.value.energyType };
-            } catch (error) {
-              vehicleStatus.value = error instanceof Error ? error.message : String(error);
-            }
-          }}>Lookup plate</button>
-          <button class="pl-button pl-button-ghost" disabled={!vehicleDraft.value.brand || !vehicleDraft.value.model} onClick$={async () => {
-            try {
-              const payload = await lookupVehicleModel({ brand: vehicleDraft.value.brand ?? '', model: vehicleDraft.value.model ?? '', energyType: vehicleDraft.value.energyType });
-              if (payload.consumptionPer100Km != null) {
-                vehicleDraft.value = { ...vehicleDraft.value, energyConsumptionPer100Km: Number(payload.consumptionPer100Km) };
+      </section>
+
+      <section class="ui-settings-card">
+        <div class="ui-settings-tile">
+          <span class="material-icons-outlined ui-settings-leading" aria-hidden="true">
+            payment
+          </span>
+          <div class="ui-settings-tile-content">
+            <p class="ui-settings-title">{subscriptionTitle}</p>
+            <p class="ui-settings-subtitle">{subscriptionSubtitle}</p>
+            {currentEntitlement && usage.value ? (
+              <p class="ui-settings-subtitle">
+                {t(i18n, 'offersRemainingValue', '{remaining} remaining this month').replace(
+                  '{remaining}',
+                  String(
+                    currentEntitlement.offerLimit == null
+                      ? t(i18n, 'offersRemainingUnlimited', 'Unlimited')
+                      : Math.max(0, currentEntitlement.offerLimit - usage.value.offerCount),
+                  ),
+                )}
+              </p>
+            ) : null}
+          </div>
+          <button
+            type="button"
+            class="ui-settings-pill-button"
+            disabled={openingPortal.value}
+            onClick$={async () => {
+              if (openingPortal.value) {
+                return;
               }
-            } catch (error) {
-              vehicleStatus.value = error instanceof Error ? error.message : String(error);
-            }
-          }}>Lookup model</button>
-          <button class="pl-button pl-button-primary" disabled={vehicleSaving.value} onClick$={async () => {
-            const user = auth.user.value;
-            if (!user) return;
-            vehicleSaving.value = true;
-            vehicleStatus.value = '';
-            try {
-              const id = vehicleDraft.value.id || createId();
-              await saveVehicle(user.uid, { ...vehicleDraft.value, id, name: vehicleDraft.value.name || 'Vehicle' });
-              vehicleStatus.value = t(i18n, 'vehicleSavedMessage', 'Vehicle saved.');
-              vehicleDraft.value = defaultVehicleDraft();
-            } catch (error) {
-              vehicleStatus.value = error instanceof Error ? error.message : String(error);
-            } finally {
-              vehicleSaving.value = false;
-            }
-          }}>{t(i18n, 'saveVehicleButton', 'Save vehicle')}</button>
-          <button class="pl-button pl-button-danger" disabled={!vehicleDraft.value.id || vehicleSaving.value} onClick$={async () => {
-            const user = auth.user.value;
-            if (!user || !vehicleDraft.value.id) return;
-            try {
-              await deleteVehicle(user.uid, vehicleDraft.value);
-              vehicleStatus.value = t(i18n, 'vehicleDeletedMessage', 'Vehicle deleted.');
-              vehicleDraft.value = defaultVehicleDraft();
-            } catch (error) {
-              vehicleStatus.value = error instanceof Error ? error.message : String(error);
-            }
-          }}>{t(i18n, 'deleteVehicleAction', 'Delete vehicle')}</button>
-        </div>
-        <div class={{ 'pl-status': true, 'pl-status-error': Boolean(vehicleStatus.value) && !vehicleStatus.value.toLowerCase().includes('saved') && !vehicleStatus.value.toLowerCase().includes('deleted'), 'pl-status-success': vehicleStatus.value.toLowerCase().includes('saved') || vehicleStatus.value.toLowerCase().includes('deleted') }}>{vehicleStatus.value}</div>
-      </section>
-
-      <section class="pl-list-item pl-stack">
-        <h2 style="margin:0;">Subscription</h2>
-        <div>{entitlement.value ? `${entitlement.value.status} (${entitlement.value.planId})` : 'No active subscription data.'}</div>
-        <div>{usage.value ? `Offers this period: ${usage.value.offerCount}` : 'Usage unavailable.'}</div>
-        <div class="pl-row">
-          {billingPlans.map((plan) => (
-            <button key={plan.id} class="pl-button pl-button-ghost" disabled={!plan.priceId} onClick$={async () => {
-              billingStatus.value = '';
+              status.value = '';
+              openingPortal.value = true;
               try {
-                await startCheckout(plan.priceId);
+                if (currentEntitlement?.planId.toLowerCase() === 'free') {
+                  if (paidPlan?.priceId) {
+                    await startCheckout(paidPlan.priceId);
+                  }
+                } else {
+                  await openCustomerPortal();
+                }
               } catch (error) {
-                billingStatus.value = error instanceof Error ? error.message : String(error);
+                status.value = error instanceof Error ? error.message : String(error);
+              } finally {
+                openingPortal.value = false;
               }
-            }}>{plan.id} ({plan.priceLabel})</button>
-          ))}
-          <button class="pl-button pl-button-primary" onClick$={async () => {
-            billingStatus.value = '';
-            try {
-              await openCustomerPortal();
-            } catch (error) {
-              billingStatus.value = error instanceof Error ? error.message : String(error);
-            }
-          }}>Portal</button>
+            }}
+          >
+            {currentEntitlement?.planId.toLowerCase() === 'free'
+              ? t(i18n, 'upgradePlanButton', 'Upgrade plan')
+              : t(i18n, 'managePlanButton', 'Manage subscription')}
+          </button>
         </div>
-        <div class={{ 'pl-status': true, 'pl-status-error': Boolean(billingStatus.value) }}>{billingStatus.value}</div>
       </section>
 
-      <section class="pl-list-item pl-stack">
-        <h2 style="margin:0;">{t(i18n, 'devicesSectionTitle', 'Devices')}</h2>
-        <p class="pl-subtitle" style="margin:0;">{t(i18n, 'devicesSectionSubtitle', 'Manage the device linked to your plan')}</p>
-        <div class="pl-row">
-          <button class="pl-button pl-button-primary" onClick$={async () => {
-            devicesStatus.value = '';
-            try {
-              await registerDevice({
-                deviceId: getDeviceId(),
-                platform: navigator.platform || 'web',
-                userAgent: navigator.userAgent,
-              });
-              devicesStatus.value = 'Device registered.';
-            } catch (error) {
-              devicesStatus.value = error instanceof Error ? error.message : String(error);
-            }
-          }}>Register current device</button>
+      <section class="ui-settings-card">
+        <div class="ui-settings-tile">
+          <span class="material-icons-outlined ui-settings-leading" aria-hidden="true">
+            devices
+          </span>
+          <div class="ui-settings-tile-content">
+            <p class="ui-settings-title">{t(i18n, 'devicesSectionTitle', 'Devices')}</p>
+            <p class="ui-settings-subtitle">
+              {t(i18n, 'devicesSectionSubtitle', 'Manage the device linked to your plan')}
+            </p>
+            <p class="ui-settings-subtitle">
+              {currentDevice?.deviceLabel ||
+                currentDevice?.platform ||
+                t(i18n, 'deviceUnknownLabel', 'Unknown device')}
+            </p>
+          </div>
+          <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
+            chevron_right
+          </span>
         </div>
-        <ul class="pl-list">
-          {devices.value.length === 0 && <li class="pl-list-item">No devices found.</li>}
-          {devices.value.map((device) => (
-            <li key={device.id} class="pl-list-item">
-              <div><strong>{device.deviceLabel || device.platform || t(i18n, 'deviceUnknownLabel', 'Unknown device')}</strong> {device.isCurrent ? `(${t(i18n, 'deviceCurrentLabel', 'Current')})` : ''}</div>
-              <div>{device.userAgent || ''}</div>
-              <div>{t(i18n, 'deviceLastSeenPrefix', 'Last seen')} {formatDate(device.lastSeenAt)}</div>
-              <button class="pl-button pl-button-danger" onClick$={async () => {
-                devicesStatus.value = '';
-                try {
-                  await revokeDevice({ deviceId: device.id });
-                  devicesStatus.value = 'Device revoked.';
-                } catch (error) {
-                  devicesStatus.value = error instanceof Error ? error.message : String(error);
-                }
-              }}>{t(i18n, 'deviceRevokeAction', 'Revoke')}</button>
-            </li>
-          ))}
-        </ul>
-        <div class={{ 'pl-status': true, 'pl-status-error': Boolean(devicesStatus.value) && !devicesStatus.value.toLowerCase().includes('registered') && !devicesStatus.value.toLowerCase().includes('revoked'), 'pl-status-success': devicesStatus.value.toLowerCase().includes('registered') || devicesStatus.value.toLowerCase().includes('revoked') }}>{devicesStatus.value}</div>
       </section>
+
+      <section class="ui-settings-card">
+        <div class="ui-settings-vehicles-head">
+          <p class="ui-settings-title">{t(i18n, 'vehiclesSectionTitle', 'Vehicles')}</p>
+          <span class="material-icons-outlined ui-settings-plus" aria-hidden="true">
+            add
+          </span>
+        </div>
+        {firstVehicle ? (
+          <div class="ui-settings-vehicle-row">
+            <div>
+              <p class="ui-settings-vehicle-name">{firstVehicle.name}</p>
+              <p class="ui-settings-vehicle-type">{firstVehicle.type}</p>
+            </div>
+            <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
+              chevron_right
+            </span>
+          </div>
+        ) : (
+          <p class="ui-settings-subtitle">{t(i18n, 'noVehiclesMessage', 'No vehicles found.')}</p>
+        )}
+      </section>
+
+      <section class="ui-settings-card">
+        <button
+          type="button"
+          class="ui-settings-signout"
+          onClick$={async () => {
+            await signOutCurrentUser();
+          }}
+        >
+          <span class="material-icons-outlined ui-settings-leading" aria-hidden="true">
+            logout
+          </span>
+          <span>{t(i18n, 'signOutButton', 'Sign out')}</span>
+        </button>
+      </section>
+
+      {status.value ? <p class="ui-status ui-status-error">{status.value}</p> : null}
     </div>
   );
 });
