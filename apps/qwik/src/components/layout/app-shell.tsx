@@ -1,5 +1,5 @@
 import { Slot, component$ } from '@builder.io/qwik';
-import { Link, useLocation } from '@builder.io/qwik-city';
+import { useLocation } from '@builder.io/qwik-city';
 import { useAuth } from '../../lib/auth/auth-context';
 import { signOutCurrentUser } from '../../lib/firebase/auth';
 import { applyLocale, supportedLocales, t, useI18n } from '../../lib/i18n/i18n-context';
@@ -18,18 +18,18 @@ export const AppShell = component$<AppShellProps>(({ title }) => {
       <header class="pl-tabs">
         <nav class="pl-nav">
           <span class="pl-badge">ProfitLens</span>
-          <Link class="pl-nav-link" href="/next/app/offer" prefetch={false} aria-current={location.url.pathname.includes('/app/offer') ? 'page' : undefined}>
+          <a class="pl-nav-link" href="/next/app/offer" aria-current={location.url.pathname.includes('/app/offer') ? 'page' : undefined}>
             {t(i18n, 'offerTabLabel', 'Offer')}
-          </Link>
-          <Link class="pl-nav-link" href="/next/app/history" prefetch={false} aria-current={location.url.pathname.includes('/app/history') ? 'page' : undefined}>
+          </a>
+          <a class="pl-nav-link" href="/next/app/history" aria-current={location.url.pathname.includes('/app/history') ? 'page' : undefined}>
             {t(i18n, 'historyTabLabel', 'History')}
-          </Link>
-          <Link class="pl-nav-link" href="/next/app/settings" prefetch={false} aria-current={location.url.pathname.includes('/app/settings') ? 'page' : undefined}>
+          </a>
+          <a class="pl-nav-link" href="/next/app/settings" aria-current={location.url.pathname.includes('/app/settings') ? 'page' : undefined}>
             {t(i18n, 'settingsTabLabel', 'Settings')}
-          </Link>
-          <Link class="pl-nav-link" href="/next/app/help" prefetch={false} aria-current={location.url.pathname.includes('/app/help') ? 'page' : undefined}>
+          </a>
+          <a class="pl-nav-link" href="/next/app/help" aria-current={location.url.pathname.includes('/app/help') ? 'page' : undefined}>
             {t(i18n, 'helpTabLabel', 'Help')}
-          </Link>
+          </a>
           <span class="pl-nav-spacer" />
           <select
             class="pl-select"
