@@ -129,6 +129,7 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
           {isFree ? (
             <Button
               variant="default"
+              class="ui-offer-usage-cta"
               onClick$={async () => {
                 if (!paidPlan?.priceId) {
                   status.value = t(i18n, 'sourceOpenError', 'Unable to open source.');
@@ -146,7 +147,8 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
             </Button>
           ) : (
             <Button
-              variant="secondary"
+              variant="default"
+              class="ui-offer-usage-cta"
               disabled={openingPortal.value}
               onClick$={async () => {
                 if (openingPortal.value) {

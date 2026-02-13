@@ -64,7 +64,7 @@ select {
 .ui-field label {
   font-family: var(--pl-font-body);
   font-size: 0.94rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .ui-subtitle {
