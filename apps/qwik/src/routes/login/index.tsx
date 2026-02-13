@@ -20,8 +20,8 @@ export default component$(() => {
 
   return (
     <AuthGuard requireAuth={false}>
-      <div class="pl-page">
-        <Card class="pl-stack">
+      <div class="ui-page">
+        <Card class="ui-stack">
           <CardHeader>
             <Badge>ProfitLens</Badge>
             <CardTitle>{t(i18n, 'signInTitle', 'Sign in')}</CardTitle>
@@ -29,7 +29,7 @@ export default component$(() => {
           </CardHeader>
 
           <CardContent>
-            <div class="pl-field">
+            <div class="ui-field">
               <Label for="email">{t(i18n, 'emailLabel', 'Email')}</Label>
               <Input
                 id="email"
@@ -40,7 +40,7 @@ export default component$(() => {
               />
             </div>
 
-            <div class="pl-field">
+            <div class="ui-field">
               <Label for="password">{t(i18n, 'passwordLabel', 'Password')}</Label>
               <Input
                 id="password"
@@ -71,7 +71,7 @@ export default component$(() => {
               {loading.value ? t(i18n, 'loadingLabel', 'Loading...') : t(i18n, 'signInButton', 'Sign in')}
             </Button>
 
-            <div class="pl-row">
+            <div class="ui-row">
               <Button variant="secondary" onClick$={() => navigate('/next/register')}>
                 {t(i18n, 'createAccountButton', 'Create an account')}
               </Button>
@@ -80,7 +80,7 @@ export default component$(() => {
               </a>
             </div>
 
-            <div class={{ 'pl-status': true, 'pl-status-error': Boolean(status.value) }}>{status.value}</div>
+            <div class={{ 'ui-status': true, 'ui-status-error': Boolean(status.value) }}>{status.value}</div>
           </CardContent>
         </Card>
       </div>

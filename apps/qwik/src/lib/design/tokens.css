@@ -1,4 +1,7 @@
 :root {
+  --pl-font-body: 'Inter', 'Avenir Next', 'Segoe UI', sans-serif;
+  --pl-font-display: 'Plus Jakarta Sans', 'Inter', 'Segoe UI', sans-serif;
+
   --pl-color-background: #ffffff;
   --pl-color-surface: #f4f4f5;
   --pl-color-surface-elevated: #e4e4e7;
@@ -6,14 +9,17 @@
 
   --pl-color-text-primary: #18181b;
   --pl-color-text-secondary: #71717a;
-  --pl-color-text-muted: #a1a1aa;
+  --pl-color-text-tertiary: #a1a1aa;
+  --pl-color-text-muted: #d4d4d8;
+  --pl-color-text-subtle: #52525b;
 
   --pl-color-purple: #8b5cf6;
   --pl-color-teal: #14b8a6;
   --pl-color-pink: #f472b6;
-  --pl-color-blue: #2563eb;
-  --pl-color-danger: #dc2626;
-  --pl-color-success: #16a34a;
+  --pl-color-blue: #8b5cf6;
+  --pl-color-danger: #ef4444;
+  --pl-color-success: #14b8a6;
+  --pl-color-purple-soft: rgba(139, 92, 246, 0.12);
 
   --pl-space-xs: 4px;
   --pl-space-sm: 8px;
@@ -27,7 +33,9 @@
   --pl-radius-md: 18px;
   --pl-radius-lg: 20px;
   --pl-radius-xl: 24px;
+  --pl-radius-xxl: 26px;
   --pl-radius-pill: 999px;
 
-  --pl-shadow-card: 0 20px 40px rgba(20, 16, 36, 0.12);
+  --pl-shadow-card: 0 14px 32px rgba(139, 92, 246, 0.1);
+  --pl-shadow-active: 0 2px 8px rgba(0, 0, 0, 0.08);
 }

@@ -5,8 +5,9 @@ import { Label } from '../../../components/ui/label';
 import { Select } from '../../../components/ui/select';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
-import type { VehicleProfile } from '../../../lib/types/vehicle';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
+import type { VehicleProfile } from '../../../lib/types/vehicle';
+import { OfferFeedback } from './offer-feedback';
 
 type OffersServiceModule = typeof import('../../../lib/features/offers/offers-service');
 type VehiclesServiceModule = typeof import('../../../lib/features/vehicles/vehicles-service');
@@ -67,11 +68,13 @@ export default component$(() => {
     let cancelled = false;
     let unsubscribe: (() => void) | null = null;
     vehiclesLoading.value = true;
+
     void loadVehiclesService()
       .then(({ watchVehicles }) => {
         if (cancelled) {
           return;
         }
+
         unsubscribe = watchVehicles(user.uid, (items) => {
           vehicles.value = items;
           vehiclesLoading.value = false;
@@ -99,7 +102,7 @@ export default component$(() => {
 
   return (
     <div
-      class="pl-stack"
+      class="ui-stack"
       onPointerDown$={() => {
         vehicleSubscriptionRequested.value = true;
       }}
@@ -107,55 +110,56 @@ export default component$(() => {
         vehicleSubscriptionRequested.value = true;
       }}
     >
-      <p class="pl-subtitle">{t(i18n, 'manualEntrySubtitle', 'Or enter the offer details manually.')}</p>
+      <p class="ui-subtitle">{t(i18n, 'manualEntrySubtitle', 'Or enter the offer details manually.')}</p>
 
-      <div class="pl-row">
-        <div class="pl-field" style="flex:1; min-width:210px;">
-          <Label>{t(i18n, 'offerAmountLabel', 'Payout')}</Label>
-          <Input value={payout.value} onInput$={(_event: Event, el: HTMLInputElement) => (payout.value = el.value)} />
+      <div class="ui-row">
+        <div class="ui-field" style="flex:1; min-width:210px;">
+          <Label for="offer-payout">{t(i18n, 'offerAmountLabel', 'Payout')}</Label>
+          <Input id="offer-payout" value={payout.value} onInput$={(_, el) => (payout.value = el.value)} />
         </div>
-        <div class="pl-field" style="flex:1; min-width:210px;">
-          <Label>{t(i18n, 'distanceKmLabel', 'Distance')}</Label>
-          <Input value={distance.value} onInput$={(_event: Event, el: HTMLInputElement) => (distance.value = el.value)} />
+        <div class="ui-field" style="flex:1; min-width:210px;">
+          <Label for="offer-distance">{t(i18n, 'distanceKmLabel', 'Distance')}</Label>
+          <Input id="offer-distance" value={distance.value} onInput$={(_, el) => (distance.value = el.value)} />
         </div>
-        <div class="pl-field" style="flex:1; min-width:210px;">
-          <Label>{t(i18n, 'durationMinutesLabel', 'Estimated time (minutes)')}</Label>
-          <Input value={duration.value} onInput$={(_event: Event, el: HTMLInputElement) => (duration.value = el.value)} />
+        <div class="ui-field" style="flex:1; min-width:210px;">
+          <Label for="offer-duration">{t(i18n, 'durationMinutesLabel', 'Estimated time (minutes)')}</Label>
+          <Input id="offer-duration" value={duration.value} onInput$={(_, el) => (duration.value = el.value)} />
         </div>
       </div>
 
-      <div class="pl-row">
-        <div class="pl-field" style="flex:1; min-width:260px;">
-          <Label>{t(i18n, 'pickupNameLabel', 'Pickup name')}</Label>
-          <Input value={pickupName.value} onInput$={(_event: Event, el: HTMLInputElement) => (pickupName.value = el.value)} />
+      <div class="ui-row">
+        <div class="ui-field" style="flex:1; min-width:260px;">
+          <Label for="offer-pickup-name">{t(i18n, 'pickupNameLabel', 'Pickup name')}</Label>
+          <Input id="offer-pickup-name" value={pickupName.value} onInput$={(_, el) => (pickupName.value = el.value)} />
         </div>
-        <div class="pl-field" style="flex:1; min-width:260px;">
-          <Label>{t(i18n, 'dropoffNameLabel', 'Drop-off name')}</Label>
-          <Input value={dropoffName.value} onInput$={(_event: Event, el: HTMLInputElement) => (dropoffName.value = el.value)} />
-        </div>
-      </div>
-
-      <div class="pl-row">
-        <div class="pl-field" style="flex:1; min-width:260px;">
-          <Label>{t(i18n, 'pickupAddressLabel', 'Pickup address')}</Label>
-          <Input value={pickupAddress.value} onInput$={(_event: Event, el: HTMLInputElement) => (pickupAddress.value = el.value)} />
-        </div>
-        <div class="pl-field" style="flex:1; min-width:260px;">
-          <Label>{t(i18n, 'dropoffAddressLabel', 'Drop-off address')}</Label>
-          <Input value={dropoffAddress.value} onInput$={(_event: Event, el: HTMLInputElement) => (dropoffAddress.value = el.value)} />
+        <div class="ui-field" style="flex:1; min-width:260px;">
+          <Label for="offer-dropoff-name">{t(i18n, 'dropoffNameLabel', 'Drop-off name')}</Label>
+          <Input id="offer-dropoff-name" value={dropoffName.value} onInput$={(_, el) => (dropoffName.value = el.value)} />
         </div>
       </div>
 
-      <div class="pl-field">
-        <Label>{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</Label>
-        <div class="pl-row">
+      <div class="ui-row">
+        <div class="ui-field" style="flex:1; min-width:260px;">
+          <Label for="offer-pickup-address">{t(i18n, 'pickupAddressLabel', 'Pickup address')}</Label>
+          <Input id="offer-pickup-address" value={pickupAddress.value} onInput$={(_, el) => (pickupAddress.value = el.value)} />
+        </div>
+        <div class="ui-field" style="flex:1; min-width:260px;">
+          <Label for="offer-dropoff-address">{t(i18n, 'dropoffAddressLabel', 'Drop-off address')}</Label>
+          <Input id="offer-dropoff-address" value={dropoffAddress.value} onInput$={(_, el) => (dropoffAddress.value = el.value)} />
+        </div>
+      </div>
+
+      <div class="ui-field">
+        <Label for="offer-vehicle">{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</Label>
+        <div class="ui-row">
           <Select
+            id="offer-vehicle"
             style="flex:1; min-width:260px;"
             value={selectedVehicleId.value}
             onFocus$={() => {
               vehicleSubscriptionRequested.value = true;
             }}
-            onChange$={(_event: Event, el: HTMLSelectElement) => (selectedVehicleId.value = el.value)}
+            onChange$={(_, el) => (selectedVehicleId.value = el.value)}
           >
             <option value="">
               {vehiclesLoading.value
@@ -168,6 +172,7 @@ export default component$(() => {
               </option>
             ))}
           </Select>
+
           {!vehicleSubscriptionRequested.value && (
             <Button
               type="button"
@@ -180,12 +185,13 @@ export default component$(() => {
             </Button>
           )}
         </div>
+
         {vehicleSubscriptionRequested.value && !vehiclesHydrated.value && (
-          <div class="pl-status">{t(i18n, 'loadingLabel', 'Loading...')}</div>
+          <div class="ui-status">{t(i18n, 'loadingLabel', 'Loading...')}</div>
         )}
       </div>
 
-      <div class="pl-row">
+      <div class="ui-row">
         <Button
           variant="default"
           disabled={loading.value}
@@ -246,10 +252,13 @@ export default component$(() => {
             }
           }}
         >
-          Verify route
+          {t(i18n, 'verifyRouteButton', 'Verify route')}
         </Button>
 
-        <label class="ui-button ui-button-secondary ui-button-md" style="display:inline-flex; align-items:center; gap:8px;">
+        <label
+          class="ui-button ui-button-secondary ui-button-md"
+          style="display:inline-flex; align-items:center; gap:8px;"
+        >
           {t(i18n, 'importScreenshotButton', 'Import screenshot')}
           <input
             type="file"
@@ -283,15 +292,7 @@ export default component$(() => {
         </label>
       </div>
 
-      <div class={{ 'pl-status': true, 'pl-status-success': status.value.includes('successfully'), 'pl-status-error': !status.value.includes('successfully') && Boolean(status.value) }}>
-        {status.value}
-      </div>
-
-      {result.value && (
-        <pre class="pl-list-item" style="white-space:pre-wrap; overflow:auto;">
-          {JSON.stringify(result.value, null, 2)}
-        </pre>
-      )}
+      <OfferFeedback status={status.value} result={result.value} />
     </div>
   );
 });
