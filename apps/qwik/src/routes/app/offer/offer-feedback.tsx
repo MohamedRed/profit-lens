@@ -16,6 +16,7 @@ export const OfferFeedback = component$<OfferFeedbackProps>(({ result, status })
       <div
         class={{
           'ui-status': true,
+          'ui-offer-status': true,
           'ui-status-success': isSuccessStatus(status),
           'ui-status-error': Boolean(status) && !isSuccessStatus(status),
         }}
@@ -24,7 +25,7 @@ export const OfferFeedback = component$<OfferFeedbackProps>(({ result, status })
       </div>
 
       {result && (
-        <pre class="ui-list-item" style="white-space:pre-wrap; overflow:auto; margin:0;">
+        <pre class="ui-offer-result">
           {JSON.stringify(result, null, 2)}
         </pre>
       )}

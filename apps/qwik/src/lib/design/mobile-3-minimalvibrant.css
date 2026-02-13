@@ -1,0 +1,133 @@
+.ui-offer-page {
+  gap: var(--pl-space-xl);
+}
+
+.ui-offer-hero {
+  background:
+    radial-gradient(98% 88% at 0% 0%, rgba(139, 92, 246, 0.18), transparent 68%),
+    radial-gradient(86% 76% at 100% 100%, rgba(20, 184, 166, 0.16), transparent 70%),
+    var(--pl-color-surface);
+}
+
+.ui-offer-hero-header {
+  margin-bottom: 0;
+  gap: var(--pl-space-sm);
+}
+
+.ui-offer-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pl-space-sm);
+}
+
+.ui-offer-badge-alt {
+  background: rgba(20, 184, 166, 0.16);
+  color: var(--pl-color-success);
+}
+
+.ui-offer-hero-title {
+  font-size: clamp(1.4rem, 1.24rem + 0.95vw, 2rem);
+}
+
+.ui-offer-hero-description {
+  margin: 0;
+  color: var(--pl-color-text-subtle);
+}
+
+.ui-offer-form {
+  gap: var(--pl-space-lg);
+}
+
+.ui-offer-grid {
+  display: grid;
+  gap: var(--pl-space-md);
+}
+
+.ui-offer-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ui-offer-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ui-offer-vehicle-row {
+  display: flex;
+  gap: var(--pl-space-md);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ui-offer-vehicle-select {
+  flex: 1;
+  min-width: 240px;
+}
+
+.ui-offer-vehicle-button {
+  white-space: nowrap;
+}
+
+.ui-offer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pl-space-md);
+  align-items: center;
+}
+
+.ui-offer-action-main {
+  min-width: 180px;
+}
+
+.ui-offer-upload {
+  gap: 8px;
+  cursor: pointer;
+}
+
+.ui-offer-feedback {
+  display: grid;
+  gap: var(--pl-space-md);
+}
+
+.ui-offer-status {
+  border-radius: var(--pl-radius-lg);
+  background: var(--pl-color-surface);
+  padding: 10px 14px;
+}
+
+.ui-offer-result {
+  margin: 0;
+  border-radius: var(--pl-radius-lg);
+  background: var(--pl-color-surface);
+  padding: var(--pl-space-lg);
+  white-space: pre-wrap;
+  overflow: auto;
+  max-height: 420px;
+  color: var(--pl-color-text-subtle);
+  border: 1px solid rgba(161, 161, 170, 0.2);
+}
+
+@media (max-width: 980px) {
+  .ui-offer-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .ui-offer-grid-2,
+  .ui-offer-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .ui-offer-vehicle-select {
+    min-width: 0;
+  }
+
+  .ui-offer-vehicle-button,
+  .ui-offer-actions > .ui-button {
+    width: 100%;
+  }
+
+  .ui-offer-upload {
+    justify-content: center;
+  }
+}

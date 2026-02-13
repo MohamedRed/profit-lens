@@ -41,7 +41,7 @@
   background: var(--pl-color-purple-soft);
   color: var(--pl-color-purple);
   padding: 0.38rem 0.8rem;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 600;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -59,12 +59,12 @@
 .ui-select,
 .ui-textarea {
   width: 100%;
-  min-height: 2.9rem;
-  border: 1px solid var(--pl-color-outline);
+  min-height: var(--pl-size-control-height);
+  border: 1px solid transparent;
   border-radius: var(--pl-radius-lg);
-  background: #ffffff;
+  background: var(--pl-color-surface);
   color: var(--pl-color-text-primary);
-  padding: 0.65rem 0.9rem;
+  padding: 0.65rem 1rem;
   outline: none;
   transition:
     border-color 120ms ease,
@@ -85,14 +85,14 @@
 .ui-select:focus,
 .ui-textarea:focus {
   border-color: var(--pl-color-purple);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.14);
 }
 
 .ui-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.9rem;
+  min-height: var(--pl-size-button-height);
   border: 1px solid transparent;
   border-radius: var(--pl-radius-xl);
   padding: 0.65rem 1rem;
@@ -125,7 +125,7 @@
 }
 
 .ui-button-md {
-  min-height: 2.9rem;
+  min-height: var(--pl-size-button-height);
   padding: 0.65rem 1rem;
 }
 
@@ -136,8 +136,8 @@
 
 .ui-button-default {
   background: var(--pl-color-purple);
-  color: #fff;
-  box-shadow: 0 10px 20px rgba(139, 92, 246, 0.24);
+  color: var(--pl-color-on-accent);
+  box-shadow: none;
 }
 
 .ui-button-default:hover:not(:disabled) {
@@ -155,7 +155,7 @@
 }
 
 .ui-button-outline {
-  background: #fff;
+  background: var(--pl-color-overlay);
   color: var(--pl-color-text-primary);
   border-color: var(--pl-color-outline);
 }
