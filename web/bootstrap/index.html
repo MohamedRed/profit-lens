@@ -14,14 +14,40 @@
 <body>
   <main id="bootstrap-shell" class="shell" aria-live="polite">
     <section class="card">
-      <span class="badge">ProfitLens</span>
-      <h1 class="title">Open the fastest path</h1>
+      <span id="badge-text" class="badge">ProfitLens</span>
+      <h1 id="title-text" class="title">Open the fastest path</h1>
       <p id="status-text" class="status">Checking your session...</p>
       <p id="error-text" class="error" hidden></p>
+
+      <form id="sign-in-form" class="sign-in-form" novalidate hidden>
+        <label id="email-label" class="field-label" for="email-input">Email</label>
+        <input
+          id="email-input"
+          class="field-input"
+          type="email"
+          autocomplete="email"
+          placeholder="you@example.com"
+          required
+        >
+
+        <label id="password-label" class="field-label" for="password-input">Password</label>
+        <input
+          id="password-input"
+          class="field-input"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Enter your password"
+          required
+        >
+
+        <button id="sign-in-btn" class="btn btn-primary" type="submit">Sign in</button>
+      </form>
+
       <div class="actions">
-        <button id="sign-in-btn" class="btn btn-primary" hidden>Sign in</button>
-        <button id="install-btn" class="btn btn-secondary" hidden>Install app</button>
-        <button id="retry-btn" class="btn btn-ghost" hidden>Retry session check</button>
+        <button id="create-account-btn" class="btn btn-ghost" type="button" hidden>Create account</button>
+        <button id="open-full-login-btn" class="btn btn-ghost" type="button" hidden>Open full login</button>
+        <button id="install-btn" class="btn btn-secondary" type="button" hidden>Install app</button>
+        <button id="retry-btn" class="btn btn-ghost" type="button" hidden>Retry session check</button>
       </div>
       <p id="install-help" class="help" hidden></p>
     </section>
@@ -30,6 +56,9 @@
   <script src="firebase-web-config.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-auth-compat.js"></script>
+  <script src="locales.js"></script>
+  <script src="bootstrap_core.js"></script>
+  <script src="bootstrap_auth.js"></script>
   <script src="bootstrap.js"></script>
 </body>
 </html>

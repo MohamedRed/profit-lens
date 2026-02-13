@@ -21,6 +21,11 @@ if ! grep -q "id=\"bootstrap-shell\"" "${INDEX_HTML}"; then
   exit 1
 fi
 
+if ! grep -q "id=\"sign-in-form\"" "${INDEX_HTML}"; then
+  echo "${INDEX_HTML} is missing the bootstrap sign-in form." >&2
+  exit 1
+fi
+
 if ! grep -q "flutter_bootstrap.js" "${APP_HTML}"; then
   echo "${APP_HTML} does not look like the Flutter app entry." >&2
   exit 1

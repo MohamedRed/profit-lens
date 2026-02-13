@@ -21,5 +21,5 @@ fi
 
 cp "${BUILD_DIR}/index.html" "${BUILD_DIR}/app.html"
 cp "${BOOTSTRAP_DIR}/index.html" "${BUILD_DIR}/index.html"
-cp "${BOOTSTRAP_DIR}/bootstrap.css" "${BUILD_DIR}/bootstrap.css"
-cp "${BOOTSTRAP_DIR}/bootstrap.js" "${BUILD_DIR}/bootstrap.js"
+cp "${BOOTSTRAP_DIR}"/*.css "${BUILD_DIR}/"
+cp "${BOOTSTRAP_DIR}"/*.js "${BUILD_DIR}/"
