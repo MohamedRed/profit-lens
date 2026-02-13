@@ -30,6 +30,13 @@ export const AuthGuard = component$<AuthGuardProps>(({ requireAuth }) => {
     }
   });
 
+  if (requireAuth) {
+    if (auth.ready.value && !auth.user.value) {
+      return null;
+    }
+    return <Slot />;
+  }
+
   if (!auth.ready.value) {
     return (
       <div class="pl-page">
@@ -39,10 +46,6 @@ export const AuthGuard = component$<AuthGuardProps>(({ requireAuth }) => {
         </div>
       </div>
     );
-  }
-
-  if (requireAuth && !auth.user.value) {
-    return null;
   }
 
   if (!requireAuth && auth.user.value) {

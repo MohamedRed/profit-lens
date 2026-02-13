@@ -38,44 +38,55 @@ export default component$(() => {
 
   const selectedVehicleId = useSignal('');
   const vehicles = useSignal<VehicleProfile[]>([]);
+  const vehicleSubscriptionRequested = useSignal(false);
+  const vehiclesLoading = useSignal(false);
+  const vehiclesHydrated = useSignal(false);
   const loading = useSignal(false);
   const status = useSignal('');
   const result = useSignal<Record<string, unknown> | null>(null);
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
+    const shouldHydrateVehicles = track(() => vehicleSubscriptionRequested.value);
     if (!user) {
       vehicles.value = [];
       selectedVehicleId.value = '';
+      vehiclesLoading.value = false;
+      vehiclesHydrated.value = false;
+      return;
+    }
+
+    if (!shouldHydrateVehicles) {
       return;
     }
 
     let cancelled = false;
     let unsubscribe: (() => void) | null = null;
-    const delayedStart = window.setTimeout(() => {
-      void loadVehiclesService()
-        .then(({ watchVehicles }) => {
-          if (cancelled) {
-            return;
+    vehiclesLoading.value = true;
+    void loadVehiclesService()
+      .then(({ watchVehicles }) => {
+        if (cancelled) {
+          return;
+        }
+        unsubscribe = watchVehicles(user.uid, (items) => {
+          vehicles.value = items;
+          vehiclesLoading.value = false;
+          vehiclesHydrated.value = true;
+          if (!selectedVehicleId.value && items.length > 0) {
+            selectedVehicleId.value = items[0].id;
           }
-          unsubscribe = watchVehicles(user.uid, (items) => {
-            vehicles.value = items;
-            if (!selectedVehicleId.value && items.length > 0) {
-              selectedVehicleId.value = items[0].id;
-            }
-          });
-        })
-        .catch((error) => {
-          if (cancelled) {
-            return;
-          }
-          status.value = error instanceof Error ? error.message : String(error);
         });
-    }, 1200);
+      })
+      .catch((error) => {
+        if (cancelled) {
+          return;
+        }
+        vehiclesLoading.value = false;
+        status.value = error instanceof Error ? error.message : String(error);
+      });
 
     cleanup(() => {
       cancelled = true;
-      window.clearTimeout(delayedStart);
       if (unsubscribe) {
         unsubscribe();
       }
@@ -83,7 +94,15 @@ export default component$(() => {
   });
 
   return (
-    <div class="pl-stack">
+    <div
+      class="pl-stack"
+      onPointerDown$={() => {
+        vehicleSubscriptionRequested.value = true;
+      }}
+      onKeyDown$={() => {
+        vehicleSubscriptionRequested.value = true;
+      }}
+    >
       <p class="pl-subtitle">{t(i18n, 'manualEntrySubtitle', 'Or enter the offer details manually.')}</p>
 
       <div class="pl-row">
@@ -125,18 +144,42 @@ export default component$(() => {
 
       <div class="pl-field">
         <label>{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</label>
-        <select
-          class="pl-select"
-          value={selectedVehicleId.value}
-          onChange$={(_, el) => (selectedVehicleId.value = el.value)}
-        >
-          <option value="">--</option>
-          {vehicles.value.map((vehicle) => (
-            <option key={vehicle.id} value={vehicle.id}>
-              {vehicle.name}
+        <div class="pl-row">
+          <select
+            class="pl-select"
+            style="flex:1; min-width:260px;"
+            value={selectedVehicleId.value}
+            onFocus$={() => {
+              vehicleSubscriptionRequested.value = true;
+            }}
+            onChange$={(_, el) => (selectedVehicleId.value = el.value)}
+          >
+            <option value="">
+              {vehiclesLoading.value
+                ? t(i18n, 'loadingLabel', 'Loading...')
+                : t(i18n, 'vehicleOptionalPlaceholder', 'No vehicle (optional)')}
             </option>
-          ))}
-        </select>
+            {vehicles.value.map((vehicle) => (
+              <option key={vehicle.id} value={vehicle.id}>
+                {vehicle.name}
+              </option>
+            ))}
+          </select>
+          {!vehicleSubscriptionRequested.value && (
+            <button
+              type="button"
+              class="pl-button pl-button-ghost"
+              onClick$={() => {
+                vehicleSubscriptionRequested.value = true;
+              }}
+            >
+              {t(i18n, 'loadVehiclesButton', 'Load vehicles')}
+            </button>
+          )}
+        </div>
+        {vehicleSubscriptionRequested.value && !vehiclesHydrated.value && (
+          <div class="pl-status">{t(i18n, 'loadingLabel', 'Loading...')}</div>
+        )}
       </div>
 
       <div class="pl-row">
