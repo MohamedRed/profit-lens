@@ -18,7 +18,7 @@
 
 .ui-offer-section-title {
   font-size: 1.125rem;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.25;
 }
 
@@ -95,6 +95,7 @@
   margin: 0;
   font-family: var(--pl-font-display);
   font-size: 1.3rem;
+  font-weight: 600;
   line-height: 1.1;
 }
 
@@ -108,15 +109,33 @@
   display: block;
 }
 
+.ui-offer-usage-actions .ui-button {
+  width: 100% !important;
+  min-height: 40px;
+  display: flex;
+  border-radius: var(--pl-radius-pill);
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
 .ui-offer-usage-cta {
   width: 100%;
   min-height: 40px;
   border-radius: var(--pl-radius-pill);
-  background: linear-gradient(90deg, #7f5bf0 0%, #7a55ee 100%);
-  color: #fff;
+  background: linear-gradient(90deg, #7f5bf0 0%, #7a55ee 100%) !important;
+  color: #fff !important;
   font-weight: 600;
 }
 
+.ui-offer-usage-actions .ui-button-default,
+.ui-offer-usage-actions .ui-button-secondary,
+.ui-offer-usage-cta {
+  background: linear-gradient(90deg, #7f5bf0 0%, #7a55ee 100%) !important;
+  color: #fff !important;
+}
+
+.ui-offer-usage-actions .ui-button-default:hover:not(:disabled),
+.ui-offer-usage-actions .ui-button-secondary:hover:not(:disabled),
 .ui-offer-usage-cta:hover:not(:disabled) {
   background: linear-gradient(90deg, #7754e8 0%, #724de4 100%);
 }
