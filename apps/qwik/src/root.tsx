@@ -22,6 +22,7 @@ export default component$(() => {
         <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
         <script src={`${base}firebase-web-config.js`} defer></script>
         {!isDev && <link rel="manifest" href={`${base}manifest.webmanifest`} />}
+        {!isDev && <script src={`${base}registerSW.js`} defer></script>}
         <RouterHead />
       </head>
       <body>
