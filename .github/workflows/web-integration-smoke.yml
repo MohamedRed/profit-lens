@@ -44,6 +44,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Build web bundle
+        run: ./tool/build_web.sh
+
+      - name: Verify web bundle layout
+        run: ./tool/verify_web_bundle_layout.sh
+
       - name: Run Flutter help unit tests
         run: flutter test test/features/help
 

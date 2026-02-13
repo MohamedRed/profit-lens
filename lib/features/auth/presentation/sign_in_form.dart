@@ -4,17 +4,12 @@ import 'package:flutter/material.dart';
 
 import '../../../app/app_scope.dart';
 import '../../../core/design_system/shadcn_tokens.dart';
-import '../../../core/platform/pwa_install.dart';
 import '../../../l10n/app_localizations.dart';
-import 'auth_entry_mode.dart';
 import 'register_screen.dart';
 import 'sign_in_fields.dart';
-import 'widgets/pwa_install_banner.dart';
 
 class SignInForm extends StatefulWidget {
-  final VoidCallback? onContinueToSignIn;
-
-  const SignInForm({super.key, this.onContinueToSignIn});
+  const SignInForm({super.key});
 
   @override
   State<SignInForm> createState() => _SignInFormState();
@@ -25,7 +20,6 @@ class _SignInFormState extends State<SignInForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
-  bool _forceLoginView = false;
 
   @override
   void dispose() {
@@ -67,13 +61,6 @@ class _SignInFormState extends State<SignInForm> {
     ).push(MaterialPageRoute(builder: (context) => const RegisterScreen()));
   }
 
-  void _continueToSignIn() {
-    setState(() {
-      _forceLoginView = true;
-    });
-    widget.onContinueToSignIn?.call();
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -86,64 +73,33 @@ class _SignInFormState extends State<SignInForm> {
             ShadcnSpacing.lg,
             (maxWidth - 420) / 2,
           );
-          return ValueListenableBuilder<bool>(
-            valueListenable: pwaInstallAvailability,
-            builder: (context, available, _) {
-              final shouldGate =
-                  !_forceLoginView &&
-                  shouldShowInstallGate(
-                    entryMode: resolveAuthEntryMode(),
-                    installPromptAvailable: available,
-                  );
-              if (shouldGate) {
-                return ListView(
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
-                  padding: EdgeInsets.fromLTRB(
-                    horizontalPadding,
-                    ShadcnSpacing.section,
-                    horizontalPadding,
-                    ShadcnSpacing.section,
-                  ),
-                  children: [
-                    PwaInstallBanner(onContinueToSignIn: _continueToSignIn),
-                  ],
-                );
-              }
-
-              return ListView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: EdgeInsets.fromLTRB(
-                  horizontalPadding,
-                  ShadcnSpacing.section,
-                  horizontalPadding,
-                  ShadcnSpacing.section,
+          return ListView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: EdgeInsets.fromLTRB(
+              horizontalPadding,
+              ShadcnSpacing.section,
+              horizontalPadding,
+              ShadcnSpacing.section,
+            ),
+            children: [
+              _AuthHero(title: l10n.appTitle, subtitle: l10n.signInSubtitle),
+              const SizedBox(height: ShadcnSpacing.section),
+              Container(
+                decoration: BoxDecoration(
+                  color: ShadcnColors.surface,
+                  borderRadius: BorderRadius.circular(ShadcnRadius.xl),
+                  border: Border.all(color: ShadcnColors.outline),
                 ),
-                children: [
-                  _AuthHero(
-                    title: l10n.appTitle,
-                    subtitle: l10n.signInSubtitle,
-                  ),
-                  const SizedBox(height: ShadcnSpacing.section),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: ShadcnColors.surface,
-                      borderRadius: BorderRadius.circular(ShadcnRadius.xl),
-                      border: Border.all(color: ShadcnColors.outline),
-                    ),
-                    padding: const EdgeInsets.all(ShadcnSpacing.xxl),
-                    child: SignInFields(
-                      emailController: _emailController,
-                      passwordController: _passwordController,
-                      isLoading: _isLoading,
-                      onSubmit: _submit,
-                      onCreateAccount: _openRegister,
-                    ),
-                  ),
-                ],
-              );
-            },
+                padding: const EdgeInsets.all(ShadcnSpacing.xxl),
+                child: SignInFields(
+                  emailController: _emailController,
+                  passwordController: _passwordController,
+                  isLoading: _isLoading,
+                  onSubmit: _submit,
+                  onCreateAccount: _openRegister,
+                ),
+              ),
+            ],
           );
         },
       ),

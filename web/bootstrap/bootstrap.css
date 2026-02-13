@@ -1,0 +1,144 @@
+:root {
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #475467;
+  --error: #b42318;
+  --primary: #175cd3;
+  --primary-hover: #1849a9;
+  --secondary: #eef4ff;
+  --border: #d0d5dd;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(70% 60% at 15% 10%, rgba(23, 92, 211, 0.18), transparent 60%),
+    radial-gradient(70% 50% at 85% 15%, rgba(16, 24, 40, 0.12), transparent 60%),
+    var(--bg);
+}
+
+.shell {
+  min-height: 100vh;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+}
+
+.card {
+  width: min(520px, 100%);
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
+  box-shadow: 0 22px 50px rgba(16, 24, 40, 0.14);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: linear-gradient(90deg, #175cd3, #1570ef);
+}
+
+.title {
+  margin: 14px 0 10px;
+  font-size: clamp(26px, 5vw, 36px);
+  line-height: 1.15;
+}
+
+.status,
+.error,
+.help {
+  margin: 0;
+  line-height: 1.45;
+}
+
+.status,
+.help {
+  color: var(--muted);
+}
+
+.error {
+  margin-top: 8px;
+  color: var(--error);
+}
+
+.actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 11px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.12s ease, background-color 0.12s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  color: #ffffff;
+  background: var(--primary);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  color: var(--text);
+  border-color: var(--border);
+  background: var(--secondary);
+}
+
+.btn-ghost {
+  color: var(--text);
+  border-color: var(--border);
+  background: var(--surface);
+}
+
+.help {
+  margin-top: 14px;
+}
+
+@media (max-width: 480px) {
+  .shell {
+    padding: 16px;
+  }
+
+  .card {
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

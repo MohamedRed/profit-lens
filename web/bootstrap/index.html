@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="ProfitLens bootstrap login and install entry.">
+  <meta name="theme-color" content="#101828">
+  <title>ProfitLens</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="bootstrap.css">
+</head>
+<body>
+  <main id="bootstrap-shell" class="shell" aria-live="polite">
+    <section class="card">
+      <span class="badge">ProfitLens</span>
+      <h1 class="title">Open the fastest path</h1>
+      <p id="status-text" class="status">Checking your session...</p>
+      <p id="error-text" class="error" hidden></p>
+      <div class="actions">
+        <button id="sign-in-btn" class="btn btn-primary" hidden>Sign in</button>
+        <button id="install-btn" class="btn btn-secondary" hidden>Install app</button>
+        <button id="retry-btn" class="btn btn-ghost" hidden>Retry session check</button>
+      </div>
+      <p id="install-help" class="help" hidden></p>
+    </section>
+  </main>
+
+  <script src="firebase-web-config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-auth-compat.js"></script>
+  <script src="bootstrap.js"></script>
+</body>
+</html>

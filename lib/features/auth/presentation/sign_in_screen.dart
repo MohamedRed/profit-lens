@@ -5,9 +5,7 @@ import '../../../l10n/app_localizations.dart';
 import 'sign_in_form.dart';
 
 class SignInScreen extends StatelessWidget {
-  final VoidCallback? onContinueToSignIn;
-
-  const SignInScreen({super.key, this.onContinueToSignIn});
+  const SignInScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +37,7 @@ class SignInScreen extends StatelessWidget {
               left: -20,
               child: _GlowBlob(color: ShadcnColors.pink),
             ),
-            SignInForm(onContinueToSignIn: onContinueToSignIn),
+            const SignInForm(),
           ],
         ),
       ),

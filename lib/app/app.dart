@@ -10,13 +10,9 @@ import '../l10n/app_localizations.dart';
 
 class ProfitLensApp extends StatelessWidget {
   final AppServices services;
-  final bool forceLoginEntry;
 
-  ProfitLensApp({
-    super.key,
-    AppServices? services,
-    this.forceLoginEntry = false,
-  }) : services = services ?? AppServices();
+  ProfitLensApp({super.key, AppServices? services})
+    : services = services ?? AppServices();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +39,7 @@ class ProfitLensApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: const [Locale('fr'), Locale('en'), Locale('ar')],
-          home: AuthGate(forceAuthBootstrap: forceLoginEntry),
+          home: const AuthGate(),
         ),
       ),
     );

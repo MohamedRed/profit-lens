@@ -19,22 +19,16 @@ self.addEventListener('notificationclick', function (event) {
   event.stopImmediatePropagation();
   event.notification.close();
 
-  const url = new URL('/', self.location.origin);
+  const url = new URL('/app', self.location.origin);
   url.searchParams.set('ticketId', ticketId);
   event.waitUntil(openOrFocus(url.toString()));
 });
 
+importScripts('/firebase-web-config.js');
 importScripts('https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/12.7.0/firebase-messaging-compat.js');
 
-firebase.initializeApp({
-  apiKey: 'AIzaSyAuP4nShQ60Axflrnjvplsro5OD2YjYslM',
-  authDomain: 'profit-lens-prod-2e417.firebaseapp.com',
-  projectId: 'profit-lens-prod-2e417',
-  storageBucket: 'profit-lens-prod-2e417.firebasestorage.app',
-  messagingSenderId: '117544150167',
-  appId: '1:117544150167:web:9a18d96b6b193da94f75d2',
-});
+firebase.initializeApp(self.PROFIT_LENS_FIREBASE_CONFIG);
 
 // Registers background handlers and push event wiring.
 firebase.messaging();
