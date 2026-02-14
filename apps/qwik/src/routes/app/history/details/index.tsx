@@ -32,7 +32,8 @@ export default component$(() => {
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
-    const offerId = track(() => location.params.offerId);
+    const search = track(() => location.url.search);
+    const offerId = new URLSearchParams(search).get('offerId');
     if (!user || !offerId) {
       offer.value = null;
       loading.value = false;

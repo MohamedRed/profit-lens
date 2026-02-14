@@ -2,6 +2,24 @@ import { component$, useVisibleTask$ } from '@builder.io/qwik';
 import { useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../lib/auth/auth-context';
 
+const normalizeDeepAppPath = (path: string, search: string, hash: string): string | null => {
+  const legacyHistoryMatch = path.match(/^\/next\/app\/history\/([^/]+)\/?$/);
+  if (legacyHistoryMatch) {
+    const params = new URLSearchParams(search);
+    if (!params.get('offerId')) {
+      params.set('offerId', decodeURIComponent(legacyHistoryMatch[1]));
+    }
+    const query = params.toString();
+    return `/next/app/history/details/${query ? `?${query}` : ''}${hash}`;
+  }
+
+  if (path.startsWith('/next/app/') && path !== '/next/app/' && path !== '/next/app') {
+    return `${path}${search}${hash}`;
+  }
+
+  return null;
+};
+
 export default component$(() => {
   const auth = useAuth();
   const navigate = useNavigate();
@@ -12,10 +30,7 @@ export default component$(() => {
     const path = window.location.pathname;
     const search = window.location.search;
     const hash = window.location.hash;
-    const deepAppPath =
-      path.startsWith('/next/app/') && path !== '/next/app/' && path !== '/next/app'
-        ? `${path}${search}${hash}`
-        : null;
+    const deepAppPath = normalizeDeepAppPath(path, search, hash);
 
     if (!ready) {
       return;

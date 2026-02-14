@@ -146,7 +146,7 @@ export default component$(() => {
                 <li key={item.id} class="ui-history-item">
                   <Link
                     class="ui-history-item-link"
-                    href={`/next/app/history/${encodeURIComponent(item.id)}/`}
+                    href={`/next/app/history/details/?offerId=${encodeURIComponent(item.id)}`}
                   >
                     <div class="ui-history-item-main">
                       <p class="ui-history-item-profit">{formatCurrency(locale, profit)}</p>
