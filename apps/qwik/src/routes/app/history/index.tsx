@@ -129,18 +129,20 @@ export default component$(() => {
             const distance = item.routeVerifiedDistanceKm ?? item.distanceKm;
             return (
               <li key={item.id} class="ui-history-item">
-                <div class="ui-history-item-main">
-                  <p class="ui-history-item-profit">{formatCurrency(locale, profit)}</p>
-                  <p class="ui-history-item-meta">
-                    {distance.toFixed(1)} km • {formatShortDateTime(locale, item.createdAt)}
-                  </p>
-                </div>
-                <div class="ui-history-item-side">
-                  <p class="ui-history-item-payout">{formatCurrency(locale, item.payoutEuro)}</p>
-                  <span class="material-icons-outlined ui-history-item-chevron" aria-hidden="true">
-                    chevron_right
-                  </span>
-                </div>
+                <a class="ui-history-item-link" href={`/next/app/history/${item.id}`}>
+                  <div class="ui-history-item-main">
+                    <p class="ui-history-item-profit">{formatCurrency(locale, profit)}</p>
+                    <p class="ui-history-item-meta">
+                      {distance.toFixed(1)} km • {formatShortDateTime(locale, item.createdAt)}
+                    </p>
+                  </div>
+                  <div class="ui-history-item-side">
+                    <p class="ui-history-item-payout">{formatCurrency(locale, item.payoutEuro)}</p>
+                    <span class="material-icons-outlined ui-history-item-chevron" aria-hidden="true">
+                      chevron_right
+                    </span>
+                  </div>
+                </a>
               </li>
             );
           })}

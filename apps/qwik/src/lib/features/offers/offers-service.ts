@@ -3,6 +3,7 @@ import {
   orderBy,
   query,
   limit,
+  doc,
   Timestamp,
   type QuerySnapshot,
 } from 'firebase/firestore';
@@ -58,11 +59,46 @@ const mapOffer = (docId: string, data: Record<string, unknown>): OfferRecord => 
     asNumber(data.totalCostsEuro) ??
     asNumber(data.totalCosts) ??
     0;
+  const energyCostEuro =
+    asNumber(breakdown.energyCostEuro) ??
+    asNumber(breakdown.energyCost) ??
+    asNumber(data.energyCostEuro) ??
+    asNumber(data.energyCost);
+  const maintenanceCostEuro =
+    asNumber(breakdown.maintenanceCostEuro) ??
+    asNumber(breakdown.maintenanceCost) ??
+    asNumber(data.maintenanceCostEuro) ??
+    asNumber(data.maintenanceCost);
+  const depreciationCostEuro =
+    asNumber(breakdown.depreciationCostEuro) ??
+    asNumber(breakdown.depreciationCost) ??
+    asNumber(data.depreciationCostEuro) ??
+    asNumber(data.depreciationCost);
+  const socialContributionsEuro =
+    asNumber(breakdown.socialContributionsEuro) ??
+    asNumber(breakdown.socialContributions) ??
+    asNumber(data.socialContributionsEuro) ??
+    asNumber(data.socialContributions);
+  const incomeTaxEuro =
+    asNumber(breakdown.incomeTaxEuro) ??
+    asNumber(breakdown.incomeTax) ??
+    asNumber(data.incomeTaxEuro) ??
+    asNumber(data.incomeTax);
+  const fixedCostAllocationEuro =
+    asNumber(breakdown.fixedCostAllocationEuro) ??
+    asNumber(breakdown.fixedCostAllocation) ??
+    asNumber(data.fixedCostAllocationEuro) ??
+    asNumber(data.fixedCostAllocation);
   const routeVerifiedDistanceKm =
     asNumber(routeVerification.distanceKm) ??
     asNumber(routeVerification.distance) ??
     asNumber(offer.distanceKm) ??
     asNumber(data.distanceKm);
+  const routeVerifiedDurationMinutes =
+    asNumber(routeVerification.durationMinutes) ??
+    asNumber(routeVerification.duration) ??
+    asNumber(offer.durationMinutes) ??
+    asNumber(data.durationMinutes);
 
   return {
     id: docId,
@@ -79,7 +115,14 @@ const mapOffer = (docId: string, data: Record<string, unknown>): OfferRecord => 
       (offer.dropoffAddress as string | undefined) ?? (data.dropoffAddress as string | undefined),
     netProfitEuro,
     totalCostsEuro,
+    energyCostEuro,
+    maintenanceCostEuro,
+    depreciationCostEuro,
+    socialContributionsEuro,
+    incomeTaxEuro,
+    fixedCostAllocationEuro,
     routeVerifiedDistanceKm,
+    routeVerifiedDurationMinutes,
   };
 };
 
@@ -112,6 +155,21 @@ export const watchOffers = (
       return mapOffer(doc.id, doc.data() as Record<string, unknown>);
     });
     callback(offers);
+  });
+};
+
+export const watchOfferById = (
+  uid: string,
+  offerId: string,
+  callback: (offer: OfferRecord | null) => void,
+): (() => void) => {
+  const offerRef = doc(userCollection(uid, 'offers'), offerId);
+  return onSnapshot(offerRef, (snapshot) => {
+    if (!snapshot.exists()) {
+      callback(null);
+      return;
+    }
+    callback(mapOffer(snapshot.id, snapshot.data() as Record<string, unknown>));
   });
 };
 
