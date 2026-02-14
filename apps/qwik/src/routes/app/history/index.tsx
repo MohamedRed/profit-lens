@@ -18,7 +18,7 @@ import {
   saveHistoryViewMode,
 } from './history-navigation-state';
 
-const historyPageSize = 30;
+const historyPageSize = 15;
 const historyLoadMoreThresholdPx = 240;
 const inBrowser = typeof window !== 'undefined';
 

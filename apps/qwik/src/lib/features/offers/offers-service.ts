@@ -175,7 +175,7 @@ export const fetchOffersPage = async (params: {
   limitCount?: number;
   cursor?: OffersPageCursor | null;
 }): Promise<OffersPage> => {
-  const limitCount = params.limitCount ?? 30;
+  const limitCount = params.limitCount ?? 15;
   const offersRef = userCollection(params.uid, 'offers');
 
   const offersQuery =
