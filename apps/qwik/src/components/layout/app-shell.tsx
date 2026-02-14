@@ -1,5 +1,6 @@
 import { Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Link, useLocation } from '@builder.io/qwik-city';
+import { useLocation, useNavigate } from '@builder.io/qwik-city';
+import { ToggleGroup } from '@qwik-ui/headless';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 import { useAuth } from '../../lib/auth/auth-context';
 
@@ -42,9 +43,12 @@ const navItems = [
 export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) => {
   const i18n = useI18n();
   const location = useLocation();
+  const navigate = useNavigate();
   const auth = useAuth();
   const nextTransitionIsPop = useSignal(false);
   const transitionClass = useSignal<'is-push' | 'is-pop'>('is-push');
+
+  const activeTabHref = navItems.find((item) => location.url.pathname.includes(item.match))?.href ?? navItems[0].href;
 
   useVisibleTask$(({ cleanup }) => {
     const onPopState = () => {
@@ -78,24 +82,33 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
       </main>
 
       <footer class="ui-mobile-tab-shell">
-        <nav class="ui-mobile-tab-nav" aria-label="Main navigation">
+        <ToggleGroup.Root
+          class="ui-mobile-tab-nav"
+          value={activeTabHref}
+          onChange$={async (nextHref: string) => {
+            if (nextHref && nextHref !== activeTabHref) {
+              await navigate(nextHref);
+            }
+          }}
+          aria-label="Main navigation"
+        >
           {navItems.map((item) => {
             const active = location.url.pathname.includes(item.match);
             return (
-              <Link
+              <ToggleGroup.Item
                 key={item.href}
+                value={item.href}
                 class={{ 'ui-mobile-tab-link': true, 'is-active': active }}
-                href={item.href}
                 aria-current={active ? 'page' : undefined}
               >
                 <span class="material-icons-outlined ui-mobile-tab-icon" aria-hidden="true">
                   {item.icon}
                 </span>
                 <span class="ui-mobile-tab-label">{t(i18n, item.labelKey, item.fallback)}</span>
-              </Link>
+              </ToggleGroup.Item>
             );
           })}
-        </nav>
+        </ToggleGroup.Root>
       </footer>
     </div>
   );

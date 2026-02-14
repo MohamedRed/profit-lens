@@ -1,5 +1,5 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Toggle } from '@qwik-ui/headless';
+import { Collapsible } from '@qwik-ui/headless';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import { createHelpTicket, watchHelpTickets } from '../../../lib/features/help/help-service';
@@ -36,17 +36,16 @@ export default component$(() => {
   });
 
   return (
-    <div class="ui-help-root">
+    <Collapsible.Root class="ui-help-root" bind:open={showTickets}>
       <div class="ui-help-toolbar">
-        <Toggle
+        <Collapsible.Trigger
           class={{ 'ui-help-toolbar-btn': true, 'is-active': showTickets.value }}
-          bind:pressed={showTickets}
           aria-label={t(i18n, 'helpViewTicketsButton', 'View tickets')}
         >
           <span class="material-icons-outlined" aria-hidden="true">
             list_alt
           </span>
-        </Toggle>
+        </Collapsible.Trigger>
       </div>
 
       <section class="ui-help-card">
@@ -184,7 +183,7 @@ export default component$(() => {
         ) : null}
       </section>
 
-      {showTickets.value ? (
+      <Collapsible.Content>
         <section class="ui-help-card">
           <h2 class="ui-help-card-title">{t(i18n, 'helpTicketsTitle', 'Tickets')}</h2>
           <ul class="ui-help-ticket-list">
@@ -213,7 +212,7 @@ export default component$(() => {
             ))}
           </ul>
         </section>
-      ) : null}
-    </div>
+      </Collapsible.Content>
+    </Collapsible.Root>
   );
 });

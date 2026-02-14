@@ -1,5 +1,6 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useLocation, useNavigate } from '@builder.io/qwik-city';
+import { Separator } from '../../../../components/ui/separator';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { watchOfferById } from '../../../../lib/features/offers/offers-service';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
@@ -131,7 +132,7 @@ export default component$(() => {
           <span>{t(i18n, 'fixedCostsLabel', 'Fixed costs allocation')}</span>
           <span>{formatCurrency(locale, current.fixedCostAllocationEuro ?? 0)}</span>
         </div>
-        <hr class="ui-history-detail-divider" />
+        <Separator class="ui-history-detail-divider" />
         <div class="ui-history-detail-row">
           <span>{t(i18n, 'totalCostsLabel', 'Total costs')}</span>
           <span>{formatCurrency(locale, current.totalCostsEuro ?? 0)}</span>
