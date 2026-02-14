@@ -11,6 +11,7 @@ import type { OfferRecord, OfferStatsDay } from '../../../lib/types/offer';
 import { saveHistoryOfferCache, saveSelectedHistoryOfferId } from './history-offer-cache';
 import { HistoryChartPanel } from './history-chart-panel';
 import { HistoryListPanel } from './history-list-panel';
+import { readHistoryTabSessionState, writeHistoryTabSessionState } from './history-tab-session';
 import {
   readHistoryScrollY,
   readHistoryViewMode,
@@ -34,6 +35,7 @@ export default component$(() => {
   const hasLoadMoreError = useSignal(false);
   const selectedTabIndex = useSignal<number>(0);
   const suppressAutoLoadMore = useSignal(false);
+  const hasHydratedFromSession = useSignal(false);
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
@@ -65,6 +67,18 @@ export default component$(() => {
 
     let disposed = false;
     const uid = user.uid;
+    const session = readHistoryTabSessionState(uid);
+    hasHydratedFromSession.value = session !== null;
+
+    if (session) {
+      offers.value = session.offers;
+      offersCursor.value = session.offersCursor;
+      stats.value = session.stats;
+      hasMore.value = session.hasMore;
+      hasLoadMoreError.value = session.hasLoadMoreError;
+      selectedTabIndex.value = session.selectedTabIndex;
+      isLoadingInitial.value = false;
+    }
 
     const loadInitial = async (): Promise<void> => {
       isLoadingInitial.value = true;
@@ -134,7 +148,7 @@ export default component$(() => {
     };
 
     const savedMode = readHistoryViewMode();
-    if (savedMode) {
+    if (savedMode && !session) {
       selectedTabIndex.value = savedMode === 'charts' ? 1 : 0;
     }
 
@@ -148,7 +162,7 @@ export default component$(() => {
 
     window.addEventListener('scroll', onScroll, { passive: true });
 
-    void loadInitial().then(() => {
+    const restoreScrollPosition = () => {
       if (disposed) {
         return;
       }
@@ -162,11 +176,47 @@ export default component$(() => {
           });
         });
       }
-    });
+    };
+
+    if (session) {
+      restoreScrollPosition();
+    } else {
+      void loadInitial().then(() => {
+        restoreScrollPosition();
+      });
+    }
 
     cleanup(() => {
       disposed = true;
       window.removeEventListener('scroll', onScroll);
+    });
+  });
+
+  useVisibleTask$(({ track }) => {
+    const uid = track(() => auth.user.value?.uid);
+    const currentOffers = track(() => offers.value);
+    const currentStats = track(() => stats.value);
+    const currentCursor = track(() => offersCursor.value);
+    const currentHasMore = track(() => hasMore.value);
+    const currentHasLoadMoreError = track(() => hasLoadMoreError.value);
+    const currentTabIndex = track(() => selectedTabIndex.value);
+    const hydrated = track(() => hasHydratedFromSession.value);
+
+    if (!uid) {
+      return;
+    }
+    if (!hydrated && currentOffers.length === 0 && currentStats.length === 0) {
+      return;
+    }
+
+    writeHistoryTabSessionState({
+      uid,
+      offers: currentOffers,
+      offersCursor: currentCursor,
+      stats: currentStats,
+      hasMore: currentHasMore,
+      hasLoadMoreError: currentHasLoadMoreError,
+      selectedTabIndex: currentTabIndex,
     });
   });
 

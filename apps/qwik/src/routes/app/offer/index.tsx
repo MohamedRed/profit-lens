@@ -3,8 +3,7 @@ import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
-import { saveUserProfile, watchUserProfile } from '../../../lib/features/profile/profile-service';
-import { watchVehicles } from '../../../lib/features/vehicles/vehicles-service';
+import { saveUserProfile } from '../../../lib/features/profile/profile-service';
 import {
   analyzeManualOfferAction,
   analyzeScreenshotOfferAction,
@@ -14,6 +13,7 @@ import {
   type OfferAnalysisRecord,
 } from './offer-analysis-result';
 import { OfferFlowContent } from './components/offer-flow-content';
+import { useOfferTabSession } from './use-offer-tab-session';
 
 type OffersServiceModule = typeof import('../../../lib/features/offers/offers-service');
 let offersServicePromise: Promise<OffersServiceModule> | null = null;
@@ -23,20 +23,6 @@ const loadOffersService = () => {
     offersServicePromise = import('../../../lib/features/offers/offers-service');
   }
   return offersServicePromise;
-};
-
-const resolveSelectedVehicleId = (
-  current: string,
-  vehicles: VehicleProfile[],
-  defaultVehicleId: string | null | undefined,
-): string => {
-  if (current && vehicles.some((vehicle) => vehicle.id === current)) {
-    return current;
-  }
-  if (defaultVehicleId && vehicles.some((vehicle) => vehicle.id === defaultVehicleId)) {
-    return defaultVehicleId;
-  }
-  return vehicles[0]?.id ?? '';
 };
 
 export default component$(() => {
@@ -65,42 +51,24 @@ export default component$(() => {
   const screenshotPreviewUrl = useSignal<string | null>(null);
   const fileInputRef = useSignal<HTMLInputElement>();
 
-  useVisibleTask$(({ track, cleanup }) => {
-    const user = track(() => auth.user.value);
-    if (!user) {
-      profile.value = null;
-      vehicles.value = [];
-      selectedVehicleId.value = '';
-      vehiclesLoading.value = false;
-      return;
-    }
-
-    vehiclesLoading.value = true;
-
-    const unsubscribeVehicles = watchVehicles(user.uid, (items) => {
-      vehicles.value = items;
-      vehiclesLoading.value = false;
-      selectedVehicleId.value = resolveSelectedVehicleId(
-        selectedVehicleId.value,
-        items,
-        profile.value?.defaultVehicleId,
-      );
-    });
-
-    const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (nextProfile) => {
-      profile.value = nextProfile;
-      minProfitabilityEuro.value = nextProfile.minProfitabilityEuro;
-      selectedVehicleId.value = resolveSelectedVehicleId(
-        selectedVehicleId.value,
-        vehicles.value,
-        nextProfile.defaultVehicleId,
-      );
-    });
-
-    cleanup(() => {
-      unsubscribeVehicles();
-      unsubscribeProfile();
-    });
+  useOfferTabSession({
+    auth,
+    payout,
+    distance,
+    duration,
+    pickupName,
+    pickupAddress,
+    dropoffName,
+    dropoffAddress,
+    profile,
+    minProfitabilityEuro,
+    selectedVehicleId,
+    vehicles,
+    vehiclesLoading,
+    manualEntryRequested,
+    loading,
+    status,
+    analysisRecord,
   });
 
   useVisibleTask$(({ track, cleanup }) => {

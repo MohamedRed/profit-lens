@@ -1,17 +1,16 @@
-import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { component$, useSignal } from '@builder.io/qwik';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { signOutCurrentUser } from '../../../lib/firebase/auth';
 import { billingPlans } from '../../../lib/config/runtime-config';
 import { applyLocale, formatTemplate, t, useI18n } from '../../../lib/i18n/i18n-context';
-import { openCustomerPortal, startCheckout, watchEntitlement, watchUsage } from '../../../lib/features/billing/billing-service';
-import { saveUserProfile, watchUserProfile } from '../../../lib/features/profile/profile-service';
-import { watchDevices } from '../../../lib/features/devices/devices-service';
-import { watchVehicles } from '../../../lib/features/vehicles/vehicles-service';
+import { openCustomerPortal, startCheckout } from '../../../lib/features/billing/billing-service';
+import { saveUserProfile } from '../../../lib/features/profile/profile-service';
 import { Select } from '../../../components/ui/select';
 import type { Entitlement, OfferUsage } from '../../../lib/types/billing';
 import type { DeviceEntry } from '../../../lib/types/device';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
+import { useSettingsTabSession } from './use-settings-tab-session';
 
 const formatCurrency = (locale: string, value: number): string => {
   return new Intl.NumberFormat(locale, {
@@ -44,52 +43,7 @@ export default component$(() => {
   const openingPortal = useSignal(false);
   const status = useSignal('');
 
-  useVisibleTask$(({ track, cleanup }) => {
-    const user = track(() => auth.user.value);
-    if (!user) {
-      profile.value = null;
-      vehicles.value = [];
-      entitlement.value = null;
-      usage.value = null;
-      devices.value = [];
-      return;
-    }
-
-    let unsubscribeUsage: (() => void) | null = null;
-    const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (nextProfile) => {
-      profile.value = nextProfile;
-      selectedLanguage.value = (nextProfile.preferredLocale || 'fr') as 'fr' | 'en' | 'ar';
-    });
-    const unsubscribeVehicles = watchVehicles(user.uid, (items) => {
-      vehicles.value = items;
-    });
-    const unsubscribeEntitlement = watchEntitlement(user.uid, (nextEntitlement) => {
-      entitlement.value = nextEntitlement;
-      usage.value = null;
-      if (unsubscribeUsage) {
-        unsubscribeUsage();
-        unsubscribeUsage = null;
-      }
-      if (nextEntitlement?.periodKey) {
-        unsubscribeUsage = watchUsage(user.uid, nextEntitlement.periodKey, (nextUsage) => {
-          usage.value = nextUsage;
-        });
-      }
-    });
-    const unsubscribeDevices = watchDevices(user.uid, (items) => {
-      devices.value = items;
-    });
-
-    cleanup(() => {
-      unsubscribeProfile();
-      unsubscribeVehicles();
-      unsubscribeEntitlement();
-      unsubscribeDevices();
-      if (unsubscribeUsage) {
-        unsubscribeUsage();
-      }
-    });
-  });
+  useSettingsTabSession({ auth, profile, vehicles, entitlement, usage, devices, selectedLanguage });
 
   const locale = i18n.locale.value;
   const currentProfile = profile.value;
