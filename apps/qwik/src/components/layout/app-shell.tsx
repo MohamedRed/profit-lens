@@ -4,6 +4,7 @@ import { ToggleGroup } from '@qwik-ui/headless';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 import { useAuth } from '../../lib/auth/auth-context';
 import { cn } from '../../lib/ui/cn';
+import { prefetchTabRoutes } from '../../lib/navigation/prefetch-tab-routes';
 
 interface AppShellProps {
   titleKey: string;
@@ -65,6 +66,34 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
     track(() => location.url.pathname);
     transitionClass.value = nextTransitionIsPop.value ? 'is-pop' : 'is-push';
     nextTransitionIsPop.value = false;
+  });
+
+  useVisibleTask$(({ cleanup }) => {
+    let cancelled = false;
+    const runPrefetch = () => {
+      if (cancelled) {
+        return;
+      }
+      void prefetchTabRoutes(location.url.pathname);
+    };
+
+    let idleHandle: number | undefined;
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+    if (typeof window.requestIdleCallback === 'function') {
+      idleHandle = window.requestIdleCallback(runPrefetch, { timeout: 1800 });
+    } else {
+      timeoutHandle = setTimeout(runPrefetch, 300);
+    }
+
+    cleanup(() => {
+      cancelled = true;
+      if (idleHandle !== undefined && typeof window.cancelIdleCallback === 'function') {
+        window.cancelIdleCallback(idleHandle);
+      }
+      if (timeoutHandle !== undefined) {
+        clearTimeout(timeoutHandle);
+      }
+    });
   });
 
   return (
