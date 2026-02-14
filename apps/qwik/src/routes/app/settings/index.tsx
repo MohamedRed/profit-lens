@@ -7,6 +7,7 @@ import { openCustomerPortal, startCheckout, watchEntitlement, watchUsage } from 
 import { saveUserProfile, watchUserProfile } from '../../../lib/features/profile/profile-service';
 import { watchDevices } from '../../../lib/features/devices/devices-service';
 import { watchVehicles } from '../../../lib/features/vehicles/vehicles-service';
+import { Select } from '../../../components/ui/select';
 import type { Entitlement, OfferUsage } from '../../../lib/types/billing';
 import type { DeviceEntry } from '../../../lib/types/device';
 import type { UserProfile } from '../../../lib/types/profile';
@@ -106,6 +107,12 @@ export default component$(() => {
         paidPlan?.priceLabel ?? '',
       );
 
+  const languageOptions = [
+    { value: 'fr', label: `${flagForLocale('fr')} ${t(i18n, 'languageFrench', 'French')}` },
+    { value: 'en', label: `${flagForLocale('en')} ${t(i18n, 'languageEnglish', 'English')}` },
+    { value: 'ar', label: `${flagForLocale('ar')} ${t(i18n, 'languageArabic', 'Arabic')}` },
+  ];
+
   return (
     <div class="ui-settings-root">
       <section class="ui-settings-card">
@@ -129,25 +136,27 @@ export default component$(() => {
 
       <section class="ui-settings-card ui-settings-language">
         <h2 class="ui-settings-section-title">{t(i18n, 'languageSectionTitle', 'Language')}</h2>
-        <select
+        <Select
+          id="settings-language"
           class="ui-select ui-settings-language-select"
+          options={languageOptions}
           value={selectedLanguage.value}
           disabled={languageSaving.value || !currentProfile}
-          onChange$={async (_, el) => {
+          onChange$={async (next) => {
             if (!currentProfile) {
               return;
             }
-            const next = el.value as 'fr' | 'en' | 'ar';
-            if (next === selectedLanguage.value) {
+            const nextLocale = next as 'fr' | 'en' | 'ar';
+            if (nextLocale === selectedLanguage.value) {
               return;
             }
             status.value = '';
             languageSaving.value = true;
             const previous = selectedLanguage.value;
-            selectedLanguage.value = next;
+            selectedLanguage.value = nextLocale;
             try {
-              await applyLocale(i18n, next);
-              await saveUserProfile({ ...currentProfile, preferredLocale: next });
+              await applyLocale(i18n, nextLocale);
+              await saveUserProfile({ ...currentProfile, preferredLocale: nextLocale });
             } catch (error) {
               selectedLanguage.value = previous;
               status.value = error instanceof Error ? error.message : String(error);
@@ -155,11 +164,7 @@ export default component$(() => {
               languageSaving.value = false;
             }
           }}
-        >
-          <option value="fr">{`${flagForLocale('fr')} ${t(i18n, 'languageFrench', 'French')}`}</option>
-          <option value="en">{`${flagForLocale('en')} ${t(i18n, 'languageEnglish', 'English')}`}</option>
-          <option value="ar">{`${flagForLocale('ar')} ${t(i18n, 'languageArabic', 'Arabic')}`}</option>
-        </select>
+        />
       </section>
 
       <section class="ui-settings-card">

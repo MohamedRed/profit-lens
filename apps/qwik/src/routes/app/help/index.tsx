@@ -1,4 +1,5 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { Toggle } from '@qwik-ui/headless';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import { createHelpTicket, watchHelpTickets } from '../../../lib/features/help/help-service';
@@ -37,18 +38,15 @@ export default component$(() => {
   return (
     <div class="ui-help-root">
       <div class="ui-help-toolbar">
-        <button
-          type="button"
+        <Toggle
           class={{ 'ui-help-toolbar-btn': true, 'is-active': showTickets.value }}
-          onClick$={() => {
-            showTickets.value = !showTickets.value;
-          }}
+          bind:pressed={showTickets}
           aria-label={t(i18n, 'helpViewTicketsButton', 'View tickets')}
         >
           <span class="material-icons-outlined" aria-hidden="true">
             list_alt
           </span>
-        </button>
+        </Toggle>
       </div>
 
       <section class="ui-help-card">

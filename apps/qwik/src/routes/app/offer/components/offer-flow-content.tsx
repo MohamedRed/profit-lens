@@ -71,20 +71,18 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 <Label for="offer-vehicle">{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</Label>
                 <Select
                   id="offer-vehicle"
+                  options={props.vehicles.value.map((vehicle) => ({
+                    label: vehicle.name,
+                    value: vehicle.id,
+                  }))}
                   value={props.selectedVehicleId.value}
-                  onChange$={(_, el) => {
-                    props.selectedVehicleId.value = el.value;
+                  onChange$={(nextVehicleId) => {
+                    props.selectedVehicleId.value = nextVehicleId;
                     props.analysisRecord.value = null;
                     props.status.value = '';
                     props.manualEntryRequested.value = false;
                   }}
-                >
-                  {props.vehicles.value.map((vehicle) => (
-                    <option key={vehicle.id} value={vehicle.id}>
-                      {vehicle.name}
-                    </option>
-                  ))}
-                </Select>
+                />
               </div>
             )}
           </OfferSectionCard>
