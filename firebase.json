@@ -52,6 +52,60 @@
         ]
       },
       {
+        "source": "/next/",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/next/app/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/next/login",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/next/register",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/next/q-data.json",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/next/app/**/q-data.json",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
         "source": "/bootstrap.js",
         "headers": [
           {
@@ -233,16 +287,8 @@
         "destination": "/app/index.html"
       },
       {
-        "source": "/next",
+        "source": "/next/app/history/**",
         "destination": "/next/index.html"
-      },
-      {
-        "source": "/next/**",
-        "destination": "/next/index.html"
-      },
-      {
-        "source": "**",
-        "destination": "/index.html"
       }
     ]
   }
