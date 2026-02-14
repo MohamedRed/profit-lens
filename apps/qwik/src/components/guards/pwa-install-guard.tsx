@@ -1,27 +1,46 @@
 import { Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
-import { isRunningAsInstalledPwa } from '../../lib/features/pwa/pwa-install-state';
+import {
+  consumeDeferredInstallPrompt,
+  watchDeferredInstallPrompt,
+} from '../../lib/features/pwa/pwa-install-prompt';
+import {
+  isIosInstallManualOnly,
+  isRunningAsInstalledPwa,
+} from '../../lib/features/pwa/pwa-install-state';
 
 interface PwaInstallElementLike extends HTMLElement {
   showDialog: (forced?: boolean) => void;
 }
 
 type InstallGateState = 'checking' | 'installed' | 'not-installed';
+type InstallFlowState = 'unknown' | 'ios-manual' | 'native-ready' | 'native-pending';
 const installHostId = 'ui-pwa-install-host';
 
 export const PwaInstallGuard = component$(() => {
   const i18n = useI18n();
   const gateState = useSignal<InstallGateState>('checking');
+  const installFlow = useSignal<InstallFlowState>('unknown');
   const dialogReady = useSignal(false);
+  const dialogRef = useSignal<PwaInstallElementLike | null>(null);
+  const installing = useSignal(false);
   const loadError = useSignal('');
 
   useVisibleTask$(({ cleanup }) => {
     const evaluate = () => {
-      gateState.value = isRunningAsInstalledPwa(window) ? 'installed' : 'not-installed';
+      if (isRunningAsInstalledPwa(window)) {
+        gateState.value = 'installed';
+        installFlow.value = 'unknown';
+        return;
+      }
+
+      gateState.value = 'not-installed';
+      installFlow.value = isIosInstallManualOnly(window) ? 'ios-manual' : 'native-pending';
     };
 
     const onInstalled = () => {
       gateState.value = 'installed';
+      installFlow.value = 'unknown';
     };
 
     const onVisibilityChange = () => {
@@ -30,29 +49,45 @@ export const PwaInstallGuard = component$(() => {
       }
     };
 
+    const stopDeferredPromptWatcher = watchDeferredInstallPrompt(window, (event) => {
+      if (isRunningAsInstalledPwa(window) || isIosInstallManualOnly(window)) {
+        return;
+      }
+      installFlow.value = event ? 'native-ready' : 'native-pending';
+    });
+
     window.addEventListener('appinstalled', onInstalled);
     window.addEventListener('focus', evaluate);
     document.addEventListener('visibilitychange', onVisibilityChange);
     evaluate();
 
     cleanup(() => {
+      stopDeferredPromptWatcher();
       window.removeEventListener('appinstalled', onInstalled);
       window.removeEventListener('focus', evaluate);
       document.removeEventListener('visibilitychange', onVisibilityChange);
     });
   });
 
-  useVisibleTask$(({ track }) => {
-    const state = track(() => gateState.value);
-    if (state !== 'not-installed') {
+  useVisibleTask$(({ track, cleanup }) => {
+    const shouldUseIosManualDialog =
+      track(() => gateState.value) === 'not-installed' && track(() => installFlow.value) === 'ios-manual';
+
+    if (!shouldUseIosManualDialog) {
       dialogReady.value = false;
+      dialogRef.value = null;
       loadError.value = '';
       return;
     }
 
+    let cancelled = false;
+
     void (async () => {
       try {
         await import('@khmyznikov/pwa-install');
+        if (cancelled) {
+          return;
+        }
         const host = document.getElementById(installHostId);
         if (!host) {
           loadError.value = t(i18n, 'installAppLoadFailed', 'Failed to load install dialog.');
@@ -69,6 +104,7 @@ export const PwaInstallGuard = component$(() => {
 
         loadError.value = '';
         dialogReady.value = true;
+        dialogRef.value = dialog;
         window.requestAnimationFrame(() => {
           dialog?.showDialog(true);
         });
@@ -76,11 +112,32 @@ export const PwaInstallGuard = component$(() => {
         loadError.value = error instanceof Error ? error.message : String(error);
       }
     })();
+
+    cleanup(() => {
+      cancelled = true;
+    });
   });
 
   if (gateState.value === 'installed') {
     return <Slot />;
   }
+
+  const isIosFlow = installFlow.value === 'ios-manual';
+  const showInstallAction = installFlow.value === 'ios-manual' || installFlow.value === 'native-ready';
+  const showSpinner =
+    (!dialogReady.value && installFlow.value === 'ios-manual') || installFlow.value === 'native-pending';
+  const copy =
+    installFlow.value === 'native-ready'
+      ? t(
+          i18n,
+          'installAppRequiredNativeBody',
+          'To continue, install ProfitLens and open it from your home screen. Tap Install to open the browser prompt.',
+        )
+      : t(
+          i18n,
+          'installAppRequiredBody',
+          'To continue, install ProfitLens and open it from your home screen. We show the install guide automatically.',
+        );
 
   return (
     <div class="ui-pwa-gate">
@@ -89,18 +146,71 @@ export const PwaInstallGuard = component$(() => {
           install_mobile
         </span>
         <h2 class="ui-pwa-gate-title">{t(i18n, 'installAppRequiredTitle', 'Install required')}</h2>
-        <p class="ui-pwa-gate-copy">
-          {t(
-            i18n,
-            'installAppRequiredBody',
-            'To continue, install ProfitLens and open it from your home screen. We show the install guide automatically.',
-          )}
-        </p>
+        <p class="ui-pwa-gate-copy">{copy}</p>
 
         <div id={installHostId} class="ui-pwa-install-host" />
 
-        {!dialogReady.value && !loadError.value ? (
+        {showInstallAction ? (
+          <button
+            type="button"
+            class="ui-pwa-gate-button"
+            disabled={installing.value || (isIosFlow && !dialogReady.value)}
+            onClick$={async () => {
+              if (installing.value) {
+                return;
+              }
+              if (isIosFlow) {
+                if (!dialogRef.value) {
+                  loadError.value = t(i18n, 'installAppLoadFailed', 'Failed to load install dialog.');
+                  return;
+                }
+                loadError.value = '';
+                dialogRef.value.showDialog(true);
+                return;
+              }
+
+              const deferredPrompt = consumeDeferredInstallPrompt();
+              if (!deferredPrompt) {
+                loadError.value = t(
+                  i18n,
+                  'installAppPromptUnavailable',
+                  'Install prompt is not ready yet. Wait a moment and try again.',
+                );
+                installFlow.value = 'native-pending';
+                return;
+              }
+
+              installing.value = true;
+              loadError.value = '';
+              try {
+                await deferredPrompt.prompt();
+                if (deferredPrompt.userChoice) {
+                  await deferredPrompt.userChoice;
+                }
+              } catch (error) {
+                loadError.value =
+                  error instanceof Error ? error.message : t(i18n, 'installAppPromptFailed', 'Install failed.');
+              } finally {
+                installing.value = false;
+              }
+            }}
+          >
+            {installing.value ? t(i18n, 'loadingLabel', 'Loading...') : t(i18n, 'installAppCta', 'Install')}
+          </button>
+        ) : null}
+
+        {showSpinner && !loadError.value ? (
           <div class="ui-spinner" aria-hidden="true" />
+        ) : null}
+
+        {installFlow.value === 'native-pending' && !loadError.value ? (
+          <p class="ui-status">
+            {t(
+              i18n,
+              'installAppPromptWaiting',
+              'Preparing install prompt. Keep this page open for a moment.',
+            )}
+          </p>
         ) : null}
 
         {loadError.value ? <p class="ui-status ui-status-error">{loadError.value}</p> : null}

@@ -5,9 +5,16 @@ const pwaDisplayModes = [
   '(display-mode: window-controls-overlay)',
 ];
 
+export interface PwaNavigatorLike {
+  standalone?: boolean;
+  userAgent?: string;
+  platform?: string;
+  maxTouchPoints?: number;
+}
+
 export interface PwaWindowLike {
   matchMedia?: (query: string) => MediaQueryList | { matches: boolean };
-  navigator?: Navigator | { standalone?: boolean };
+  navigator?: PwaNavigatorLike;
 }
 
 export const isRunningAsInstalledPwa = (browser: PwaWindowLike | undefined): boolean => {
@@ -29,4 +36,34 @@ export const isRunningAsInstalledPwa = (browser: PwaWindowLike | undefined): boo
   }
 
   return pwaDisplayModes.some((query) => matchMedia(query).matches);
+};
+
+const userAgentContainsIos = (userAgent: string): boolean => {
+  return (
+    userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('ipod')
+  );
+};
+
+const isIpadOsDesktopMode = (platform: string, maxTouchPoints: number): boolean => {
+  return platform.includes('mac') && maxTouchPoints > 1;
+};
+
+export const isIosInstallManualOnly = (browser: PwaWindowLike | undefined): boolean => {
+  if (!browser || isRunningAsInstalledPwa(browser)) {
+    return false;
+  }
+
+  const navigator = browser.navigator;
+  if (!navigator) {
+    return false;
+  }
+
+  const userAgent = navigator.userAgent?.toLowerCase() ?? '';
+  if (userAgentContainsIos(userAgent)) {
+    return true;
+  }
+
+  const platform = navigator.platform?.toLowerCase() ?? '';
+  const maxTouchPoints = navigator.maxTouchPoints ?? 0;
+  return isIpadOsDesktopMode(platform, maxTouchPoints);
 };

@@ -47,6 +47,23 @@
   width: 100%;
 }
 
+.ui-pwa-gate-button {
+  border: 0;
+  border-radius: var(--pl-radius-pill);
+  min-height: 42px;
+  width: 100%;
+  padding: 0 18px;
+  background: rgba(139, 92, 246, 0.18);
+  color: var(--pl-color-purple);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ui-pwa-gate-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 
 .ui-mobile-page {
   width: 100%;
