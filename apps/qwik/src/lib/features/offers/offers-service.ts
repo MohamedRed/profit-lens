@@ -3,8 +3,12 @@ import {
   orderBy,
   query,
   limit,
+  getDocs,
+  startAfter,
   doc,
   Timestamp,
+  type DocumentData,
+  type QueryDocumentSnapshot,
   type QuerySnapshot,
 } from 'firebase/firestore';
 import type { OfferInputPayload, OfferRecord, OfferStatsDay } from '../../types/offer';
@@ -156,6 +160,39 @@ export const watchOffers = (
     });
     callback(offers);
   });
+};
+
+export type OffersPageCursor = QueryDocumentSnapshot<DocumentData>;
+
+export interface OffersPage {
+  offers: OfferRecord[];
+  cursor: OffersPageCursor | null;
+  hasMore: boolean;
+}
+
+export const fetchOffersPage = async (params: {
+  uid: string;
+  limitCount?: number;
+  cursor?: OffersPageCursor | null;
+}): Promise<OffersPage> => {
+  const limitCount = params.limitCount ?? 30;
+  const offersRef = userCollection(params.uid, 'offers');
+
+  const offersQuery =
+    params.cursor
+      ? query(offersRef, orderBy('createdAt', 'desc'), startAfter(params.cursor), limit(limitCount))
+      : query(offersRef, orderBy('createdAt', 'desc'), limit(limitCount));
+
+  const snapshot = await getDocs(offersQuery);
+  const offers = snapshot.docs.map((doc) => {
+    return mapOffer(doc.id, doc.data() as Record<string, unknown>);
+  });
+
+  return {
+    offers,
+    cursor: snapshot.docs.length > 0 ? snapshot.docs[snapshot.docs.length - 1] : null,
+    hasMore: snapshot.docs.length === limitCount,
+  };
 };
 
 export const watchOfferById = (
