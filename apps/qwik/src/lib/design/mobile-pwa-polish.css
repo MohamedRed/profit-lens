@@ -1,0 +1,21 @@
+html {
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: contain;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+}
+
+@media (min-width: 560px) {
+  body {
+    background:
+      radial-gradient(120% 120% at 50% 8%, #ffffff 0%, #f4f4f6 56%, #ececef 100%);
+  }
+}

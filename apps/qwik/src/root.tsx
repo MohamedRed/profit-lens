@@ -12,6 +12,11 @@ export default component$(() => {
       <head>
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#ffffff" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="ProfitLens" />
+        <meta name="format-detection" content="telephone=no" />
         <meta
           name="description"
           content="ProfitLens Qwik app with parallel /next deployment and Firebase parity."

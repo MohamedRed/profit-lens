@@ -1,7 +1,7 @@
 :root {
   /* Pencil system: Shadcn UI + mobile-3-minimalvibrant */
-  --pl-font-body: 'Inter', 'Avenir Next', 'Segoe UI', sans-serif;
-  --pl-font-display: 'Plus Jakarta Sans', 'Inter', 'Segoe UI', sans-serif;
+  --pl-font-body: 'Roboto', 'Avenir Next', 'Segoe UI', sans-serif;
+  --pl-font-display: 'Roboto', 'Avenir Next', 'Segoe UI', sans-serif;
 
   --pl-color-background: #ffffff;
   --pl-color-surface: #f4f4f5;
