@@ -24,6 +24,7 @@
     "qwik": "qwik"
   },
   "dependencies": {
+    "@qwik-ui/headless": "^0.7.4",
     "firebase": "^12.7.0"
   },
   "devDependencies": {
