@@ -6,6 +6,7 @@ import { watchOfferById } from '../../../../lib/features/offers/offers-service';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { OfferRecord } from '../../../../lib/types/offer';
 import { formatCurrency, formatShortDateTime } from '../history-helpers';
+import { readHistoryOfferFromCache, upsertHistoryOfferCache } from '../history-offer-cache';
 
 const formatDistance = (value: number): string => {
   return `${value.toFixed(1)} km`;
@@ -34,15 +35,30 @@ export default component$(() => {
     const user = track(() => auth.user.value);
     const search = track(() => location.url.search);
     const offerId = new URLSearchParams(search).get('offerId');
-    if (!user || !offerId) {
+    if (!offerId) {
       offer.value = null;
       loading.value = false;
       return;
     }
 
-    loading.value = true;
+    const cachedOffer = readHistoryOfferFromCache(offerId);
+    if (cachedOffer) {
+      offer.value = cachedOffer;
+    }
+
+    if (!user) {
+      loading.value = cachedOffer === null;
+      return;
+    }
+
+    loading.value = cachedOffer === null;
     const unsubscribe = watchOfferById(user.uid, offerId, (item) => {
-      offer.value = item;
+      if (item) {
+        offer.value = item;
+        upsertHistoryOfferCache(item);
+      } else if (!cachedOffer) {
+        offer.value = null;
+      }
       loading.value = false;
     });
     cleanup(() => {

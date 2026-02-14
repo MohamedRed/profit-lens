@@ -15,6 +15,7 @@ import {
   formatCurrency,
   formatShortDateTime,
 } from './history-helpers';
+import { saveHistoryOfferCache } from './history-offer-cache';
 import { readHistoryScrollY, readHistoryViewMode, saveHistoryScrollY, saveHistoryViewMode } from './history-navigation-state';
 
 export default component$(() => {
@@ -65,6 +66,11 @@ export default component$(() => {
     cleanup(() => {
       window.removeEventListener('scroll', onScroll);
     });
+  });
+
+  useVisibleTask$(({ track }) => {
+    const currentOffers = track(() => offers.value);
+    saveHistoryOfferCache(currentOffers);
   });
 
   const locale = i18n.locale.value;
