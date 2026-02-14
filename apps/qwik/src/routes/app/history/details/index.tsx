@@ -6,7 +6,12 @@ import { watchOfferById } from '../../../../lib/features/offers/offers-service';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { OfferRecord } from '../../../../lib/types/offer';
 import { formatCurrency, formatShortDateTime } from '../history-helpers';
-import { readHistoryOfferFromCache, upsertHistoryOfferCache } from '../history-offer-cache';
+import {
+  readHistoryOfferFromCache,
+  readSelectedHistoryOfferId,
+  saveSelectedHistoryOfferId,
+  upsertHistoryOfferCache,
+} from '../history-offer-cache';
 
 const formatDistance = (value: number): string => {
   return `${value.toFixed(1)} km`;
@@ -14,6 +19,21 @@ const formatDistance = (value: number): string => {
 
 const formatDuration = (value: number, unit: string): string => {
   return `${Math.round(value).toString()} ${unit}`;
+};
+
+const readOfferIdFromPath = (path: string): string | null => {
+  const match = path.match(/\/app\/history\/([^/]+)\/?$/);
+  if (!match) {
+    return null;
+  }
+  if (match[1] === 'details') {
+    return null;
+  }
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
+  }
 };
 
 export default component$(() => {
@@ -34,12 +54,18 @@ export default component$(() => {
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
     const search = track(() => location.url.search);
-    const offerId = new URLSearchParams(search).get('offerId');
+    const path = track(() => location.url.pathname);
+    const offerId =
+      new URLSearchParams(search).get('offerId') ??
+      readOfferIdFromPath(path) ??
+      readSelectedHistoryOfferId();
     if (!offerId) {
       offer.value = null;
       loading.value = false;
       return;
     }
+
+    saveSelectedHistoryOfferId(offerId);
 
     const cachedOffer = readHistoryOfferFromCache(offerId);
     if (cachedOffer) {

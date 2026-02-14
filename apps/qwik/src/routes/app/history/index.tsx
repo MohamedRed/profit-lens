@@ -15,7 +15,7 @@ import {
   formatCurrency,
   formatShortDateTime,
 } from './history-helpers';
-import { saveHistoryOfferCache } from './history-offer-cache';
+import { saveHistoryOfferCache, saveSelectedHistoryOfferId } from './history-offer-cache';
 import { readHistoryScrollY, readHistoryViewMode, saveHistoryScrollY, saveHistoryViewMode } from './history-navigation-state';
 
 export default component$(() => {
@@ -74,6 +74,9 @@ export default component$(() => {
   });
 
   const locale = i18n.locale.value;
+  const onHistoryItemClick$ = $((offerId: string) => {
+    saveSelectedHistoryOfferId(offerId);
+  });
   const onHistoryModeChange$ = $((nextIndex: number) => {
     saveHistoryViewMode(nextIndex === 1 ? 'charts' : 'list');
   });
@@ -153,6 +156,7 @@ export default component$(() => {
                   <Link
                     class="ui-history-item-link"
                     href={`/next/app/history/details/?offerId=${encodeURIComponent(item.id)}`}
+                    onClick$={() => onHistoryItemClick$(item.id)}
                   >
                     <div class="ui-history-item-main">
                       <p class="ui-history-item-profit">{formatCurrency(locale, profit)}</p>

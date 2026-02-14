@@ -1,6 +1,7 @@
 import type { OfferRecord } from '../../../lib/types/offer';
 
 const historyOfferCacheKey = 'pl-history-offers-cache';
+const selectedOfferIdKey = 'pl-history-selected-offer-id';
 
 interface SerializedOfferRecord extends Omit<OfferRecord, 'createdAt'> {
   createdAt: string | null;
@@ -81,4 +82,19 @@ export const readHistoryOfferFromCache = (offerId: string): OfferRecord | null =
     return null;
   }
   return deserializeOffer(cached);
+};
+
+export const saveSelectedHistoryOfferId = (offerId: string): void => {
+  if (!isBrowser() || !offerId) {
+    return;
+  }
+  sessionStorage.setItem(selectedOfferIdKey, offerId);
+};
+
+export const readSelectedHistoryOfferId = (): string | null => {
+  if (!isBrowser()) {
+    return null;
+  }
+  const value = sessionStorage.getItem(selectedOfferIdKey);
+  return value && value.length > 0 ? value : null;
 };
