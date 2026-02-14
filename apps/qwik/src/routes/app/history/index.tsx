@@ -159,11 +159,8 @@ export default component$(() => {
           window.scrollTo({ top: savedScrollY, behavior: 'auto' });
           window.requestAnimationFrame(() => {
             suppressAutoLoadMore.value = false;
-            maybeLoadMore();
           });
         });
-      } else {
-        maybeLoadMore();
       }
     });
 
@@ -184,11 +181,6 @@ export default component$(() => {
   });
   const onHistoryModeChange$ = $((nextIndex: number) => {
     saveHistoryViewMode(nextIndex === 1 ? 'charts' : 'list');
-    if (nextIndex === 0 && inBrowser) {
-      window.requestAnimationFrame(() => {
-        window.dispatchEvent(new Event('scroll'));
-      });
-    }
   });
 
   return (
