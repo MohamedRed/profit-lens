@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from '@builder.io/qwik-city';
 import { ToggleGroup } from '@qwik-ui/headless';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 import { useAuth } from '../../lib/auth/auth-context';
+import { cn } from '../../lib/ui/cn';
 
 interface AppShellProps {
   titleKey: string;
@@ -98,7 +99,7 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
               <ToggleGroup.Item
                 key={item.href}
                 value={item.href}
-                class={{ 'ui-mobile-tab-link': true, 'is-active': active }}
+                class={cn('ui-mobile-tab-link', active ? 'is-active' : null)}
                 aria-current={active ? 'page' : undefined}
               >
                 <span class="material-icons-outlined ui-mobile-tab-icon" aria-hidden="true">
