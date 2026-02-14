@@ -1,5 +1,5 @@
-import { Slot, component$ } from '@builder.io/qwik';
-import { useLocation } from '@builder.io/qwik-city';
+import { Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { Link, useLocation } from '@builder.io/qwik-city';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 import { useAuth } from '../../lib/auth/auth-context';
 
@@ -43,6 +43,24 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
   const i18n = useI18n();
   const location = useLocation();
   const auth = useAuth();
+  const nextTransitionIsPop = useSignal(false);
+  const transitionClass = useSignal<'is-push' | 'is-pop'>('is-push');
+
+  useVisibleTask$(({ cleanup }) => {
+    const onPopState = () => {
+      nextTransitionIsPop.value = true;
+    };
+    window.addEventListener('popstate', onPopState);
+    cleanup(() => {
+      window.removeEventListener('popstate', onPopState);
+    });
+  });
+
+  useVisibleTask$(({ track }) => {
+    track(() => location.url.pathname);
+    transitionClass.value = nextTransitionIsPop.value ? 'is-pop' : 'is-push';
+    nextTransitionIsPop.value = false;
+  });
 
   return (
     <div class="ui-mobile-app" id="qwik-app-root-marker" data-user={auth.user.value?.uid ?? 'none'}>
@@ -51,7 +69,10 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
           <h1 class="ui-mobile-title">{t(i18n, titleKey, titleFallback)}</h1>
         </header>
 
-        <section class="ui-mobile-content">
+        <section
+          key={location.url.pathname}
+          class={`ui-mobile-content ui-mobile-content-transition ${transitionClass.value}`}
+        >
           <Slot />
         </section>
       </main>
@@ -61,7 +82,7 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
           {navItems.map((item) => {
             const active = location.url.pathname.includes(item.match);
             return (
-              <a
+              <Link
                 key={item.href}
                 class={{ 'ui-mobile-tab-link': true, 'is-active': active }}
                 href={item.href}
@@ -71,7 +92,7 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
                   {item.icon}
                 </span>
                 <span class="ui-mobile-tab-label">{t(i18n, item.labelKey, item.fallback)}</span>
-              </a>
+              </Link>
             );
           })}
         </nav>

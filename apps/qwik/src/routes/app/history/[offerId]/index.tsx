@@ -1,5 +1,5 @@
-import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { useLocation } from '@builder.io/qwik-city';
+import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { useLocation, useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { watchOfferById } from '../../../../lib/features/offers/offers-service';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
@@ -16,10 +16,18 @@ const formatDuration = (value: number, unit: string): string => {
 
 export default component$(() => {
   const location = useLocation();
+  const navigate = useNavigate();
   const auth = useAuth();
   const i18n = useI18n();
   const offer = useSignal<OfferRecord | null>(null);
   const loading = useSignal(true);
+  const goBack$ = $(async () => {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+    await navigate('/next/app/history');
+  });
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
@@ -50,12 +58,12 @@ export default component$(() => {
   if (!current) {
     return (
       <div class="ui-history-detail-root">
-        <a class="ui-history-detail-back" href="/next/app/history">
+        <button type="button" class="ui-history-detail-back" onClick$={goBack$}>
           <span class="material-icons-outlined" aria-hidden="true">
             arrow_back
           </span>
           <span>{t(i18n, 'historyViewListLabel', 'List')}</span>
-        </a>
+        </button>
         <p class="ui-history-empty">{t(i18n, 'noHistoryMessage', 'No offers saved yet.')}</p>
       </div>
     );
@@ -67,12 +75,12 @@ export default component$(() => {
 
   return (
     <div class="ui-history-detail-root">
-      <a class="ui-history-detail-back" href="/next/app/history">
+      <button type="button" class="ui-history-detail-back" onClick$={goBack$}>
         <span class="material-icons-outlined" aria-hidden="true">
           arrow_back
         </span>
         <span>{t(i18n, 'historyTabLabel', 'History')}</span>
-      </a>
+      </button>
 
       <section class="ui-history-detail-card">
         <p class={{ 'ui-history-detail-profit': true, 'is-positive': profit >= 0, 'is-negative': profit < 0 }}>

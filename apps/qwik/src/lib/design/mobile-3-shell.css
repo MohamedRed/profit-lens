@@ -28,6 +28,21 @@
   padding: 16px 24px 24px;
 }
 
+.ui-mobile-content-transition {
+  animation-duration: 220ms;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.ui-mobile-content-transition.is-push {
+  animation-name: ui-route-push;
+}
+
+.ui-mobile-content-transition.is-pop {
+  animation-name: ui-route-pop;
+}
+
 .ui-mobile-tab-shell {
   position: fixed;
   left: 0;
@@ -113,5 +128,33 @@
 
   .ui-mobile-tab-label {
     font-size: 0.625rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-mobile-content-transition {
+    animation: none;
+  }
+}
+
+@keyframes ui-route-push {
+  from {
+    opacity: 0;
+    transform: translate3d(14px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes ui-route-pop {
+  from {
+    opacity: 0;
+    transform: translate3d(-14px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }

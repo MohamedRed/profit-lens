@@ -1,4 +1,5 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { Link } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { watchOffers, watchOfferStats } from '../../../lib/features/offers/offers-service';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
@@ -13,8 +14,13 @@ import {
   formatCurrency,
   formatShortDateTime,
 } from './history-helpers';
-
-type HistoryViewMode = 'list' | 'charts';
+import {
+  type HistoryViewMode,
+  readHistoryScrollY,
+  readHistoryViewMode,
+  saveHistoryScrollY,
+  saveHistoryViewMode,
+} from './history-navigation-state';
 
 export default component$(() => {
   const i18n = useI18n();
@@ -41,6 +47,28 @@ export default component$(() => {
     cleanup(() => {
       unsubscribeOffers();
       unsubscribeStats();
+    });
+  });
+
+  useVisibleTask$(({ cleanup }) => {
+    const savedMode = readHistoryViewMode();
+    if (savedMode) {
+      viewMode.value = savedMode;
+    }
+
+    const savedScrollY = readHistoryScrollY();
+    if (savedScrollY !== null) {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: savedScrollY, behavior: 'auto' });
+      });
+    }
+
+    const onScroll = () => {
+      saveHistoryScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    cleanup(() => {
+      window.removeEventListener('scroll', onScroll);
     });
   });
 
@@ -98,6 +126,7 @@ export default component$(() => {
           class={{ 'ui-history-segment-btn': true, 'is-active': viewMode.value === 'list' }}
           onClick$={() => {
             viewMode.value = 'list';
+            saveHistoryViewMode('list');
           }}
         >
           <span class="material-icons-outlined ui-history-segment-icon" aria-hidden="true">
@@ -110,6 +139,7 @@ export default component$(() => {
           class={{ 'ui-history-segment-btn': true, 'is-active': viewMode.value === 'charts' }}
           onClick$={() => {
             viewMode.value = 'charts';
+            saveHistoryViewMode('charts');
           }}
         >
           <span class="material-icons-outlined ui-history-segment-icon" aria-hidden="true">
@@ -129,7 +159,14 @@ export default component$(() => {
             const distance = item.routeVerifiedDistanceKm ?? item.distanceKm;
             return (
               <li key={item.id} class="ui-history-item">
-                <a class="ui-history-item-link" href={`/next/app/history/${item.id}`}>
+                <Link
+                  class="ui-history-item-link"
+                  href={`/next/app/history/${item.id}`}
+                  onClick$={() => {
+                    saveHistoryViewMode(viewMode.value);
+                    saveHistoryScrollY(window.scrollY);
+                  }}
+                >
                   <div class="ui-history-item-main">
                     <p class="ui-history-item-profit">{formatCurrency(locale, profit)}</p>
                     <p class="ui-history-item-meta">
@@ -142,7 +179,7 @@ export default component$(() => {
                       chevron_right
                     </span>
                   </div>
-                </a>
+                </Link>
               </li>
             );
           })}
