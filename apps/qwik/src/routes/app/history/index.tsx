@@ -15,13 +15,7 @@ import {
   formatCurrency,
   formatShortDateTime,
 } from './history-helpers';
-import {
-  type HistoryViewMode,
-  readHistoryScrollY,
-  readHistoryViewMode,
-  saveHistoryScrollY,
-  saveHistoryViewMode,
-} from './history-navigation-state';
+import { readHistoryScrollY, readHistoryViewMode, saveHistoryScrollY, saveHistoryViewMode } from './history-navigation-state';
 
 export default component$(() => {
   const i18n = useI18n();
@@ -74,7 +68,6 @@ export default component$(() => {
   });
 
   const locale = i18n.locale.value;
-  const currentViewMode = (selectedTabIndex.value ?? 0) === 1 ? 'charts' : 'list';
   const onHistoryModeChange$ = $((nextIndex: number) => {
     saveHistoryViewMode(nextIndex === 1 ? 'charts' : 'list');
   });
@@ -154,10 +147,6 @@ export default component$(() => {
                   <Link
                     class="ui-history-item-link"
                     href={`/next/app/history/${encodeURIComponent(item.id)}/`}
-                    onClick$={() => {
-                      saveHistoryViewMode(currentViewMode as HistoryViewMode);
-                      saveHistoryScrollY(window.scrollY);
-                    }}
                   >
                     <div class="ui-history-item-main">
                       <p class="ui-history-item-profit">{formatCurrency(locale, profit)}</p>

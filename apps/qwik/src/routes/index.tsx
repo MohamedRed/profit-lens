@@ -9,13 +9,29 @@ export default component$(() => {
   useVisibleTask$(({ track }) => {
     const ready = track(() => auth.ready.value);
     const user = track(() => auth.user.value);
+    const path = window.location.pathname;
+    const search = window.location.search;
+    const hash = window.location.hash;
+    const deepAppPath =
+      path.startsWith('/next/app/') && path !== '/next/app/' && path !== '/next/app'
+        ? `${path}${search}${hash}`
+        : null;
 
     if (!ready) {
       return;
     }
 
     if (user) {
+      if (deepAppPath) {
+        navigate(deepAppPath);
+        return;
+      }
       navigate('/next/app/offer');
+      return;
+    }
+
+    if (deepAppPath) {
+      navigate(`/next/login?redirect=${encodeURIComponent(deepAppPath)}`);
       return;
     }
 
