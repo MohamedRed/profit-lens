@@ -23,6 +23,19 @@ const asDate = (value: unknown): Date | null => {
   return null;
 };
 
+const asNumber = (value: unknown): number | undefined => {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+  if (typeof value === 'string') {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+  return undefined;
+};
+
 const mapOffer = (docId: string, data: Record<string, unknown>): OfferRecord => {
   const breakdown = (data.breakdown as Record<string, unknown> | undefined) ?? {};
   const offer = (data.offer as Record<string, unknown> | undefined) ?? data;
@@ -30,25 +43,43 @@ const mapOffer = (docId: string, data: Record<string, unknown>): OfferRecord => 
     (offer.routeVerification as Record<string, unknown> | undefined) ??
     (data.routeVerification as Record<string, unknown> | undefined) ??
     {};
+  const payoutEuro = asNumber(offer.payoutEuro) ?? asNumber(data.payoutEuro) ?? 0;
+  const distanceKm = asNumber(offer.distanceKm) ?? asNumber(data.distanceKm) ?? 0;
+  const durationMinutes = asNumber(offer.durationMinutes) ?? asNumber(data.durationMinutes) ?? 0;
+  const netProfitEuro =
+    asNumber(breakdown.netProfitEuro) ??
+    asNumber(breakdown.netProfit) ??
+    asNumber(data.netProfitEuro) ??
+    asNumber(data.netProfit) ??
+    0;
+  const totalCostsEuro =
+    asNumber(breakdown.totalCostsEuro) ??
+    asNumber(breakdown.totalCosts) ??
+    asNumber(data.totalCostsEuro) ??
+    asNumber(data.totalCosts) ??
+    0;
+  const routeVerifiedDistanceKm =
+    asNumber(routeVerification.distanceKm) ??
+    asNumber(routeVerification.distance) ??
+    asNumber(offer.distanceKm) ??
+    asNumber(data.distanceKm);
 
   return {
     id: docId,
     source: (data.source as string) ?? 'manual',
     createdAt: asDate(data.createdAt),
-    payoutEuro: Number((offer.payoutEuro as number) ?? data.payoutEuro ?? 0),
-    distanceKm: Number((offer.distanceKm as number) ?? data.distanceKm ?? 0),
-    durationMinutes: Number((offer.durationMinutes as number) ?? data.durationMinutes ?? 0),
+    payoutEuro,
+    distanceKm,
+    durationMinutes,
     pickupName: (offer.pickupName as string | undefined) ?? (data.pickupName as string | undefined),
     pickupAddress:
       (offer.pickupAddress as string | undefined) ?? (data.pickupAddress as string | undefined),
     dropoffName: (offer.dropoffName as string | undefined) ?? (data.dropoffName as string | undefined),
     dropoffAddress:
       (offer.dropoffAddress as string | undefined) ?? (data.dropoffAddress as string | undefined),
-    netProfitEuro: Number((breakdown.netProfitEuro as number) ?? 0),
-    totalCostsEuro: Number((breakdown.totalCostsEuro as number) ?? 0),
-    routeVerifiedDistanceKm: Number(
-      (routeVerification.distanceKm as number) ?? (data.distanceKm as number) ?? 0,
-    ),
+    netProfitEuro,
+    totalCostsEuro,
+    routeVerifiedDistanceKm,
   };
 };
 
@@ -57,10 +88,17 @@ const mapStats = (data: Record<string, unknown>): OfferStatsDay | null => {
   if (!dayStart) {
     return null;
   }
+  const offerCount = asNumber(data.offerCount) ?? asNumber(data.count) ?? 0;
+  const netProfitEuro =
+    asNumber(data.totalNetProfitEuro) ??
+    asNumber(data.netProfitEuro) ??
+    asNumber(data.netProfitSum) ??
+    0;
+
   return {
     dayStart,
-    offerCount: Number(data.offerCount ?? 0),
-    netProfitEuro: Number(data.totalNetProfitEuro ?? data.netProfitEuro ?? 0),
+    offerCount,
+    netProfitEuro,
   };
 };
 
