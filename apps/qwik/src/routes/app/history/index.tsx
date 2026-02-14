@@ -33,6 +33,7 @@ export default component$(() => {
   const hasMore = useSignal(true);
   const hasLoadMoreError = useSignal(false);
   const selectedTabIndex = useSignal<number>(0);
+  const suppressAutoLoadMore = useSignal(false);
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
@@ -139,6 +140,9 @@ export default component$(() => {
 
     const onScroll = () => {
       saveHistoryScrollY(window.scrollY);
+      if (suppressAutoLoadMore.value) {
+        return;
+      }
       maybeLoadMore();
     };
 
@@ -150,9 +154,13 @@ export default component$(() => {
       }
       const savedScrollY = readHistoryScrollY();
       if (savedScrollY !== null && inBrowser) {
+        suppressAutoLoadMore.value = true;
         window.requestAnimationFrame(() => {
           window.scrollTo({ top: savedScrollY, behavior: 'auto' });
-          maybeLoadMore();
+          window.requestAnimationFrame(() => {
+            suppressAutoLoadMore.value = false;
+            maybeLoadMore();
+          });
         });
       } else {
         maybeLoadMore();
