@@ -2,6 +2,7 @@ import { Slot, component$ } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
 import { AppShell } from '../../components/layout/app-shell';
 import { AuthGuard } from '../../components/guards/auth-guard';
+import { PwaInstallGuard } from '../../components/guards/pwa-install-guard';
 
 const titleByPath = (path: string): { key: string; fallback: string } => {
   if (path.includes('/app/history')) {
@@ -22,9 +23,11 @@ export default component$(() => {
 
   return (
     <AuthGuard requireAuth={true}>
-      <AppShell titleKey={title.key} titleFallback={title.fallback}>
-        <Slot />
-      </AppShell>
+      <PwaInstallGuard>
+        <AppShell titleKey={title.key} titleFallback={title.fallback}>
+          <Slot />
+        </AppShell>
+      </PwaInstallGuard>
     </AuthGuard>
   );
 });

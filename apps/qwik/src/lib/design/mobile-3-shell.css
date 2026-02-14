@@ -5,6 +5,61 @@
   margin: 0 auto;
 }
 
+.ui-pwa-gate {
+  min-height: 100dvh;
+  width: min(100%, 430px);
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background: var(--pl-color-background);
+}
+
+.ui-pwa-gate-card {
+  width: 100%;
+  border: 1px solid var(--pl-color-outline);
+  border-radius: var(--pl-radius-xl);
+  background: var(--pl-color-overlay);
+  padding: 20px 16px;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  text-align: center;
+}
+
+.ui-pwa-gate-icon {
+  font-size: 28px;
+  color: var(--pl-color-purple);
+}
+
+.ui-pwa-gate-title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.ui-pwa-gate-copy,
+.ui-pwa-gate-hint {
+  margin: 0;
+  color: var(--pl-color-text-secondary);
+}
+
+.ui-pwa-gate-button {
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: var(--pl-radius-pill);
+  background: var(--pl-color-purple);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ui-pwa-gate-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .ui-mobile-page {
   width: 100%;
   padding-bottom: calc(108px + env(safe-area-inset-bottom));
