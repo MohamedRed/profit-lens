@@ -161,7 +161,7 @@ export default component$(() => {
               <li key={item.id} class="ui-history-item">
                 <Link
                   class="ui-history-item-link"
-                  href={`/next/app/history/${item.id}`}
+                  href={`/next/app/history/${encodeURIComponent(item.id)}/`}
                   onClick$={() => {
                     saveHistoryViewMode(viewMode.value);
                     saveHistoryScrollY(window.scrollY);
