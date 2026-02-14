@@ -475,6 +475,32 @@ class AppLocalizationsFr extends AppLocalizations {
   String get installAppCta => 'Installer';
 
   @override
+  String get installAppRequiredTitle => 'Installation requise';
+
+  @override
+  String get installAppRequiredBody =>
+      'Pour continuer, installez ProfitLens puis ouvrez-le depuis votre écran d’accueil. Le guide d’installation s’ouvre automatiquement.';
+
+  @override
+  String get installAppRequiredNativeBody =>
+      'Pour continuer, installez ProfitLens puis ouvrez-le depuis votre écran d’accueil. Appuyez sur Installer pour ouvrir l’invite du navigateur.';
+
+  @override
+  String get installAppLoadFailed =>
+      'Impossible de charger la fenêtre d’installation.';
+
+  @override
+  String get installAppPromptUnavailable =>
+      'L’invite d’installation n’est pas encore prête. Patientez un instant puis réessayez.';
+
+  @override
+  String get installAppPromptFailed => 'Échec de l’installation.';
+
+  @override
+  String get installAppPromptWaiting =>
+      'Préparation de l’invite d’installation. Laissez cette page ouverte un instant.';
+
+  @override
   String get languageFrench => 'Français';
 
   @override

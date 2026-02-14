@@ -469,6 +469,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String get installAppCta => 'تثبيت';
 
   @override
+  String get installAppRequiredTitle => 'التثبيت مطلوب';
+
+  @override
+  String get installAppRequiredBody =>
+      'للمتابعة، ثبّت ProfitLens ثم افتحه من الشاشة الرئيسية. سيتم عرض دليل التثبيت تلقائيًا.';
+
+  @override
+  String get installAppRequiredNativeBody =>
+      'للمتابعة، ثبّت ProfitLens ثم افتحه من الشاشة الرئيسية. اضغط على تثبيت لفتح نافذة التثبيت في المتصفح.';
+
+  @override
+  String get installAppLoadFailed => 'تعذر تحميل نافذة التثبيت.';
+
+  @override
+  String get installAppPromptUnavailable =>
+      'نافذة التثبيت غير جاهزة بعد. انتظر قليلًا ثم حاول مرة أخرى.';
+
+  @override
+  String get installAppPromptFailed => 'فشل التثبيت.';
+
+  @override
+  String get installAppPromptWaiting =>
+      'جارٍ تجهيز نافذة التثبيت. أبقِ هذه الصفحة مفتوحة للحظة.';
+
+  @override
   String get languageFrench => 'الفرنسية';
 
   @override

@@ -975,6 +975,48 @@ abstract class AppLocalizations {
   /// **'Install'**
   String get installAppCta;
 
+  /// No description provided for @installAppRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Install required'**
+  String get installAppRequiredTitle;
+
+  /// No description provided for @installAppRequiredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'To continue, install ProfitLens and open it from your home screen. We show the install guide automatically.'**
+  String get installAppRequiredBody;
+
+  /// No description provided for @installAppRequiredNativeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'To continue, install ProfitLens and open it from your home screen. Tap Install to open the browser prompt.'**
+  String get installAppRequiredNativeBody;
+
+  /// No description provided for @installAppLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load install dialog.'**
+  String get installAppLoadFailed;
+
+  /// No description provided for @installAppPromptUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Install prompt is not ready yet. Wait a moment and try again.'**
+  String get installAppPromptUnavailable;
+
+  /// No description provided for @installAppPromptFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Install failed.'**
+  String get installAppPromptFailed;
+
+  /// No description provided for @installAppPromptWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing install prompt. Keep this page open for a moment.'**
+  String get installAppPromptWaiting;
+
   /// No description provided for @languageFrench.
   ///
   /// In en, this message translates to:

@@ -472,6 +472,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get installAppCta => 'Install';
 
   @override
+  String get installAppRequiredTitle => 'Install required';
+
+  @override
+  String get installAppRequiredBody =>
+      'To continue, install ProfitLens and open it from your home screen. We show the install guide automatically.';
+
+  @override
+  String get installAppRequiredNativeBody =>
+      'To continue, install ProfitLens and open it from your home screen. Tap Install to open the browser prompt.';
+
+  @override
+  String get installAppLoadFailed => 'Failed to load install dialog.';
+
+  @override
+  String get installAppPromptUnavailable =>
+      'Install prompt is not ready yet. Wait a moment and try again.';
+
+  @override
+  String get installAppPromptFailed => 'Install failed.';
+
+  @override
+  String get installAppPromptWaiting =>
+      'Preparing install prompt. Keep this page open for a moment.';
+
+  @override
   String get languageFrench => 'French';
 
   @override
