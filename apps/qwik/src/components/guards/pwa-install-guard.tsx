@@ -1,70 +1,81 @@
-import { $, Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 import { isRunningAsInstalledPwa } from '../../lib/features/pwa/pwa-install-state';
 
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+interface PwaInstallElementLike extends HTMLElement {
+  showDialog: (forced?: boolean) => void;
 }
 
 type InstallGateState = 'checking' | 'installed' | 'not-installed';
+const installHostId = 'ui-pwa-install-host';
 
 export const PwaInstallGuard = component$(() => {
   const i18n = useI18n();
   const gateState = useSignal<InstallGateState>('checking');
-  const deferredPrompt = useSignal<BeforeInstallPromptEvent | null>(null);
-  const installing = useSignal(false);
-  const status = useSignal('');
+  const dialogReady = useSignal(false);
+  const loadError = useSignal('');
 
   useVisibleTask$(({ cleanup }) => {
     const evaluate = () => {
       gateState.value = isRunningAsInstalledPwa(window) ? 'installed' : 'not-installed';
     };
 
-    const onBeforeInstallPrompt = (event: Event) => {
-      event.preventDefault();
-      deferredPrompt.value = event as BeforeInstallPromptEvent;
-      evaluate();
-    };
-
     const onInstalled = () => {
-      deferredPrompt.value = null;
       gateState.value = 'installed';
     };
 
-    window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        evaluate();
+      }
+    };
+
     window.addEventListener('appinstalled', onInstalled);
+    window.addEventListener('focus', evaluate);
+    document.addEventListener('visibilitychange', onVisibilityChange);
     evaluate();
 
     cleanup(() => {
-      window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt);
       window.removeEventListener('appinstalled', onInstalled);
+      window.removeEventListener('focus', evaluate);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     });
   });
 
-  const installNow$ = $(async () => {
-    const prompt = deferredPrompt.value;
-    if (!prompt || installing.value) {
+  useVisibleTask$(({ track }) => {
+    const state = track(() => gateState.value);
+    if (state !== 'not-installed') {
+      dialogReady.value = false;
+      loadError.value = '';
       return;
     }
 
-    status.value = '';
-    installing.value = true;
-    try {
-      await prompt.prompt();
-      const result = await prompt.userChoice;
-      if (result.outcome === 'accepted') {
-        status.value = t(i18n, 'installAppAcceptedStatus', 'Install accepted. Open the app from your home screen.');
-      } else {
-        status.value = t(i18n, 'installAppDismissedStatus', 'Install was dismissed. Installation is required.');
+    void (async () => {
+      try {
+        await import('@khmyznikov/pwa-install');
+        const host = document.getElementById(installHostId);
+        if (!host) {
+          loadError.value = t(i18n, 'installAppLoadFailed', 'Failed to load install dialog.');
+          return;
+        }
+
+        let dialog = host.querySelector('pwa-install') as PwaInstallElementLike | null;
+        if (!dialog) {
+          dialog = document.createElement('pwa-install') as PwaInstallElementLike;
+          dialog.setAttribute('disable-close', '');
+          dialog.setAttribute('name', 'ProfitLens');
+          host.replaceChildren(dialog);
+        }
+
+        loadError.value = '';
+        dialogReady.value = true;
+        window.requestAnimationFrame(() => {
+          dialog?.showDialog(true);
+        });
+      } catch (error) {
+        loadError.value = error instanceof Error ? error.message : String(error);
       }
-    } catch (error) {
-      status.value = error instanceof Error ? error.message : String(error);
-    } finally {
-      deferredPrompt.value = null;
-      installing.value = false;
-      gateState.value = isRunningAsInstalledPwa(window) ? 'installed' : 'not-installed';
-    }
+    })();
   });
 
   if (gateState.value === 'installed') {
@@ -82,31 +93,17 @@ export const PwaInstallGuard = component$(() => {
           {t(
             i18n,
             'installAppRequiredBody',
-            'To continue, install ProfitLens and open it from your home screen.',
+            'To continue, install ProfitLens and open it from your home screen. We show the install guide automatically.',
           )}
         </p>
 
-        {deferredPrompt.value ? (
-          <button type="button" class="ui-pwa-gate-button" onClick$={installNow$} disabled={installing.value}>
-            {installing.value
-              ? t(i18n, 'installAppInstallingLabel', 'Installing...')
-              : t(i18n, 'installAppNowButton', 'Install now')}
-          </button>
-        ) : (
-          <p class="ui-pwa-gate-hint">
-            {t(
-              i18n,
-              'installAppManualHint',
-              'Use your browser menu and choose "Add to Home Screen", then reopen the app.',
-            )}
-          </p>
-        )}
+        <div id={installHostId} class="ui-pwa-install-host" />
 
-        {gateState.value === 'checking' ? (
+        {!dialogReady.value && !loadError.value ? (
           <div class="ui-spinner" aria-hidden="true" />
         ) : null}
 
-        {status.value ? <p class="ui-status ui-status-error">{status.value}</p> : null}
+        {loadError.value ? <p class="ui-status ui-status-error">{loadError.value}</p> : null}
       </section>
     </div>
   );

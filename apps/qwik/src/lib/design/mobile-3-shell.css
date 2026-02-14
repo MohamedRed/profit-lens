@@ -38,27 +38,15 @@
   font-weight: 600;
 }
 
-.ui-pwa-gate-copy,
-.ui-pwa-gate-hint {
+.ui-pwa-gate-copy {
   margin: 0;
   color: var(--pl-color-text-secondary);
 }
 
-.ui-pwa-gate-button {
+.ui-pwa-install-host {
   width: 100%;
-  min-height: 48px;
-  border: 0;
-  border-radius: var(--pl-radius-pill);
-  background: var(--pl-color-purple);
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
 }
 
-.ui-pwa-gate-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
 
 .ui-mobile-page {
   width: 100%;
