@@ -14,8 +14,14 @@ interface PwaInstallElementLike extends HTMLElement {
 }
 
 type InstallGateState = 'checking' | 'installed' | 'not-installed';
-type InstallFlowState = 'unknown' | 'ios-manual' | 'native-ready' | 'native-pending';
+type InstallFlowState =
+  | 'unknown'
+  | 'ios-manual'
+  | 'native-ready'
+  | 'native-pending'
+  | 'native-manual';
 const installHostId = 'ui-pwa-install-host';
+const nativePromptFallbackDelayMs = 3000;
 
 export const PwaInstallGuard = component$(() => {
   const i18n = useI18n();
@@ -53,7 +59,13 @@ export const PwaInstallGuard = component$(() => {
       if (isRunningAsInstalledPwa(window) || isIosInstallManualOnly(window)) {
         return;
       }
-      installFlow.value = event ? 'native-ready' : 'native-pending';
+      if (event) {
+        installFlow.value = 'native-ready';
+        return;
+      }
+      if (installFlow.value !== 'native-manual') {
+        installFlow.value = 'native-pending';
+      }
     });
 
     window.addEventListener('appinstalled', onInstalled);
@@ -70,13 +82,14 @@ export const PwaInstallGuard = component$(() => {
   });
 
   useVisibleTask$(({ track, cleanup }) => {
-    const shouldUseIosManualDialog =
-      track(() => gateState.value) === 'not-installed' && track(() => installFlow.value) === 'ios-manual';
+    const state = track(() => gateState.value);
+    const flow = track(() => installFlow.value);
+    const shouldUseManualDialog =
+      state === 'not-installed' && (flow === 'ios-manual' || flow === 'native-manual');
 
-    if (!shouldUseIosManualDialog) {
+    if (!shouldUseManualDialog) {
       dialogReady.value = false;
       dialogRef.value = null;
-      loadError.value = '';
       return;
     }
 
@@ -118,14 +131,32 @@ export const PwaInstallGuard = component$(() => {
     });
   });
 
+  useVisibleTask$(({ track, cleanup }) => {
+    const shouldWaitForNativePrompt =
+      track(() => gateState.value) === 'not-installed' && track(() => installFlow.value) === 'native-pending';
+    if (!shouldWaitForNativePrompt) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      if (gateState.value === 'not-installed' && installFlow.value === 'native-pending') {
+        installFlow.value = 'native-manual';
+      }
+    }, nativePromptFallbackDelayMs);
+
+    cleanup(() => {
+      window.clearTimeout(timer);
+    });
+  });
+
   if (gateState.value === 'installed') {
     return <Slot />;
   }
 
-  const isIosFlow = installFlow.value === 'ios-manual';
-  const showInstallAction = installFlow.value === 'ios-manual' || installFlow.value === 'native-ready';
+  const isManualDialogFlow = installFlow.value === 'ios-manual' || installFlow.value === 'native-manual';
+  const showInstallAction = isManualDialogFlow || installFlow.value === 'native-ready';
   const showSpinner =
-    (!dialogReady.value && installFlow.value === 'ios-manual') || installFlow.value === 'native-pending';
+    (!dialogReady.value && isManualDialogFlow) || installFlow.value === 'native-pending';
   const copy =
     installFlow.value === 'native-ready'
       ? t(
@@ -133,6 +164,12 @@ export const PwaInstallGuard = component$(() => {
           'installAppRequiredNativeBody',
           'To continue, install ProfitLens and open it from your home screen. Tap Install to open the browser prompt.',
         )
+      : installFlow.value === 'native-manual'
+        ? t(
+            i18n,
+            'installAppRequiredManualBody',
+            'To continue, install ProfitLens and open it from your home screen. Tap Install to open guided install steps for your browser.',
+          )
       : t(
           i18n,
           'installAppRequiredBody',
@@ -154,12 +191,12 @@ export const PwaInstallGuard = component$(() => {
           <button
             type="button"
             class="ui-pwa-gate-button"
-            disabled={installing.value || (isIosFlow && !dialogReady.value)}
+            disabled={installing.value || (isManualDialogFlow && !dialogReady.value)}
             onClick$={async () => {
               if (installing.value) {
                 return;
               }
-              if (isIosFlow) {
+              if (isManualDialogFlow) {
                 if (!dialogRef.value) {
                   loadError.value = t(i18n, 'installAppLoadFailed', 'Failed to load install dialog.');
                   return;
@@ -176,7 +213,7 @@ export const PwaInstallGuard = component$(() => {
                   'installAppPromptUnavailable',
                   'Install prompt is not ready yet. Wait a moment and try again.',
                 );
-                installFlow.value = 'native-pending';
+                installFlow.value = 'native-manual';
                 return;
               }
 
@@ -209,6 +246,16 @@ export const PwaInstallGuard = component$(() => {
               i18n,
               'installAppPromptWaiting',
               'Preparing install prompt. Keep this page open for a moment.',
+            )}
+          </p>
+        ) : null}
+
+        {installFlow.value === 'native-manual' && !loadError.value ? (
+          <p class="ui-status">
+            {t(
+              i18n,
+              'installAppPromptManual',
+              'Automatic prompt is unavailable on this browser session. Tap Install to open manual install steps.',
             )}
           </p>
         ) : null}
