@@ -45,3 +45,21 @@ export const statusLabel = (
   if (normalized === 'closed') return translate('helpStatusClosed', fallback);
   return fallback;
 };
+
+export const delivererStatusLabel = (
+  status: string,
+  fallback: string,
+  translate: (key: string, fallbackText: string) => string,
+): string => {
+  const normalized = status.toLowerCase();
+  if (normalized === 'received') return translate('helpDelivererStatusReceivedLabel', fallback);
+  if (normalized === 'analyzing') return translate('helpDelivererStatusAnalyzingLabel', fallback);
+  if (normalized === 'needsinfo' || normalized === 'needs_info') {
+    return translate('helpDelivererStatusNeedsInfoLabel', fallback);
+  }
+  if (normalized === 'fixready' || normalized === 'fix_ready') {
+    return translate('helpDelivererStatusFixReadyLabel', fallback);
+  }
+  if (normalized === 'resolved') return translate('helpDelivererStatusResolvedLabel', fallback);
+  return fallback;
+};

@@ -1,11 +1,11 @@
-import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Collapsible } from '@qwik-ui/headless';
+import { component$, useSignal } from '@builder.io/qwik';
+import { Link } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
-import { createHelpTicket, watchHelpTickets } from '../../../lib/features/help/help-service';
-import { buildHelpDrafts, formatHelpDate, maxHelpAttachments, statusLabel } from '../../../lib/features/help/help-ui-utils';
+import { createHelpTicket } from '../../../lib/features/help/help-service';
+import { buildHelpDrafts, maxHelpAttachments } from '../../../lib/features/help/help-ui-utils';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
-import type { HelpAttachmentDraft, HelpTicket } from '../../../lib/types/help';
+import type { HelpAttachmentDraft } from '../../../lib/types/help';
 
 export default component$(() => {
   const auth = useAuth();
@@ -14,38 +14,20 @@ export default component$(() => {
   const description = useSignal('');
   const drafts = useSignal<HelpAttachmentDraft[]>([]);
   const submitting = useSignal(false);
-  const showTickets = useSignal(false);
-  const tickets = useSignal<HelpTicket[]>([]);
   const status = useSignal('');
 
-  useVisibleTask$(({ track, cleanup }) => {
-    const user = track(() => auth.user.value);
-    const visible = track(() => showTickets.value);
-    if (!user || !visible) {
-      tickets.value = [];
-      return;
-    }
-
-    const unsubscribe = watchHelpTickets(user.uid, (nextTickets) => {
-      tickets.value = nextTickets;
-    });
-
-    cleanup(() => {
-      unsubscribe();
-    });
-  });
-
   return (
-    <Collapsible.Root class="ui-help-root" bind:open={showTickets}>
+    <div class="ui-help-root">
       <div class="ui-help-toolbar">
-        <Collapsible.Trigger
-          class={{ 'ui-help-toolbar-btn': true, 'is-active': showTickets.value }}
+        <Link
+          class="ui-help-toolbar-btn"
+          href="/next/app/help/tickets"
           aria-label={t(i18n, 'helpViewTicketsButton', 'View tickets')}
         >
           <span class="material-icons-outlined" aria-hidden="true">
             list_alt
           </span>
-        </Collapsible.Trigger>
+        </Link>
       </div>
 
       <section class="ui-help-card">
@@ -183,36 +165,6 @@ export default component$(() => {
         ) : null}
       </section>
 
-      <Collapsible.Content>
-        <section class="ui-help-card">
-          <h2 class="ui-help-card-title">{t(i18n, 'helpTicketsTitle', 'Tickets')}</h2>
-          <ul class="ui-help-ticket-list">
-            {tickets.value.length === 0 ? (
-              <li class="ui-help-ticket-empty">
-                {t(i18n, 'helpNoTicketsMessage', 'No tickets yet.')}
-              </li>
-            ) : null}
-            {tickets.value.map((ticket) => (
-              <li key={ticket.id} class="ui-help-ticket-item">
-                <div class="ui-help-ticket-row">
-                  <span class="ui-help-ticket-id">#{ticket.id.slice(0, 8)}</span>
-                  <span class="ui-help-ticket-status">
-                    {statusLabel(ticket.status, ticket.status, (key, fallbackText) =>
-                      t(i18n, key, fallbackText),
-                    )}
-                  </span>
-                </div>
-                <p class="ui-help-ticket-desc">
-                  {ticket.description || t(i18n, 'helpTicketDescriptionEmpty', 'No description provided.')}
-                </p>
-                <p class="ui-help-ticket-date">
-                  {t(i18n, 'helpStatusUpdatedLabel', 'Status updated')}: {formatHelpDate(ticket.updatedAt)}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </Collapsible.Content>
-    </Collapsible.Root>
+    </div>
   );
 });
