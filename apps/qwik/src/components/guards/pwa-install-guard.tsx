@@ -22,6 +22,7 @@ type InstallFlowState =
   | 'native-manual';
 const installHostId = 'ui-pwa-install-host';
 const nativePromptFallbackDelayMs = 3000;
+const knownInstalledKey = 'profit-lens-pwa-installed';
 
 export const PwaInstallGuard = component$(() => {
   const i18n = useI18n();
@@ -33,8 +34,35 @@ export const PwaInstallGuard = component$(() => {
   const loadError = useSignal('');
 
   useVisibleTask$(({ cleanup }) => {
+    const setKnownInstalled = (installed: boolean) => {
+      try {
+        if (installed) {
+          window.localStorage.setItem(knownInstalledKey, '1');
+        } else {
+          window.localStorage.removeItem(knownInstalledKey);
+        }
+      } catch {
+        // Ignore storage failures (private mode / blocked storage).
+      }
+    };
+
+    const getKnownInstalled = (): boolean => {
+      try {
+        return window.localStorage.getItem(knownInstalledKey) === '1';
+      } catch {
+        return false;
+      }
+    };
+
     const evaluate = () => {
       if (isRunningAsInstalledPwa(window)) {
+        setKnownInstalled(true);
+        gateState.value = 'installed';
+        installFlow.value = 'unknown';
+        return;
+      }
+
+      if (getKnownInstalled()) {
         gateState.value = 'installed';
         installFlow.value = 'unknown';
         return;
@@ -45,6 +73,7 @@ export const PwaInstallGuard = component$(() => {
     };
 
     const onInstalled = () => {
+      setKnownInstalled(true);
       gateState.value = 'installed';
       installFlow.value = 'unknown';
     };
@@ -60,6 +89,7 @@ export const PwaInstallGuard = component$(() => {
         return;
       }
       if (event) {
+        setKnownInstalled(false);
         installFlow.value = 'native-ready';
         return;
       }
