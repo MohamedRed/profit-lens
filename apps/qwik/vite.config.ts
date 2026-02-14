@@ -20,7 +20,8 @@ export default defineConfig(({ mode }): UserConfig => {
           cleanupOutdatedCaches: true,
           clientsClaim: true,
           skipWaiting: true,
-          additionalManifestEntries: [{ url: 'index.html', revision: null }],
+          navigateFallback: null,
+          globPatterns: ['**/*.{js,css,json,webmanifest,png,svg,ico,woff2,ttf}'],
           navigateFallbackDenylist: [/^\/app\//, /^\/$/, /^\/index\.html$/],
         },
         manifest: {

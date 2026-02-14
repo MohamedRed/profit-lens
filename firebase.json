@@ -285,10 +285,6 @@
       {
         "source": "/app/**",
         "destination": "/app/index.html"
-      },
-      {
-        "source": "/next/app/history/**",
-        "destination": "/next/index.html"
       }
     ]
   }
