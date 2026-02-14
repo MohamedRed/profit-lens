@@ -84,10 +84,9 @@ export const PwaInstallGuard = component$(() => {
   useVisibleTask$(({ track, cleanup }) => {
     const state = track(() => gateState.value);
     const flow = track(() => installFlow.value);
-    const shouldUseManualDialog =
-      state === 'not-installed' && (flow === 'ios-manual' || flow === 'native-manual');
+    const shouldUseIosManualDialog = state === 'not-installed' && flow === 'ios-manual';
 
-    if (!shouldUseManualDialog) {
+    if (!shouldUseIosManualDialog) {
       dialogReady.value = false;
       dialogRef.value = null;
       return;
@@ -153,10 +152,11 @@ export const PwaInstallGuard = component$(() => {
     return <Slot />;
   }
 
-  const isManualDialogFlow = installFlow.value === 'ios-manual' || installFlow.value === 'native-manual';
-  const showInstallAction = isManualDialogFlow || installFlow.value === 'native-ready';
+  const isIosFlow = installFlow.value === 'ios-manual';
+  const isNativeManualFlow = installFlow.value === 'native-manual';
+  const showInstallAction = isIosFlow || isNativeManualFlow || installFlow.value === 'native-ready';
   const showSpinner =
-    (!dialogReady.value && isManualDialogFlow) || installFlow.value === 'native-pending';
+    (!dialogReady.value && isIosFlow) || installFlow.value === 'native-pending';
   const copy =
     installFlow.value === 'native-ready'
       ? t(
@@ -191,12 +191,12 @@ export const PwaInstallGuard = component$(() => {
           <button
             type="button"
             class="ui-pwa-gate-button"
-            disabled={installing.value || (isManualDialogFlow && !dialogReady.value)}
+            disabled={installing.value || (isIosFlow && !dialogReady.value)}
             onClick$={async () => {
               if (installing.value) {
                 return;
               }
-              if (isManualDialogFlow) {
+              if (isIosFlow) {
                 if (!dialogRef.value) {
                   loadError.value = t(i18n, 'installAppLoadFailed', 'Failed to load install dialog.');
                   return;
@@ -208,12 +208,20 @@ export const PwaInstallGuard = component$(() => {
 
               const deferredPrompt = consumeDeferredInstallPrompt();
               if (!deferredPrompt) {
-                loadError.value = t(
-                  i18n,
-                  'installAppPromptUnavailable',
-                  'Install prompt is not ready yet. Wait a moment and try again.',
-                );
-                installFlow.value = 'native-manual';
+                if (isNativeManualFlow) {
+                  loadError.value = t(
+                    i18n,
+                    'installAppDesktopManualHint',
+                    'Install prompt is unavailable in this desktop session. Use your browser install option in the menu or address bar, then reopen ProfitLens from the installed app.',
+                  );
+                } else {
+                  loadError.value = t(
+                    i18n,
+                    'installAppPromptUnavailable',
+                    'Install prompt is not ready yet. Wait a moment and try again.',
+                  );
+                  installFlow.value = 'native-manual';
+                }
                 return;
               }
 
