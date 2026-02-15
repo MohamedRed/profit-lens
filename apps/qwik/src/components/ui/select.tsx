@@ -1,4 +1,4 @@
-import { $, component$, type QRL, useSignal } from '@builder.io/qwik';
+import { component$, type QRL } from '@builder.io/qwik';
 import { Select as QSelect } from '@qwik-ui/headless';
 import { cn } from '../../lib/ui/cn';
 
@@ -32,36 +32,6 @@ export const Select = component$<SelectProps>((props) => {
     required,
     value,
   } = props;
-  const triggerRef = useSignal<HTMLElement>();
-  const popoverRef = useSignal<HTMLElement>();
-
-  const syncPopoverWidth$ = $(() => {
-    const popover = popoverRef.value;
-    const trigger = triggerRef.value;
-    if (!popover || !trigger) {
-      return;
-    }
-
-    const triggerWidth = trigger.getBoundingClientRect().width;
-    if (triggerWidth && Number.isFinite(triggerWidth)) {
-      popover.style.setProperty('--ui-select-trigger-width', `${Math.round(triggerWidth)}px`);
-    }
-  });
-
-  const handleToggle$ = $((event: { newState: 'open' | 'closed' }) => {
-    if (event.newState !== 'open') {
-      return;
-    }
-    const popover = popoverRef.value;
-    const trigger = triggerRef.value;
-    if (!popover || !trigger) {
-      return;
-    }
-    const triggerWidth = trigger.getBoundingClientRect().width;
-    if (triggerWidth && Number.isFinite(triggerWidth)) {
-      popover.style.setProperty('--ui-select-trigger-width', `${Math.round(triggerWidth)}px`);
-    }
-  });
 
   return (
     <QSelect.Root
@@ -76,26 +46,14 @@ export const Select = component$<SelectProps>((props) => {
         }
       }}
     >
-      <QSelect.Trigger
-        id={id}
-        class={cn('ui-select', className)}
-        ref={triggerRef}
-        onPointerDown$={syncPopoverWidth$}
-        onClick$={syncPopoverWidth$}
-      >
+      <QSelect.Trigger id={id} class={cn('ui-select', className)}>
         <QSelect.DisplayValue placeholder={placeholder} />
         <span class="material-icons-outlined ui-select-icon" aria-hidden="true">
           expand_more
         </span>
       </QSelect.Trigger>
 
-      <QSelect.Popover
-        class="ui-select-popover"
-        flip={false}
-        floating="bottom-start"
-        onToggle$={handleToggle$}
-        ref={popoverRef}
-      >
+      <QSelect.Popover class="ui-select-popover" flip={false} floating="bottom-start">
         {options.map((option) => (
           <QSelect.Item
             key={option.value}
