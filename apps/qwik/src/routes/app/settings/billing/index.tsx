@@ -29,11 +29,20 @@ const resolveSelectedPriceId = (entitlement: Entitlement | null): string => {
   if (!entitlement) {
     return '';
   }
-  if (entitlement.stripePriceId) {
+  if (
+    entitlement.stripePriceId &&
+    billingPlans.some((plan) => plan.priceId === entitlement.stripePriceId)
+  ) {
     return entitlement.stripePriceId;
   }
   const byPlanId = billingPlans.find((plan) => plan.id === entitlement.planId);
-  return byPlanId?.priceId ?? '';
+  if (byPlanId?.priceId) {
+    return byPlanId.priceId;
+  }
+  const byOfferLimit = billingPlans.find(
+    (plan) => plan.offerLimit === entitlement.offerLimit && Boolean(plan.priceId),
+  );
+  return byOfferLimit?.priceId ?? '';
 };
 
 export default component$(() => {

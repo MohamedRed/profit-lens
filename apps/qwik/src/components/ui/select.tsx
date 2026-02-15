@@ -1,4 +1,4 @@
-import { component$, type QRL } from '@builder.io/qwik';
+import { component$, type QRL, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Select as QSelect } from '@qwik-ui/headless';
 import { cn } from '../../lib/ui/cn';
 
@@ -32,6 +32,29 @@ export const Select = component$<SelectProps>((props) => {
     required,
     value,
   } = props;
+  const triggerRef = useSignal<HTMLElement>();
+  const popoverWidth = useSignal('');
+
+  useVisibleTask$(({ cleanup }) => {
+    if (!triggerRef.value || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+    const updateWidth = () => {
+      if (!triggerRef.value) {
+        return;
+      }
+      popoverWidth.value = `${Math.round(triggerRef.value.getBoundingClientRect().width)}px`;
+    };
+    updateWidth();
+    const resizeObserver = new ResizeObserver(updateWidth);
+    resizeObserver.observe(triggerRef.value);
+    window.addEventListener('resize', updateWidth);
+    cleanup(() => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateWidth);
+    });
+  });
+
   return (
     <QSelect.Root
       class="ui-select-root"
@@ -45,14 +68,25 @@ export const Select = component$<SelectProps>((props) => {
         }
       }}
     >
-      <QSelect.Trigger id={id} class={cn('ui-select', className)}>
+      <QSelect.Trigger ref={triggerRef} id={id} class={cn('ui-select', className)}>
         <QSelect.DisplayValue placeholder={placeholder} />
         <span class="material-icons-outlined ui-select-icon" aria-hidden="true">
           expand_more
         </span>
       </QSelect.Trigger>
 
-      <QSelect.Popover class="ui-select-popover">
+      <QSelect.Popover
+        class="ui-select-popover"
+        style={
+          popoverWidth.value
+            ? {
+                width: popoverWidth.value,
+                minWidth: popoverWidth.value,
+                maxWidth: popoverWidth.value,
+              }
+            : undefined
+        }
+      >
         {options.map((option) => (
           <QSelect.Item
             key={option.value}
@@ -60,7 +94,7 @@ export const Select = component$<SelectProps>((props) => {
             disabled={option.disabled}
             value={option.value}
           >
-            <QSelect.ItemLabel>{option.label}</QSelect.ItemLabel>
+            <QSelect.ItemLabel class="ui-select-item-label">{option.label}</QSelect.ItemLabel>
             <QSelect.ItemIndicator class="material-icons-outlined ui-select-item-indicator">
               check
             </QSelect.ItemIndicator>

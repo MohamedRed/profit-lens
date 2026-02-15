@@ -90,8 +90,9 @@
 }
 
 .ui-select-popover {
-  width: var(--qwikui-select-width, auto);
-  min-width: var(--qwikui-select-width, 0);
+  width: min(100vw - 32px, 420px);
+  min-width: min(100vw - 32px, 420px);
+  max-width: min(100vw - 32px, 420px);
   box-sizing: border-box;
   margin-top: 8px;
   border: 1px solid var(--pl-color-outline);
@@ -100,7 +101,8 @@
   box-shadow: 0 8px 26px rgba(24, 24, 27, 0.08);
   padding: 6px;
   max-height: 240px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   z-index: 30;
 }
 
@@ -117,6 +119,14 @@
   cursor: pointer;
 }
 
+.ui-select-item-label {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .ui-select-item[data-highlighted],
 .ui-select-item:focus-visible {
   outline: none;
@@ -131,6 +141,7 @@
 .ui-select-item-indicator {
   font-size: 16px;
   color: var(--pl-color-purple);
+  flex-shrink: 0;
 }
 
 .ui-input::placeholder {
