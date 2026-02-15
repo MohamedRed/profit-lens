@@ -19,6 +19,7 @@ interface BillingTelemetryEvent {
 
 const STORAGE_KEY = 'pl-billing-telemetry-queue-v1';
 const MAX_QUEUE_EVENTS = 60;
+const flushInFlightByUid = new Map<string, Promise<void>>();
 
 const canUseBrowserStorage = (): boolean => {
   return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
@@ -49,6 +50,11 @@ const writeQueue = (events: BillingTelemetryEvent[]): void => {
   } catch {
     // Ignore telemetry storage errors.
   }
+};
+
+const mergeQueue = (events: BillingTelemetryEvent[]): void => {
+  const existing = readQueue();
+  writeQueue([...existing, ...events]);
 };
 
 const pushToQueue = (event: BillingTelemetryEvent): void => {
@@ -84,34 +90,60 @@ export const flushBillingTelemetryQueue = async (uid: string): Promise<void> => 
   if (!uid) {
     return;
   }
-  const queue = readQueue();
-  if (!queue.length) {
+  const activeFlush = flushInFlightByUid.get(uid);
+  if (activeFlush) {
+    await activeFlush;
     return;
   }
 
-  const pendingForUser = queue.filter((event) => event.uid === uid);
-  if (!pendingForUser.length) {
-    return;
-  }
+  const flushPromise = (async () => {
+    const targetCollection = collection(getDb(), 'users', uid, 'billingTelemetry');
+    while (true) {
+      const queue = readQueue();
+      if (!queue.length) {
+        return;
+      }
+      const pendingForUser = queue.filter((event) => event.uid === uid);
+      if (!pendingForUser.length) {
+        return;
+      }
+      const untouched = queue.filter((event) => event.uid !== uid);
+      writeQueue(untouched);
 
-  const untouched = queue.filter((event) => event.uid !== uid);
-  const failed: BillingTelemetryEvent[] = [];
-  const targetCollection = collection(getDb(), 'users', uid, 'billingTelemetry');
+      const failed: BillingTelemetryEvent[] = [];
+      for (const event of pendingForUser) {
+        try {
+          await addDoc(targetCollection, {
+            source: event.source,
+            stage: event.stage,
+            sessionId: event.sessionId,
+            clientAtMs: event.clientAtMs,
+            payload: event.payload,
+            createdAt: serverTimestamp(),
+          });
+        } catch {
+          failed.push(event);
+        }
+      }
 
-  for (const event of pendingForUser) {
-    try {
-      await addDoc(targetCollection, {
-        source: event.source,
-        stage: event.stage,
-        sessionId: event.sessionId,
-        clientAtMs: event.clientAtMs,
-        payload: event.payload,
-        createdAt: serverTimestamp(),
-      });
-    } catch {
-      failed.push(event);
+      if (failed.length > 0) {
+        mergeQueue(failed);
+        return;
+      }
     }
-  }
+  })();
 
-  writeQueue([...untouched, ...failed]);
+  flushInFlightByUid.set(uid, flushPromise);
+  try {
+    await flushPromise;
+  } finally {
+    flushInFlightByUid.delete(uid);
+  }
+};
+
+export const __resetBillingTelemetryForTests = (): void => {
+  flushInFlightByUid.clear();
+  if (canUseBrowserStorage()) {
+    window.localStorage.removeItem(STORAGE_KEY);
+  }
 };
