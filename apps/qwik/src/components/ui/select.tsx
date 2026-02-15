@@ -52,7 +52,7 @@ export const Select = component$<SelectProps>((props) => {
         </span>
       </QSelect.Trigger>
 
-      <QSelect.Popover class="ui-select-popover">
+      <QSelect.Popover class="ui-select-popover" flip={false}>
         {options.map((option) => (
           <QSelect.Item
             key={option.value}
