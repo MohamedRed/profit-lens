@@ -1,5 +1,4 @@
-import { component$, type QRL, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Select as QSelect } from '@qwik-ui/headless';
+import { $, component$, type QRL, useComputed$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { cn } from '../../lib/ui/cn';
 
 export interface SelectOption {
@@ -32,79 +31,137 @@ export const Select = component$<SelectProps>((props) => {
     required,
     value,
   } = props;
-  const triggerRef = useSignal<HTMLElement>();
-  const popoverRef = useSignal<HTMLElement>();
+  const rootRef = useSignal<HTMLElement>();
+  const triggerRef = useSignal<HTMLButtonElement>();
+  const isOpen = useSignal(false);
 
-  useVisibleTask$(({ track, cleanup }) => {
-    const trigger = track(() => triggerRef.value);
-    const popover = track(() => popoverRef.value);
-    if (!trigger || !popover) {
-      return;
-    }
+  const selectedOption = useComputed$(() => {
+    return options.find((option) => option.value === value);
+  });
 
-    const syncWidth = () => {
-      const triggerWidth = Math.round(trigger.getBoundingClientRect().width);
-      if (triggerWidth <= 0) {
+  useVisibleTask$(({ cleanup }) => {
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!isOpen.value) {
         return;
       }
-      popover.style.setProperty('--ui-select-trigger-width', `${triggerWidth}px`);
+      const root = rootRef.value;
+      if (!root) {
+        return;
+      }
+      if (root.contains(event.target as Node)) {
+        return;
+      }
+      isOpen.value = false;
     };
 
-    syncWidth();
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || !isOpen.value) {
+        return;
+      }
+      isOpen.value = false;
+      triggerRef.value?.focus();
+    };
 
-    const observer =
-      typeof ResizeObserver === 'function' ? new ResizeObserver(() => syncWidth()) : null;
-    observer?.observe(trigger);
-    window.addEventListener('resize', syncWidth, { passive: true });
-
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
     cleanup(() => {
-      observer?.disconnect();
-      window.removeEventListener('resize', syncWidth);
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
     });
   });
 
+  const toggleOpen$ = $(() => {
+    if (disabled) {
+      return;
+    }
+    isOpen.value = !isOpen.value;
+  });
+
+  const onTriggerKeyDown$ = $((event: KeyboardEvent) => {
+    if (disabled) {
+      return;
+    }
+    if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      isOpen.value = true;
+    }
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      isOpen.value = true;
+    }
+  });
+
+  const selectOption$ = $((nextValue: string) => {
+    if (disabled) {
+      return;
+    }
+    if (nextValue !== value) {
+      onChange$?.(nextValue);
+    }
+    isOpen.value = false;
+    triggerRef.value?.focus();
+  });
+
   return (
-    <QSelect.Root
+    <div
       class="ui-select-root"
-      disabled={disabled}
-      name={name}
-      required={required}
-      value={value}
-      onChange$={(nextValue: string | string[]) => {
-        if (typeof nextValue === 'string') {
-          onChange$?.(nextValue);
-        }
-      }}
+      data-open={isOpen.value ? 'true' : 'false'}
+      ref={rootRef}
     >
-      <QSelect.Trigger id={id} class={cn('ui-select', className)} ref={triggerRef}>
-        <QSelect.DisplayValue placeholder={placeholder} />
+      <button
+        type="button"
+        id={id}
+        class={cn('ui-select', className)}
+        ref={triggerRef}
+        disabled={disabled}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen.value ? 'true' : 'false'}
+        onClick$={toggleOpen$}
+        onKeyDown$={onTriggerKeyDown$}
+      >
+        <span class={{ 'ui-select-value': true, 'ui-select-placeholder': !selectedOption.value }}>
+          {selectedOption.value?.label ?? placeholder ?? ''}
+        </span>
         <span class="material-icons-outlined ui-select-icon" aria-hidden="true">
           expand_more
         </span>
-      </QSelect.Trigger>
+      </button>
 
-      <QSelect.Popover
-        class="ui-select-popover"
-        flip={false}
-        floating="bottom-start"
-        ref={popoverRef}
-      >
+      <div class="ui-select-popover" role="listbox" hidden={!isOpen.value}>
         {options.map((option) => (
-          <QSelect.Item
+          <button
             key={option.value}
+            type="button"
             class="ui-select-item"
             disabled={option.disabled}
-            value={option.value}
+            aria-selected={option.value === value ? 'true' : 'false'}
+            onClick$={() => selectOption$(option.value)}
           >
-            <QSelect.ItemLabel class="ui-select-item-label">{option.label}</QSelect.ItemLabel>
-            <QSelect.ItemIndicator class="material-icons-outlined ui-select-item-indicator">
-              check
-            </QSelect.ItemIndicator>
-          </QSelect.Item>
+            <span class="ui-select-item-label">{option.label}</span>
+            {option.value === value ? (
+              <span class="material-icons-outlined ui-select-item-indicator">check</span>
+            ) : (
+              <span class="ui-select-item-indicator ui-select-item-indicator-empty" aria-hidden="true" />
+            )}
+          </button>
         ))}
-      </QSelect.Popover>
+      </div>
 
-      <QSelect.HiddenNativeSelect disabled={disabled} name={name} required={required} />
-    </QSelect.Root>
+      <select
+        class="ui-select-native"
+        disabled={disabled}
+        name={name}
+        required={required}
+        value={value}
+        tabIndex={-1}
+        aria-hidden="true"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value} disabled={option.disabled}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 });
