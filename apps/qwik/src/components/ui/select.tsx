@@ -1,4 +1,4 @@
-import { component$, type QRL } from '@builder.io/qwik';
+import { $, component$, type QRL, useSignal } from '@builder.io/qwik';
 import { Select as QSelect } from '@qwik-ui/headless';
 import { cn } from '../../lib/ui/cn';
 
@@ -32,6 +32,40 @@ export const Select = component$<SelectProps>((props) => {
     required,
     value,
   } = props;
+  const popoverRef = useSignal<HTMLElement>();
+
+  const handleBeforeToggle$ = $((event: { newState: 'open' | 'closed' }) => {
+    const popover = popoverRef.value;
+    if (!popover) {
+      return;
+    }
+
+    if (event.newState === 'open') {
+      // Hide while floating-ui computes final coordinates to prevent lateral jump flashes.
+      popover.style.opacity = '0';
+      return;
+    }
+
+    // Reset inline placement so next open starts from a clean state.
+    popover.style.removeProperty('left');
+    popover.style.removeProperty('top');
+    popover.style.removeProperty('right');
+    popover.style.removeProperty('bottom');
+    popover.style.removeProperty('opacity');
+  });
+
+  const handleToggle$ = $((event: { newState: 'open' | 'closed' }) => {
+    if (event.newState !== 'open') {
+      return;
+    }
+    requestAnimationFrame(() => {
+      const popover = popoverRef.value;
+      if (!popover) {
+        return;
+      }
+      popover.style.opacity = '1';
+    });
+  });
 
   return (
     <QSelect.Root
@@ -53,7 +87,14 @@ export const Select = component$<SelectProps>((props) => {
         </span>
       </QSelect.Trigger>
 
-      <QSelect.Popover class="ui-select-popover" floating={false}>
+      <QSelect.Popover
+        class="ui-select-popover"
+        flip={false}
+        floating="bottom-start"
+        onBeforeToggle$={handleBeforeToggle$}
+        onToggle$={handleToggle$}
+        ref={popoverRef}
+      >
         {options.map((option) => (
           <QSelect.Item
             key={option.value}
