@@ -63,6 +63,27 @@ export default component$(() => {
   const status = useSignal('');
   const statusTone = useSignal<'success' | 'error'>('success');
 
+  useVisibleTask$(({ cleanup }) => {
+    const resetLoadingState = () => {
+      actionLoading.value = false;
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        resetLoadingState();
+      }
+    };
+
+    resetLoadingState();
+    window.addEventListener('pageshow', resetLoadingState);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    cleanup(() => {
+      window.removeEventListener('pageshow', resetLoadingState);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    });
+  });
+
   useVisibleTask$(({ track, cleanup }) => {
     const uid = track(() => auth.user.value?.uid);
     if (!uid) {
@@ -227,7 +248,7 @@ export default component$(() => {
           class="ui-select ui-settings-language-select"
           options={planOptions}
           value={selectedPlanPriceId.value}
-          disabled={actionLoading.value || planOptions.length === 0}
+          disabled={planOptions.length === 0}
           onChange$={(next) => {
             selectedPlanPriceId.value = String(next);
           }}
