@@ -98,8 +98,6 @@
   );
   box-sizing: border-box;
   margin-top: 8px;
-  right: auto;
-  bottom: auto;
   border: 1px solid var(--pl-color-outline);
   border-radius: var(--pl-radius-lg);
   background: #fff;

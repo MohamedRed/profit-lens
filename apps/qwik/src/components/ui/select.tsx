@@ -35,28 +35,32 @@ export const Select = component$<SelectProps>((props) => {
   const triggerRef = useSignal<HTMLElement>();
   const popoverRef = useSignal<HTMLElement>();
 
-  const handleBeforeToggle$ = $((event: { newState: 'open' | 'closed' }) => {
+  const syncPopoverWidth$ = $(() => {
     const popover = popoverRef.value;
-    if (!popover) {
+    const trigger = triggerRef.value;
+    if (!popover || !trigger) {
       return;
     }
 
-    if (event.newState === 'open') {
-      const triggerWidth = triggerRef.value?.getBoundingClientRect().width;
-      if (triggerWidth && Number.isFinite(triggerWidth)) {
-        popover.style.setProperty('--ui-select-trigger-width', `${Math.round(triggerWidth)}px`);
-      }
-      popover.style.right = 'auto';
-      popover.style.bottom = 'auto';
+    const triggerWidth = trigger.getBoundingClientRect().width;
+    if (triggerWidth && Number.isFinite(triggerWidth)) {
+      popover.style.setProperty('--ui-select-trigger-width', `${Math.round(triggerWidth)}px`);
+    }
+  });
+
+  const handleToggle$ = $((event: { newState: 'open' | 'closed' }) => {
+    if (event.newState !== 'open') {
       return;
     }
-
-    // Reset inline placement so next open starts from a clean state.
-    popover.style.removeProperty('left');
-    popover.style.removeProperty('top');
-    popover.style.removeProperty('right');
-    popover.style.removeProperty('bottom');
-    popover.style.removeProperty('--ui-select-trigger-width');
+    const popover = popoverRef.value;
+    const trigger = triggerRef.value;
+    if (!popover || !trigger) {
+      return;
+    }
+    const triggerWidth = trigger.getBoundingClientRect().width;
+    if (triggerWidth && Number.isFinite(triggerWidth)) {
+      popover.style.setProperty('--ui-select-trigger-width', `${Math.round(triggerWidth)}px`);
+    }
   });
 
   return (
@@ -72,7 +76,13 @@ export const Select = component$<SelectProps>((props) => {
         }
       }}
     >
-      <QSelect.Trigger id={id} class={cn('ui-select', className)} ref={triggerRef}>
+      <QSelect.Trigger
+        id={id}
+        class={cn('ui-select', className)}
+        ref={triggerRef}
+        onPointerDown$={syncPopoverWidth$}
+        onClick$={syncPopoverWidth$}
+      >
         <QSelect.DisplayValue placeholder={placeholder} />
         <span class="material-icons-outlined ui-select-icon" aria-hidden="true">
           expand_more
@@ -83,7 +93,7 @@ export const Select = component$<SelectProps>((props) => {
         class="ui-select-popover"
         flip={false}
         floating="bottom-start"
-        onBeforeToggle$={handleBeforeToggle$}
+        onToggle$={handleToggle$}
         ref={popoverRef}
       >
         {options.map((option) => (
