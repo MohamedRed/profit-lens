@@ -32,6 +32,7 @@ export const Select = component$<SelectProps>((props) => {
     required,
     value,
   } = props;
+  const triggerRef = useSignal<HTMLElement>();
   const popoverRef = useSignal<HTMLElement>();
 
   const handleBeforeToggle$ = $((event: { newState: 'open' | 'closed' }) => {
@@ -41,8 +42,14 @@ export const Select = component$<SelectProps>((props) => {
     }
 
     if (event.newState === 'open') {
+      const triggerWidth = triggerRef.value?.getBoundingClientRect().width;
+      if (triggerWidth && Number.isFinite(triggerWidth)) {
+        popover.style.setProperty('--ui-select-trigger-width', `${Math.round(triggerWidth)}px`);
+      }
       // Hide while floating-ui computes final coordinates to prevent lateral jump flashes.
       popover.style.opacity = '0';
+      popover.style.right = 'auto';
+      popover.style.bottom = 'auto';
       return;
     }
 
@@ -52,6 +59,7 @@ export const Select = component$<SelectProps>((props) => {
     popover.style.removeProperty('right');
     popover.style.removeProperty('bottom');
     popover.style.removeProperty('opacity');
+    popover.style.removeProperty('--ui-select-trigger-width');
   });
 
   const handleToggle$ = $((event: { newState: 'open' | 'closed' }) => {
@@ -80,7 +88,7 @@ export const Select = component$<SelectProps>((props) => {
         }
       }}
     >
-      <QSelect.Trigger id={id} class={cn('ui-select', className)}>
+      <QSelect.Trigger id={id} class={cn('ui-select', className)} ref={triggerRef}>
         <QSelect.DisplayValue placeholder={placeholder} />
         <span class="material-icons-outlined ui-select-icon" aria-hidden="true">
           expand_more
