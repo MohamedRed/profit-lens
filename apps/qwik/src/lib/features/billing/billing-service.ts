@@ -109,8 +109,12 @@ export const openCustomerPortal = async ({ uid, source }: OpenCustomerPortalOpti
   const sessionId = createBillingPortalSessionId();
   const clickStartedAt = performance.now();
   const routePath = window.location.pathname;
+  const record = (stage: 'manage_click' | 'portal_url_resolved' | 'portal_redirect_start' | 'portal_pagehide', payload: Record<string, unknown>) => {
+    captureBillingPortalTelemetry(uid, source, stage, sessionId, payload);
+    void flushBillingTelemetry(uid);
+  };
 
-  captureBillingPortalTelemetry(uid, source, 'manage_click', sessionId, {
+  record('manage_click', {
     routePath,
     visibilityState: document.visibilityState,
   });
@@ -118,7 +122,7 @@ export const openCustomerPortal = async ({ uid, source }: OpenCustomerPortalOpti
   const resolutionStartedAt = performance.now();
   const resolution = await consumeCustomerPortalSession();
   const resolutionDurationMs = Math.round(performance.now() - resolutionStartedAt);
-  captureBillingPortalTelemetry(uid, source, 'portal_url_resolved', sessionId, {
+  record('portal_url_resolved', {
     routePath,
     durationMs: resolutionDurationMs,
     resolveSource: resolution.source,
@@ -126,7 +130,7 @@ export const openCustomerPortal = async ({ uid, source }: OpenCustomerPortalOpti
   });
 
   const redirectStartedAt = performance.now();
-  captureBillingPortalTelemetry(uid, source, 'portal_redirect_start', sessionId, {
+  record('portal_redirect_start', {
     routePath,
     sinceClickMs: Math.round(redirectStartedAt - clickStartedAt),
   });
@@ -134,7 +138,7 @@ export const openCustomerPortal = async ({ uid, source }: OpenCustomerPortalOpti
   window.addEventListener(
     'pagehide',
     () => {
-      captureBillingPortalTelemetry(uid, source, 'portal_pagehide', sessionId, {
+      record('portal_pagehide', {
         routePath,
         sinceRedirectMs: Math.round(performance.now() - redirectStartedAt),
       });
