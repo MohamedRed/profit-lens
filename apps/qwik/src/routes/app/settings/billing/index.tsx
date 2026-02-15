@@ -24,6 +24,10 @@ const formatDate = (locale: string, date: Date): string => {
   }).format(date);
 };
 
+const resolveDefaultPlanPriceId = (): string => {
+  return billingPlans.find((plan) => Boolean(plan.priceId))?.priceId ?? '';
+};
+
 const resolveSelectedPriceId = (entitlement: Entitlement | null): string => {
   if (!entitlement) {
     return '';
@@ -44,7 +48,7 @@ const resolveSelectedPriceId = (entitlement: Entitlement | null): string => {
   if (byOfferLimit?.priceId) {
     return byOfferLimit.priceId;
   }
-  return billingPlans.find((plan) => Boolean(plan.priceId))?.priceId ?? '';
+  return resolveDefaultPlanPriceId();
 };
 
 export default component$(() => {
@@ -54,7 +58,7 @@ export default component$(() => {
 
   const entitlement = useSignal<Entitlement | null>(null);
   const usage = useSignal<OfferUsage | null>(null);
-  const selectedPlanPriceId = useSignal('');
+  const selectedPlanPriceId = useSignal(resolveDefaultPlanPriceId());
   const actionLoading = useSignal(false);
   const status = useSignal('');
   const statusTone = useSignal<'success' | 'error'>('success');
@@ -64,14 +68,16 @@ export default component$(() => {
     if (!uid) {
       entitlement.value = null;
       usage.value = null;
-      selectedPlanPriceId.value = '';
+      selectedPlanPriceId.value = resolveDefaultPlanPriceId();
       return;
     }
 
     let unsubscribeUsage: (() => void) | null = null;
     const unsubscribeEntitlement = watchEntitlement(uid, (nextEntitlement) => {
       entitlement.value = nextEntitlement;
-      selectedPlanPriceId.value = resolveSelectedPriceId(nextEntitlement);
+      const resolved = resolveSelectedPriceId(nextEntitlement);
+      const isKnownPlan = billingPlans.some((plan) => plan.priceId === resolved);
+      selectedPlanPriceId.value = isKnownPlan ? resolved : resolveDefaultPlanPriceId();
       usage.value = null;
       if (unsubscribeUsage) {
         unsubscribeUsage();
