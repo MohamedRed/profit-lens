@@ -121,7 +121,7 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
 
       <footer class="ui-mobile-tab-shell">
         <div class="ui-mobile-tab-nav" role="tablist" aria-label="Main navigation">
-          <div class="toolbar-inner">
+          <div class="ui-mobile-tab-inner">
           {navItems.map((item) => {
             const active = location.url.pathname.includes(item.match);
             return (

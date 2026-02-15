@@ -118,10 +118,6 @@
 }
 
 .ui-mobile-tab-nav {
-  --f7-toolbar-bg-color: var(--pl-color-surface);
-  --f7-tabbar-link-active-color: var(--pl-color-purple);
-  --f7-tabbar-link-inactive-color: var(--pl-color-text-tertiary);
-  --f7-touch-ripple-color: rgba(139, 92, 246, 0.16);
   width: 100%;
   min-height: 72px;
   background: var(--pl-color-surface);
@@ -131,9 +127,11 @@
   display: flex;
   gap: 0;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
 }
 
-.ui-mobile-tab-nav .toolbar-inner {
+.ui-mobile-tab-nav .ui-mobile-tab-inner {
   width: 100%;
   display: flex;
   gap: 0;
@@ -143,6 +141,7 @@
 .ui-mobile-tab-link {
   appearance: none;
   -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
   flex: 1;
   min-width: 0;
   border: 0;
