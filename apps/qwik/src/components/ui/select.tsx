@@ -46,8 +46,6 @@ export const Select = component$<SelectProps>((props) => {
       if (triggerWidth && Number.isFinite(triggerWidth)) {
         popover.style.setProperty('--ui-select-trigger-width', `${Math.round(triggerWidth)}px`);
       }
-      // Hide while floating-ui computes final coordinates to prevent lateral jump flashes.
-      popover.style.opacity = '0';
       popover.style.right = 'auto';
       popover.style.bottom = 'auto';
       return;
@@ -58,21 +56,7 @@ export const Select = component$<SelectProps>((props) => {
     popover.style.removeProperty('top');
     popover.style.removeProperty('right');
     popover.style.removeProperty('bottom');
-    popover.style.removeProperty('opacity');
     popover.style.removeProperty('--ui-select-trigger-width');
-  });
-
-  const handleToggle$ = $((event: { newState: 'open' | 'closed' }) => {
-    if (event.newState !== 'open') {
-      return;
-    }
-    requestAnimationFrame(() => {
-      const popover = popoverRef.value;
-      if (!popover) {
-        return;
-      }
-      popover.style.opacity = '1';
-    });
   });
 
   return (
@@ -100,7 +84,6 @@ export const Select = component$<SelectProps>((props) => {
         flip={false}
         floating="bottom-start"
         onBeforeToggle$={handleBeforeToggle$}
-        onToggle$={handleToggle$}
         ref={popoverRef}
       >
         {options.map((option) => (
