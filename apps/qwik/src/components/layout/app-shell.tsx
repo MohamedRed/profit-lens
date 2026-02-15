@@ -3,16 +3,7 @@ import { Link, useLocation } from '@builder.io/qwik-city';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 import { useAuth } from '../../lib/auth/auth-context';
 import { prefetchTabRoutes } from '../../lib/navigation/prefetch-tab-routes';
-
-type BillingServiceModule = typeof import('../../lib/features/billing/billing-service');
-let billingServicePromise: Promise<BillingServiceModule> | null = null;
-
-const loadBillingService = () => {
-  if (!billingServicePromise) {
-    billingServicePromise = import('../../lib/features/billing/billing-service');
-  }
-  return billingServicePromise;
-};
+import { warmCustomerPortalSession } from '../../lib/features/billing/billing-service';
 
 const navItems = [
   {
@@ -123,8 +114,7 @@ export const AppShell = component$(() => {
     }
 
     const warm = () => {
-      void loadBillingService()
-        .then((billingService) => billingService.warmCustomerPortalSession())
+      void warmCustomerPortalSession()
         .catch(() => {
           // Silent warm-up failure; click path keeps strict error handling.
         });

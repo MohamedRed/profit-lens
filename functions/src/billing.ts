@@ -81,6 +81,7 @@ export const createCustomerPortalSession = onCall(
   {
     cors: true,
     secrets: [stripeSecretKey],
+    minInstances: 1,
     timeoutSeconds: 20,
     memory: "256MiB",
     region: "europe-west1",
