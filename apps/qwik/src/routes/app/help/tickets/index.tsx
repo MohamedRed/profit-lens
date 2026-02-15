@@ -54,7 +54,7 @@ export default component$(() => {
             <li key={ticket.id} class="ui-help-ticket-item">
               <Link
                 class="ui-help-ticket-link"
-                href={`/next/app/help/tickets/${encodeURIComponent(ticket.id)}`}
+                href={`/next/app/help/tickets/details/?ticketId=${encodeURIComponent(ticket.id)}`}
               >
                 <div class="ui-help-ticket-row">
                   <span class="ui-help-ticket-id">#{ticket.id.slice(0, 8)}</span>

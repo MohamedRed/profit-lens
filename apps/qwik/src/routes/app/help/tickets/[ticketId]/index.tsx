@@ -14,16 +14,29 @@ import {
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 import type { HelpTicket, HelpTicketAttachment, HelpTicketTimelineEvent } from '../../../../../lib/types/help';
 
-const readTicketIdFromPath = (path: string): string | null => {
+const decodeTicketId = (raw: string | null): string | null => {
+  if (!raw) {
+    return null;
+  }
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+};
+
+const readTicketIdFromLocation = (path: string, search: string): string | null => {
+  const params = new URLSearchParams(search);
+  const fromQuery = decodeTicketId(params.get('ticketId'));
+  if (fromQuery) {
+    return fromQuery;
+  }
+
   const match = path.match(/\/app\/help\/tickets\/([^/]+)\/?$/);
   if (!match) {
     return null;
   }
-  try {
-    return decodeURIComponent(match[1]);
-  } catch {
-    return match[1];
-  }
+  return decodeTicketId(match[1]);
 };
 
 export default component$(() => {
@@ -48,7 +61,8 @@ export default component$(() => {
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
     const path = track(() => location.url.pathname);
-    const ticketId = readTicketIdFromPath(path);
+    const search = track(() => location.url.search);
+    const ticketId = readTicketIdFromLocation(path, search);
 
     if (!user || !ticketId) {
       loading.value = false;
