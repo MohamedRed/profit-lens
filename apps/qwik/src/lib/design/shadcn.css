@@ -90,12 +90,9 @@
 }
 
 .ui-select-popover {
-  width: var(--ui-select-trigger-width, var(--qwikui-select-width, auto));
-  min-width: var(--ui-select-trigger-width, var(--qwikui-select-width, 0));
-  max-width: min(
-    100vw - 24px,
-    var(--ui-select-trigger-width, var(--qwikui-select-width, 100vw))
-  );
+  width: var(--qwikui-select-width, 100%);
+  min-width: var(--qwikui-select-width, 100%);
+  max-width: var(--qwikui-select-width, 100%);
   box-sizing: border-box;
   margin-top: 8px;
   border: 1px solid var(--pl-color-outline);
@@ -109,7 +106,6 @@
   z-index: 30;
   animation: none !important;
   transition: none !important;
-  transform: none;
 }
 
 .ui-select-item {
