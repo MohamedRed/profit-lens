@@ -1,5 +1,5 @@
 import { Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { useLocation, useNavigate } from '@builder.io/qwik-city';
+import { Link, useLocation } from '@builder.io/qwik-city';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 import { useAuth } from '../../lib/auth/auth-context';
 import { prefetchTabRoutes } from '../../lib/navigation/prefetch-tab-routes';
@@ -40,15 +40,6 @@ const navItems = [
   },
 ] as const;
 
-let framework7TabbarStylesPromise: Promise<unknown[]> | null = null;
-
-const ensureFramework7TabbarStyles = (): Promise<unknown[]> => {
-  if (!framework7TabbarStylesPromise) {
-    framework7TabbarStylesPromise = Promise.all([import('framework7/css')]);
-  }
-  return framework7TabbarStylesPromise;
-};
-
 const triggerTabHaptic = (): void => {
   if (typeof window === 'undefined' || typeof navigator === 'undefined') {
     return;
@@ -65,11 +56,9 @@ const triggerTabHaptic = (): void => {
 export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) => {
   const i18n = useI18n();
   const location = useLocation();
-  const navigate = useNavigate();
   const auth = useAuth();
   const nextTransitionIsPop = useSignal(false);
   const transitionClass = useSignal<'is-push' | 'is-pop'>('is-push');
-  const framework7StylesReady = useSignal(false);
 
   useVisibleTask$(({ cleanup }) => {
     const onPopState = () => {
@@ -115,22 +104,6 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
     });
   });
 
-  useVisibleTask$(({ cleanup }) => {
-    let cancelled = false;
-    void ensureFramework7TabbarStyles()
-      .then(() => {
-        if (!cancelled) {
-          framework7StylesReady.value = true;
-        }
-      })
-      .catch(() => {
-        framework7StylesReady.value = false;
-      });
-    cleanup(() => {
-      cancelled = true;
-    });
-  });
-
   return (
     <div class="ui-mobile-app" id="qwik-app-root-marker" data-user={auth.user.value?.uid ?? 'none'}>
       <main class="ui-mobile-page">
@@ -146,36 +119,34 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
         </section>
       </main>
 
-      <footer class={{ 'ui-mobile-tab-shell': true, 'is-framework7-ready': framework7StylesReady.value }}>
-        <div class="toolbar toolbar-bottom tabbar tabbar-labels ui-mobile-tab-nav" role="tablist" aria-label="Main navigation">
+      <footer class="ui-mobile-tab-shell">
+        <div class="ui-mobile-tab-nav" role="tablist" aria-label="Main navigation">
           <div class="toolbar-inner">
           {navItems.map((item) => {
             const active = location.url.pathname.includes(item.match);
             return (
-              <button
+              <Link
                 key={item.href}
-                type="button"
+                href={item.href}
+                prefetch={true}
                 class={{
-                  'tab-link': true,
                   'ui-mobile-tab-link': true,
-                  'tab-link-active': active,
                   'is-active': active,
                 }}
                 role="tab"
                 aria-selected={active ? 'true' : 'false'}
                 aria-current={active ? 'page' : undefined}
-                onClick$={async () => {
+                onClick$={() => {
                   if (!active) {
                     triggerTabHaptic();
-                    await navigate(item.href);
                   }
                 }}
               >
-                <span class="material-icons-outlined icon ui-mobile-tab-icon" aria-hidden="true">
+                <span class="material-icons-outlined ui-mobile-tab-icon" aria-hidden="true">
                   {item.icon}
                 </span>
-                <span class="tabbar-label ui-mobile-tab-label">{t(i18n, item.labelKey, item.fallback)}</span>
-              </button>
+                <span class="ui-mobile-tab-label">{t(i18n, item.labelKey, item.fallback)}</span>
+              </Link>
             );
           })}
           </div>
