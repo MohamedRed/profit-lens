@@ -1,8 +1,12 @@
 import { doc, onSnapshot } from 'firebase/firestore';
 import type { DocumentSnapshot } from 'firebase/firestore';
 import type { Entitlement, OfferUsage } from '../../types/billing';
-import { callCreateCheckoutSession, callCreateCustomerPortalSession } from '../../firebase/callables';
+import { callCreateCheckoutSession } from '../../firebase/callables';
 import { getDb } from '../../firebase/firestore';
+import {
+  consumeCustomerPortalSessionUrl,
+  prefetchCustomerPortalSession,
+} from './customer-portal-session';
 
 const asDate = (value: unknown): Date | null => {
   if (value && typeof value === 'object' && 'toDate' in (value as { toDate: unknown })) {
@@ -91,10 +95,10 @@ export const startCheckout = async (priceId: string) => {
 };
 
 export const openCustomerPortal = async () => {
-  const payload = await callCreateCustomerPortalSession({ origin: window.location.origin });
-  const url = payload.url as string | undefined;
-  if (!url) {
-    throw new Error('Missing customer portal URL.');
-  }
+  const url = await consumeCustomerPortalSessionUrl();
   window.location.assign(url);
+};
+
+export const warmCustomerPortalSession = async () => {
+  await prefetchCustomerPortalSession();
 };

@@ -4,6 +4,7 @@ import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import {
   openCustomerPortal,
   startCheckout,
+  warmCustomerPortalSession,
   watchEntitlement,
   watchUsage,
 } from '../../../../lib/features/billing/billing-service';
@@ -68,6 +69,11 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
       unsubscribeEntitlement = watchEntitlement(value, (nextEntitlement) => {
         entitlement.value = nextEntitlement;
         usage.value = null;
+        if (nextEntitlement && nextEntitlement.planId.toLowerCase() !== 'free') {
+          void warmCustomerPortalSession().catch(() => {
+            // Silent prefetch failure; click path still does strict error handling.
+          });
+        }
         if (unsubscribeUsage) {
           unsubscribeUsage();
           unsubscribeUsage = null;

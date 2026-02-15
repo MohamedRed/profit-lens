@@ -1,6 +1,10 @@
 import { useVisibleTask$, type Signal } from '@builder.io/qwik';
 import type { AuthStore } from '../../../lib/auth/auth-context';
-import { watchEntitlement, watchUsage } from '../../../lib/features/billing/billing-service';
+import {
+  warmCustomerPortalSession,
+  watchEntitlement,
+  watchUsage,
+} from '../../../lib/features/billing/billing-service';
 import { watchDevices } from '../../../lib/features/devices/devices-service';
 import { watchUserProfile } from '../../../lib/features/profile/profile-service';
 import { watchVehicles } from '../../../lib/features/vehicles/vehicles-service';
@@ -55,6 +59,11 @@ export const useSettingsTabSession = (params: UseSettingsTabSessionParams): void
     const unsubscribeEntitlement = watchEntitlement(user.uid, (nextEntitlement) => {
       entitlement.value = nextEntitlement;
       usage.value = null;
+      if (nextEntitlement && nextEntitlement.planId.toLowerCase() !== 'free') {
+        void warmCustomerPortalSession().catch(() => {
+          // Silent prefetch failure; click path still does strict error handling.
+        });
+      }
       if (unsubscribeUsage) {
         unsubscribeUsage();
         unsubscribeUsage = null;
