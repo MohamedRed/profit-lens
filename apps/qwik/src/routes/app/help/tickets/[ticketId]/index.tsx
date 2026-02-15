@@ -16,7 +16,7 @@ import type { HelpTicket, HelpTicketAttachment, HelpTicketTimelineEvent } from '
 
 const readTicketIdFromPath = (path: string): string | null => {
   const match = path.match(/\/app\/help\/tickets\/([^/]+)\/?$/);
-  if (!match || match[1] === 'details') {
+  if (!match) {
     return null;
   }
   try {
@@ -47,9 +47,8 @@ export default component$(() => {
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
-    const search = track(() => location.url.search);
     const path = track(() => location.url.pathname);
-    const ticketId = new URLSearchParams(search).get('ticketId') ?? readTicketIdFromPath(path);
+    const ticketId = readTicketIdFromPath(path);
 
     if (!user || !ticketId) {
       loading.value = false;
