@@ -141,8 +141,8 @@
 
 .ui-mobile-tab-indicator {
   position: absolute;
-  top: 5px;
-  bottom: 5px;
+  top: 8px;
+  bottom: 8px;
   left: 0;
   width: calc(100% / 4);
   border-radius: 24px;
