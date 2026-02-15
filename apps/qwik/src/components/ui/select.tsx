@@ -1,4 +1,4 @@
-import { component$, type QRL } from '@builder.io/qwik';
+import { $, component$, type QRL, useSignal } from '@builder.io/qwik';
 import { Select as QSelect } from '@qwik-ui/headless';
 import { cn } from '../../lib/ui/cn';
 
@@ -32,6 +32,28 @@ export const Select = component$<SelectProps>((props) => {
     required,
     value,
   } = props;
+  const triggerRef = useSignal<HTMLElement>();
+  const popoverRef = useSignal<HTMLElement>();
+
+  const syncPopoverWidth$ = $((event: { newState: 'open' | 'closed' }) => {
+    if (event.newState !== 'open') {
+      return;
+    }
+    const trigger = triggerRef.value;
+    const popover = popoverRef.value;
+    if (!trigger || !popover) {
+      return;
+    }
+
+    const triggerWidth = Math.round(trigger.getBoundingClientRect().width);
+    if (triggerWidth <= 0) {
+      return;
+    }
+    const width = `${triggerWidth}px`;
+    popover.style.width = width;
+    popover.style.minWidth = width;
+    popover.style.maxWidth = width;
+  });
 
   return (
     <QSelect.Root
@@ -46,14 +68,20 @@ export const Select = component$<SelectProps>((props) => {
         }
       }}
     >
-      <QSelect.Trigger id={id} class={cn('ui-select', className)}>
+      <QSelect.Trigger id={id} class={cn('ui-select', className)} ref={triggerRef}>
         <QSelect.DisplayValue placeholder={placeholder} />
         <span class="material-icons-outlined ui-select-icon" aria-hidden="true">
           expand_more
         </span>
       </QSelect.Trigger>
 
-      <QSelect.Popover class="ui-select-popover" flip={false} floating="bottom-start">
+      <QSelect.Popover
+        class="ui-select-popover"
+        flip={false}
+        floating="bottom-start"
+        onBeforeToggle$={syncPopoverWidth$}
+        ref={popoverRef}
+      >
         {options.map((option) => (
           <QSelect.Item
             key={option.value}
