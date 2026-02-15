@@ -3,7 +3,7 @@ import { Link, useLocation } from '@builder.io/qwik-city';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 import { useAuth } from '../../lib/auth/auth-context';
 import { prefetchTabRoutes } from '../../lib/navigation/prefetch-tab-routes';
-import { warmCustomerPortalSession } from '../../lib/features/billing/billing-service';
+import { flushBillingTelemetry, warmCustomerPortalSession } from '../../lib/features/billing/billing-service';
 
 const navItems = [
   {
@@ -121,6 +121,7 @@ export const AppShell = component$(() => {
     };
 
     warm();
+    void flushBillingTelemetry(uid);
     const intervalId = window.setInterval(warm, 4 * 60_000);
     cleanup(() => {
       window.clearInterval(intervalId);

@@ -51,6 +51,7 @@ export default component$(() => {
   useSettingsTabSession({ auth, profile, vehicles, entitlement, usage, devices, selectedLanguage });
 
   const locale = i18n.locale.value;
+  const userId = auth.user.value?.uid ?? '';
   const currentProfile = profile.value;
   const currentEntitlement = entitlement.value;
   const firstVehicle = vehicles.value[0];
@@ -202,7 +203,10 @@ export default component$(() => {
                     await startCheckout(paidPlan.priceId);
                   }
                 } else {
-                  await openCustomerPortal();
+                  if (!userId) {
+                    throw new Error('Missing user ID for billing portal.');
+                  }
+                  await openCustomerPortal({ uid: userId, source: 'settings' });
                 }
               } catch (error) {
                 status.value = error instanceof Error ? error.message : String(error);

@@ -4,9 +4,15 @@ import type { Entitlement, OfferUsage } from '../../types/billing';
 import { callCreateCheckoutSession } from '../../firebase/callables';
 import { getDb } from '../../firebase/firestore';
 import {
-  consumeCustomerPortalSessionUrl,
+  consumeCustomerPortalSession,
   prefetchCustomerPortalSession,
 } from './customer-portal-session';
+import {
+  captureBillingPortalTelemetry,
+  createBillingPortalSessionId,
+  flushBillingTelemetryQueue,
+  type BillingPortalSource,
+} from './billing-telemetry';
 
 const asDate = (value: unknown): Date | null => {
   if (value && typeof value === 'object' && 'toDate' in (value as { toDate: unknown })) {
@@ -94,11 +100,56 @@ export const startCheckout = async (priceId: string) => {
   window.location.assign(url);
 };
 
-export const openCustomerPortal = async () => {
-  const url = await consumeCustomerPortalSessionUrl();
+interface OpenCustomerPortalOptions {
+  uid: string;
+  source: BillingPortalSource;
+}
+
+export const openCustomerPortal = async ({ uid, source }: OpenCustomerPortalOptions) => {
+  const sessionId = createBillingPortalSessionId();
+  const clickStartedAt = performance.now();
+  const routePath = window.location.pathname;
+
+  captureBillingPortalTelemetry(uid, source, 'manage_click', sessionId, {
+    routePath,
+    visibilityState: document.visibilityState,
+  });
+
+  const resolutionStartedAt = performance.now();
+  const resolution = await consumeCustomerPortalSession();
+  const resolutionDurationMs = Math.round(performance.now() - resolutionStartedAt);
+  captureBillingPortalTelemetry(uid, source, 'portal_url_resolved', sessionId, {
+    routePath,
+    durationMs: resolutionDurationMs,
+    resolveSource: resolution.source,
+    cacheAgeMs: resolution.cacheAgeMs,
+  });
+
+  const redirectStartedAt = performance.now();
+  captureBillingPortalTelemetry(uid, source, 'portal_redirect_start', sessionId, {
+    routePath,
+    sinceClickMs: Math.round(redirectStartedAt - clickStartedAt),
+  });
+
+  window.addEventListener(
+    'pagehide',
+    () => {
+      captureBillingPortalTelemetry(uid, source, 'portal_pagehide', sessionId, {
+        routePath,
+        sinceRedirectMs: Math.round(performance.now() - redirectStartedAt),
+      });
+    },
+    { once: true },
+  );
+
+  const url = resolution.url;
   window.location.assign(url);
 };
 
 export const warmCustomerPortalSession = async () => {
   await prefetchCustomerPortalSession();
+};
+
+export const flushBillingTelemetry = async (uid: string) => {
+  await flushBillingTelemetryQueue(uid);
 };

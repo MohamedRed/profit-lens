@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { callCreateCustomerPortalSession } from '../../firebase/callables';
 import {
   __resetCustomerPortalSessionCacheForTests,
-  consumeCustomerPortalSessionUrl,
+  consumeCustomerPortalSession,
   prefetchCustomerPortalSession,
 } from './customer-portal-session';
 
@@ -22,9 +22,10 @@ describe('customer-portal-session', () => {
     callable.mockResolvedValue({ url: 'https://billing.stripe.com/p/session_1' });
 
     await prefetchCustomerPortalSession();
-    const url = await consumeCustomerPortalSessionUrl();
+    const resolution = await consumeCustomerPortalSession();
 
-    expect(url).toBe('https://billing.stripe.com/p/session_1');
+    expect(resolution.url).toBe('https://billing.stripe.com/p/session_1');
+    expect(resolution.source).toBe('cache');
     expect(callable).toHaveBeenCalledTimes(1);
   });
 
@@ -35,11 +36,11 @@ describe('customer-portal-session', () => {
       .mockResolvedValueOnce({ url: 'https://billing.stripe.com/p/session_2' });
 
     await prefetchCustomerPortalSession();
-    const first = await consumeCustomerPortalSessionUrl();
-    const second = await consumeCustomerPortalSessionUrl();
+    const first = await consumeCustomerPortalSession();
+    const second = await consumeCustomerPortalSession();
 
-    expect(first).toBe('https://billing.stripe.com/p/session_1');
-    expect(second).toBe('https://billing.stripe.com/p/session_2');
+    expect(first.url).toBe('https://billing.stripe.com/p/session_1');
+    expect(second.url).toBe('https://billing.stripe.com/p/session_2');
     expect(callable).toHaveBeenCalledTimes(2);
   });
 

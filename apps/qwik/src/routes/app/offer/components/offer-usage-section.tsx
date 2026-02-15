@@ -168,7 +168,7 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
                 openingPortal.value = true;
                 status.value = '';
                 try {
-                  await openCustomerPortal();
+                  await openCustomerPortal({ uid, source: 'offer' });
                 } catch (error) {
                   status.value = error instanceof Error ? error.message : String(error);
                   openingPortal.value = false;

@@ -2,6 +2,14 @@ import { callCreateCustomerPortalSession } from '../../firebase/callables';
 
 const PREFETCH_TTL_MS = 15 * 60_000;
 
+export type PortalUrlResolveSource = 'cache' | 'network' | 'in_flight';
+
+export interface PortalSessionResolution {
+  url: string;
+  source: PortalUrlResolveSource;
+  cacheAgeMs: number | null;
+}
+
 let cachedUrl: string | null = null;
 let cachedAtMs = 0;
 let inFlightRequest: Promise<string> | null = null;
@@ -18,6 +26,13 @@ const hasFreshCache = (): boolean => {
   return Date.now() - cachedAtMs <= PREFETCH_TTL_MS;
 };
 
+const readCacheAgeMs = (): number | null => {
+  if (!cachedUrl || !cachedAtMs) {
+    return null;
+  }
+  return Date.now() - cachedAtMs;
+};
+
 const resolveCustomerPortalUrl = async (): Promise<string> => {
   const origin = globalThis.location?.origin;
   if (!origin) {
@@ -31,12 +46,21 @@ const resolveCustomerPortalUrl = async (): Promise<string> => {
   return url;
 };
 
-const requestPortalUrl = async (): Promise<string> => {
+const requestPortalUrl = async (): Promise<PortalSessionResolution> => {
   if (hasFreshCache()) {
-    return cachedUrl as string;
+    return {
+      url: cachedUrl as string,
+      source: 'cache',
+      cacheAgeMs: readCacheAgeMs(),
+    };
   }
   if (inFlightRequest) {
-    return inFlightRequest;
+    const url = await inFlightRequest;
+    return {
+      url,
+      source: 'in_flight',
+      cacheAgeMs: readCacheAgeMs(),
+    };
   }
   inFlightRequest = resolveCustomerPortalUrl()
     .then((url) => {
@@ -47,17 +71,22 @@ const requestPortalUrl = async (): Promise<string> => {
     .finally(() => {
       inFlightRequest = null;
     });
-  return inFlightRequest;
+  const url = await inFlightRequest;
+  return {
+    url,
+    source: 'network',
+    cacheAgeMs: null,
+  };
 };
 
 export const prefetchCustomerPortalSession = async (): Promise<void> => {
   await requestPortalUrl();
 };
 
-export const consumeCustomerPortalSessionUrl = async (): Promise<string> => {
-  const url = await requestPortalUrl();
+export const consumeCustomerPortalSession = async (): Promise<PortalSessionResolution> => {
+  const resolution = await requestPortalUrl();
   clearCache();
-  return url;
+  return resolution;
 };
 
 export const __resetCustomerPortalSessionCacheForTests = () => {
