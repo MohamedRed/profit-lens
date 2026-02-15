@@ -69,6 +69,7 @@ export default component$(() => {
         <meta name="profit-lens-next-entry" content="qwik-next" />
         <link rel="preconnect" href="https://profit-lens-prod-2e417.firebaseapp.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googleapis.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://billing.stripe.com" crossOrigin="anonymous" />
         <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
         {!isDev && <script dangerouslySetInnerHTML={buildRefreshGuard(base)}></script>}
         <script src={`${base}firebase-web-config.js`} defer></script>

@@ -4,7 +4,11 @@ import { useAuth } from '../../../lib/auth/auth-context';
 import { signOutCurrentUser } from '../../../lib/firebase/auth';
 import { billingPlans } from '../../../lib/config/runtime-config';
 import { applyLocale, formatTemplate, t, useI18n } from '../../../lib/i18n/i18n-context';
-import { openCustomerPortal, startCheckout } from '../../../lib/features/billing/billing-service';
+import {
+  openCustomerPortal,
+  startCheckout,
+  warmCustomerPortalSession,
+} from '../../../lib/features/billing/billing-service';
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
 import { Select } from '../../../components/ui/select';
 import type { Entitlement, OfferUsage } from '../../../lib/types/billing';
@@ -178,6 +182,14 @@ export default component$(() => {
             type="button"
             class="ui-settings-pill-button"
             disabled={openingPortal.value}
+            onPointerDown$={() => {
+              if (currentEntitlement?.planId.toLowerCase() === 'free') {
+                return;
+              }
+              void warmCustomerPortalSession().catch(() => {
+                // Silent prefetch failure; click path still does strict error handling.
+              });
+            }}
             onClick$={async () => {
               if (openingPortal.value) {
                 return;

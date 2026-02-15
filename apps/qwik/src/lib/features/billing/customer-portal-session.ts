@@ -1,6 +1,6 @@
 import { callCreateCustomerPortalSession } from '../../firebase/callables';
 
-const PREFETCH_TTL_MS = 60_000;
+const PREFETCH_TTL_MS = 15 * 60_000;
 
 let cachedUrl: string | null = null;
 let cachedAtMs = 0;

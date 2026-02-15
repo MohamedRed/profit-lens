@@ -156,6 +156,11 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
               variant="default"
               class="ui-offer-usage-cta"
               disabled={openingPortal.value}
+              onPointerDown$={() => {
+                void warmCustomerPortalSession().catch(() => {
+                  // Silent prefetch failure; click path still does strict error handling.
+                });
+              }}
               onClick$={async () => {
                 if (openingPortal.value) {
                   return;
