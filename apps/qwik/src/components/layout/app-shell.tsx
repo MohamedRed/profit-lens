@@ -49,6 +49,19 @@ const ensureFramework7TabbarStyles = (): Promise<unknown[]> => {
   return framework7TabbarStylesPromise;
 };
 
+const triggerTabHaptic = (): void => {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+    return;
+  }
+  if (typeof navigator.vibrate !== 'function') {
+    return;
+  }
+  if (typeof window.matchMedia === 'function' && !window.matchMedia('(pointer: coarse)').matches) {
+    return;
+  }
+  navigator.vibrate(8);
+};
+
 export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) => {
   const i18n = useI18n();
   const location = useLocation();
@@ -153,6 +166,7 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
                 aria-current={active ? 'page' : undefined}
                 onClick$={async () => {
                   if (!active) {
+                    triggerTabHaptic();
                     await navigate(item.href);
                   }
                 }}
