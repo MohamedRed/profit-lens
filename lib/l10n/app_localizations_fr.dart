@@ -776,6 +776,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get billingResumeSuccess => 'L’abonnement a repris.';
 
   @override
+  String billingPeriodEndsOn(Object date) {
+    return 'La période se termine le $date';
+  }
+
+  @override
+  String get billingSuggestionsTitle => 'Forfaits suggérés';
+
+  @override
+  String get billingSuggestionsEmpty =>
+      'Aucune autre suggestion pour le moment.';
+
+  @override
+  String get billingStripePortalTitle => 'Facturation Stripe';
+
+  @override
+  String get billingStripePortalSubtitle =>
+      'Ouvrez Stripe pour gérer les factures, moyens de paiement et détails de facturation.';
+
+  @override
+  String get billingStripePortalButton => 'Ouvrir la facturation Stripe';
+
+  @override
   String get offerLimitReachedMessage =>
       'Vous avez atteint votre limite mensuelle. Passez à un forfait supérieur pour continuer.';
 

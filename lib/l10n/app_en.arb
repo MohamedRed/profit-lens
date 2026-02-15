@@ -273,6 +273,17 @@
   "billingResumeSubscriptionButton": "Resume subscription",
   "billingCancelSuccess": "Subscription will cancel at period end.",
   "billingResumeSuccess": "Subscription resumed.",
+  "billingPeriodEndsOn": "Period ends on {date}",
+  "@billingPeriodEndsOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "billingSuggestionsTitle": "Suggested plans",
+  "billingSuggestionsEmpty": "No alternative suggestions right now.",
+  "billingStripePortalTitle": "Stripe billing",
+  "billingStripePortalSubtitle": "Open Stripe to manage invoices, payment methods, and billing details.",
+  "billingStripePortalButton": "Open Stripe billing",
   "offerLimitReachedMessage": "You have reached your monthly offer limit. Upgrade to continue.",
   "subscriptionPlansTitle": "Choose a plan",
   "subscriptionPlansSubtitle": "Pick the monthly cap that fits your deliveries.",

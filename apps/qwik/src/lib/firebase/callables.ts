@@ -34,6 +34,12 @@ export const callCreateCheckoutSession = async (payload: Record<string, unknown>
   return result.data as Record<string, unknown>;
 };
 
+export const callCreateCustomerPortalSession = async (payload: Record<string, unknown>) => {
+  const callable = httpsCallable(getFn(), 'createCustomerPortalSession');
+  const result = await callable(payload);
+  return result.data as Record<string, unknown>;
+};
+
 export const callChangeSubscriptionPlan = async (payload: Record<string, unknown>) => {
   const callable = httpsCallable(getFn(), 'changeSubscriptionPlan');
   const result = await callable(payload);

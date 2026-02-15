@@ -1527,6 +1527,42 @@ abstract class AppLocalizations {
   /// **'Subscription resumed.'**
   String get billingResumeSuccess;
 
+  /// No description provided for @billingPeriodEndsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Period ends on {date}'**
+  String billingPeriodEndsOn(Object date);
+
+  /// No description provided for @billingSuggestionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested plans'**
+  String get billingSuggestionsTitle;
+
+  /// No description provided for @billingSuggestionsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No alternative suggestions right now.'**
+  String get billingSuggestionsEmpty;
+
+  /// No description provided for @billingStripePortalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stripe billing'**
+  String get billingStripePortalTitle;
+
+  /// No description provided for @billingStripePortalSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Stripe to manage invoices, payment methods, and billing details.'**
+  String get billingStripePortalSubtitle;
+
+  /// No description provided for @billingStripePortalButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Stripe billing'**
+  String get billingStripePortalButton;
+
   /// No description provided for @offerLimitReachedMessage.
   ///
   /// In en, this message translates to:

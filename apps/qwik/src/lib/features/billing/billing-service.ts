@@ -3,6 +3,7 @@ import type { DocumentSnapshot } from 'firebase/firestore';
 import type { Entitlement, ManagedSubscriptionSnapshot, OfferUsage } from '../../types/billing';
 import {
   callChangeSubscriptionPlan,
+  callCreateCustomerPortalSession,
   callCreateCheckoutSession,
   callSetSubscriptionCancellation,
 } from '../../firebase/callables';
@@ -90,6 +91,15 @@ export const startCheckout = async (priceId: string) => {
   const url = payload.url as string | undefined;
   if (!url) {
     throw new Error('Missing checkout URL.');
+  }
+  window.location.assign(url);
+};
+
+export const openStripeBillingPortal = async () => {
+  const payload = await callCreateCustomerPortalSession({ origin: window.location.origin });
+  const url = payload.url as string | undefined;
+  if (!url) {
+    throw new Error('Missing Stripe billing URL.');
   }
   window.location.assign(url);
 };

@@ -273,6 +273,17 @@
   "billingResumeSubscriptionButton": "استئناف الاشتراك",
   "billingCancelSuccess": "سيتم إلغاء الاشتراك عند نهاية الفترة.",
   "billingResumeSuccess": "تم استئناف الاشتراك.",
+  "billingPeriodEndsOn": "تنتهي الفترة في {date}",
+  "@billingPeriodEndsOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "billingSuggestionsTitle": "خطط مقترحة",
+  "billingSuggestionsEmpty": "لا توجد اقتراحات بديلة حالياً.",
+  "billingStripePortalTitle": "فوترة Stripe",
+  "billingStripePortalSubtitle": "افتح Stripe لإدارة الفواتير وطرق الدفع وتفاصيل الفوترة.",
+  "billingStripePortalButton": "فتح فوترة Stripe",
   "offerLimitReachedMessage": "لقد بلغت الحد الشهري للعروض. قم بالترقية للمتابعة.",
   "subscriptionPlansTitle": "اختر خطة",
   "subscriptionPlansSubtitle": "اختر الحد الشهري المناسب لتوصيلاتك.",

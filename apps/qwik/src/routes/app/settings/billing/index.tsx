@@ -6,6 +6,7 @@ import { useAuth } from '../../../../lib/auth/auth-context';
 import { billingPlans } from '../../../../lib/config/runtime-config';
 import {
   changeSubscriptionPlan,
+  openStripeBillingPortal,
   setSubscriptionCancellation,
   startCheckout,
   watchEntitlement,
@@ -13,6 +14,8 @@ import {
 } from '../../../../lib/features/billing/billing-service';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { Entitlement, OfferUsage } from '../../../../lib/types/billing';
+import { BillingStripePortalCard, BillingSuggestionsCard } from './billing-sections';
+import { buildSuggestedPlans } from './plan-suggestions';
 
 const formatDate = (locale: string, date: Date): string => {
   return new Intl.DateTimeFormat(locale, {
@@ -86,11 +89,18 @@ export default component$(() => {
     .filter((plan) => Boolean(plan.priceId))
     .map((plan) => ({
       value: plan.priceId,
+      offerLimit: plan.offerLimit,
       label:
         plan.offerLimit == null
           ? `${plan.priceLabel} · ${t(i18n, 'planUnlimitedLabel', 'Unlimited offers')}`
           : `${plan.priceLabel} · ${formatTemplate(t(i18n, 'planOffersPerMonth', '{count} offers per month'), { count: plan.offerLimit })}`,
     }));
+  const suggestedPlans = buildSuggestedPlans(
+    planOptions,
+    selectedPlanPriceId.value,
+    usedOffers,
+    isFreePlan,
+  );
 
   const applyPlan$ = $(async () => {
     if (actionLoading.value) {
@@ -141,6 +151,22 @@ export default component$(() => {
     }
   });
 
+  const openStripePortal$ = $(async () => {
+    if (actionLoading.value || isFreePlan) {
+      return;
+    }
+    actionLoading.value = true;
+    status.value = '';
+    try {
+      await openStripeBillingPortal();
+    } catch (error) {
+      statusTone.value = 'error';
+      status.value = error instanceof Error ? error.message : String(error);
+    } finally {
+      actionLoading.value = false;
+    }
+  });
+
   return (
     <div class="ui-settings-billing-root">
       <Link class="ui-help-detail-back" href="/next/app/settings">
@@ -164,6 +190,13 @@ export default component$(() => {
             {formatTemplate(t(i18n, 'offersRemainingValue', '{remaining} remaining this month'), {
               remaining: String(remainingOffers),
               count: String(remainingOffers),
+            })}
+          </p>
+        ) : null}
+        {entitlement.value ? (
+          <p class="ui-settings-subtitle">
+            {formatTemplate(t(i18n, 'billingPeriodEndsOn', 'Period ends on {date}'), {
+              date: formatDate(locale, entitlement.value.periodEnd),
             })}
           </p>
         ) : null}
@@ -200,6 +233,16 @@ export default component$(() => {
         </Button>
       </section>
 
+      <BillingSuggestionsCard
+        title={t(i18n, 'billingSuggestionsTitle', 'Suggested plans')}
+        emptyLabel={t(i18n, 'billingSuggestionsEmpty', 'No alternative suggestions right now.')}
+        plans={suggestedPlans}
+        disabled={actionLoading.value}
+        onSelect$={$((priceId: string) => {
+          selectedPlanPriceId.value = priceId;
+        })}
+      />
+
       {!isFreePlan ? (
         <section class="ui-settings-card ui-settings-billing-card">
           <p class="ui-settings-title">{t(i18n, 'billingCancellationTitle', 'Cancellation')}</p>
@@ -221,6 +264,20 @@ export default component$(() => {
               : t(i18n, 'billingCancelAtPeriodEndButton', 'Cancel at period end')}
           </Button>
         </section>
+      ) : null}
+
+      {!isFreePlan ? (
+        <BillingStripePortalCard
+          title={t(i18n, 'billingStripePortalTitle', 'Stripe billing')}
+          subtitle={t(
+            i18n,
+            'billingStripePortalSubtitle',
+            'Open Stripe to manage invoices, payment methods, and billing details.',
+          )}
+          buttonLabel={t(i18n, 'billingStripePortalButton', 'Open Stripe billing')}
+          disabled={actionLoading.value}
+          onOpen$={openStripePortal$}
+        />
       ) : null}
 
       {status.value ? (

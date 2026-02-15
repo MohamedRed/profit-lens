@@ -762,6 +762,27 @@ class AppLocalizationsAr extends AppLocalizations {
   String get billingResumeSuccess => 'تم استئناف الاشتراك.';
 
   @override
+  String billingPeriodEndsOn(Object date) {
+    return 'تنتهي الفترة في $date';
+  }
+
+  @override
+  String get billingSuggestionsTitle => 'خطط مقترحة';
+
+  @override
+  String get billingSuggestionsEmpty => 'لا توجد اقتراحات بديلة حالياً.';
+
+  @override
+  String get billingStripePortalTitle => 'فوترة Stripe';
+
+  @override
+  String get billingStripePortalSubtitle =>
+      'افتح Stripe لإدارة الفواتير وطرق الدفع وتفاصيل الفوترة.';
+
+  @override
+  String get billingStripePortalButton => 'فتح فوترة Stripe';
+
+  @override
   String get offerLimitReachedMessage =>
       'لقد بلغت الحد الشهري للعروض. قم بالترقية للمتابعة.';
 

@@ -154,3 +154,26 @@
   font-size: 0.88rem;
   font-weight: 500;
 }
+
+.ui-settings-billing-suggestions {
+  display: grid;
+  gap: 8px;
+}
+
+.ui-settings-billing-suggestion {
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--pl-color-purple) 22%, transparent);
+  border-radius: var(--pl-radius-lg);
+  background: color-mix(in srgb, var(--pl-color-purple) 10%, var(--pl-color-surface));
+  padding: 12px 14px;
+  text-align: left;
+  color: var(--pl-color-text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ui-settings-billing-suggestion:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
