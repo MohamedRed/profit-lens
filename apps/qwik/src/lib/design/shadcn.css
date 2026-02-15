@@ -90,9 +90,9 @@
 }
 
 .ui-select-popover {
-  width: var(--qwikui-select-width, 100%);
-  min-width: var(--qwikui-select-width, 100%);
-  max-width: var(--qwikui-select-width, 100%);
+  width: var(--ui-select-trigger-width, auto);
+  min-width: var(--ui-select-trigger-width, 0);
+  max-width: min(100vw - 24px, var(--ui-select-trigger-width, calc(100vw - 24px)));
   box-sizing: border-box;
   margin-top: 8px;
   border: 1px solid var(--pl-color-outline);

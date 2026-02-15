@@ -1,4 +1,4 @@
-import { component$, type QRL } from '@builder.io/qwik';
+import { component$, type QRL, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Select as QSelect } from '@qwik-ui/headless';
 import { cn } from '../../lib/ui/cn';
 
@@ -32,6 +32,37 @@ export const Select = component$<SelectProps>((props) => {
     required,
     value,
   } = props;
+  const triggerRef = useSignal<HTMLElement>();
+  const popoverRef = useSignal<HTMLElement>();
+
+  useVisibleTask$(({ track, cleanup }) => {
+    const trigger = track(() => triggerRef.value);
+    const popover = track(() => popoverRef.value);
+    if (!trigger || !popover) {
+      return;
+    }
+
+    const syncWidth = () => {
+      const triggerWidth = Math.round(trigger.getBoundingClientRect().width);
+      if (triggerWidth <= 0) {
+        return;
+      }
+      popover.style.setProperty('--ui-select-trigger-width', `${triggerWidth}px`);
+    };
+
+    syncWidth();
+
+    const observer =
+      typeof ResizeObserver === 'function' ? new ResizeObserver(() => syncWidth()) : null;
+    observer?.observe(trigger);
+    window.addEventListener('resize', syncWidth, { passive: true });
+
+    cleanup(() => {
+      observer?.disconnect();
+      window.removeEventListener('resize', syncWidth);
+    });
+  });
+
   return (
     <QSelect.Root
       class="ui-select-root"
@@ -45,14 +76,19 @@ export const Select = component$<SelectProps>((props) => {
         }
       }}
     >
-      <QSelect.Trigger id={id} class={cn('ui-select', className)}>
+      <QSelect.Trigger id={id} class={cn('ui-select', className)} ref={triggerRef}>
         <QSelect.DisplayValue placeholder={placeholder} />
         <span class="material-icons-outlined ui-select-icon" aria-hidden="true">
           expand_more
         </span>
       </QSelect.Trigger>
 
-      <QSelect.Popover class="ui-select-popover" flip={false} floating={false}>
+      <QSelect.Popover
+        class="ui-select-popover"
+        flip={false}
+        floating="bottom-start"
+        ref={popoverRef}
+      >
         {options.map((option) => (
           <QSelect.Item
             key={option.value}
