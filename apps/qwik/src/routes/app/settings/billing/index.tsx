@@ -14,8 +14,7 @@ import {
 } from '../../../../lib/features/billing/billing-service';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { Entitlement, OfferUsage } from '../../../../lib/types/billing';
-import { BillingStripePortalCard, BillingSuggestionsCard } from './billing-sections';
-import { buildSuggestedPlans } from './plan-suggestions';
+import { BillingStripePortalCard } from './billing-sections';
 
 const formatDate = (locale: string, date: Date): string => {
   return new Intl.DateTimeFormat(locale, {
@@ -42,7 +41,10 @@ const resolveSelectedPriceId = (entitlement: Entitlement | null): string => {
   const byOfferLimit = billingPlans.find(
     (plan) => plan.offerLimit === entitlement.offerLimit && Boolean(plan.priceId),
   );
-  return byOfferLimit?.priceId ?? '';
+  if (byOfferLimit?.priceId) {
+    return byOfferLimit.priceId;
+  }
+  return billingPlans.find((plan) => Boolean(plan.priceId))?.priceId ?? '';
 };
 
 export default component$(() => {
@@ -104,12 +106,6 @@ export default component$(() => {
           ? `${plan.priceLabel} · ${t(i18n, 'planUnlimitedLabel', 'Unlimited offers')}`
           : `${plan.priceLabel} · ${formatTemplate(t(i18n, 'planOffersPerMonth', '{count} offers per month'), { count: plan.offerLimit })}`,
     }));
-  const suggestedPlans = buildSuggestedPlans(
-    planOptions,
-    selectedPlanPriceId.value,
-    usedOffers,
-    isFreePlan,
-  );
 
   const applyPlan$ = $(async () => {
     if (actionLoading.value) {
@@ -241,16 +237,6 @@ export default component$(() => {
             : t(i18n, 'billingApplyPlanButton', 'Apply plan change')}
         </Button>
       </section>
-
-      <BillingSuggestionsCard
-        title={t(i18n, 'billingSuggestionsTitle', 'Suggested plans')}
-        emptyLabel={t(i18n, 'billingSuggestionsEmpty', 'No alternative suggestions right now.')}
-        plans={suggestedPlans}
-        disabled={actionLoading.value}
-        onSelect$={$((priceId: string) => {
-          selectedPlanPriceId.value = priceId;
-        })}
-      />
 
       {!isFreePlan ? (
         <section class="ui-settings-card ui-settings-billing-card">

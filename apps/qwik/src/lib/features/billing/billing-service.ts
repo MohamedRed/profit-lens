@@ -29,10 +29,14 @@ const mapEntitlement = (raw: Record<string, unknown> | undefined): Entitlement |
   }
   const periodStart = asDate(raw.periodStart);
   const periodEnd = asDate(raw.periodEnd);
-  const periodKey = raw.periodKey as string | undefined;
-  if (!periodStart || !periodEnd || !periodKey) {
+  const rawPeriodKey = raw.periodKey as string | undefined;
+  if (!periodStart || !periodEnd) {
     return null;
   }
+  const periodKey =
+    rawPeriodKey && rawPeriodKey.length > 0
+      ? rawPeriodKey
+      : `${periodStart.toISOString()}-${periodEnd.toISOString()}`;
 
   return {
     planId: (raw.planId as string | undefined) ?? 'free',
