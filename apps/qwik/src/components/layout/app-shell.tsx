@@ -4,11 +4,6 @@ import { t, useI18n } from '../../lib/i18n/i18n-context';
 import { useAuth } from '../../lib/auth/auth-context';
 import { prefetchTabRoutes } from '../../lib/navigation/prefetch-tab-routes';
 
-interface AppShellProps {
-  titleKey: string;
-  titleFallback: string;
-}
-
 const navItems = [
   {
     href: '/next/app/offer',
@@ -40,6 +35,11 @@ const navItems = [
   },
 ] as const;
 
+const resolveActiveTabIndex = (path: string): number => {
+  const index = navItems.findIndex((item) => path.includes(item.match));
+  return index === -1 ? 0 : index;
+};
+
 const triggerTabHaptic = (): void => {
   if (typeof window === 'undefined' || typeof navigator === 'undefined') {
     return;
@@ -53,12 +53,14 @@ const triggerTabHaptic = (): void => {
   navigator.vibrate(8);
 };
 
-export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) => {
+export const AppShell = component$(() => {
   const i18n = useI18n();
   const location = useLocation();
   const auth = useAuth();
   const nextTransitionIsPop = useSignal(false);
   const transitionClass = useSignal<'is-push' | 'is-pop'>('is-push');
+  const activeTabIndex = resolveActiveTabIndex(location.url.pathname);
+  const activeTab = navItems[activeTabIndex];
 
   useVisibleTask$(({ cleanup }) => {
     const onPopState = () => {
@@ -108,7 +110,7 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
     <div class="ui-mobile-app" id="qwik-app-root-marker" data-user={auth.user.value?.uid ?? 'none'}>
       <main class="ui-mobile-page">
         <header class="ui-mobile-header">
-          <h1 class="ui-mobile-title">{t(i18n, titleKey, titleFallback)}</h1>
+          <h1 class="ui-mobile-title">{t(i18n, activeTab.labelKey, activeTab.fallback)}</h1>
         </header>
 
         <section
@@ -121,34 +123,35 @@ export const AppShell = component$<AppShellProps>(({ titleKey, titleFallback }) 
 
       <footer class="ui-mobile-tab-shell">
         <div class="ui-mobile-tab-nav" role="tablist" aria-label="Main navigation">
-          <div class="ui-mobile-tab-inner">
-          {navItems.map((item) => {
-            const active = location.url.pathname.includes(item.match);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                prefetch={true}
-                class={{
-                  'ui-mobile-tab-link': true,
-                  'is-active': active,
-                }}
-                role="tab"
-                aria-selected={active ? 'true' : 'false'}
-                aria-current={active ? 'page' : undefined}
-                onClick$={() => {
-                  if (!active) {
-                    triggerTabHaptic();
-                  }
-                }}
-              >
-                <span class="material-icons-outlined ui-mobile-tab-icon" aria-hidden="true">
-                  {item.icon}
-                </span>
-                <span class="ui-mobile-tab-label">{t(i18n, item.labelKey, item.fallback)}</span>
-              </Link>
-            );
-          })}
+          <div class="ui-mobile-tab-inner" style={{ '--ui-mobile-active-tab-index': String(activeTabIndex) }}>
+            <span class="ui-mobile-tab-indicator" aria-hidden="true" />
+            {navItems.map((item, index) => {
+              const active = index === activeTabIndex;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  prefetch={true}
+                  class={{
+                    'ui-mobile-tab-link': true,
+                    'is-active': active,
+                  }}
+                  role="tab"
+                  aria-selected={active ? 'true' : 'false'}
+                  aria-current={active ? 'page' : undefined}
+                  onClick$={() => {
+                    if (!active) {
+                      triggerTabHaptic();
+                    }
+                  }}
+                >
+                  <span class="material-icons-outlined ui-mobile-tab-icon" aria-hidden="true">
+                    {item.icon}
+                  </span>
+                  <span class="ui-mobile-tab-label">{t(i18n, item.labelKey, item.fallback)}</span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </footer>
