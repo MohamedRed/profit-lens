@@ -15,7 +15,12 @@ interface OfferUsageSectionProps {
   uid: string;
 }
 
-const activationDelayMs = 1200;
+interface OfferUsageCacheEntry {
+  entitlement: Entitlement | null;
+  usage: OfferUsage | null;
+}
+
+const offerUsageCache = new Map<string, OfferUsageCacheEntry>();
 
 const resolveStatusLabel = (entitlement: Entitlement, statusUnknown: string): string => {
   const status = entitlement.status.toLowerCase();
@@ -45,7 +50,6 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
   const i18n = useI18n();
   const entitlement = useSignal<Entitlement | null>(null);
   const usage = useSignal<OfferUsage | null>(null);
-  const activateStreams = useSignal(false);
   const status = useSignal('');
 
   useVisibleTask$(({ track, cleanup }) => {
@@ -53,39 +57,48 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
     if (!value) {
       entitlement.value = null;
       usage.value = null;
-      activateStreams.value = false;
       return;
     }
 
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
-    let unsubscribeEntitlement: (() => void) | null = null;
-    let unsubscribeUsage: (() => void) | null = null;
+    const cached = offerUsageCache.get(value);
+    if (cached) {
+      entitlement.value = cached.entitlement;
+      usage.value = cached.usage;
+    }
 
-    activateStreams.value = false;
-    timeoutId = setTimeout(() => {
-      activateStreams.value = true;
-      unsubscribeEntitlement = watchEntitlement(value, (nextEntitlement) => {
-        entitlement.value = nextEntitlement;
-        usage.value = null;
-        if (unsubscribeUsage) {
-          unsubscribeUsage();
-          unsubscribeUsage = null;
-        }
-        if (nextEntitlement?.periodKey) {
-          unsubscribeUsage = watchUsage(value, nextEntitlement.periodKey, (nextUsage) => {
-            usage.value = nextUsage;
-          });
-        }
+    let unsubscribeUsage: (() => void) | null = null;
+    const unsubscribeEntitlement = watchEntitlement(value, (nextEntitlement) => {
+      const previousPeriodKey = entitlement.value?.periodKey ?? null;
+      const nextPeriodKey = nextEntitlement?.periodKey ?? null;
+
+      entitlement.value = nextEntitlement;
+      offerUsageCache.set(value, {
+        entitlement: nextEntitlement,
+        usage: usage.value,
       });
-    }, activationDelayMs);
+
+      if (unsubscribeUsage) {
+        unsubscribeUsage();
+        unsubscribeUsage = null;
+      }
+
+      if (nextPeriodKey && nextPeriodKey !== previousPeriodKey) {
+        usage.value = null;
+      }
+
+      if (nextPeriodKey) {
+        unsubscribeUsage = watchUsage(value, nextPeriodKey, (nextUsage) => {
+          usage.value = nextUsage;
+          offerUsageCache.set(value, {
+            entitlement: entitlement.value,
+            usage: nextUsage,
+          });
+        });
+      }
+    });
 
     cleanup(() => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-      if (unsubscribeEntitlement) {
-        unsubscribeEntitlement();
-      }
+      unsubscribeEntitlement();
       if (unsubscribeUsage) {
         unsubscribeUsage();
       }
@@ -93,7 +106,7 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
   });
 
   const content = () => {
-    if (!activateStreams.value || !entitlement.value) {
+    if (!entitlement.value) {
       return <p class="ui-offer-loading-copy">{t(i18n, 'loadingLabel', 'Loading...')}</p>;
     }
 
