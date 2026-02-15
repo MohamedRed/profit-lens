@@ -1,18 +1,12 @@
 import { doc, onSnapshot } from 'firebase/firestore';
 import type { DocumentSnapshot } from 'firebase/firestore';
-import type { Entitlement, OfferUsage } from '../../types/billing';
-import { callCreateCheckoutSession } from '../../firebase/callables';
+import type { Entitlement, ManagedSubscriptionSnapshot, OfferUsage } from '../../types/billing';
+import {
+  callChangeSubscriptionPlan,
+  callCreateCheckoutSession,
+  callSetSubscriptionCancellation,
+} from '../../firebase/callables';
 import { getDb } from '../../firebase/firestore';
-import {
-  consumeCustomerPortalSession,
-  prefetchCustomerPortalSession,
-} from './customer-portal-session';
-import {
-  captureBillingPortalTelemetry,
-  createBillingPortalSessionId,
-  flushBillingTelemetryQueue,
-  type BillingPortalSource,
-} from './billing-telemetry';
 
 const asDate = (value: unknown): Date | null => {
   if (value && typeof value === 'object' && 'toDate' in (value as { toDate: unknown })) {
@@ -100,60 +94,33 @@ export const startCheckout = async (priceId: string) => {
   window.location.assign(url);
 };
 
-interface OpenCustomerPortalOptions {
-  uid: string;
-  source: BillingPortalSource;
-}
-
-export const openCustomerPortal = async ({ uid, source }: OpenCustomerPortalOptions) => {
-  const sessionId = createBillingPortalSessionId();
-  const clickStartedAt = performance.now();
-  const routePath = window.location.pathname;
-  const record = (stage: 'manage_click' | 'portal_url_resolved' | 'portal_redirect_start' | 'portal_pagehide', payload: Record<string, unknown>) => {
-    captureBillingPortalTelemetry(uid, source, stage, sessionId, payload);
-    void flushBillingTelemetry(uid);
+const mapManagedSubscription = (raw: Record<string, unknown>): ManagedSubscriptionSnapshot => {
+  const subscriptionId = raw.subscriptionId as string | undefined;
+  const status = raw.status as string | undefined;
+  const currentPriceId = raw.currentPriceId as string | undefined;
+  const currentPlanId = raw.currentPlanId as string | undefined;
+  const currentPeriodEndSec = Number(raw.currentPeriodEndSec ?? 0);
+  if (!subscriptionId || !status || !currentPriceId || !currentPlanId || !currentPeriodEndSec) {
+    throw new Error('Missing managed subscription details.');
+  }
+  return {
+    subscriptionId,
+    status,
+    cancelAtPeriodEnd: Boolean(raw.cancelAtPeriodEnd ?? false),
+    currentPeriodEndSec,
+    currentPriceId,
+    currentPlanId,
   };
-
-  record('manage_click', {
-    routePath,
-    visibilityState: document.visibilityState,
-  });
-
-  const resolutionStartedAt = performance.now();
-  const resolution = await consumeCustomerPortalSession();
-  const resolutionDurationMs = Math.round(performance.now() - resolutionStartedAt);
-  record('portal_url_resolved', {
-    routePath,
-    durationMs: resolutionDurationMs,
-    resolveSource: resolution.source,
-    cacheAgeMs: resolution.cacheAgeMs,
-  });
-
-  const redirectStartedAt = performance.now();
-  record('portal_redirect_start', {
-    routePath,
-    sinceClickMs: Math.round(redirectStartedAt - clickStartedAt),
-  });
-
-  window.addEventListener(
-    'pagehide',
-    () => {
-      record('portal_pagehide', {
-        routePath,
-        sinceRedirectMs: Math.round(performance.now() - redirectStartedAt),
-      });
-    },
-    { once: true },
-  );
-
-  const url = resolution.url;
-  window.location.assign(url);
 };
 
-export const warmCustomerPortalSession = async () => {
-  await prefetchCustomerPortalSession();
+export const changeSubscriptionPlan = async (priceId: string): Promise<ManagedSubscriptionSnapshot> => {
+  const payload = await callChangeSubscriptionPlan({ priceId });
+  return mapManagedSubscription(payload);
 };
 
-export const flushBillingTelemetry = async (uid: string) => {
-  await flushBillingTelemetryQueue(uid);
+export const setSubscriptionCancellation = async (
+  cancelAtPeriodEnd: boolean,
+): Promise<ManagedSubscriptionSnapshot> => {
+  const payload = await callSetSubscriptionCancellation({ cancelAtPeriodEnd });
+  return mapManagedSubscription(payload);
 };

@@ -1,8 +1,8 @@
 import { onCall, onRequest, HttpsError } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
-import Stripe from "stripe";
 import { Timestamp } from "firebase-admin/firestore";
+import Stripe from "stripe";
 import {
   entitlementDocRef,
   ensureEntitlement,
@@ -10,17 +10,9 @@ import {
   syncStripeEntitlement,
   syncStripeEntitlementForUid,
 } from "./entitlements";
+import { getOrCreateCustomerId, getStripe, stripeSecretKey } from "./billing_core";
 
-const stripeSecretKey = defineSecret("STRIPE_SECRET_KEY");
 const stripeWebhookSecret = defineSecret("STRIPE_WEBHOOK_SECRET");
-
-function getStripe() {
-  const key = stripeSecretKey.value();
-  if (!key) {
-    throw new HttpsError("failed-precondition", "STRIPE_SECRET_KEY is not set.");
-  }
-  return new Stripe(key, { apiVersion: "2024-06-20" });
-}
 
 export const createCheckoutSession = onCall(
   {
@@ -162,26 +154,6 @@ export const stripeWebhook = onRequest(
     res.json({ received: true });
   }
 );
-
-async function getOrCreateCustomerId(uid: string, stripe: Stripe) {
-  const docRef = entitlementDocRef(uid);
-  const snapshot = await docRef.get();
-  const existing = snapshot.data()?.stripeCustomerId as string | undefined;
-  if (existing) {
-    return existing;
-  }
-  const customer = await stripe.customers.create({
-    metadata: { uid },
-  });
-  await docRef.set(
-    {
-      stripeCustomerId: customer.id,
-      updatedAt: Timestamp.now(),
-    },
-    { merge: true }
-  );
-  return customer.id;
-}
 
 async function syncSubscription(subscription: Stripe.Subscription) {
   const customerId =

@@ -4,11 +4,7 @@ import { useAuth } from '../../../lib/auth/auth-context';
 import { signOutCurrentUser } from '../../../lib/firebase/auth';
 import { billingPlans } from '../../../lib/config/runtime-config';
 import { applyLocale, formatTemplate, t, useI18n } from '../../../lib/i18n/i18n-context';
-import {
-  openCustomerPortal,
-  startCheckout,
-  warmCustomerPortalSession,
-} from '../../../lib/features/billing/billing-service';
+import { startCheckout } from '../../../lib/features/billing/billing-service';
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
 import { Select } from '../../../components/ui/select';
 import type { Entitlement, OfferUsage } from '../../../lib/types/billing';
@@ -45,13 +41,12 @@ export default component$(() => {
 
   const selectedLanguage = useSignal<'fr' | 'en' | 'ar'>('fr');
   const languageSaving = useSignal(false);
-  const openingPortal = useSignal(false);
+  const checkoutLoading = useSignal(false);
   const status = useSignal('');
 
   useSettingsTabSession({ auth, profile, vehicles, entitlement, usage, devices, selectedLanguage });
 
   const locale = i18n.locale.value;
-  const userId = auth.user.value?.uid ?? '';
   const currentProfile = profile.value;
   const currentEntitlement = entitlement.value;
   const firstVehicle = vehicles.value[0];
@@ -179,46 +174,34 @@ export default component$(() => {
               </p>
             ) : null}
           </div>
-          <button
-            type="button"
-            class="ui-settings-pill-button"
-            disabled={openingPortal.value}
-            onPointerDown$={() => {
-              if (currentEntitlement?.planId.toLowerCase() === 'free') {
-                return;
-              }
-              void warmCustomerPortalSession().catch(() => {
-                // Silent prefetch failure; click path still does strict error handling.
-              });
-            }}
-            onClick$={async () => {
-              if (openingPortal.value) {
-                return;
-              }
-              status.value = '';
-              openingPortal.value = true;
-              try {
-                if (currentEntitlement?.planId.toLowerCase() === 'free') {
-                  if (paidPlan?.priceId) {
-                    await startCheckout(paidPlan.priceId);
+          {currentEntitlement?.planId.toLowerCase() === 'free' ? (
+            <button
+              type="button"
+              class="ui-settings-pill-button"
+              disabled={checkoutLoading.value}
+              onClick$={async () => {
+                status.value = '';
+                checkoutLoading.value = true;
+                try {
+                  if (!paidPlan?.priceId) {
+                    throw new Error('Paid plan is unavailable.');
                   }
-                } else {
-                  if (!userId) {
-                    throw new Error('Missing user ID for billing portal.');
-                  }
-                  await openCustomerPortal({ uid: userId, source: 'settings' });
+                  await startCheckout(paidPlan.priceId);
+                } catch (error) {
+                  status.value = error instanceof Error ? error.message : String(error);
+                  checkoutLoading.value = false;
                 }
-              } catch (error) {
-                status.value = error instanceof Error ? error.message : String(error);
-              } finally {
-                openingPortal.value = false;
-              }
-            }}
-          >
-            {currentEntitlement?.planId.toLowerCase() === 'free'
-              ? t(i18n, 'upgradePlanButton', 'Upgrade plan')
-              : t(i18n, 'managePlanButton', 'Manage subscription')}
-          </button>
+              }}
+            >
+              {checkoutLoading.value
+                ? t(i18n, 'loadingLabel', 'Loading...')
+                : t(i18n, 'upgradePlanButton', 'Upgrade plan')}
+            </button>
+          ) : (
+            <Link class="ui-settings-pill-button ui-settings-pill-link" href="/next/app/settings/billing">
+              {t(i18n, 'managePlanButton', 'Manage subscription')}
+            </Link>
+          )}
         </div>
       </section>
 

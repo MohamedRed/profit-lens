@@ -721,6 +721,47 @@ class AppLocalizationsAr extends AppLocalizations {
   String get managePlanButton => 'إدارة الخطة';
 
   @override
+  String get billingBackToSettings => 'العودة إلى الإعدادات';
+
+  @override
+  String get billingManageTitle => 'إدارة الاشتراك';
+
+  @override
+  String get billingManageSubtitle =>
+      'غيّر الخطة أو جدولة الإلغاء أو استئناف التجديد.';
+
+  @override
+  String get billingPlanSelectionLabel => 'الخطة';
+
+  @override
+  String get billingApplyPlanButton => 'تطبيق تغيير الخطة';
+
+  @override
+  String get billingPlanMissingError => 'اختر خطة اشتراك أولاً.';
+
+  @override
+  String get billingPlanChangeSuccess => 'تم تحديث خطة الاشتراك.';
+
+  @override
+  String get billingCancellationTitle => 'إلغاء الاشتراك';
+
+  @override
+  String get billingCancellationSubtitle =>
+      'اختر الاستمرار بالتجديد التلقائي أو الإيقاف عند نهاية الفترة الحالية.';
+
+  @override
+  String get billingCancelAtPeriodEndButton => 'إلغاء عند نهاية الفترة';
+
+  @override
+  String get billingResumeSubscriptionButton => 'استئناف الاشتراك';
+
+  @override
+  String get billingCancelSuccess => 'سيتم إلغاء الاشتراك عند نهاية الفترة.';
+
+  @override
+  String get billingResumeSuccess => 'تم استئناف الاشتراك.';
+
+  @override
   String get offerLimitReachedMessage =>
       'لقد بلغت الحد الشهري للعروض. قم بالترقية للمتابعة.';
 

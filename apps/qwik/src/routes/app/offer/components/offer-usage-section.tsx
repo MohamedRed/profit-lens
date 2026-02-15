@@ -1,10 +1,9 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { Link } from '@builder.io/qwik-city';
 import { Button } from '../../../../components/ui/button';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import {
-  openCustomerPortal,
   startCheckout,
-  warmCustomerPortalSession,
   watchEntitlement,
   watchUsage,
 } from '../../../../lib/features/billing/billing-service';
@@ -48,7 +47,6 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
   const usage = useSignal<OfferUsage | null>(null);
   const activateStreams = useSignal(false);
   const status = useSignal('');
-  const openingPortal = useSignal(false);
 
   useVisibleTask$(({ track, cleanup }) => {
     const value = track(() => uid);
@@ -69,11 +67,6 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
       unsubscribeEntitlement = watchEntitlement(value, (nextEntitlement) => {
         entitlement.value = nextEntitlement;
         usage.value = null;
-        if (nextEntitlement && nextEntitlement.planId.toLowerCase() !== 'free') {
-          void warmCustomerPortalSession().catch(() => {
-            // Silent prefetch failure; click path still does strict error handling.
-          });
-        }
         if (unsubscribeUsage) {
           unsubscribeUsage();
           unsubscribeUsage = null;
@@ -152,31 +145,13 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
               {t(i18n, 'upgradePlanButton', 'Upgrade plan')}
             </Button>
           ) : (
-            <Button
-              variant="default"
-              class="ui-offer-usage-cta"
-              disabled={openingPortal.value}
-              onPointerDown$={() => {
-                void warmCustomerPortalSession().catch(() => {
-                  // Silent prefetch failure; click path still does strict error handling.
-                });
-              }}
-              onClick$={async () => {
-                if (openingPortal.value) {
-                  return;
-                }
-                openingPortal.value = true;
-                status.value = '';
-                try {
-                  await openCustomerPortal({ uid, source: 'offer' });
-                } catch (error) {
-                  status.value = error instanceof Error ? error.message : String(error);
-                  openingPortal.value = false;
-                }
-              }}
+            <Link
+              href="/next/app/settings/billing"
+              prefetch={true}
+              class="ui-button ui-button-default ui-button-md ui-offer-usage-cta"
             >
-              {openingPortal.value ? t(i18n, 'loadingLabel', 'Loading...') : t(i18n, 'managePlanButton', 'Manage plan')}
-            </Button>
+              {t(i18n, 'managePlanButton', 'Manage plan')}
+            </Link>
           )}
         </div>
         {status.value ? <p class="ui-status ui-status-error">{status.value}</p> : null}

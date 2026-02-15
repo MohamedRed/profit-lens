@@ -1,9 +1,7 @@
 import { Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Link, useLocation } from '@builder.io/qwik-city';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
-import { useAuth } from '../../lib/auth/auth-context';
 import { prefetchTabRoutes } from '../../lib/navigation/prefetch-tab-routes';
-import { flushBillingTelemetry, warmCustomerPortalSession } from '../../lib/features/billing/billing-service';
 
 const navItems = [
   {
@@ -57,7 +55,6 @@ const triggerTabHaptic = (): void => {
 export const AppShell = component$(() => {
   const i18n = useI18n();
   const location = useLocation();
-  const auth = useAuth();
   const nextTransitionIsPop = useSignal(false);
   const transitionClass = useSignal<'is-push' | 'is-pop'>('is-push');
   const activeTabIndex = resolveActiveTabIndex(location.url.pathname);
@@ -107,29 +104,8 @@ export const AppShell = component$(() => {
     });
   });
 
-  useVisibleTask$(({ track, cleanup }) => {
-    const uid = track(() => auth.user.value?.uid);
-    if (!uid) {
-      return;
-    }
-
-    const warm = () => {
-      void warmCustomerPortalSession()
-        .catch(() => {
-          // Silent warm-up failure; click path keeps strict error handling.
-        });
-    };
-
-    warm();
-    void flushBillingTelemetry(uid);
-    const intervalId = window.setInterval(warm, 4 * 60_000);
-    cleanup(() => {
-      window.clearInterval(intervalId);
-    });
-  });
-
   return (
-    <div class="ui-mobile-app" id="qwik-app-root-marker" data-user={auth.user.value?.uid ?? 'none'}>
+    <div class="ui-mobile-app" id="qwik-app-root-marker">
       <main class="ui-mobile-page">
         <header class="ui-mobile-header">
           <h1 class="ui-mobile-title">{t(i18n, activeTab.labelKey, activeTab.fallback)}</h1>

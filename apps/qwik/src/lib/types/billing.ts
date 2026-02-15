@@ -22,3 +22,12 @@ export interface BillingPlan {
   priceLabel: string;
   offerLimit: number | null;
 }
+
+export interface ManagedSubscriptionSnapshot {
+  subscriptionId: string;
+  status: string;
+  cancelAtPeriodEnd: boolean;
+  currentPeriodEndSec: number;
+  currentPriceId: string;
+  currentPlanId: string;
+}

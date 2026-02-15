@@ -56,10 +56,6 @@ service cloud.firestore {
       match /notificationTokens/{tokenId} {
         allow read, write: if isOwner(uid);
       }
-
-      match /billingTelemetry/{eventId} {
-        allow read, write: if isOwner(uid);
-      }
     }
 
     match /defaults/{docId} {

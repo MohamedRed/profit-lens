@@ -734,6 +734,48 @@ class AppLocalizationsFr extends AppLocalizations {
   String get managePlanButton => 'Gérer l’abonnement';
 
   @override
+  String get billingBackToSettings => 'Retour aux réglages';
+
+  @override
+  String get billingManageTitle => 'Gérer l’abonnement';
+
+  @override
+  String get billingManageSubtitle =>
+      'Changez de forfait, planifiez ou annulez une résiliation.';
+
+  @override
+  String get billingPlanSelectionLabel => 'Forfait';
+
+  @override
+  String get billingApplyPlanButton => 'Appliquer le changement';
+
+  @override
+  String get billingPlanMissingError => 'Sélectionnez d’abord un forfait.';
+
+  @override
+  String get billingPlanChangeSuccess => 'Forfait mis à jour.';
+
+  @override
+  String get billingCancellationTitle => 'Résiliation';
+
+  @override
+  String get billingCancellationSubtitle =>
+      'Choisissez de renouveler automatiquement ou d’arrêter à la fin de la période en cours.';
+
+  @override
+  String get billingCancelAtPeriodEndButton => 'Résilier en fin de période';
+
+  @override
+  String get billingResumeSubscriptionButton => 'Reprendre l’abonnement';
+
+  @override
+  String get billingCancelSuccess =>
+      'L’abonnement sera résilié en fin de période.';
+
+  @override
+  String get billingResumeSuccess => 'L’abonnement a repris.';
+
+  @override
   String get offerLimitReachedMessage =>
       'Vous avez atteint votre limite mensuelle. Passez à un forfait supérieur pour continuer.';
 

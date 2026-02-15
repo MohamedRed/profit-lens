@@ -725,6 +725,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get managePlanButton => 'Manage plan';
 
   @override
+  String get billingBackToSettings => 'Back to settings';
+
+  @override
+  String get billingManageTitle => 'Manage subscription';
+
+  @override
+  String get billingManageSubtitle =>
+      'Change plan, pause cancellation, or schedule cancellation.';
+
+  @override
+  String get billingPlanSelectionLabel => 'Plan';
+
+  @override
+  String get billingApplyPlanButton => 'Apply plan change';
+
+  @override
+  String get billingPlanMissingError => 'Select a subscription plan first.';
+
+  @override
+  String get billingPlanChangeSuccess => 'Subscription plan updated.';
+
+  @override
+  String get billingCancellationTitle => 'Cancellation';
+
+  @override
+  String get billingCancellationSubtitle =>
+      'Choose whether to keep renewing or stop at the end of this billing period.';
+
+  @override
+  String get billingCancelAtPeriodEndButton => 'Cancel at period end';
+
+  @override
+  String get billingResumeSubscriptionButton => 'Resume subscription';
+
+  @override
+  String get billingCancelSuccess => 'Subscription will cancel at period end.';
+
+  @override
+  String get billingResumeSuccess => 'Subscription resumed.';
+
+  @override
   String get offerLimitReachedMessage =>
       'You have reached your monthly offer limit. Upgrade to continue.';
 

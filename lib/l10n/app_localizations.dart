@@ -1449,6 +1449,84 @@ abstract class AppLocalizations {
   /// **'Manage plan'**
   String get managePlanButton;
 
+  /// No description provided for @billingBackToSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to settings'**
+  String get billingBackToSettings;
+
+  /// No description provided for @billingManageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription'**
+  String get billingManageTitle;
+
+  /// No description provided for @billingManageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change plan, pause cancellation, or schedule cancellation.'**
+  String get billingManageSubtitle;
+
+  /// No description provided for @billingPlanSelectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get billingPlanSelectionLabel;
+
+  /// No description provided for @billingApplyPlanButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply plan change'**
+  String get billingApplyPlanButton;
+
+  /// No description provided for @billingPlanMissingError.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a subscription plan first.'**
+  String get billingPlanMissingError;
+
+  /// No description provided for @billingPlanChangeSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription plan updated.'**
+  String get billingPlanChangeSuccess;
+
+  /// No description provided for @billingCancellationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancellation'**
+  String get billingCancellationTitle;
+
+  /// No description provided for @billingCancellationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose whether to keep renewing or stop at the end of this billing period.'**
+  String get billingCancellationSubtitle;
+
+  /// No description provided for @billingCancelAtPeriodEndButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel at period end'**
+  String get billingCancelAtPeriodEndButton;
+
+  /// No description provided for @billingResumeSubscriptionButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume subscription'**
+  String get billingResumeSubscriptionButton;
+
+  /// No description provided for @billingCancelSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription will cancel at period end.'**
+  String get billingCancelSuccess;
+
+  /// No description provided for @billingResumeSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription resumed.'**
+  String get billingResumeSuccess;
+
   /// No description provided for @offerLimitReachedMessage.
   ///
   /// In en, this message translates to:

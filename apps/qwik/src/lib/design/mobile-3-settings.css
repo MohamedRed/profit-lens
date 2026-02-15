@@ -70,6 +70,11 @@
   cursor: pointer;
 }
 
+.ui-settings-pill-link {
+  display: inline-flex;
+  align-items: center;
+}
+
 .ui-settings-pill-button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
@@ -119,4 +124,33 @@
   color: var(--pl-color-text-primary);
   font-size: 1rem;
   cursor: pointer;
+}
+
+.ui-settings-billing-root {
+  display: grid;
+  gap: 12px;
+}
+
+.ui-settings-billing-card {
+  padding: 14px 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.ui-settings-billing-title {
+  margin: 0;
+  font-size: 1.18rem;
+  font-family: var(--pl-font-display);
+}
+
+.ui-settings-billing-action {
+  width: 100%;
+  border-radius: var(--pl-radius-pill);
+}
+
+.ui-settings-billing-alert {
+  margin: 0;
+  color: var(--pl-color-danger);
+  font-size: 0.88rem;
+  font-weight: 500;
 }

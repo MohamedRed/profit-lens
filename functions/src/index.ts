@@ -26,6 +26,10 @@ export {
   createCustomerPortalSession,
   stripeWebhook,
 } from "./billing";
+export {
+  changeSubscriptionPlan,
+  setSubscriptionCancellation,
+} from "./billing_manage";
 
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const geminiModel = defineString("GEMINI_MODEL", {
