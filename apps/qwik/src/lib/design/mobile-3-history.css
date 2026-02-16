@@ -39,6 +39,10 @@
   line-height: 1;
 }
 
+.ui-history-panel {
+  margin-top: 12px;
+}
+
 .ui-history-list {
   list-style: none;
   margin: 0;

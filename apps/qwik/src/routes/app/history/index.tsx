@@ -251,7 +251,7 @@ export default component$(() => {
           </Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel>
+        <Tabs.Panel class="ui-history-panel">
           <HistoryListPanel
             offers={offers.value}
             locale={locale}
@@ -262,7 +262,7 @@ export default component$(() => {
           />
         </Tabs.Panel>
 
-        <Tabs.Panel>
+        <Tabs.Panel class="ui-history-panel">
           <HistoryChartPanel stats={stats.value} locale={locale} />
         </Tabs.Panel>
       </Tabs.Root>
