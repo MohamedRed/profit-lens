@@ -1,16 +1,18 @@
-.ui-image-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+.ui-image-modal-dialog {
+  width: min(calc(100% - 40px), 760px);
+  max-width: 760px;
+  padding: 0;
+  border: 0;
+  margin: auto;
+  background: transparent;
+}
+
+.ui-image-modal-dialog::backdrop {
   background: rgba(15, 23, 42, 0.72);
 }
 
 .ui-image-modal-panel {
-  width: min(100%, 760px);
+  width: 100%;
   border-radius: var(--pl-radius-xl);
   background: rgba(10, 10, 14, 0.96);
   border: 1px solid rgba(212, 212, 216, 0.32);
@@ -53,8 +55,8 @@
 }
 
 @media (max-width: 720px) {
-  .ui-image-modal-backdrop {
-    padding: 12px;
+  .ui-image-modal-dialog {
+    width: calc(100% - 24px);
   }
 
   .ui-image-modal-panel {
