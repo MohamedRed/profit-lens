@@ -10,6 +10,7 @@
 @import './lib/design/mobile-3-settings-details.css';
 @import './lib/design/mobile-3-help.css';
 @import './lib/design/mobile-3-form-controls.css';
+@import './lib/design/mobile-3-image-modal.css';
 
 * {
   box-sizing: border-box;
