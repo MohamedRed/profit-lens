@@ -37,9 +37,10 @@ export default component$(() => {
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
     const ticketParam = track(() => location.params.ticketId);
+    const path = track(() => location.url.pathname);
     const search = track(() => location.url.search);
     const hash = track(() => location.url.hash);
-    const ticketId = readHelpTicketId(ticketParam, search, hash);
+    const ticketId = readHelpTicketId(ticketParam, path, search, hash);
 
     if (!user || !ticketId) {
       loading.value = false;
