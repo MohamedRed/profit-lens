@@ -303,18 +303,87 @@
   font-weight: 600;
 }
 
-.ui-help-timeline-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.ui-help-progress-list {
   display: grid;
-  gap: 10px;
+  gap: 0;
 }
 
-.ui-help-timeline-item {
-  background: var(--pl-color-surface);
-  border-radius: var(--pl-radius-lg);
-  padding: 12px;
+.ui-help-progress-step {
+  position: relative;
   display: grid;
-  gap: 8px;
+  grid-template-columns: 24px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: flex-start;
+}
+
+.ui-help-progress-step.has-line {
+  padding-bottom: var(--pl-space-sm);
+}
+
+.ui-help-progress-line {
+  position: absolute;
+  left: 11px;
+  top: 20px;
+  bottom: 0;
+  width: 2px;
+  background: var(--ui-help-progress-line-color);
+}
+
+.ui-help-progress-dot {
+  width: 20px;
+  height: 20px;
+  margin-top: 0;
+  border-radius: 999px;
+  border: 1.5px solid var(--ui-help-progress-color);
+  background: var(--ui-help-progress-fill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ui-help-progress-dot.is-current {
+  border-width: 2px;
+}
+
+.ui-help-progress-check {
+  font-size: 12px;
+  line-height: 1;
+  color: #fff;
+}
+
+.ui-help-progress-current-core {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--ui-help-progress-color);
+}
+
+.ui-help-progress-copy {
+  display: grid;
+  gap: var(--pl-space-xs);
+  padding-top: 1px;
+}
+
+.ui-help-progress-label {
+  margin: 0;
+  color: var(--pl-color-text-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.ui-help-progress-label.is-upcoming {
+  color: var(--pl-color-text-secondary);
+}
+
+.ui-help-progress-date {
+  margin: 0;
+  color: var(--pl-color-text-secondary);
+  font-size: 0.78rem;
+}
+
+.ui-help-progress-message {
+  margin: 0;
+  color: var(--pl-color-text-secondary);
+  font-size: 0.86rem;
+  line-height: 1.3;
 }

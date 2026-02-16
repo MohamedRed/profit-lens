@@ -19,6 +19,7 @@ import {
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 import type { HelpTicket, HelpTicketAttachment, HelpTicketTimelineEvent } from '../../../../../lib/types/help';
 import { HelpTicketAttachmentList } from '../../components/help-ticket-attachment-list';
+import { HelpTicketProgressStepper } from '../../components/help-ticket-progress-stepper';
 
 export default component$(() => {
   const location = useLocation();
@@ -153,23 +154,8 @@ export default component$(() => {
       </section>
 
       <section class="ui-help-card">
-        <h2 class="ui-help-section-title">{t(i18n, 'helpTicketTimelineTitle', 'Status history')}</h2>
-        <ul class="ui-help-timeline-list">
-          {timeline.value.length === 0 ? (
-            <li class="ui-help-ticket-empty">{t(i18n, 'helpTicketTimelineEmpty', 'No status history yet.')}</li>
-          ) : null}
-          {timeline.value.map((event) => (
-            <li key={event.id} class="ui-help-timeline-item">
-              <div class="ui-help-ticket-row">
-                <span class="ui-help-ticket-status">
-                  {statusLabel(event.status, event.status, (key, fallbackText) => t(i18n, key, fallbackText))}
-                </span>
-                <span class="ui-help-ticket-date">{formatHelpDate(event.at)}</span>
-              </div>
-              <p class="ui-help-ticket-desc">{event.message}</p>
-            </li>
-          ))}
-        </ul>
+        <h2 class="ui-help-section-title">{t(i18n, 'helpTicketProgressTitle', 'Progress')}</h2>
+        <HelpTicketProgressStepper currentStatus={currentTicket.delivererStatus} events={timeline.value} />
       </section>
     </div>
   );
