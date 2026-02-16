@@ -309,9 +309,11 @@
 }
 
 .ui-help-progress-step {
+  --ui-help-progress-dot-size: 20px;
+  --ui-help-progress-line-size: 2px;
   position: relative;
   display: grid;
-  grid-template-columns: 24px minmax(0, 1fr);
+  grid-template-columns: var(--ui-help-progress-dot-size) minmax(0, 1fr);
   column-gap: 12px;
   align-items: flex-start;
 }
@@ -322,21 +324,26 @@
 
 .ui-help-progress-line {
   position: absolute;
-  left: 11px;
-  top: 20px;
+  left: calc((var(--ui-help-progress-dot-size) - var(--ui-help-progress-line-size)) / 2);
+  top: 0;
   bottom: 0;
-  width: 2px;
+  width: var(--ui-help-progress-line-size);
   background: var(--ui-help-progress-line-color);
 }
 
+.ui-help-progress-step.is-first .ui-help-progress-line {
+  top: calc(var(--ui-help-progress-dot-size) / 2);
+}
+
 .ui-help-progress-dot {
-  width: 20px;
-  height: 20px;
+  width: var(--ui-help-progress-dot-size);
+  height: var(--ui-help-progress-dot-size);
   margin-top: 0;
   border-radius: 999px;
   border: 1.5px solid var(--ui-help-progress-color);
   background: var(--ui-help-progress-fill);
   display: inline-flex;
+  justify-self: center;
   align-items: center;
   justify-content: center;
 }

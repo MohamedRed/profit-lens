@@ -131,7 +131,7 @@ export const HelpTicketProgressStepper = component$<HelpTicketProgressStepperPro
         const fillColor = state === 'upcoming' ? 'transparent' : state === 'current' ? statusSoftFill(status) : color;
 
         return (
-          <div key={status} class={['ui-help-progress-step', !isLast ? 'has-line' : null]}>
+          <div key={status} class={['ui-help-progress-step', index === 0 ? 'is-first' : null, !isLast ? 'has-line' : null]}>
             {!isLast ? <span class="ui-help-progress-line" style={{ '--ui-help-progress-line-color': lineColor }} /> : null}
 
             <span
