@@ -54,11 +54,17 @@ const decodeTicketId = (raw: string | null | undefined): string | null => {
 };
 
 const readTicketIdFromPath = (path: string): string | null => {
-  const match = path.match(/\/app\/help\/tickets\/([^/?#]+)\/?$/);
-  if (!match) {
-    return null;
+  const nestedMatch = path.match(/\/app\/help\/tickets\/details\/([^/?#]+)\/?$/);
+  if (nestedMatch) {
+    return decodeTicketId(nestedMatch[1]);
   }
-  return decodeTicketId(match[1]);
+
+  const directMatch = path.match(/\/app\/help\/tickets\/([^/?#]+)\/?$/);
+  if (directMatch) {
+    return decodeTicketId(directMatch[1]);
+  }
+
+  return null;
 };
 
 const readTicketIdFromHash = (hash: string): string | null => {
