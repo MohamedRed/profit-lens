@@ -1,5 +1,5 @@
-import { Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Link, useLocation } from '@builder.io/qwik-city';
+import { $, Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { Link, useLocation, useNavigate } from '@builder.io/qwik-city';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 import { prefetchTabRoutes } from '../../lib/navigation/prefetch-tab-routes';
 
@@ -39,6 +39,32 @@ const resolveActiveTabIndex = (path: string): number => {
   return index === -1 ? 0 : index;
 };
 
+const stripNextBase = (path: string): string => {
+  if (path.startsWith('/next/')) {
+    return path.slice('/next'.length);
+  }
+  return path;
+};
+
+const resolveHeaderBackHref = (path: string): string | null => {
+  if (path === '/app/help/tickets') {
+    return '/next/app/help';
+  }
+  if (path.startsWith('/app/help/tickets/')) {
+    return '/next/app/help/tickets';
+  }
+  if (path.startsWith('/app/history/')) {
+    return '/next/app/history';
+  }
+  if (path.startsWith('/app/settings/vehicles/new') || path.startsWith('/app/settings/vehicles/edit')) {
+    return '/next/app/settings/vehicles';
+  }
+  if (path.startsWith('/app/settings/')) {
+    return '/next/app/settings';
+  }
+  return null;
+};
+
 const triggerTabHaptic = (): void => {
   if (typeof window === 'undefined' || typeof navigator === 'undefined') {
     return;
@@ -55,15 +81,28 @@ const triggerTabHaptic = (): void => {
 export const AppShell = component$(() => {
   const i18n = useI18n();
   const location = useLocation();
+  const navigate = useNavigate();
   const nextTransitionIsPop = useSignal(false);
   const transitionClass = useSignal<'is-push' | 'is-pop'>('is-push');
   const pathname = location.url.pathname;
   const normalizedPath =
     pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
-  const showHelpTicketsAction =
-    normalizedPath === '/app/help' || normalizedPath === '/next/app/help';
-  const activeTabIndex = resolveActiveTabIndex(pathname);
+  const appPath = stripNextBase(normalizedPath);
+  const showHelpTicketsAction = appPath === '/app/help';
+  const headerBackHref = resolveHeaderBackHref(appPath);
+  const activeTabIndex = resolveActiveTabIndex(appPath);
   const activeTab = navItems[activeTabIndex];
+
+  const onHeaderBack$ = $(async () => {
+    if (!headerBackHref) {
+      return;
+    }
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+    await navigate(headerBackHref);
+  });
 
   useVisibleTask$(({ cleanup }) => {
     const onPopState = () => {
@@ -113,6 +152,18 @@ export const AppShell = component$(() => {
     <div class="ui-mobile-app" id="qwik-app-root-marker">
       <main class="ui-mobile-page">
         <header class="ui-mobile-header">
+          {headerBackHref ? (
+            <button
+              type="button"
+              class="ui-mobile-header-back"
+              onClick$={onHeaderBack$}
+              aria-label={t(i18n, 'commonBackLabel', 'Back')}
+            >
+              <span class="material-icons-outlined" aria-hidden="true">
+                arrow_back
+              </span>
+            </button>
+          ) : null}
           <h1 class="ui-mobile-title">{t(i18n, activeTab.labelKey, activeTab.fallback)}</h1>
           {showHelpTicketsAction ? (
             <Link

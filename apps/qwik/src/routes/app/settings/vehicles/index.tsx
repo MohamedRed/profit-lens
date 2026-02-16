@@ -57,13 +57,6 @@ export default component$(() => {
 
   return (
     <div class="ui-settings-detail-root">
-      <Link class="ui-settings-detail-back" href="/next/app/settings">
-        <span class="material-icons-outlined" aria-hidden="true">
-          arrow_back
-        </span>
-        <span>{t(i18n, 'settingsTabLabel', 'Settings')}</span>
-      </Link>
-
       <section class="ui-settings-detail-card">
         <div class="ui-settings-row">
           <h2 class="ui-settings-detail-title">{t(i18n, 'vehiclesSectionTitle', 'Vehicles')}</h2>

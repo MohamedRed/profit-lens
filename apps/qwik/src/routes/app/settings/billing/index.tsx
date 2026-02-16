@@ -1,5 +1,4 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Link } from '@builder.io/qwik-city';
 import { Button } from '../../../../components/ui/button';
 import { Select } from '../../../../components/ui/select';
 import { useAuth } from '../../../../lib/auth/auth-context';
@@ -201,11 +200,6 @@ export default component$(() => {
 
   return (
     <div class="ui-settings-billing-root">
-      <Link class="ui-help-detail-back" href="/next/app/settings">
-        <span class="material-icons-outlined" aria-hidden="true">chevron_left</span>
-        <span>{t(i18n, 'billingBackToSettings', 'Back to settings')}</span>
-      </Link>
-
       <section class="ui-settings-card ui-settings-billing-card">
         <h2 class="ui-settings-billing-title">{t(i18n, 'billingManageTitle', 'Manage subscription')}</h2>
         <p class="ui-settings-subtitle">

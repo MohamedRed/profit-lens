@@ -1,5 +1,4 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Link } from '@builder.io/qwik-city';
 import { Select } from '../../../../components/ui/select';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { saveUserProfile, watchUserProfile } from '../../../../lib/features/profile/profile-service';
@@ -137,13 +136,6 @@ export default component$(() => {
 
   return (
     <div class="ui-settings-detail-root">
-      <Link class="ui-settings-detail-back" href="/next/app/settings">
-        <span class="material-icons-outlined" aria-hidden="true">
-          arrow_back
-        </span>
-        <span>{t(i18n, 'settingsTabLabel', 'Settings')}</span>
-      </Link>
-
       <section class="ui-settings-detail-card">
         <h2 class="ui-settings-detail-title">{t(i18n, 'profileEditTitle', 'Edit profile')}</h2>
         <div class="ui-settings-form-grid">

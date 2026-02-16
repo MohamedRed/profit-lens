@@ -1,5 +1,5 @@
-import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { useLocation, useNavigate } from '@builder.io/qwik-city';
+import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { useLocation } from '@builder.io/qwik-city';
 import { useAuth } from '../../../../../lib/auth/auth-context';
 import { readHelpTicketId } from '../../../../../lib/features/help/help-ticket-id';
 import {
@@ -23,7 +23,6 @@ import { HelpTicketProgressStepper } from '../../components/help-ticket-progress
 
 export default component$(() => {
   const location = useLocation();
-  const navigate = useNavigate();
   const auth = useAuth();
   const i18n = useI18n();
 
@@ -32,14 +31,6 @@ export default component$(() => {
   const attachments = useSignal<HelpTicketAttachment[]>([]);
   const timeline = useSignal<HelpTicketTimelineEvent[]>([]);
   const loadError = useSignal('');
-
-  const goBack$ = $(async () => {
-    if (window.history.length > 1) {
-      window.history.back();
-      return;
-    }
-    await navigate('/next/app/help/tickets');
-  });
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
@@ -100,12 +91,6 @@ export default component$(() => {
   if (!currentTicket) {
     return (
       <div class="ui-help-detail-root">
-        <button type="button" class="ui-help-detail-back" onClick$={goBack$}>
-          <span class="material-icons-outlined" aria-hidden="true">
-            arrow_back
-          </span>
-          <span>{t(i18n, 'helpTicketsTitle', 'Tickets')}</span>
-        </button>
         {loadError.value ? <p class="ui-help-ticket-empty ui-status-error">{loadError.value}</p> : null}
         <p class="ui-help-ticket-empty">{t(i18n, 'helpTicketNotFound', "This ticket doesn't exist anymore.")}</p>
       </div>
@@ -116,13 +101,6 @@ export default component$(() => {
 
   return (
     <div class="ui-help-detail-root">
-      <button type="button" class="ui-help-detail-back" onClick$={goBack$}>
-        <span class="material-icons-outlined" aria-hidden="true">
-          arrow_back
-        </span>
-        <span>{t(i18n, 'helpTicketsTitle', 'Tickets')}</span>
-      </button>
-
       <section class="ui-help-card">
         <h2 class="ui-help-card-title">{title}</h2>
         <p class="ui-help-progress-status">

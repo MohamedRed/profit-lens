@@ -7,7 +7,7 @@
   width: min(100%, 232px);
   margin: 0 auto;
   background: var(--pl-color-surface);
-  border-radius: 16px;
+  border-radius: 12px;
   padding: 2px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -22,7 +22,7 @@
   bottom: 2px;
   left: 2px;
   width: calc((100% - 4px) / 2);
-  border-radius: 999px;
+  border-radius: 10px;
   background: #fff;
   transform: translate3d(0, 0, 0);
   transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -36,7 +36,7 @@
 
 .ui-history-segment-btn {
   border: 0;
-  border-radius: 999px;
+  border-radius: 10px;
   background: transparent;
   color: var(--pl-color-text-secondary);
   min-height: 38px;
@@ -206,20 +206,6 @@
 .ui-history-detail-root {
   display: grid;
   gap: 12px;
-}
-
-.ui-history-detail-back {
-  width: fit-content;
-  border: 1px solid var(--pl-color-outline);
-  border-radius: var(--pl-radius-pill);
-  background: transparent;
-  color: var(--pl-color-text-secondary);
-  min-height: 34px;
-  padding: 0 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.9rem;
 }
 
 .ui-history-detail-card {

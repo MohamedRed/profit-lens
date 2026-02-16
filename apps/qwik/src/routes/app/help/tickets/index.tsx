@@ -48,13 +48,6 @@ export default component$(() => {
 
   return (
     <div class="ui-help-detail-root">
-      <Link class="ui-help-detail-back" href="/next/app/help">
-        <span class="material-icons-outlined" aria-hidden="true">
-          arrow_back
-        </span>
-        <span>{t(i18n, 'helpTabLabel', 'Help')}</span>
-      </Link>
-
       <section class="ui-help-card">
         <h2 class="ui-help-card-title">{t(i18n, 'helpTicketsTitle', 'Tickets')}</h2>
         {loadError.value ? <p class="ui-help-ticket-empty ui-status-error">{loadError.value}</p> : null}

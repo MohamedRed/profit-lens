@@ -1,5 +1,5 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Link, useNavigate } from '@builder.io/qwik-city';
+import { useNavigate } from '@builder.io/qwik-city';
 import { Select } from '../../../../components/ui/select';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { deleteVehicle, saveVehicle, watchVehicles } from '../../../../lib/features/vehicles/vehicles-service';
@@ -254,13 +254,6 @@ export const VehicleEditor = component$<VehicleEditorProps>((props) => {
 
   return (
     <div class="ui-settings-detail-root">
-      <Link class="ui-settings-detail-back" href="/next/app/settings/vehicles">
-        <span class="material-icons-outlined" aria-hidden="true">
-          arrow_back
-        </span>
-        <span>{t(i18n, 'vehiclesSectionTitle', 'Vehicles')}</span>
-      </Link>
-
       <section class="ui-settings-detail-card">
         <h2 class="ui-settings-detail-title">{title}</h2>
         {loading.value ? <p class="ui-settings-detail-subtitle">{t(i18n, 'loadingLabel', 'Loading...')}</p> : null}
