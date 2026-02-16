@@ -3,6 +3,7 @@
 .ui-textarea {
   appearance: none;
   -webkit-appearance: none;
+  border-radius: var(--pl-radius-lg) !important;
   background-color: #ffffff !important;
   background-image: none !important;
   border: 1px solid #9ea3b5 !important;
@@ -28,6 +29,11 @@
 .ui-offer-section .ui-input,
 .ui-offer-section .ui-select,
 .ui-offer-section .ui-textarea {
+  border-radius: var(--pl-radius-lg) !important;
   background-color: #ffffff !important;
   border-color: #989eb2 !important;
+}
+
+.ui-offer-target-input-wrap .ui-input[type='number'] {
+  border-radius: var(--pl-radius-lg) !important;
 }
