@@ -24,6 +24,7 @@ interface OfferFlowContentProps {
   manualEntryRequested: Signal<boolean>;
   minProfitabilityEuro: Signal<number>;
   onAnalyzeManual$: QRL<() => Promise<void>>;
+  onClearScreenshotPreview$: QRL<() => void>;
   onImportScreenshot$: QRL<(input: HTMLInputElement) => Promise<void>>;
   onSaveProfitabilityTarget$: QRL<(value: string) => Promise<void>>;
   payout: Signal<string>;
@@ -187,7 +188,10 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
           ) : null}
 
           {props.screenshotPreviewUrl.value ? (
-            <OfferScreenshotPreview src={props.screenshotPreviewUrl.value} />
+            <OfferScreenshotPreview
+              src={props.screenshotPreviewUrl.value}
+              onRemove$={props.onClearScreenshotPreview$}
+            />
           ) : null}
 
           {props.status.value ? (

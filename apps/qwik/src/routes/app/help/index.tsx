@@ -1,10 +1,16 @@
-import { component$, useSignal } from '@builder.io/qwik';
+import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import { createHelpTicket } from '../../../lib/features/help/help-service';
-import { buildHelpDrafts, maxHelpAttachments } from '../../../lib/features/help/help-ui-utils';
+import {
+  buildHelpDrafts,
+  maxHelpAttachments,
+  revokeHelpDraftPreview,
+  revokeHelpDraftPreviews,
+} from '../../../lib/features/help/help-ui-utils';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import type { HelpAttachmentDraft } from '../../../lib/types/help';
+import { HelpAttachmentDraftList } from './components/help-attachment-draft-list';
 
 export default component$(() => {
   const auth = useAuth();
@@ -14,6 +20,20 @@ export default component$(() => {
   const drafts = useSignal<HelpAttachmentDraft[]>([]);
   const submitting = useSignal(false);
   const status = useSignal('');
+
+  useVisibleTask$(({ cleanup }) => {
+    cleanup(() => {
+      revokeHelpDraftPreviews(drafts.value);
+    });
+  });
+
+  const removeDraft$ = $((index: number) => {
+    const current = drafts.value[index];
+    if (current) {
+      revokeHelpDraftPreview(current);
+    }
+    drafts.value = drafts.value.filter((_, itemIndex) => itemIndex !== index);
+  });
 
   return (
     <div class="ui-help-root">
@@ -67,7 +87,12 @@ export default component$(() => {
               if (!files || files.length === 0) {
                 return;
               }
-              const nextDrafts = [...drafts.value, ...buildHelpDrafts(files)].slice(0, maxHelpAttachments);
+              const mergedDrafts = [...drafts.value, ...buildHelpDrafts(files)];
+              const overflowDrafts = mergedDrafts.slice(maxHelpAttachments);
+              if (overflowDrafts.length > 0) {
+                revokeHelpDraftPreviews(overflowDrafts);
+              }
+              const nextDrafts = mergedDrafts.slice(0, maxHelpAttachments);
               drafts.value = nextDrafts;
               if (nextDrafts.length === maxHelpAttachments) {
                 status.value = t(i18n, 'helpAttachmentLimitReached', 'Attachment limit reached.');
@@ -78,24 +103,7 @@ export default component$(() => {
         </label>
 
         {drafts.value.length > 0 ? (
-          <ul class="ui-help-attachment-list">
-            {drafts.value.map((item, index) => (
-              <li key={`${item.filename}-${index}`} class="ui-help-attachment-item">
-                <span class="ui-help-attachment-name">{item.filename}</span>
-                <button
-                  type="button"
-                  class="ui-help-attachment-remove"
-                  onClick$={() => {
-                    drafts.value = drafts.value.filter((_, itemIndex) => itemIndex !== index);
-                  }}
-                >
-                  <span class="material-icons-outlined" aria-hidden="true">
-                    close
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
+          <HelpAttachmentDraftList drafts={drafts.value} onRemove$={removeDraft$} />
         ) : null}
 
         <button
@@ -124,6 +132,7 @@ export default component$(() => {
                 description: description.value.trim(),
                 attachments: drafts.value,
               });
+              revokeHelpDraftPreviews(drafts.value);
               description.value = '';
               drafts.value = [];
               status.value = t(i18n, 'helpTicketSubmitted', 'Ticket submitted.');

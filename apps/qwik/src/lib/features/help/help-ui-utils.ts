@@ -17,14 +17,28 @@ export const buildHelpDrafts = (files: FileList): HelpAttachmentDraft[] => {
     if (!file) {
       continue;
     }
+    const type = attachmentType(file);
     list.push({
-      type: attachmentType(file),
+      type,
       filename: file.name,
       contentType: file.type,
       file,
+      previewUrl: type === 'image' ? URL.createObjectURL(file) : undefined,
     });
   }
   return list;
+};
+
+export const revokeHelpDraftPreview = (draft: HelpAttachmentDraft): void => {
+  if (draft.type === 'image' && draft.previewUrl) {
+    URL.revokeObjectURL(draft.previewUrl);
+  }
+};
+
+export const revokeHelpDraftPreviews = (drafts: readonly HelpAttachmentDraft[]): void => {
+  for (const draft of drafts) {
+    revokeHelpDraftPreview(draft);
+  }
 };
 
 export const statusLabel = (

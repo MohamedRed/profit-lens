@@ -171,6 +171,13 @@ export default component$(() => {
     }
   });
 
+  const clearScreenshotPreview$ = $(() => {
+    if (screenshotPreviewUrl.value) {
+      URL.revokeObjectURL(screenshotPreviewUrl.value);
+    }
+    screenshotPreviewUrl.value = null;
+  });
+
   const user = auth.user.value;
   if (!user) {
     return null;
@@ -189,6 +196,7 @@ export default component$(() => {
       manualEntryRequested={manualEntryRequested}
       minProfitabilityEuro={minProfitabilityEuro}
       onAnalyzeManual$={analyzeManual$}
+      onClearScreenshotPreview$={clearScreenshotPreview$}
       onImportScreenshot$={importScreenshot$}
       onSaveProfitabilityTarget$={saveProfitabilityTarget$}
       payout={payout}

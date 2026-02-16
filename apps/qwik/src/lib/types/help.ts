@@ -16,6 +16,7 @@ export interface HelpAttachmentDraft {
   filename: string;
   contentType: string;
   file: File;
+  previewUrl?: string;
   durationSeconds?: number;
 }
 
