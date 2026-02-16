@@ -98,59 +98,87 @@ const storagePath = (uid: string, ticketId: string, attachmentId: string, filena
 export const watchHelpTickets = (
   uid: string,
   callback: (tickets: HelpTicket[]) => void,
+  onError?: (error: unknown) => void,
 ): (() => void) => {
   const ticketsRef = collection(getDb(), 'users', uid, 'helpTickets');
   const ticketsQuery = query(ticketsRef, orderBy('updatedAt', 'desc'));
-  return onSnapshot(ticketsQuery, (snapshot: QuerySnapshot) => {
-    const tickets = snapshot.docs.map((item) => mapTicket(item.id, item.data() as Record<string, unknown>));
-    callback(tickets);
-  });
+  return onSnapshot(
+    ticketsQuery,
+    (snapshot: QuerySnapshot) => {
+      const tickets = snapshot.docs.map((item) => mapTicket(item.id, item.data() as Record<string, unknown>));
+      callback(tickets);
+    },
+    (error) => {
+      onError?.(error);
+    },
+  );
 };
 
 export const watchHelpTicket = (
   uid: string,
   ticketId: string,
   callback: (ticket: HelpTicket | null) => void,
+  onError?: (error: unknown) => void,
 ): (() => void) => {
   const ref = doc(getDb(), 'users', uid, 'helpTickets', ticketId);
-  return onSnapshot(ref, (snapshot: DocumentSnapshot) => {
-    const raw = snapshot.data() as Record<string, unknown> | undefined;
-    if (!snapshot.exists() || !raw) {
-      callback(null);
-      return;
-    }
-    callback(mapTicket(snapshot.id, raw));
-  });
+  return onSnapshot(
+    ref,
+    (snapshot: DocumentSnapshot) => {
+      const raw = snapshot.data() as Record<string, unknown> | undefined;
+      if (!snapshot.exists() || !raw) {
+        callback(null);
+        return;
+      }
+      callback(mapTicket(snapshot.id, raw));
+    },
+    (error) => {
+      onError?.(error);
+    },
+  );
 };
 
 export const watchHelpTicketAttachments = (
   uid: string,
   ticketId: string,
   callback: (attachments: HelpTicketAttachment[]) => void,
+  onError?: (error: unknown) => void,
 ): (() => void) => {
   const ref = collection(getDb(), 'users', uid, 'helpTickets', ticketId, 'attachments');
   const attachmentQuery = query(ref, orderBy('uploadedAt', 'asc'));
-  return onSnapshot(attachmentQuery, (snapshot: QuerySnapshot) => {
-    const attachments = snapshot.docs
-      .map((item) => mapAttachment(item.id, item.data() as Record<string, unknown>))
-      .filter((value): value is HelpTicketAttachment => value !== null);
-    callback(attachments);
-  });
+  return onSnapshot(
+    attachmentQuery,
+    (snapshot: QuerySnapshot) => {
+      const attachments = snapshot.docs
+        .map((item) => mapAttachment(item.id, item.data() as Record<string, unknown>))
+        .filter((value): value is HelpTicketAttachment => value !== null);
+      callback(attachments);
+    },
+    (error) => {
+      onError?.(error);
+    },
+  );
 };
 
 export const watchHelpTicketTimeline = (
   uid: string,
   ticketId: string,
   callback: (events: HelpTicketTimelineEvent[]) => void,
+  onError?: (error: unknown) => void,
 ): (() => void) => {
   const ref = collection(getDb(), 'users', uid, 'helpTickets', ticketId, 'delivererTimeline');
   const timelineQuery = query(ref, orderBy('at', 'desc'));
-  return onSnapshot(timelineQuery, (snapshot: QuerySnapshot) => {
-    const events = snapshot.docs
-      .map((item) => mapTimeline(item.id, item.data() as Record<string, unknown>))
-      .filter((value): value is HelpTicketTimelineEvent => value !== null);
-    callback(events);
-  });
+  return onSnapshot(
+    timelineQuery,
+    (snapshot: QuerySnapshot) => {
+      const events = snapshot.docs
+        .map((item) => mapTimeline(item.id, item.data() as Record<string, unknown>))
+        .filter((value): value is HelpTicketTimelineEvent => value !== null);
+      callback(events);
+    },
+    (error) => {
+      onError?.(error);
+    },
+  );
 };
 
 export const transcribeHelpAudio = async (params: {

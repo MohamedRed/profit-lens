@@ -1,6 +1,7 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Link } from '@builder.io/qwik-city';
 import { useAuth } from '../../../../lib/auth/auth-context';
+import { saveSelectedHelpTicketId } from '../../../../lib/features/help/help-ticket-selection';
 import { watchHelpTickets } from '../../../../lib/features/help/help-service';
 import { formatHelpDate, statusLabel } from '../../../../lib/features/help/help-ui-utils';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
@@ -11,19 +12,29 @@ export default component$(() => {
   const i18n = useI18n();
   const tickets = useSignal<HelpTicket[]>([]);
   const loading = useSignal(true);
+  const loadError = useSignal('');
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
     if (!user) {
       tickets.value = [];
       loading.value = false;
+      loadError.value = '';
       return;
     }
 
     loading.value = true;
+    loadError.value = '';
     const unsubscribe = watchHelpTickets(user.uid, (nextTickets) => {
       tickets.value = nextTickets;
       loading.value = false;
+    }, (error) => {
+      tickets.value = [];
+      loading.value = false;
+      loadError.value =
+        error instanceof Error
+          ? error.message
+          : t(i18n, 'helpTicketLoadFailed', 'Failed to load tickets. Please try again.');
     });
 
     cleanup(() => {
@@ -46,6 +57,7 @@ export default component$(() => {
 
       <section class="ui-help-card">
         <h2 class="ui-help-card-title">{t(i18n, 'helpTicketsTitle', 'Tickets')}</h2>
+        {loadError.value ? <p class="ui-help-ticket-empty ui-status-error">{loadError.value}</p> : null}
         <ul class="ui-help-ticket-list">
           {tickets.value.length === 0 ? (
             <li class="ui-help-ticket-empty">{t(i18n, 'helpNoTicketsMessage', 'No tickets yet.')}</li>
@@ -54,7 +66,10 @@ export default component$(() => {
             <li key={ticket.id} class="ui-help-ticket-item">
               <Link
                 class="ui-help-ticket-link ui-help-ticket-link-button"
-                href={`/next/app/help/tickets/${encodeURIComponent(ticket.id)}`}
+                href={`/next/app/help/tickets/details/?ticketId=${encodeURIComponent(ticket.id)}`}
+                onClick$={() => {
+                  saveSelectedHelpTicketId(ticket.id);
+                }}
               >
                 <div class="ui-help-ticket-row">
                   <span class="ui-help-ticket-id">#{ticket.id.slice(0, 8)}</span>

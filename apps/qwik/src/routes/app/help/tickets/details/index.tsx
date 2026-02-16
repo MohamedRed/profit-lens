@@ -3,6 +3,10 @@ import { useLocation, useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../../../../../lib/auth/auth-context';
 import { readHelpTicketId } from '../../../../../lib/features/help/help-ticket-id';
 import {
+  readSelectedHelpTicketId,
+  saveSelectedHelpTicketId,
+} from '../../../../../lib/features/help/help-ticket-selection';
+import {
   watchHelpTicket,
   watchHelpTicketAttachments,
   watchHelpTicketTimeline,
@@ -25,6 +29,7 @@ export default component$(() => {
   const ticket = useSignal<HelpTicket | null>(null);
   const attachments = useSignal<HelpTicketAttachment[]>([]);
   const timeline = useSignal<HelpTicketTimelineEvent[]>([]);
+  const loadError = useSignal('');
 
   const goBack$ = $(async () => {
     if (window.history.length > 1) {
@@ -40,26 +45,42 @@ export default component$(() => {
     const path = track(() => location.url.pathname);
     const search = track(() => location.url.search);
     const hash = track(() => location.url.hash);
-    const ticketId = readHelpTicketId(ticketParam, path, search, hash);
+    const ticketId = readHelpTicketId(ticketParam, path, search, hash) ?? readSelectedHelpTicketId();
 
     if (!user || !ticketId) {
       loading.value = false;
       ticket.value = null;
       attachments.value = [];
       timeline.value = [];
+      loadError.value = '';
       return;
     }
 
+    saveSelectedHelpTicketId(ticketId);
     loading.value = true;
+    loadError.value = '';
     const unsubscribeTicket = watchHelpTicket(user.uid, ticketId, (value) => {
       ticket.value = value;
       loading.value = false;
+    }, (error) => {
+      ticket.value = null;
+      attachments.value = [];
+      timeline.value = [];
+      loading.value = false;
+      loadError.value =
+        error instanceof Error
+          ? error.message
+          : t(i18n, 'helpTicketLoadFailed', 'Failed to load ticket. Please try again.');
     });
     const unsubscribeAttachments = watchHelpTicketAttachments(user.uid, ticketId, (items) => {
       attachments.value = items;
+    }, () => {
+      attachments.value = [];
     });
     const unsubscribeTimeline = watchHelpTicketTimeline(user.uid, ticketId, (items) => {
       timeline.value = items;
+    }, () => {
+      timeline.value = [];
     });
 
     cleanup(() => {
@@ -83,6 +104,7 @@ export default component$(() => {
           </span>
           <span>{t(i18n, 'helpTicketsTitle', 'Tickets')}</span>
         </button>
+        {loadError.value ? <p class="ui-help-ticket-empty ui-status-error">{loadError.value}</p> : null}
         <p class="ui-help-ticket-empty">{t(i18n, 'helpTicketNotFound', "This ticket doesn't exist anymore.")}</p>
       </div>
     );
