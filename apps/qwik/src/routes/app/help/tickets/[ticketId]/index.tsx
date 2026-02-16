@@ -14,40 +14,141 @@ import {
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 import type { HelpTicket, HelpTicketAttachment, HelpTicketTimelineEvent } from '../../../../../lib/types/help';
 
-const decodeTicketId = (raw: string | null): string | null => {
-  if (!raw) {
+const maxNestedRedirectDepth = 4;
+
+const decodeRepeated = (raw: string): string => {
+  let current = raw;
+  for (let index = 0; index < maxNestedRedirectDepth; index += 1) {
+    try {
+      const decoded = decodeURIComponent(current);
+      if (decoded === current) {
+        break;
+      }
+      current = decoded;
+    } catch {
+      break;
+    }
+  }
+  return current;
+};
+
+const decodeTicketId = (raw: string | null | undefined): string | null => {
+  if (typeof raw !== 'string') {
     return null;
   }
 
-  const source = raw.trim();
+  const source = decodeRepeated(raw).trim();
   if (!source) {
     return null;
   }
 
+  if (source.toLowerCase() === 'details') {
+    return null;
+  }
+
+  if (source.includes('/')) {
+    return null;
+  }
+
+  return source;
+};
+
+const readTicketIdFromPath = (path: string): string | null => {
+  const match = path.match(/\/app\/help\/tickets\/([^/?#]+)\/?$/);
+  if (!match) {
+    return null;
+  }
+  return decodeTicketId(match[1]);
+};
+
+const readTicketIdFromHash = (hash: string): string | null => {
+  if (!hash) {
+    return null;
+  }
+  const params = new URLSearchParams(hash.startsWith('#') ? hash.slice(1) : hash);
+  return decodeTicketId(params.get('ticketId') ?? params.get('id'));
+};
+
+const readTicketIdFromRedirect = (raw: string | null, depth = 0): string | null => {
+  if (!raw || depth > maxNestedRedirectDepth) {
+    return null;
+  }
+
+  const decoded = decodeRepeated(raw).trim();
+  if (!decoded) {
+    return null;
+  }
+
+  const directId = decodeTicketId(decoded);
+  if (directId) {
+    return directId;
+  }
+
   try {
-    const decoded = decodeURIComponent(source).trim();
-    return decoded.length > 0 ? decoded : null;
+    const parsed = decoded.startsWith('http://') || decoded.startsWith('https://')
+      ? new URL(decoded)
+      : new URL(decoded, 'https://profit-lens.local');
+    const fromQuery = decodeTicketId(parsed.searchParams.get('ticketId') ?? parsed.searchParams.get('id'));
+    if (fromQuery) {
+      return fromQuery;
+    }
+
+    const fromPath = readTicketIdFromPath(parsed.pathname);
+    if (fromPath) {
+      return fromPath;
+    }
+
+    const fromHash = readTicketIdFromHash(parsed.hash);
+    if (fromHash) {
+      return fromHash;
+    }
+
+    const nested =
+      parsed.searchParams.get('redirect') ??
+      parsed.searchParams.get('next') ??
+      parsed.searchParams.get('returnTo');
+    return readTicketIdFromRedirect(nested, depth + 1);
   } catch {
-    return source;
+    return null;
   }
 };
 
-const readTicketIdFromLocation = (path: string, search: string): string | null => {
+const readTicketIdFromLocation = (
+  paramsTicketId: string | undefined,
+  path: string,
+  search: string,
+  hash: string,
+): string | null => {
+  const fromParams = decodeTicketId(paramsTicketId);
+  if (fromParams) {
+    return fromParams;
+  }
+
   const params = new URLSearchParams(search);
   const fromQuery = decodeTicketId(params.get('ticketId') ?? params.get('id'));
   if (fromQuery) {
     return fromQuery;
   }
 
-  const match = path.match(/\/app\/help\/tickets\/([^/]+)\/?$/);
-  if (!match) {
-    return null;
+  const fromHash = readTicketIdFromHash(hash);
+  if (fromHash) {
+    return fromHash;
   }
-  const fromPath = decodeTicketId(match[1]);
-  if (!fromPath || fromPath === 'details') {
-    return null;
+
+  const fromPath = readTicketIdFromPath(path);
+  if (fromPath) {
+    return fromPath;
   }
-  return fromPath;
+
+  const fromNestedRedirect = readTicketIdFromRedirect(
+    params.get('redirect') ?? params.get('next') ?? params.get('returnTo'),
+  );
+  if (fromNestedRedirect) {
+    return fromNestedRedirect;
+  }
+
+  const hashParams = new URLSearchParams(hash.startsWith('#') ? hash.slice(1) : hash);
+  return readTicketIdFromRedirect(hashParams.get('redirect'));
 };
 
 export default component$(() => {
@@ -71,9 +172,11 @@ export default component$(() => {
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
+    const ticketParam = track(() => location.params.ticketId);
     const path = track(() => location.url.pathname);
     const search = track(() => location.url.search);
-    const ticketId = readTicketIdFromLocation(path, search);
+    const hash = track(() => location.url.hash);
+    const ticketId = readTicketIdFromLocation(ticketParam, path, search, hash);
 
     if (!user || !ticketId) {
       loading.value = false;
