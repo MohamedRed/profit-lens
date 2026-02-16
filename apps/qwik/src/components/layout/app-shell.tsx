@@ -39,6 +39,22 @@ const resolveActiveTabIndex = (path: string): number => {
   return index === -1 ? 0 : index;
 };
 
+const toPathSegments = (path: string): string[] => {
+  return path.split('/').filter(Boolean);
+};
+
+const resolveSectionKey = (path: string): string => {
+  const segments = toPathSegments(path);
+  if (segments.length >= 2) {
+    return `${segments[0]}/${segments[1]}`;
+  }
+  return path;
+};
+
+const resolveRouteDepth = (path: string): number => {
+  return toPathSegments(path).length;
+};
+
 const stripNextBase = (path: string): string => {
   if (path.startsWith('/next/')) {
     return path.slice('/next'.length);
@@ -83,7 +99,8 @@ export const AppShell = component$(() => {
   const location = useLocation();
   const navigate = useNavigate();
   const nextTransitionIsPop = useSignal(false);
-  const transitionClass = useSignal<'is-push' | 'is-pop'>('is-push');
+  const transitionClass = useSignal<'is-push' | 'is-pop' | 'is-push-deep'>('is-push');
+  const previousAppPath = useSignal<string | null>(null);
   const pathname = location.url.pathname;
   const normalizedPath =
     pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
@@ -101,6 +118,7 @@ export const AppShell = component$(() => {
       window.history.back();
       return;
     }
+    nextTransitionIsPop.value = true;
     await navigate(headerBackHref);
   });
 
@@ -116,7 +134,28 @@ export const AppShell = component$(() => {
 
   useVisibleTask$(({ track }) => {
     track(() => location.url.pathname);
-    transitionClass.value = nextTransitionIsPop.value ? 'is-pop' : 'is-push';
+    const currentPath = stripNextBase(
+      location.url.pathname.endsWith('/') && location.url.pathname.length > 1
+        ? location.url.pathname.slice(0, -1)
+        : location.url.pathname,
+    );
+    const previousPath = previousAppPath.value;
+    if (nextTransitionIsPop.value) {
+      transitionClass.value = 'is-pop';
+    } else if (!previousPath) {
+      transitionClass.value = 'is-push';
+    } else {
+      const sameSection = resolveSectionKey(previousPath) === resolveSectionKey(currentPath);
+      const depthDiff = resolveRouteDepth(currentPath) - resolveRouteDepth(previousPath);
+      if (sameSection && depthDiff > 0) {
+        transitionClass.value = 'is-push-deep';
+      } else if (sameSection && depthDiff < 0) {
+        transitionClass.value = 'is-pop';
+      } else {
+        transitionClass.value = 'is-push';
+      }
+    }
+    previousAppPath.value = currentPath;
     nextTransitionIsPop.value = false;
   });
 
