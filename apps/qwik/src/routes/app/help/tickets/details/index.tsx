@@ -18,6 +18,7 @@ import {
 } from '../../../../../lib/features/help/help-ui-utils';
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 import type { HelpTicket, HelpTicketAttachment, HelpTicketTimelineEvent } from '../../../../../lib/types/help';
+import { HelpTicketAttachmentList } from '../../components/help-ticket-attachment-list';
 
 export default component$(() => {
   const location = useLocation();
@@ -148,28 +149,7 @@ export default component$(() => {
 
       <section class="ui-help-card">
         <h2 class="ui-help-section-title">{t(i18n, 'helpTicketAttachmentsTitle', 'Attachments')}</h2>
-        <ul class="ui-help-ticket-list">
-          {attachments.value.length === 0 ? (
-            <li class="ui-help-ticket-empty">{t(i18n, 'helpAttachmentEmptyState', 'No attachments yet.')}</li>
-          ) : null}
-          {attachments.value.map((attachment) => (
-            <li key={attachment.id} class="ui-help-ticket-item">
-              <a class="ui-help-attachment-link" href={attachment.url} target="_blank" rel="noreferrer">
-                <div class="ui-help-ticket-row">
-                  <span class="ui-help-ticket-id">
-                    {attachment.type === 'audio'
-                      ? t(i18n, 'helpAudioAttachmentLabel', 'Voice note')
-                      : attachment.filename}
-                  </span>
-                  <span class="ui-help-ticket-status">
-                    {attachment.type === 'audio' ? 'AUDIO' : 'IMAGE'}
-                  </span>
-                </div>
-                <p class="ui-help-ticket-date">{attachment.filename}</p>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <HelpTicketAttachmentList attachments={attachments.value} />
       </section>
 
       <section class="ui-help-card">
