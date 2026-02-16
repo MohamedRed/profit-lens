@@ -7,6 +7,7 @@ import {
 import {
   isIosInstallManualOnly,
   isRunningAsInstalledPwa,
+  shouldEnforcePwaInstallGate,
 } from '../../lib/features/pwa/pwa-install-state';
 
 interface PwaInstallElementLike extends HTMLElement {
@@ -55,6 +56,12 @@ export const PwaInstallGuard = component$(() => {
     };
 
     const evaluate = () => {
+      if (!shouldEnforcePwaInstallGate(window)) {
+        gateState.value = 'installed';
+        installFlow.value = 'unknown';
+        return;
+      }
+
       if (isRunningAsInstalledPwa(window)) {
         setKnownInstalled(true);
         gateState.value = 'installed';
@@ -85,6 +92,9 @@ export const PwaInstallGuard = component$(() => {
     };
 
     const stopDeferredPromptWatcher = watchDeferredInstallPrompt(window, (event) => {
+      if (!shouldEnforcePwaInstallGate(window)) {
+        return;
+      }
       if (isRunningAsInstalledPwa(window) || isIosInstallManualOnly(window)) {
         return;
       }

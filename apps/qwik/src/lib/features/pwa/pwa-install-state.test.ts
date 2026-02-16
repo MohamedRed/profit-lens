@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   isIosInstallManualOnly,
   isRunningAsInstalledPwa,
+  shouldEnforcePwaInstallGate,
   type PwaWindowLike,
 } from './pwa-install-state';
 
@@ -71,5 +72,43 @@ describe('pwa-install-state', () => {
         navigator: { standalone: true, userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0)' },
       }),
     ).toBe(false);
+  });
+
+  it('enforces install gate on Android mobile user agent', () => {
+    expect(
+      shouldEnforcePwaInstallGate({
+        navigator: {
+          userAgent:
+            'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Mobile Safari/537.36',
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('does not enforce install gate on desktop browser user agent', () => {
+    expect(
+      shouldEnforcePwaInstallGate({
+        navigator: {
+          userAgent:
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
+          platform: 'Win32',
+          maxTouchPoints: 0,
+        },
+        matchMedia: () => ({ matches: false }),
+      }),
+    ).toBe(false);
+  });
+
+  it('enforces install gate for iPadOS desktop mode', () => {
+    expect(
+      shouldEnforcePwaInstallGate({
+        navigator: {
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+          platform: 'MacIntel',
+          maxTouchPoints: 5,
+        },
+        matchMedia: () => ({ matches: false }),
+      }),
+    ).toBe(true);
   });
 });
