@@ -128,7 +128,12 @@ export const HelpTicketProgressStepper = component$<HelpTicketProgressStepperPro
         const state = stepState(status, normalizedCurrent, event !== null);
         const color = statusColor(status);
         const lineColor = state === 'upcoming' ? 'var(--pl-color-outline)' : statusSoftColor(status);
-        const fillColor = state === 'upcoming' ? 'transparent' : state === 'current' ? statusSoftFill(status) : color;
+        const fillColor =
+          state === 'upcoming'
+            ? 'var(--pl-color-surface)'
+            : state === 'current'
+              ? statusSoftFill(status)
+              : color;
 
         return (
           <div key={status} class={['ui-help-progress-step', index === 0 ? 'is-first' : null, !isLast ? 'has-line' : null]}>

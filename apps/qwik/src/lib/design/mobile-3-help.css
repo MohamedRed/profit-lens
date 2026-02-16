@@ -329,6 +329,7 @@
   bottom: 0;
   width: var(--ui-help-progress-line-size);
   background: var(--ui-help-progress-line-color);
+  z-index: 0;
 }
 
 .ui-help-progress-step.is-first .ui-help-progress-line {
@@ -346,6 +347,8 @@
   justify-self: center;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 1;
 }
 
 .ui-help-progress-dot.is-current {
