@@ -18,16 +18,23 @@ const decodeTicketId = (raw: string | null): string | null => {
   if (!raw) {
     return null;
   }
+
+  const source = raw.trim();
+  if (!source) {
+    return null;
+  }
+
   try {
-    return decodeURIComponent(raw);
+    const decoded = decodeURIComponent(source).trim();
+    return decoded.length > 0 ? decoded : null;
   } catch {
-    return raw;
+    return source;
   }
 };
 
 const readTicketIdFromLocation = (path: string, search: string): string | null => {
   const params = new URLSearchParams(search);
-  const fromQuery = decodeTicketId(params.get('ticketId'));
+  const fromQuery = decodeTicketId(params.get('ticketId') ?? params.get('id'));
   if (fromQuery) {
     return fromQuery;
   }
@@ -65,8 +72,7 @@ export default component$(() => {
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
     const path = track(() => location.url.pathname);
-    const search =
-      typeof window === 'undefined' ? track(() => location.url.search) : window.location.search;
+    const search = track(() => location.url.search);
     const ticketId = readTicketIdFromLocation(path, search);
 
     if (!user || !ticketId) {
