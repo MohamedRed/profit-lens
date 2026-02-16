@@ -60,14 +60,17 @@
 .ui-textarea {
   width: 100%;
   min-height: var(--pl-size-control-height);
-  border: 1px solid var(--pl-color-outline);
+  border: 1px solid #c3c3cc;
   border-radius: var(--pl-radius-lg);
-  background: var(--pl-color-overlay);
+  background: #ffffff;
   color: var(--pl-color-text-primary);
   padding: 0.7rem 1rem;
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.2;
+  box-shadow:
+    inset 0 1px 1px rgba(24, 24, 27, 0.04),
+    0 1px 0 rgba(255, 255, 255, 0.92);
   outline: none;
   transition:
     border-color 120ms ease,
@@ -194,7 +197,9 @@
 .ui-select:focus,
 .ui-textarea:focus {
   border-color: var(--pl-color-purple);
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.16);
+  box-shadow:
+    inset 0 1px 1px rgba(24, 24, 27, 0.02),
+    0 0 0 3px rgba(139, 92, 246, 0.18);
 }
 
 .ui-button {
