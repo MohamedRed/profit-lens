@@ -66,10 +66,6 @@ export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps
                 </p>
                 <p class="ui-help-attachment-kind">{attachment.type === 'audio' ? 'Audio' : 'Image'}</p>
               </div>
-
-              <span class="material-icons-outlined ui-help-ticket-attachment-open" aria-hidden="true">
-                {attachment.type === 'audio' ? 'open_in_new' : 'zoom_in'}
-              </span>
             </a>
           </li>
         ))}
