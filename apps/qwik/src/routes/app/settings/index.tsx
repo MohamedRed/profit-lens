@@ -49,7 +49,6 @@ export default component$(() => {
   const locale = i18n.locale.value;
   const currentProfile = profile.value;
   const currentEntitlement = entitlement.value;
-  const firstVehicle = vehicles.value[0];
   const currentDevice = devices.value.find((entry) => entry.isCurrent);
   const paidPlan = billingPlans.find((plan) => plan.offerLimit !== null && Boolean(plan.priceId));
   const subscriptionTitle = currentEntitlement?.planId.toLowerCase() === 'free'
@@ -228,29 +227,44 @@ export default component$(() => {
       </section>
 
       <section class="ui-settings-card">
-        <Link class="ui-settings-vehicles-link ui-settings-tile-link" href="/next/app/settings/vehicles">
-          <div class="ui-settings-vehicles-head">
-            <p class="ui-settings-title">{t(i18n, 'vehiclesSectionTitle', 'Vehicles')}</p>
-            <span class="material-icons-outlined ui-settings-plus" aria-hidden="true">
+        <div class="ui-settings-vehicles-head">
+          <p class="ui-settings-title">{t(i18n, 'vehiclesSectionTitle', 'Vehicles')}</p>
+          <Link class="ui-settings-link-button" href="/next/app/settings/vehicles/new">
+            <span class="material-icons-outlined" aria-hidden="true">
               add
             </span>
-          </div>
-          {firstVehicle ? (
-            <div class="ui-settings-vehicle-row">
-              <div>
-                <p class="ui-settings-vehicle-name">{firstVehicle.name}</p>
-                <p class="ui-settings-vehicle-type">{firstVehicle.type}</p>
-              </div>
-              <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
-                chevron_right
-              </span>
-            </div>
-          ) : (
-            <p class="ui-settings-subtitle ui-settings-vehicles-empty">
-              {t(i18n, 'noVehiclesMessage', 'No vehicles found.')}
-            </p>
-          )}
-        </Link>
+            <span>{t(i18n, 'addVehicleTitle', 'Add vehicle')}</span>
+          </Link>
+        </div>
+        {vehicles.value.length === 0 ? (
+          <p class="ui-settings-subtitle ui-settings-vehicles-empty">
+            {t(i18n, 'noVehiclesMessage', 'No vehicles found.')}
+          </p>
+        ) : (
+          <ul class="ui-settings-vehicles-inline-list">
+            {vehicles.value.map((vehicle) => (
+              <li key={vehicle.id}>
+                <Link
+                  class="ui-settings-vehicle-row ui-settings-tile-link"
+                  href={`/next/app/settings/vehicles/edit/?vehicleId=${encodeURIComponent(vehicle.id)}`}
+                >
+                  <div>
+                    <p class="ui-settings-vehicle-name">{vehicle.name}</p>
+                    <p class="ui-settings-vehicle-type">{vehicle.type}</p>
+                  </div>
+                  <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
+                    chevron_right
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div class="ui-settings-vehicles-foot">
+          <Link class="ui-settings-link-button" href="/next/app/settings/vehicles">
+            {t(i18n, 'vehiclesSectionSubtitle', 'Manage your vehicles')}
+          </Link>
+        </div>
       </section>
 
       <section class="ui-settings-card">

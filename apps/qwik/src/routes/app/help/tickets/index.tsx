@@ -52,9 +52,9 @@ export default component$(() => {
           ) : null}
           {tickets.value.map((ticket) => (
             <li key={ticket.id} class="ui-help-ticket-item">
-              <Link
-                class="ui-help-ticket-link"
-                href={`/next/app/help/tickets/${encodeURIComponent(ticket.id)}`}
+              <a
+                class="ui-help-ticket-link ui-help-ticket-link-button"
+                href={`/next/app/help/tickets/details/?ticketId=${encodeURIComponent(ticket.id)}`}
               >
                 <div class="ui-help-ticket-row">
                   <span class="ui-help-ticket-id">#{ticket.id.slice(0, 8)}</span>
@@ -70,7 +70,7 @@ export default component$(() => {
                 <p class="ui-help-ticket-date">
                   {t(i18n, 'helpStatusUpdatedLabel', 'Status updated')}: {formatHelpDate(ticket.updatedAt)}
                 </p>
-              </Link>
+              </a>
             </li>
           ))}
         </ul>
