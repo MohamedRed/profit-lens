@@ -3,24 +3,6 @@
   gap: 12px;
 }
 
-.ui-help-toolbar {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.ui-help-toolbar-btn {
-  width: 34px;
-  height: 34px;
-  border: 0;
-  border-radius: 10px;
-  background: transparent;
-  color: var(--pl-color-text-primary);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
 .ui-help-card {
   border: 1px solid var(--pl-color-outline);
   border-radius: var(--pl-radius-xl);

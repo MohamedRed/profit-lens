@@ -71,7 +71,7 @@ export default component$(() => {
   return (
     <div class="ui-settings-root">
       <section class="ui-settings-card">
-        <div class="ui-settings-tile">
+        <Link class="ui-settings-tile ui-settings-tile-link" href="/next/app/settings/profile">
           <div class="ui-settings-tile-content">
             <p class="ui-settings-title">{t(i18n, 'profileSectionTitle', 'Business profile')}</p>
             <p class="ui-settings-subtitle">
@@ -86,7 +86,7 @@ export default component$(() => {
           <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
             chevron_right
           </span>
-        </div>
+        </Link>
       </section>
 
       <section class="ui-settings-card ui-settings-language">
@@ -206,7 +206,7 @@ export default component$(() => {
       </section>
 
       <section class="ui-settings-card">
-        <div class="ui-settings-tile">
+        <Link class="ui-settings-tile ui-settings-tile-link" href="/next/app/settings/devices">
           <span class="material-icons-outlined ui-settings-leading" aria-hidden="true">
             devices
           </span>
@@ -224,29 +224,33 @@ export default component$(() => {
           <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
             chevron_right
           </span>
-        </div>
+        </Link>
       </section>
 
       <section class="ui-settings-card">
-        <div class="ui-settings-vehicles-head">
-          <p class="ui-settings-title">{t(i18n, 'vehiclesSectionTitle', 'Vehicles')}</p>
-          <span class="material-icons-outlined ui-settings-plus" aria-hidden="true">
-            add
-          </span>
-        </div>
-        {firstVehicle ? (
-          <div class="ui-settings-vehicle-row">
-            <div>
-              <p class="ui-settings-vehicle-name">{firstVehicle.name}</p>
-              <p class="ui-settings-vehicle-type">{firstVehicle.type}</p>
-            </div>
-            <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
-              chevron_right
+        <Link class="ui-settings-vehicles-link ui-settings-tile-link" href="/next/app/settings/vehicles">
+          <div class="ui-settings-vehicles-head">
+            <p class="ui-settings-title">{t(i18n, 'vehiclesSectionTitle', 'Vehicles')}</p>
+            <span class="material-icons-outlined ui-settings-plus" aria-hidden="true">
+              add
             </span>
           </div>
-        ) : (
-          <p class="ui-settings-subtitle">{t(i18n, 'noVehiclesMessage', 'No vehicles found.')}</p>
-        )}
+          {firstVehicle ? (
+            <div class="ui-settings-vehicle-row">
+              <div>
+                <p class="ui-settings-vehicle-name">{firstVehicle.name}</p>
+                <p class="ui-settings-vehicle-type">{firstVehicle.type}</p>
+              </div>
+              <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
+                chevron_right
+              </span>
+            </div>
+          ) : (
+            <p class="ui-settings-subtitle ui-settings-vehicles-empty">
+              {t(i18n, 'noVehiclesMessage', 'No vehicles found.')}
+            </p>
+          )}
+        </Link>
       </section>
 
       <section class="ui-settings-card">

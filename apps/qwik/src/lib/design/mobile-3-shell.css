@@ -72,6 +72,10 @@
 
 .ui-mobile-header {
   padding: calc(16px + env(safe-area-inset-top)) 24px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .ui-mobile-title {
@@ -81,6 +85,24 @@
   font-weight: 400;
   line-height: 1.27;
   letter-spacing: 0;
+}
+
+.ui-mobile-header-action {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--pl-color-text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.ui-mobile-header-action:focus-visible {
+  outline: 2px solid rgba(139, 92, 246, 0.42);
+  outline-offset: 1px;
 }
 
 .ui-mobile-content {

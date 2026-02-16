@@ -57,7 +57,12 @@ export const AppShell = component$(() => {
   const location = useLocation();
   const nextTransitionIsPop = useSignal(false);
   const transitionClass = useSignal<'is-push' | 'is-pop'>('is-push');
-  const activeTabIndex = resolveActiveTabIndex(location.url.pathname);
+  const pathname = location.url.pathname;
+  const normalizedPath =
+    pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
+  const showHelpTicketsAction =
+    normalizedPath === '/app/help' || normalizedPath === '/next/app/help';
+  const activeTabIndex = resolveActiveTabIndex(pathname);
   const activeTab = navItems[activeTabIndex];
 
   useVisibleTask$(({ cleanup }) => {
@@ -109,6 +114,17 @@ export const AppShell = component$(() => {
       <main class="ui-mobile-page">
         <header class="ui-mobile-header">
           <h1 class="ui-mobile-title">{t(i18n, activeTab.labelKey, activeTab.fallback)}</h1>
+          {showHelpTicketsAction ? (
+            <Link
+              class="ui-mobile-header-action"
+              href="/next/app/help/tickets"
+              aria-label={t(i18n, 'helpViewTicketsButton', 'View tickets')}
+            >
+              <span class="material-icons-outlined" aria-hidden="true">
+                list_alt
+              </span>
+            </Link>
+          ) : null}
         </header>
 
         <section

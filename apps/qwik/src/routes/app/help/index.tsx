@@ -1,5 +1,4 @@
 import { component$, useSignal } from '@builder.io/qwik';
-import { Link } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import { createHelpTicket } from '../../../lib/features/help/help-service';
@@ -18,18 +17,6 @@ export default component$(() => {
 
   return (
     <div class="ui-help-root">
-      <div class="ui-help-toolbar">
-        <Link
-          class="ui-help-toolbar-btn"
-          href="/next/app/help/tickets"
-          aria-label={t(i18n, 'helpViewTicketsButton', 'View tickets')}
-        >
-          <span class="material-icons-outlined" aria-hidden="true">
-            list_alt
-          </span>
-        </Link>
-      </div>
-
       <section class="ui-help-card">
         <h2 class="ui-help-card-title">{t(i18n, 'helpIntroTitle', 'Get help quickly')}</h2>
         <div class="ui-help-intro-row">
