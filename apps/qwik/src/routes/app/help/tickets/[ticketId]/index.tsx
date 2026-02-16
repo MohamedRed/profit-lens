@@ -36,7 +36,11 @@ const readTicketIdFromLocation = (path: string, search: string): string | null =
   if (!match) {
     return null;
   }
-  return decodeTicketId(match[1]);
+  const fromPath = decodeTicketId(match[1]);
+  if (!fromPath || fromPath === 'details') {
+    return null;
+  }
+  return fromPath;
 };
 
 export default component$(() => {
@@ -61,7 +65,8 @@ export default component$(() => {
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
     const path = track(() => location.url.pathname);
-    const search = track(() => location.url.search);
+    const search =
+      typeof window === 'undefined' ? track(() => location.url.search) : window.location.search;
     const ticketId = readTicketIdFromLocation(path, search);
 
     if (!user || !ticketId) {
