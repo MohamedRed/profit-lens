@@ -79,11 +79,6 @@ export const shouldEnforcePwaInstallGate = (browser: PwaWindowLike | undefined):
     return true;
   }
 
-  const coarsePointer = browser.matchMedia?.('(pointer: coarse)').matches ?? false;
-  if (coarsePointer) {
-    return true;
-  }
-
   return false;
 };
 

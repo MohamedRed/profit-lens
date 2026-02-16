@@ -99,6 +99,20 @@ describe('pwa-install-state', () => {
     ).toBe(false);
   });
 
+  it('does not enforce install gate on desktop with coarse pointer only', () => {
+    expect(
+      shouldEnforcePwaInstallGate({
+        navigator: {
+          userAgent:
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
+          platform: 'Win32',
+          maxTouchPoints: 1,
+        },
+        matchMedia: (query: string) => ({ matches: query === '(pointer: coarse)' }),
+      }),
+    ).toBe(false);
+  });
+
   it('enforces install gate for iPadOS desktop mode', () => {
     expect(
       shouldEnforcePwaInstallGate({
