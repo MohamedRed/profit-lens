@@ -65,13 +65,19 @@
   position: relative;
 }
 
+.ui-offer-target-input-wrap .ui-input {
+  padding-right: 2.45rem;
+  font-variant-numeric: tabular-nums;
+}
+
 .ui-offer-target-suffix {
   position: absolute;
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--pl-color-text-secondary);
-  font-size: 0.86rem;
+  color: var(--pl-color-text-subtle);
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 .ui-offer-target-hint {

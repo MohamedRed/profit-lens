@@ -49,10 +49,10 @@
 
 .ui-label {
   font-family: var(--pl-font-body);
-  font-size: 0.95rem;
-  font-weight: 400;
+  font-size: 0.98rem;
+  font-weight: 500;
   letter-spacing: -0.01em;
-  color: var(--pl-color-text-primary);
+  color: var(--pl-color-text-subtle);
 }
 
 .ui-input,
@@ -62,9 +62,12 @@
   min-height: var(--pl-size-control-height);
   border: 1px solid var(--pl-color-outline);
   border-radius: var(--pl-radius-lg);
-  background: var(--pl-color-surface);
+  background: var(--pl-color-overlay);
   color: var(--pl-color-text-primary);
-  padding: 0.65rem 1rem;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.2;
   outline: none;
   transition:
     border-color 120ms ease,
@@ -86,7 +89,7 @@
 }
 
 .ui-select-icon {
-  color: var(--pl-color-text-secondary);
+  color: var(--pl-color-text-subtle);
   font-size: 20px;
   line-height: 1;
 }
@@ -100,7 +103,7 @@
 }
 
 .ui-select-placeholder {
-  color: var(--pl-color-text-tertiary);
+  color: var(--pl-color-text-secondary);
 }
 
 .ui-select-popover {
@@ -178,7 +181,8 @@
 }
 
 .ui-input::placeholder {
-  color: var(--pl-color-text-tertiary);
+  color: var(--pl-color-text-secondary);
+  font-weight: 400;
 }
 
 .ui-textarea {
