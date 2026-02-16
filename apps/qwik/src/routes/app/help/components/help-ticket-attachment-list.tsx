@@ -62,9 +62,9 @@ export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps
                 <p class="ui-help-attachment-name">
                   {attachment.type === 'audio'
                     ? t(i18n, 'helpAudioAttachmentLabel', 'Voice note')
-                    : attachment.filename}
+                    : t(i18n, 'helpImageAttachmentLabel', 'Screenshot')}
                 </p>
-                <p class="ui-help-attachment-kind">{attachment.type === 'audio' ? 'Audio' : 'Image'}</p>
+                {attachment.type === 'audio' ? <p class="ui-help-attachment-kind">Audio</p> : null}
               </div>
             </a>
           </li>
