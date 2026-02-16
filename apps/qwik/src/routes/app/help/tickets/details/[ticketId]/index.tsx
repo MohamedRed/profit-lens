@@ -1,1 +1,1 @@
-export { default } from '../../[ticketId]/index';
+export { default } from '../index';
