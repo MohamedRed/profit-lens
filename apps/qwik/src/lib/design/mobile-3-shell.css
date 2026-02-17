@@ -131,6 +131,8 @@
 
 .ui-mobile-content-transition.is-push {
   animation-name: ui-route-push;
+  animation-duration: 320ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ui-mobile-content-transition.is-pop {
@@ -139,6 +141,8 @@
 
 .ui-mobile-content-transition.is-push-deep {
   animation-name: ui-route-push-deep;
+  animation-duration: 360ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ui-mobile-tab-shell {
@@ -318,7 +322,7 @@
 @keyframes ui-route-push {
   from {
     opacity: 0;
-    transform: translate3d(14px, 0, 0);
+    transform: translate3d(12px, 0, 0);
   }
   to {
     opacity: 1;
@@ -329,7 +333,7 @@
 @keyframes ui-route-push-deep {
   from {
     opacity: 0;
-    transform: translate3d(30px, 0, 0);
+    transform: translate3d(24px, 0, 0);
   }
   to {
     opacity: 1;
