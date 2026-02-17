@@ -1,0 +1,198 @@
+import { $, Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { useAuth } from '../../lib/auth/auth-context';
+import { getDeviceId } from '../../lib/config/device-id';
+import { signOutCurrentUser } from '../../lib/firebase/auth';
+import {
+  normalizeCallableErrorCode,
+  parseActiveDevicesFromDetails,
+  resolveDeviceRegistrationErrorMessage,
+  type ActiveDeviceSnapshot,
+} from '../../lib/features/devices/device-registration-error';
+import { registerDevice } from '../../lib/features/devices/devices-service';
+import { t, useI18n } from '../../lib/i18n/i18n-context';
+
+type DeviceGateState = 'loading' | 'ready' | 'limit' | 'error';
+
+const formatLastSeen = (locale: string, value: Date | null): string | null => {
+  if (!value) {
+    return null;
+  }
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(value);
+};
+
+export const DeviceAccessGuard = component$(() => {
+  const auth = useAuth();
+  const i18n = useI18n();
+  const gateState = useSignal<DeviceGateState>('loading');
+  const blockedDevices = useSignal<ActiveDeviceSnapshot[]>([]);
+  const currentDeviceId = useSignal('');
+  const errorMessage = useSignal('');
+  const replacingDeviceId = useSignal('');
+  const registrationSeq = useSignal(0);
+
+  const registerCurrentDevice$ = $(async (replaceDeviceId?: string) => {
+    const user = auth.user.value;
+    if (!user) {
+      return;
+    }
+
+    const seq = registrationSeq.value + 1;
+    registrationSeq.value = seq;
+    gateState.value = 'loading';
+    errorMessage.value = '';
+    replacingDeviceId.value = replaceDeviceId ?? '';
+
+    try {
+      const deviceId = getDeviceId();
+      currentDeviceId.value = deviceId;
+      await registerDevice({
+        deviceId,
+        platform: 'web',
+        userAgent: navigator.userAgent ?? '',
+        replaceDeviceId,
+      });
+
+      if (registrationSeq.value !== seq) {
+        return;
+      }
+      blockedDevices.value = [];
+      gateState.value = 'ready';
+    } catch (error) {
+      if (registrationSeq.value !== seq) {
+        return;
+      }
+      const code = normalizeCallableErrorCode(error);
+      if (code === 'resource-exhausted') {
+        blockedDevices.value = parseActiveDevicesFromDetails(
+          (error as { details?: unknown }).details,
+        );
+        gateState.value = 'limit';
+        return;
+      }
+      errorMessage.value = resolveDeviceRegistrationErrorMessage(error);
+      gateState.value = 'error';
+    } finally {
+      if (registrationSeq.value === seq) {
+        replacingDeviceId.value = '';
+      }
+    }
+  });
+
+  useVisibleTask$(({ track }) => {
+    const ready = track(() => auth.ready.value);
+    const uid = track(() => auth.user.value?.uid);
+    if (!ready || !uid) {
+      return;
+    }
+    void registerCurrentDevice$();
+  });
+
+  if (gateState.value === 'ready') {
+    return <Slot />;
+  }
+
+  if (gateState.value === 'loading') {
+    return (
+      <div class="ui-settings-detail-root">
+        <section class="ui-settings-detail-card ui-device-gate-card">
+          <div class="ui-spinner" aria-hidden="true" />
+          <p class="ui-settings-detail-subtitle">{t(i18n, 'loadingLabel', 'Loading...')}</p>
+        </section>
+      </div>
+    );
+  }
+
+  if (gateState.value === 'limit') {
+    return (
+      <div class="ui-settings-detail-root">
+        <section class="ui-settings-detail-card">
+          <h2 class="ui-settings-detail-title">{t(i18n, 'deviceLimitTitle', 'Device limit reached')}</h2>
+          <p class="ui-settings-detail-subtitle">
+            {t(
+              i18n,
+              'deviceLimitSubtitle',
+              'Your plan allows 1 active device. Replace one to continue.',
+            )}
+          </p>
+          <ul class="ui-settings-device-list">
+            {blockedDevices.value.map((device) => {
+              const isCurrent = device.deviceId === currentDeviceId.value;
+              const lastSeen = formatLastSeen(i18n.locale.value, device.lastSeen);
+              return (
+                <li key={device.deviceId} class="ui-settings-device-item">
+                  <div class="ui-settings-row">
+                    <p class="ui-settings-row-title">
+                      {device.platform || t(i18n, 'deviceUnknownLabel', 'Unknown device')}
+                    </p>
+                    {isCurrent ? (
+                      <span class="ui-settings-row-subtitle">
+                        {t(i18n, 'deviceCurrentLabel', 'Current')}
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        class="ui-settings-link-button"
+                        disabled={replacingDeviceId.value === device.deviceId}
+                        onClick$={() => registerCurrentDevice$(device.deviceId)}
+                      >
+                        {replacingDeviceId.value === device.deviceId
+                          ? t(i18n, 'loadingLabel', 'Loading...')
+                          : t(i18n, 'deviceReplaceAction', 'Replace')}
+                      </button>
+                    )}
+                  </div>
+                  {lastSeen ? (
+                    <p class="ui-settings-row-subtitle">
+                      {t(i18n, 'deviceLastSeenPrefix', 'Last seen')} {lastSeen}
+                    </p>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
+          <button
+            type="button"
+            class="ui-button ui-button-secondary ui-button-md"
+            onClick$={() => {
+              void signOutCurrentUser();
+            }}
+          >
+            {t(i18n, 'signOutButton', 'Sign out')}
+          </button>
+        </section>
+      </div>
+    );
+  }
+
+  return (
+    <div class="ui-settings-detail-root">
+      <section class="ui-settings-detail-card">
+        <h2 class="ui-settings-detail-title">
+          {t(i18n, 'deviceRegisterFailedTitle', 'Unable to register device')}
+        </h2>
+        <p class="ui-status ui-status-error">{errorMessage.value}</p>
+        <div class="ui-settings-actions">
+          <button
+            type="button"
+            class="ui-settings-action-button"
+            onClick$={() => registerCurrentDevice$()}
+          >
+            {t(i18n, 'retryButtonLabel', 'Retry')}
+          </button>
+          <button
+            type="button"
+            class="ui-settings-action-button"
+            onClick$={() => {
+              void signOutCurrentUser();
+            }}
+          >
+            {t(i18n, 'signOutButton', 'Sign out')}
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+});

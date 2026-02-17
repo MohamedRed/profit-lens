@@ -1,5 +1,6 @@
 import { useVisibleTask$, type Signal } from '@builder.io/qwik';
 import type { AuthStore } from '../../../lib/auth/auth-context';
+import { getDeviceId } from '../../../lib/config/device-id';
 import { watchEntitlement, watchUsage } from '../../../lib/features/billing/billing-service';
 import { watchDevices } from '../../../lib/features/devices/devices-service';
 import { watchUserProfile } from '../../../lib/features/profile/profile-service';
@@ -67,7 +68,7 @@ export const useSettingsTabSession = (params: UseSettingsTabSessionParams): void
     });
     const unsubscribeDevices = watchDevices(user.uid, (items) => {
       devices.value = items;
-    });
+    }, getDeviceId());
 
     cleanup(() => {
       unsubscribeProfile();

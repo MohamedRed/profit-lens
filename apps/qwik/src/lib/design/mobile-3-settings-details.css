@@ -12,6 +12,12 @@
   gap: 12px;
 }
 
+.ui-device-gate-card {
+  justify-items: center;
+  text-align: center;
+  padding-block: 24px;
+}
+
 .ui-settings-detail-title {
   margin: 0;
   font-family: var(--pl-font-display);

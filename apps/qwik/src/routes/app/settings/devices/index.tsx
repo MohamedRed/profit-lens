@@ -1,5 +1,6 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useAuth } from '../../../../lib/auth/auth-context';
+import { getDeviceId } from '../../../../lib/config/device-id';
 import { revokeDevice, watchDevices } from '../../../../lib/features/devices/devices-service';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { DeviceEntry } from '../../../../lib/types/device';
@@ -35,7 +36,7 @@ export default component$(() => {
     const unsubscribe = watchDevices(user.uid, (items) => {
       devices.value = items;
       loading.value = false;
-    });
+    }, getDeviceId());
     cleanup(() => {
       unsubscribe();
     });
