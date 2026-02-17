@@ -3,6 +3,10 @@
   gap: 12px;
 }
 
+.ui-device-limit-root {
+  padding-block: 8px 18px;
+}
+
 .ui-settings-detail-card {
   border: 1px solid var(--pl-color-outline);
   border-radius: var(--pl-radius-xl);
@@ -16,6 +20,10 @@
   justify-items: center;
   text-align: center;
   padding-block: 24px;
+}
+
+.ui-device-limit-card {
+  padding: 20px 18px;
 }
 
 .ui-settings-detail-title {

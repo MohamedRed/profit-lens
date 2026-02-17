@@ -127,8 +127,8 @@ export const DeviceAccessGuard = component$(() => {
 
   if (gateState.value === 'limit') {
     return (
-      <div class="ui-settings-detail-root">
-        <section class="ui-settings-detail-card">
+      <div class="ui-settings-detail-root ui-device-limit-root">
+        <section class="ui-settings-detail-card ui-device-limit-card">
           <h2 class="ui-settings-detail-title">{t(i18n, 'deviceLimitTitle', 'Device limit reached')}</h2>
           <p class="ui-settings-detail-subtitle">
             {t(
