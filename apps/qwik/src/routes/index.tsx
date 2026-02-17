@@ -54,8 +54,8 @@ export default component$(() => {
   });
 
   return (
-    <div class="ui-page">
-      <div class="ui-card ui-stack" style="justify-items:center;">
+    <div class="ui-gate-viewport">
+      <div class="ui-card ui-stack ui-gate-loading-card">
         <div class="ui-spinner" />
         <div class="ui-status">Loading...</div>
       </div>

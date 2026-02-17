@@ -96,8 +96,8 @@ export const DeviceAccessGuard = component$(() => {
 
   if (gateState.value === 'loading') {
     return (
-      <div class="ui-settings-detail-root">
-        <section class="ui-settings-detail-card ui-device-gate-card">
+      <div class="ui-gate-viewport">
+        <section class="ui-settings-detail-card ui-device-gate-card ui-gate-loading-card">
           <div class="ui-spinner" aria-hidden="true" />
           <p class="ui-settings-detail-subtitle">{t(i18n, 'loadingLabel', 'Loading...')}</p>
         </section>
