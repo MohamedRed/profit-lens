@@ -136,21 +136,6 @@ export default component$(() => {
       </section>
 
       <section class="ui-settings-card">
-        <Link class="ui-settings-tile" href="/next/app/settings/native-poc">
-          <span class="material-icons-outlined ui-settings-leading" aria-hidden="true">
-            smartphone
-          </span>
-          <div class="ui-settings-tile-content">
-            <p class="ui-settings-title">Native UI POC</p>
-            <p class="ui-settings-subtitle">Framework7 interaction demo inside Qwik</p>
-          </div>
-          <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
-            chevron_right
-          </span>
-        </Link>
-      </section>
-
-      <section class="ui-settings-card">
         <div class="ui-settings-tile">
           <span class="material-icons-outlined ui-settings-leading" aria-hidden="true">
             payment
