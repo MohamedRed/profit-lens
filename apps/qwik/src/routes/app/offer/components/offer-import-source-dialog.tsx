@@ -1,16 +1,27 @@
-import { component$, type QRL, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { $, component$, type QRL, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 
 interface OfferImportSourceDialogProps {
   isOpen: boolean;
   onClose$: QRL<() => void>;
-  onSelectCamera$: QRL<() => void>;
-  onSelectGallery$: QRL<() => void>;
+  onSelectFile$: QRL<(file: File) => Promise<void>>;
 }
 
 export const OfferImportSourceDialog = component$<OfferImportSourceDialogProps>((props) => {
   const i18n = useI18n();
   const dialogRef = useSignal<HTMLDialogElement>();
+  const onFileChange$ = $(async (element: HTMLInputElement) => {
+    const file = element.files?.[0];
+    if (!file) {
+      return;
+    }
+    try {
+      props.onClose$();
+      await props.onSelectFile$(file);
+    } finally {
+      element.value = '';
+    }
+  });
 
   useVisibleTask$(({ track }) => {
     const open = track(() => props.isOpen);
@@ -48,7 +59,7 @@ export const OfferImportSourceDialog = component$<OfferImportSourceDialogProps>(
     >
       <div class="ui-offer-source-panel">
         <h3 class="ui-offer-source-title">{t(i18n, 'importSourceTitle', 'Choose a source')}</h3>
-        <button type="button" class="ui-offer-source-item" onClick$={props.onSelectGallery$}>
+        <label class="ui-offer-source-item">
           <span class="material-icons-outlined ui-offer-source-icon" aria-hidden="true">
             photo_library
           </span>
@@ -56,8 +67,16 @@ export const OfferImportSourceDialog = component$<OfferImportSourceDialogProps>(
           <span class="material-icons-outlined ui-offer-source-chevron" aria-hidden="true">
             chevron_right
           </span>
-        </button>
-        <button type="button" class="ui-offer-source-item" onClick$={props.onSelectCamera$}>
+          <input
+            type="file"
+            accept="image/*"
+            style="display:none"
+            onChange$={(_, element) => {
+              void onFileChange$(element);
+            }}
+          />
+        </label>
+        <label class="ui-offer-source-item">
           <span class="material-icons-outlined ui-offer-source-icon" aria-hidden="true">
             photo_camera
           </span>
@@ -65,7 +84,16 @@ export const OfferImportSourceDialog = component$<OfferImportSourceDialogProps>(
           <span class="material-icons-outlined ui-offer-source-chevron" aria-hidden="true">
             chevron_right
           </span>
-        </button>
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            style="display:none"
+            onChange$={(_, element) => {
+              void onFileChange$(element);
+            }}
+          />
+        </label>
       </div>
     </dialog>
   );

@@ -48,8 +48,6 @@ const isSuccessStatus = (value: string): boolean => {
 
 export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
-  const galleryInputRef = useSignal<HTMLInputElement>();
-  const cameraInputRef = useSignal<HTMLInputElement>();
   const sourceDialogOpen = useSignal(false);
   const useDirectGalleryImport = useSignal(false);
 
@@ -61,37 +59,15 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     sourceDialogOpen.value = false;
   });
 
-  const openGalleryPicker$ = $(() => {
-    sourceDialogOpen.value = false;
-    galleryInputRef.value?.click();
-  });
-
-  const openCameraPicker$ = $(() => {
-    sourceDialogOpen.value = false;
-    cameraInputRef.value?.click();
-  });
-
   const handleImportButtonClick$ = $(() => {
     if (props.loading.value || !props.vehicles.value.length) {
-      return;
-    }
-    if (useDirectGalleryImport.value) {
-      galleryInputRef.value?.click();
       return;
     }
     sourceDialogOpen.value = true;
   });
 
-  const onFileSelected$ = $(async (element: HTMLInputElement) => {
-    const file = element.files?.[0];
-    if (!file) {
-      return;
-    }
-    try {
-      await props.onImportScreenshotFile$(file);
-    } finally {
-      element.value = '';
-    }
+  const onFileSelected$ = $(async (file: File) => {
+    await props.onImportScreenshotFile$(file);
   });
 
   const showOverview = !props.loading.value && props.analysisRecord.value !== null;
@@ -193,47 +169,59 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             />
           ) : null}
 
-          <input
-            ref={galleryInputRef}
-            type="file"
-            accept="image/*"
-            style="display:none"
-            onChange$={(_, element) => {
-              void onFileSelected$(element);
-            }}
-          />
-          <input
-            ref={cameraInputRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            style="display:none"
-            onChange$={(_, element) => {
-              void onFileSelected$(element);
-            }}
-          />
-
-          <Button
-            variant="default"
-            size="lg"
-            class="ui-offer-primary-cta"
-            disabled={props.loading.value || !hasVehicles}
-            onClick$={handleImportButtonClick$}
-          >
-            {props.loading.value
-              ? t(i18n, 'loadingLabel', 'Loading...')
-              : t(i18n, 'importScreenshotButton', 'Import screenshot')}
-          </Button>
+          {useDirectGalleryImport.value ? (
+            <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
+              {props.loading.value
+                ? t(i18n, 'loadingLabel', 'Loading...')
+                : t(i18n, 'importScreenshotButton', 'Import screenshot')}
+              <input
+                type="file"
+                accept="image/*"
+                style="display:none"
+                disabled={props.loading.value || !hasVehicles}
+                onChange$={(_, element) => {
+                  const file = element.files?.[0];
+                  if (!file) {
+                    return;
+                  }
+                  void onFileSelected$(file);
+                  element.value = '';
+                }}
+              />
+            </label>
+          ) : (
+            <Button
+              variant="default"
+              size="lg"
+              class="ui-offer-primary-cta"
+              disabled={props.loading.value || !hasVehicles}
+              onClick$={handleImportButtonClick$}
+            >
+              {props.loading.value
+                ? t(i18n, 'loadingLabel', 'Loading...')
+                : t(i18n, 'importScreenshotButton', 'Import screenshot')}
+            </Button>
+          )}
 
           {enableCaptureCta ? (
-            <Button
-              variant="secondary"
-              size="lg"
-              disabled={props.loading.value || !hasVehicles}
-              onClick$={openCameraPicker$}
-            >
+            <label class="ui-button ui-button-secondary ui-button-lg ui-offer-file-trigger">
               {t(i18n, 'captureScreenshotButton', 'Capture screenshot')}
-            </Button>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                style="display:none"
+                disabled={props.loading.value || !hasVehicles}
+                onChange$={(_, element) => {
+                  const file = element.files?.[0];
+                  if (!file) {
+                    return;
+                  }
+                  void onFileSelected$(file);
+                  element.value = '';
+                }}
+              />
+            </label>
           ) : null}
 
           {showManualEntryCta ? (
@@ -273,8 +261,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
           <OfferImportSourceDialog
             isOpen={sourceDialogOpen.value}
             onClose$={closeSourceDialog$}
-            onSelectCamera$={openCameraPicker$}
-            onSelectGallery$={openGalleryPicker$}
+            onSelectFile$={onFileSelected$}
           />
         </>
       )}
