@@ -3,9 +3,14 @@ import { useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
+import type { OfferRecord } from '../../../lib/types/offer';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
+import {
+  saveSelectedHistoryOfferId,
+  upsertHistoryOfferCache,
+} from '../history/history-offer-cache';
 import {
   analyzeManualOfferAction,
   analyzeScreenshotOfferAction,
@@ -26,6 +31,29 @@ const loadOffersService = () => {
     offersServicePromise = import('../../../lib/features/offers/offers-service');
   }
   return offersServicePromise;
+};
+
+const toOfferRecord = (record: OfferAnalysisRecord): OfferRecord => {
+  const parsedCreatedAt = new Date(record.createdAt);
+  const createdAt = Number.isNaN(parsedCreatedAt.getTime()) ? null : parsedCreatedAt;
+  const routeVerification = record.offer.routeVerification;
+
+  return {
+    id: record.id,
+    source: record.source,
+    createdAt,
+    payoutEuro: record.offer.payoutEuro,
+    distanceKm: routeVerification?.distanceKm ?? record.offer.distanceKm ?? 0,
+    durationMinutes: record.offer.durationMinutes ?? undefined,
+    routeVerifiedDistanceKm: routeVerification?.distanceKm,
+    routeVerifiedDurationMinutes: routeVerification?.durationMinutes,
+    pickupName: record.offer.pickupName ?? undefined,
+    pickupAddress: record.offer.pickupAddress ?? undefined,
+    dropoffName: record.offer.dropoffName ?? undefined,
+    dropoffAddress: record.offer.dropoffAddress ?? undefined,
+    netProfitEuro: record.breakdown.netProfit,
+    totalCostsEuro: record.breakdown.totalCosts,
+  };
 };
 
 export default component$(() => {
@@ -197,6 +225,8 @@ export default component$(() => {
     if (!record?.id) {
       return;
     }
+    saveSelectedHistoryOfferId(record.id);
+    upsertHistoryOfferCache(toOfferRecord(record));
     await navigate(`/next/app/history/details/?offerId=${encodeURIComponent(record.id)}`);
   });
 
