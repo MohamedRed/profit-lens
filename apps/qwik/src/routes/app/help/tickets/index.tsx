@@ -48,7 +48,7 @@ export default component$(() => {
 
   return (
     <div class="ui-help-detail-root">
-      <section class="ui-help-card">
+      <section class="ui-help-card ui-help-ticket-list-section">
         <h2 class="ui-help-card-title">{t(i18n, 'helpTicketsTitle', 'Tickets')}</h2>
         {loadError.value ? <p class="ui-help-ticket-empty ui-status-error">{loadError.value}</p> : null}
         <ul class="ui-help-ticket-list">
