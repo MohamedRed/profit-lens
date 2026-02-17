@@ -9,7 +9,7 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get appTitle => 'Liive Lens';
+  String get appTitle => 'Liive Profit';
 
   @override
   String get offerDetailsSection => 'Détails de l\'offre';
@@ -469,7 +469,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get installAppTitle => 'Installer l\'application';
 
   @override
-  String get installAppSubtitle => 'Ajouter Liive Lens à l\'écran d\'accueil';
+  String get installAppSubtitle => 'Ajouter Liive Profit à l\'écran d\'accueil';
 
   @override
   String get installAppCta => 'Installer';
@@ -479,11 +479,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get installAppRequiredBody =>
-      'Pour continuer, installez Liive Lens puis ouvrez-le depuis votre écran d’accueil. Le guide d’installation s’ouvre automatiquement.';
+      'Pour continuer, installez Liive Profit puis ouvrez-le depuis votre écran d’accueil. Le guide d’installation s’ouvre automatiquement.';
 
   @override
   String get installAppRequiredNativeBody =>
-      'Pour continuer, installez Liive Lens puis ouvrez-le depuis votre écran d’accueil. Appuyez sur Installer pour ouvrir l’invite du navigateur.';
+      'Pour continuer, installez Liive Profit puis ouvrez-le depuis votre écran d’accueil. Appuyez sur Installer pour ouvrir l’invite du navigateur.';
 
   @override
   String get installAppLoadFailed =>

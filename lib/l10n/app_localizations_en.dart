@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Liive Lens';
+  String get appTitle => 'Liive Profit';
 
   @override
   String get offerDetailsSection => 'Offer details';
@@ -466,7 +466,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get installAppTitle => 'Install app';
 
   @override
-  String get installAppSubtitle => 'Add Liive Lens to your home screen';
+  String get installAppSubtitle => 'Add Liive Profit to your home screen';
 
   @override
   String get installAppCta => 'Install';
@@ -476,11 +476,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get installAppRequiredBody =>
-      'To continue, install Liive Lens and open it from your home screen. We show the install guide automatically.';
+      'To continue, install Liive Profit and open it from your home screen. We show the install guide automatically.';
 
   @override
   String get installAppRequiredNativeBody =>
-      'To continue, install Liive Lens and open it from your home screen. Tap Install to open the browser prompt.';
+      'To continue, install Liive Profit and open it from your home screen. Tap Install to open the browser prompt.';
 
   @override
   String get installAppLoadFailed => 'Failed to load install dialog.';

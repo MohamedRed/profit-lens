@@ -23,7 +23,7 @@ export default component$(() => {
       <div class="ui-page">
         <Card class="ui-stack">
           <CardHeader>
-            <Badge>Liive Lens</Badge>
+            <Badge>Liive Profit</Badge>
             <CardTitle>{t(i18n, 'registerTitle', 'Create account')}</CardTitle>
           </CardHeader>
 

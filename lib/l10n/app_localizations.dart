@@ -102,7 +102,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Liive Lens'**
+  /// **'Liive Profit'**
   String get appTitle;
 
   /// No description provided for @offerDetailsSection.
@@ -966,7 +966,7 @@ abstract class AppLocalizations {
   /// No description provided for @installAppSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Add Liive Lens to your home screen'**
+  /// **'Add Liive Profit to your home screen'**
   String get installAppSubtitle;
 
   /// No description provided for @installAppCta.
@@ -984,13 +984,13 @@ abstract class AppLocalizations {
   /// No description provided for @installAppRequiredBody.
   ///
   /// In en, this message translates to:
-  /// **'To continue, install Liive Lens and open it from your home screen. We show the install guide automatically.'**
+  /// **'To continue, install Liive Profit and open it from your home screen. We show the install guide automatically.'**
   String get installAppRequiredBody;
 
   /// No description provided for @installAppRequiredNativeBody.
   ///
   /// In en, this message translates to:
-  /// **'To continue, install Liive Lens and open it from your home screen. Tap Install to open the browser prompt.'**
+  /// **'To continue, install Liive Profit and open it from your home screen. Tap Install to open the browser prompt.'**
   String get installAppRequiredNativeBody;
 
   /// No description provided for @installAppLoadFailed.

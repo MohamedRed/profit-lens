@@ -1,11 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
-  "name": "Liive Lens",
-  "short_name": "Liive Lens",
+  "name": "Liive Profit",
+  "short_name": "Liive Profit",
   "start_url": "/next/",
   "scope": "/next/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
-  "description": "Liive Lens Qwik parallel web app."
+  "description": "Liive Profit Qwik parallel web app."
 }

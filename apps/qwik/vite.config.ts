@@ -25,8 +25,8 @@ export default defineConfig(({ mode }): UserConfig => {
           navigateFallbackDenylist: [/^\/app\//, /^\/$/, /^\/index\.html$/],
         },
         manifest: {
-          name: 'Liive Lens',
-          short_name: 'Liive Lens',
+          name: 'Liive Profit',
+          short_name: 'Liive Profit',
           start_url: '/next/',
           scope: '/next/',
           display: 'standalone',

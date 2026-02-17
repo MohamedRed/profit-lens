@@ -3,7 +3,7 @@
 
   var MESSAGES = {
     en: {
-      badge: 'Liive Lens',
+      badge: 'Liive Profit',
       title: 'Open the fastest path',
       emailLabel: 'Email',
       emailPlaceholder: 'you@example.com',
@@ -35,7 +35,7 @@
       installHelpDefault: 'Install prompt unavailable. You can still sign in now.',
     },
     fr: {
-      badge: 'Liive Lens',
+      badge: 'Liive Profit',
       title: 'Ouvrez le chemin le plus rapide',
       emailLabel: 'E-mail',
       emailPlaceholder: 'vous@exemple.com',
@@ -67,7 +67,7 @@
       installHelpDefault: 'Invite d\'installation indisponible. Vous pouvez toujours vous connecter.',
     },
     ar: {
-      badge: 'Liive Lens',
+      badge: 'Liive Profit',
       title: 'افتح المسار الأسرع',
       emailLabel: 'البريد الإلكتروني',
       emailPlaceholder: 'you@example.com',
