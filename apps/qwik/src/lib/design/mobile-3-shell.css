@@ -208,15 +208,16 @@
 }
 
 .ui-mobile-tab-indicator {
-  --ui-mobile-tab-indicator-size: clamp(56px, 16vw, 64px);
+  --ui-mobile-tab-indicator-width: clamp(66px, 20vw, 78px);
+  --ui-mobile-tab-indicator-height: clamp(52px, 15vw, 60px);
   position: absolute;
   top: 50%;
   left: calc(
-    (100% / 8) - (var(--ui-mobile-tab-indicator-size) / 2) + (var(--ui-mobile-active-tab-index, 0) * 25%)
+    (100% / 8) - (var(--ui-mobile-tab-indicator-width) / 2) + (var(--ui-mobile-active-tab-index, 0) * 25%)
   );
-  width: var(--ui-mobile-tab-indicator-size);
-  height: var(--ui-mobile-tab-indicator-size);
-  border-radius: 50%;
+  width: var(--ui-mobile-tab-indicator-width);
+  height: var(--ui-mobile-tab-indicator-height);
+  border-radius: 18px;
   background: rgba(139, 92, 246, 0.12);
   transform: translateY(-50%);
   transition: left 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
