@@ -68,9 +68,9 @@ export const OfferImportSourceDialog = component$<OfferImportSourceDialogProps>(
             chevron_right
           </span>
           <input
+            class="ui-offer-source-file-input"
             type="file"
             accept="image/*"
-            style="display:none"
             onChange$={(_, element) => {
               void onFileChange$(element);
             }}
@@ -85,10 +85,10 @@ export const OfferImportSourceDialog = component$<OfferImportSourceDialogProps>(
             chevron_right
           </span>
           <input
+            class="ui-offer-source-file-input"
             type="file"
             accept="image/*"
             capture="environment"
-            style="display:none"
             onChange$={(_, element) => {
               void onFileChange$(element);
             }}
