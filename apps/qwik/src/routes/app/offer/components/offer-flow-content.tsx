@@ -70,6 +70,15 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     await props.onImportScreenshotFile$(file);
   });
 
+  const onFileInputEvent$ = $(async (element: HTMLInputElement) => {
+    const file = element.files?.[0];
+    if (!file) {
+      return;
+    }
+    void onFileSelected$(file);
+    element.value = '';
+  });
+
   const showOverview = !props.loading.value && props.analysisRecord.value !== null;
   const showDetailsSection = !showOverview && enableManualEntry && props.manualEntryRequested.value;
   const showManualEntryCta = enableManualEntry && !showOverview && !showDetailsSection;
@@ -179,13 +188,14 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 type="file"
                 accept="image/*"
                 disabled={props.loading.value || !hasVehicles}
-                onChange$={(_, element) => {
-                  const file = element.files?.[0];
-                  if (!file) {
-                    return;
-                  }
-                  void onFileSelected$(file);
+                onClick$={(_, element) => {
                   element.value = '';
+                }}
+                onInput$={(_, element) => {
+                  void onFileInputEvent$(element);
+                }}
+                onChange$={(_, element) => {
+                  void onFileInputEvent$(element);
                 }}
               />
             </label>
@@ -212,13 +222,14 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 accept="image/*"
                 capture="environment"
                 disabled={props.loading.value || !hasVehicles}
-                onChange$={(_, element) => {
-                  const file = element.files?.[0];
-                  if (!file) {
-                    return;
-                  }
-                  void onFileSelected$(file);
+                onClick$={(_, element) => {
                   element.value = '';
+                }}
+                onInput$={(_, element) => {
+                  void onFileInputEvent$(element);
+                }}
+                onChange$={(_, element) => {
+                  void onFileInputEvent$(element);
                 }}
               />
             </label>
