@@ -21,11 +21,16 @@ export default component$(() => {
   return (
     <AuthGuard requireAuth={false}>
       <div class="ui-page">
-        <Card class="ui-stack">
-          <CardHeader>
-            <Badge>Liive Profit</Badge>
-            <CardTitle>{t(i18n, 'signInTitle', 'Sign in')}</CardTitle>
-            <CardDescription>{t(i18n, 'signInSubtitle', 'Analyze offers faster.')}</CardDescription>
+        <Card class="ui-stack ui-login-card">
+          <CardHeader class="ui-login-header">
+            <div class="ui-login-brand">
+              <span class="ui-login-brand-mark" aria-hidden="true" />
+              <Badge class="ui-login-brand-badge">{t(i18n, 'appTitle', 'Liive Profit')}</Badge>
+            </div>
+            <CardTitle class="ui-login-title">{t(i18n, 'signInTitle', 'Sign in')}</CardTitle>
+            <CardDescription class="ui-login-description">
+              {t(i18n, 'signInSubtitle', 'Analyze offers faster.')}
+            </CardDescription>
           </CardHeader>
 
           <CardContent>
@@ -71,13 +76,17 @@ export default component$(() => {
               {loading.value ? t(i18n, 'loadingLabel', 'Loading...') : t(i18n, 'signInButton', 'Sign in')}
             </Button>
 
-            <div class="ui-row">
-              <Button variant="secondary" onClick$={() => navigate('/next/register')}>
+            <div class="ui-login-actions">
+              <Button
+                variant="secondary"
+                class="ui-login-create-account"
+                onClick$={() => navigate('/next/register')}
+              >
                 {t(i18n, 'createAccountButton', 'Create an account')}
+                <span class="material-icons-outlined" aria-hidden="true">
+                  arrow_forward
+                </span>
               </Button>
-              <a class="ui-button ui-button-secondary ui-button-md" href="/app?entry=login">
-                Open Flutter login
-              </a>
             </div>
 
             <div class={{ 'ui-status': true, 'ui-status-error': Boolean(status.value) }}>{status.value}</div>

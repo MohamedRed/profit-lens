@@ -1,0 +1,53 @@
+.ui-login-card {
+  gap: var(--pl-space-lg);
+}
+
+.ui-login-header {
+  gap: 10px;
+}
+
+.ui-login-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ui-login-brand-mark {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--pl-color-purple) 0%, #7c3aed 100%);
+  box-shadow: 0 0 0 5px rgba(139, 92, 246, 0.12);
+}
+
+.ui-login-brand-badge {
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+  background: rgba(139, 92, 246, 0.1);
+  color: #7c3aed;
+}
+
+.ui-login-title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.ui-login-description {
+  font-size: 1.06rem;
+  line-height: 1.45;
+  max-width: 35ch;
+}
+
+.ui-login-actions {
+  display: grid;
+  gap: var(--pl-space-sm);
+}
+
+.ui-login-create-account {
+  width: 100%;
+  justify-content: space-between;
+  padding-inline: 0.95rem;
+  font-weight: 600;
+}
