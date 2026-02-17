@@ -29,6 +29,7 @@ interface OfferFlowContentProps {
   onClearScreenshotPreview$: QRL<() => void>;
   onImportScreenshotFile$: QRL<(file: File) => Promise<void>>;
   onSaveProfitabilityTarget$: QRL<(value: string) => Promise<void>>;
+  onViewDetails$: QRL<() => void | Promise<void>>;
   payout: Signal<string>;
   pickupAddress: Signal<string>;
   pickupName: Signal<string>;
@@ -158,9 +159,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             <OfferOverviewSections
               record={props.analysisRecord.value}
               minProfitabilityEuro={props.minProfitabilityEuro.value}
-              onViewDetails$={$(() => {
-                props.manualEntryRequested.value = true;
-              })}
+              onViewDetails$={props.onViewDetails$}
             />
           ) : null}
 
@@ -257,12 +256,11 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             />
           ) : null}
 
-          {props.status.value ? (
+          {props.status.value && !isSuccessStatus(props.status.value) ? (
             <p
               class={{
                 'ui-status': true,
-                'ui-status-success': isSuccessStatus(props.status.value),
-                'ui-status-error': !isSuccessStatus(props.status.value),
+                'ui-status-error': true,
               }}
             >
               {props.status.value}

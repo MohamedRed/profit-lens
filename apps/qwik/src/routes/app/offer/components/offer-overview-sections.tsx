@@ -1,12 +1,12 @@
 import { component$, type QRL } from '@builder.io/qwik';
 import { Button } from '../../../../components/ui/button';
-import { t, useI18n } from '../../../../lib/i18n/i18n-context';
+import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { OfferAnalysisRecord } from '../offer-analysis-result';
 import { OfferSectionCard } from './offer-section-card';
 
 interface OfferOverviewSectionsProps {
   minProfitabilityEuro: number;
-  onViewDetails$: QRL<() => void>;
+  onViewDetails$: QRL<() => void | Promise<void>>;
   record: OfferAnalysisRecord;
 }
 
@@ -39,7 +39,10 @@ export const OfferOverviewSections = component$<OfferOverviewSectionsProps>((pro
       <section class={['ui-offer-decision', decisionClass]}>
         <h3 class="ui-offer-decision-title">{decisionLabel}</h3>
         <p class="ui-offer-decision-detail">
-          {decisionDetail.replace('{value}', formatCurrency(Math.abs(targetDelta)))}
+          {formatTemplate(decisionDetail, {
+            amount: formatCurrency(Math.abs(targetDelta)),
+            value: formatCurrency(Math.abs(targetDelta)),
+          })}
         </p>
         <p class="ui-offer-decision-pill">
           {t(i18n, 'minProfitabilityLabel', 'Minimum profitability')}:{' '}

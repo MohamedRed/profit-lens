@@ -1,4 +1,5 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
@@ -29,6 +30,7 @@ const loadOffersService = () => {
 
 export default component$(() => {
   const auth = useAuth();
+  const navigate = useNavigate();
   const i18n = useI18n();
 
   const payout = useSignal('');
@@ -190,6 +192,14 @@ export default component$(() => {
     screenshotPreviewUrl.value = null;
   });
 
+  const viewDetails$ = $(async () => {
+    const record = analysisRecord.value;
+    if (!record?.id) {
+      return;
+    }
+    await navigate(`/next/app/history/details/?offerId=${encodeURIComponent(record.id)}`);
+  });
+
   const user = auth.user.value;
   if (!user) {
     return null;
@@ -210,6 +220,7 @@ export default component$(() => {
       onClearScreenshotPreview$={clearScreenshotPreview$}
       onImportScreenshotFile$={importScreenshotFile$}
       onSaveProfitabilityTarget$={saveProfitabilityTarget$}
+      onViewDetails$={viewDetails$}
       payout={payout}
       pickupAddress={pickupAddress}
       pickupName={pickupName}
