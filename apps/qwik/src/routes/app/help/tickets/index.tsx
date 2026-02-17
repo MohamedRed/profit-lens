@@ -1,5 +1,9 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Link } from '@builder.io/qwik-city';
+import {
+  HelpTicketListSkeleton,
+  LoadingSkeletonAnnouncer,
+} from '../../../../components/ui/page-loading-skeleton';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { saveSelectedHelpTicketId } from '../../../../lib/features/help/help-ticket-selection';
 import { watchHelpTickets } from '../../../../lib/features/help/help-service';
@@ -43,7 +47,12 @@ export default component$(() => {
   });
 
   if (loading.value) {
-    return <p class="ui-help-ticket-empty">{t(i18n, 'loadingLabel', 'Loading...')}</p>;
+    return (
+      <div aria-busy="true">
+        <LoadingSkeletonAnnouncer label={t(i18n, 'loadingLabel', 'Loading...')} />
+        <HelpTicketListSkeleton itemCount={4} />
+      </div>
+    );
   }
 
   return (

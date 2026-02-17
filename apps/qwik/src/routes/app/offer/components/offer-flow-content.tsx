@@ -2,6 +2,7 @@ import { $, component$, type QRL, type Signal, useSignal, useVisibleTask$ } from
 import { Button } from '../../../../components/ui/button';
 import { Input } from '../../../../components/ui/input';
 import { Label } from '../../../../components/ui/label';
+import { SkeletonBlock } from '../../../../components/ui/page-loading-skeleton';
 import { Select } from '../../../../components/ui/select';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { VehicleProfile } from '../../../../lib/types/vehicle';
@@ -113,7 +114,10 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
         <>
           <OfferSectionCard title={t(i18n, 'vehicleSection', 'Vehicle')} showBorder={true}>
             {props.vehiclesLoading.value ? (
-              <p class="ui-offer-loading-copy">{t(i18n, 'loadingLabel', 'Loading...')}</p>
+              <div class="ui-skeleton-stack-sm" aria-hidden="true">
+                <SkeletonBlock height="12px" width="112px" />
+                <SkeletonBlock height="44px" width="100%" />
+              </div>
             ) : (
               <div class="ui-field">
                 <Label for="offer-vehicle">{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</Label>

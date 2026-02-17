@@ -1,5 +1,9 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Link } from '@builder.io/qwik-city';
+import {
+  LoadingSkeletonAnnouncer,
+  SettingsListSkeleton,
+} from '../../../../components/ui/page-loading-skeleton';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { watchUserProfile } from '../../../../lib/features/profile/profile-service';
 import { watchVehicles } from '../../../../lib/features/vehicles/vehicles-service';
@@ -55,6 +59,15 @@ export default component$(() => {
     });
   });
 
+  if (loading.value) {
+    return (
+      <div aria-busy="true">
+        <LoadingSkeletonAnnouncer label={t(i18n, 'loadingLabel', 'Loading...')} />
+        <SettingsListSkeleton itemCount={3} showHeaderAction={true} />
+      </div>
+    );
+  }
+
   return (
     <div class="ui-settings-detail-root">
       <section class="ui-settings-detail-card">
@@ -68,9 +81,7 @@ export default component$(() => {
           </Link>
         </div>
 
-        {loading.value ? (
-          <p class="ui-settings-detail-subtitle">{t(i18n, 'loadingLabel', 'Loading...')}</p>
-        ) : vehicles.value.length === 0 ? (
+        {vehicles.value.length === 0 ? (
           <p class="ui-settings-detail-subtitle">{t(i18n, 'noVehiclesMessage', 'No vehicles found.')}</p>
         ) : (
           <ul class="ui-settings-vehicle-list">

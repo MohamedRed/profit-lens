@@ -1,4 +1,8 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import {
+  LoadingSkeletonAnnouncer,
+  SettingsFormSkeleton,
+} from '../../../../components/ui/page-loading-skeleton';
 import { Select } from '../../../../components/ui/select';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { saveUserProfile, watchUserProfile } from '../../../../lib/features/profile/profile-service';
@@ -115,7 +119,12 @@ export default component$(() => {
   });
 
   if (loading.value) {
-    return <p class="ui-settings-detail-subtitle">{t(i18n, 'loadingLabel', 'Loading...')}</p>;
+    return (
+      <div aria-busy="true">
+        <LoadingSkeletonAnnouncer label={t(i18n, 'loadingLabel', 'Loading...')} />
+        <SettingsFormSkeleton fieldCount={10} />
+      </div>
+    );
   }
 
   if (!profile.value) {

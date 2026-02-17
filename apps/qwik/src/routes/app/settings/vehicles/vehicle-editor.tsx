@@ -1,5 +1,9 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useNavigate } from '@builder.io/qwik-city';
+import {
+  LoadingSkeletonAnnouncer,
+  SettingsFormSkeleton,
+} from '../../../../components/ui/page-loading-skeleton';
 import { Select } from '../../../../components/ui/select';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { deleteVehicle, saveVehicle, watchVehicles } from '../../../../lib/features/vehicles/vehicles-service';
@@ -252,16 +256,24 @@ export const VehicleEditor = component$<VehicleEditorProps>((props) => {
     return <p class="ui-settings-detail-subtitle">{t(i18n, 'vehicleSaveFailedMessage', 'Unable to save vehicle.')}</p>;
   }
 
+  if (loading.value) {
+    return (
+      <div aria-busy="true">
+        <LoadingSkeletonAnnouncer label={t(i18n, 'loadingLabel', 'Loading...')} />
+        <SettingsFormSkeleton fieldCount={8} />
+      </div>
+    );
+  }
+
   return (
     <div class="ui-settings-detail-root">
       <section class="ui-settings-detail-card">
         <h2 class="ui-settings-detail-title">{title}</h2>
-        {loading.value ? <p class="ui-settings-detail-subtitle">{t(i18n, 'loadingLabel', 'Loading...')}</p> : null}
         {notFound ? (
           <p class="ui-settings-detail-subtitle">{t(i18n, 'vehicleDeleteFailedMessage', 'Unable to delete vehicle.')}</p>
         ) : null}
 
-        {!loading.value && !notFound ? (
+        {!notFound ? (
           <div class="ui-settings-form-grid">
             <div class="ui-settings-field">
               <label class="ui-label" for="vehicle-name">

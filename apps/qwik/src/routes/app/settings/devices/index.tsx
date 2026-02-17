@@ -1,4 +1,8 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import {
+  LoadingSkeletonAnnouncer,
+  SettingsListSkeleton,
+} from '../../../../components/ui/page-loading-skeleton';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../../lib/config/device-id';
 import { revokeDevice, watchDevices } from '../../../../lib/features/devices/devices-service';
@@ -58,6 +62,15 @@ export default component$(() => {
 
   const locale = i18n.locale.value;
 
+  if (loading.value) {
+    return (
+      <div aria-busy="true">
+        <LoadingSkeletonAnnouncer label={t(i18n, 'loadingLabel', 'Loading...')} />
+        <SettingsListSkeleton itemCount={3} />
+      </div>
+    );
+  }
+
   return (
     <div class="ui-settings-detail-root">
       <section class="ui-settings-detail-card">
@@ -66,49 +79,45 @@ export default component$(() => {
           {t(i18n, 'deviceManagementSubtitle', 'Only one device can be active at a time.')}
         </p>
 
-        {loading.value ? (
-          <p class="ui-settings-detail-subtitle">{t(i18n, 'loadingLabel', 'Loading...')}</p>
-        ) : (
-          <ul class="ui-settings-device-list">
-            {devices.value.map((entry) => {
-              const lastSeen = formatLastSeen(locale, entry.lastSeenAt);
-              return (
-                <li key={entry.id} class="ui-settings-device-item">
-                  <div class="ui-settings-row">
-                    <p class="ui-settings-row-title">
-                      {entry.deviceLabel || entry.platform || t(i18n, 'deviceUnknownLabel', 'Unknown device')}
-                    </p>
-                    {entry.isCurrent ? (
-                      <span class="ui-settings-row-subtitle">{t(i18n, 'deviceCurrentLabel', 'Current')}</span>
-                    ) : (
-                      <button
-                        type="button"
-                        class="ui-settings-link-button"
-                        disabled={revokingId.value === entry.id}
-                        onClick$={() => revoke$(entry.id)}
-                      >
-                        {revokingId.value === entry.id
-                          ? t(i18n, 'loadingLabel', 'Loading...')
-                          : t(i18n, 'deviceRevokeAction', 'Revoke')}
-                      </button>
-                    )}
-                  </div>
-                  {lastSeen ? (
-                    <p class="ui-settings-row-subtitle">
-                      {t(i18n, 'deviceLastSeenPrefix', 'Last seen')} {lastSeen}
-                    </p>
-                  ) : null}
-                  {entry.userAgent ? <p class="ui-settings-row-subtitle">{entry.userAgent}</p> : null}
-                </li>
-              );
-            })}
-            {devices.value.length === 0 ? (
-              <li class="ui-settings-device-item">
-                <p class="ui-settings-row-subtitle">{t(i18n, 'deviceUnknownLabel', 'Unknown device')}</p>
+        <ul class="ui-settings-device-list">
+          {devices.value.map((entry) => {
+            const lastSeen = formatLastSeen(locale, entry.lastSeenAt);
+            return (
+              <li key={entry.id} class="ui-settings-device-item">
+                <div class="ui-settings-row">
+                  <p class="ui-settings-row-title">
+                    {entry.deviceLabel || entry.platform || t(i18n, 'deviceUnknownLabel', 'Unknown device')}
+                  </p>
+                  {entry.isCurrent ? (
+                    <span class="ui-settings-row-subtitle">{t(i18n, 'deviceCurrentLabel', 'Current')}</span>
+                  ) : (
+                    <button
+                      type="button"
+                      class="ui-settings-link-button"
+                      disabled={revokingId.value === entry.id}
+                      onClick$={() => revoke$(entry.id)}
+                    >
+                      {revokingId.value === entry.id
+                        ? t(i18n, 'loadingLabel', 'Loading...')
+                        : t(i18n, 'deviceRevokeAction', 'Revoke')}
+                    </button>
+                  )}
+                </div>
+                {lastSeen ? (
+                  <p class="ui-settings-row-subtitle">
+                    {t(i18n, 'deviceLastSeenPrefix', 'Last seen')} {lastSeen}
+                  </p>
+                ) : null}
+                {entry.userAgent ? <p class="ui-settings-row-subtitle">{entry.userAgent}</p> : null}
               </li>
-            ) : null}
-          </ul>
-        )}
+            );
+          })}
+          {devices.value.length === 0 ? (
+            <li class="ui-settings-device-item">
+              <p class="ui-settings-row-subtitle">{t(i18n, 'deviceUnknownLabel', 'Unknown device')}</p>
+            </li>
+          ) : null}
+        </ul>
       </section>
 
       {status.value ? <p class="ui-status ui-status-error">{status.value}</p> : null}

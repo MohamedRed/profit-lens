@@ -1,5 +1,9 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
+import {
+  HistoryDetailSkeleton,
+  LoadingSkeletonAnnouncer,
+} from '../../../../components/ui/page-loading-skeleton';
 import { Separator } from '../../../../components/ui/separator';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { watchOfferById } from '../../../../lib/features/offers/offers-service';
@@ -88,7 +92,12 @@ export default component$(() => {
   const current = offer.value;
 
   if (loading.value) {
-    return <p class="ui-history-empty">{t(i18n, 'loadingLabel', 'Loading...')}</p>;
+    return (
+      <div aria-busy="true">
+        <LoadingSkeletonAnnouncer label={t(i18n, 'loadingLabel', 'Loading...')} />
+        <HistoryDetailSkeleton />
+      </div>
+    );
   }
 
   if (!current) {

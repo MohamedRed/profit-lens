@@ -1,5 +1,9 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
+import {
+  HelpTicketDetailSkeleton,
+  LoadingSkeletonAnnouncer,
+} from '../../../../../components/ui/page-loading-skeleton';
 import { useAuth } from '../../../../../lib/auth/auth-context';
 import { readHelpTicketId } from '../../../../../lib/features/help/help-ticket-id';
 import {
@@ -84,7 +88,12 @@ export default component$(() => {
   });
 
   if (loading.value) {
-    return <p class="ui-help-ticket-empty">{t(i18n, 'loadingLabel', 'Loading...')}</p>;
+    return (
+      <div aria-busy="true">
+        <LoadingSkeletonAnnouncer label={t(i18n, 'loadingLabel', 'Loading...')} />
+        <HelpTicketDetailSkeleton />
+      </div>
+    );
   }
 
   const currentTicket = ticket.value;

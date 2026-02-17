@@ -1,6 +1,7 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Link } from '@builder.io/qwik-city';
 import { Button } from '../../../../components/ui/button';
+import { OfferUsageSkeleton } from '../../../../components/ui/page-loading-skeleton';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import {
   startCheckout,
@@ -107,7 +108,7 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
 
   const content = () => {
     if (!entitlement.value) {
-      return <p class="ui-offer-loading-copy">{t(i18n, 'loadingLabel', 'Loading...')}</p>;
+      return <OfferUsageSkeleton />;
     }
 
     const offerLimit = entitlement.value.offerLimit;

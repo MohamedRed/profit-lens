@@ -1,5 +1,10 @@
 import { component$, type PropFunction } from '@builder.io/qwik';
 import { Link } from '@builder.io/qwik-city';
+import {
+  HistoryListSkeleton,
+  LoadingSkeletonAnnouncer,
+  SkeletonBlock,
+} from '../../../components/ui/page-loading-skeleton';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import type { OfferRecord } from '../../../lib/types/offer';
 import { formatCurrency, formatShortDateTime } from './history-helpers';
@@ -15,9 +20,15 @@ interface HistoryListPanelProps {
 
 export const HistoryListPanel = component$<HistoryListPanelProps>((props) => {
   const i18n = useI18n();
+  const loadingLabel = t(i18n, 'loadingLabel', 'Loading...');
 
   if (props.isLoadingInitial && props.offers.length === 0) {
-    return <p class="ui-history-empty">{t(i18n, 'loadingLabel', 'Loading...')}</p>;
+    return (
+      <div aria-busy="true">
+        <LoadingSkeletonAnnouncer label={loadingLabel} />
+        <HistoryListSkeleton itemCount={5} />
+      </div>
+    );
   }
 
   return (
@@ -52,7 +63,18 @@ export const HistoryListPanel = component$<HistoryListPanelProps>((props) => {
         );
       })}
       {props.isLoadingMore && props.hasMore ? (
-        <li class="ui-history-empty">{t(i18n, 'loadingLabel', 'Loading...')}</li>
+        <li class="ui-history-item ui-skeleton-shell" aria-hidden="true">
+          <div class="ui-history-item-link">
+            <div class="ui-history-item-main ui-skeleton-stack-sm">
+              <SkeletonBlock height="34px" width="122px" />
+              <SkeletonBlock height="14px" width="168px" />
+            </div>
+            <div class="ui-history-item-side ui-skeleton-stack-sm">
+              <SkeletonBlock height="20px" width="72px" />
+              <SkeletonBlock height="18px" width="20px" />
+            </div>
+          </div>
+        </li>
       ) : null}
     </ul>
   );
