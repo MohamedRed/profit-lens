@@ -8,10 +8,19 @@ import {
   resolveDeviceRegistrationErrorMessage,
   type ActiveDeviceSnapshot,
 } from '../../lib/features/devices/device-registration-error';
+import {
+  clearDeviceRegistrationCache,
+  isDeviceRegistrationFresh,
+  markDeviceRegistrationFresh,
+} from '../../lib/features/devices/device-registration-cache';
 import { registerDevice } from '../../lib/features/devices/devices-service';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 
-type DeviceGateState = 'loading' | 'ready' | 'limit' | 'error';
+type DeviceGateState = 'ready' | 'limit' | 'error';
+type RegisterCurrentDeviceOptions = {
+  replaceDeviceId?: string;
+  allowCached?: boolean;
+};
 
 const formatLastSeen = (locale: string, value: Date | null): string | null => {
   if (!value) {
@@ -26,28 +35,42 @@ const formatLastSeen = (locale: string, value: Date | null): string | null => {
 export const DeviceAccessGuard = component$(() => {
   const auth = useAuth();
   const i18n = useI18n();
-  const gateState = useSignal<DeviceGateState>('loading');
+  const gateState = useSignal<DeviceGateState>('ready');
   const blockedDevices = useSignal<ActiveDeviceSnapshot[]>([]);
   const currentDeviceId = useSignal('');
   const errorMessage = useSignal('');
   const replacingDeviceId = useSignal('');
   const registrationSeq = useSignal(0);
+  const registrationInFlight = useSignal(false);
 
-  const registerCurrentDevice$ = $(async (replaceDeviceId?: string) => {
+  const registerCurrentDevice$ = $(async (options?: RegisterCurrentDeviceOptions) => {
     const user = auth.user.value;
     if (!user) {
+      return;
+    }
+    const deviceId = getDeviceId();
+    currentDeviceId.value = deviceId;
+
+    const replaceDeviceId = options?.replaceDeviceId;
+    const shouldUseCache = (options?.allowCached ?? true) && !replaceDeviceId;
+    if (
+      shouldUseCache &&
+      isDeviceRegistrationFresh({
+        uid: user.uid,
+        deviceId,
+      })
+    ) {
+      gateState.value = 'ready';
       return;
     }
 
     const seq = registrationSeq.value + 1;
     registrationSeq.value = seq;
-    gateState.value = 'loading';
+    registrationInFlight.value = true;
     errorMessage.value = '';
     replacingDeviceId.value = replaceDeviceId ?? '';
 
     try {
-      const deviceId = getDeviceId();
-      currentDeviceId.value = deviceId;
       await registerDevice({
         deviceId,
         platform: 'web',
@@ -58,12 +81,17 @@ export const DeviceAccessGuard = component$(() => {
       if (registrationSeq.value !== seq) {
         return;
       }
+      markDeviceRegistrationFresh({
+        uid: user.uid,
+        deviceId,
+      });
       blockedDevices.value = [];
       gateState.value = 'ready';
     } catch (error) {
       if (registrationSeq.value !== seq) {
         return;
       }
+      clearDeviceRegistrationCache();
       const code = normalizeCallableErrorCode(error);
       if (code === 'resource-exhausted') {
         blockedDevices.value = parseActiveDevicesFromDetails(
@@ -76,6 +104,7 @@ export const DeviceAccessGuard = component$(() => {
       gateState.value = 'error';
     } finally {
       if (registrationSeq.value === seq) {
+        registrationInFlight.value = false;
         replacingDeviceId.value = '';
       }
     }
@@ -87,22 +116,13 @@ export const DeviceAccessGuard = component$(() => {
     if (!ready || !uid) {
       return;
     }
-    void registerCurrentDevice$();
+    void registerCurrentDevice$({
+      allowCached: true,
+    });
   });
 
   if (gateState.value === 'ready') {
     return <Slot />;
-  }
-
-  if (gateState.value === 'loading') {
-    return (
-      <div class="ui-gate-viewport">
-        <section class="ui-settings-detail-card ui-device-gate-card ui-gate-loading-card">
-          <div class="ui-spinner" aria-hidden="true" />
-          <p class="ui-settings-detail-subtitle">{t(i18n, 'loadingLabel', 'Loading...')}</p>
-        </section>
-      </div>
-    );
   }
 
   if (gateState.value === 'limit') {
@@ -135,10 +155,15 @@ export const DeviceAccessGuard = component$(() => {
                       <button
                         type="button"
                         class="ui-settings-link-button"
-                        disabled={replacingDeviceId.value === device.deviceId}
-                        onClick$={() => registerCurrentDevice$(device.deviceId)}
+                        disabled={registrationInFlight.value}
+                        onClick$={() =>
+                          registerCurrentDevice$({
+                            replaceDeviceId: device.deviceId,
+                            allowCached: false,
+                          })
+                        }
                       >
-                        {replacingDeviceId.value === device.deviceId
+                        {registrationInFlight.value && replacingDeviceId.value === device.deviceId
                           ? t(i18n, 'loadingLabel', 'Loading...')
                           : t(i18n, 'deviceReplaceAction', 'Replace')}
                       </button>
@@ -178,7 +203,11 @@ export const DeviceAccessGuard = component$(() => {
           <button
             type="button"
             class="ui-settings-action-button"
-            onClick$={() => registerCurrentDevice$()}
+            onClick$={() =>
+              registerCurrentDevice$({
+                allowCached: false,
+              })
+            }
           >
             {t(i18n, 'retryButtonLabel', 'Retry')}
           </button>
