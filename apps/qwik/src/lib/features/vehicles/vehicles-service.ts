@@ -99,8 +99,14 @@ export const deleteVehicle = async (uid: string, vehicle: VehicleProfile) => {
   }
 };
 
-export const lookupVehicleByPlate = async (plate: string) => {
-  return await callLookupVehicleByPlate({ plate });
+export const lookupVehicleByPlate = async (params: {
+  licensePlate: string;
+  countryCode: string;
+}) => {
+  return await callLookupVehicleByPlate({
+    licensePlate: params.licensePlate,
+    countryCode: params.countryCode,
+  });
 };
 
 export const lookupVehicleModel = async (payload: {
