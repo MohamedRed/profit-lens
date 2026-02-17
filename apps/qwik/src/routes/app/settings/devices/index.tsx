@@ -6,6 +6,7 @@ import {
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../../lib/config/device-id';
 import { revokeDevice, watchDevices } from '../../../../lib/features/devices/devices-service';
+import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { DeviceEntry } from '../../../../lib/types/device';
 
@@ -53,7 +54,7 @@ export default component$(() => {
       try {
         await revokeDevice({ deviceId });
       } catch (error) {
-        status.value = error instanceof Error ? error.message : String(error);
+        status.value = resolveUserFacingErrorMessage(i18n, error, 'devices');
       } finally {
         revokingId.value = '';
       }

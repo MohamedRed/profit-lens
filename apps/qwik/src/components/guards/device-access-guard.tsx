@@ -2,10 +2,10 @@ import { $, Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwi
 import { useAuth } from '../../lib/auth/auth-context';
 import { getDeviceId } from '../../lib/config/device-id';
 import { signOutCurrentUser } from '../../lib/firebase/auth';
+import { resolveUserFacingErrorMessage } from '../../lib/errors/user-facing-error';
 import {
   normalizeCallableErrorCode,
   parseActiveDevicesFromDetails,
-  resolveDeviceRegistrationErrorMessage,
   type ActiveDeviceSnapshot,
 } from '../../lib/features/devices/device-registration-error';
 import {
@@ -100,7 +100,7 @@ export const DeviceAccessGuard = component$(() => {
         gateState.value = 'limit';
         return;
       }
-      errorMessage.value = resolveDeviceRegistrationErrorMessage(error);
+      errorMessage.value = resolveUserFacingErrorMessage(i18n, error, 'devices');
       gateState.value = 'error';
     } finally {
       if (registrationSeq.value === seq) {

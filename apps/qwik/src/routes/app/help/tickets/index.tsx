@@ -8,6 +8,7 @@ import { useAuth } from '../../../../lib/auth/auth-context';
 import { saveSelectedHelpTicketId } from '../../../../lib/features/help/help-ticket-selection';
 import { watchHelpTickets } from '../../../../lib/features/help/help-service';
 import { formatHelpDate, statusLabel } from '../../../../lib/features/help/help-ui-utils';
+import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { HelpTicket } from '../../../../lib/types/help';
 
@@ -35,10 +36,7 @@ export default component$(() => {
     }, (error) => {
       tickets.value = [];
       loading.value = false;
-      loadError.value =
-        error instanceof Error
-          ? error.message
-          : t(i18n, 'helpTicketLoadFailed', 'Failed to load tickets. Please try again.');
+      loadError.value = resolveUserFacingErrorMessage(i18n, error, 'help-load');
     });
 
     cleanup(() => {

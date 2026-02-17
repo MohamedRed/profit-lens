@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/ca
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { registerWithEmail } from '../../lib/firebase/auth';
+import { resolveUserFacingErrorMessage } from '../../lib/errors/user-facing-error';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 
 export default component$(() => {
@@ -80,7 +81,7 @@ export default component$(() => {
                   await registerWithEmail(email.value.trim(), password.value);
                   navigate('/next/app/offer');
                 } catch (error) {
-                  status.value = error instanceof Error ? error.message : String(error);
+                  status.value = resolveUserFacingErrorMessage(i18n, error, 'auth-register');
                 } finally {
                   loading.value = false;
                 }

@@ -7,6 +7,7 @@ import {
 import { Select } from '../../../../components/ui/select';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { deleteVehicle, saveVehicle, watchVehicles } from '../../../../lib/features/vehicles/vehicles-service';
+import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { VehicleProfile } from '../../../../lib/types/vehicle';
 
@@ -186,12 +187,7 @@ export const VehicleEditor = component$<VehicleEditorProps>((props) => {
       await saveVehicle(user.uid, nextVehicle);
       await navigate('/next/app/settings/vehicles');
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      if (message.toLowerCase().includes('already exists')) {
-        status.value = t(i18n, 'vehicleLicensePlateDuplicate', 'A vehicle with this plate already exists.');
-      } else {
-        status.value = message;
-      }
+      status.value = resolveUserFacingErrorMessage(i18n, error, 'vehicle');
     } finally {
       saving.value = false;
     }
@@ -216,7 +212,7 @@ export const VehicleEditor = component$<VehicleEditorProps>((props) => {
       await deleteVehicle(user.uid, currentVehicle);
       await navigate('/next/app/settings/vehicles');
     } catch (error) {
-      status.value = error instanceof Error ? error.message : String(error);
+      status.value = resolveUserFacingErrorMessage(i18n, error, 'vehicle');
     } finally {
       deleting.value = false;
     }

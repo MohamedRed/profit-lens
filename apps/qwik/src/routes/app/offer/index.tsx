@@ -3,6 +3,7 @@ import { useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
+import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
 import type { OfferRecord } from '../../../lib/types/offer';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
@@ -130,7 +131,7 @@ export default component$(() => {
     try {
       await saveUserProfile(nextProfile);
     } catch (error) {
-      status.value = error instanceof Error ? error.message : String(error);
+      status.value = resolveUserFacingErrorMessage(i18n, error, 'profile');
     } finally {
       savingProfitTarget.value = false;
     }
@@ -161,7 +162,7 @@ export default component$(() => {
       analysisRecord.value = parseOfferAnalysisRecord(payload);
       status.value = 'Offer analyzed.';
     } catch (error) {
-      status.value = error instanceof Error ? error.message : String(error);
+      status.value = resolveUserFacingErrorMessage(i18n, error, 'offer');
     } finally {
       loading.value = false;
     }
@@ -175,7 +176,7 @@ export default component$(() => {
 
     const user = auth.user.value;
     if (!user) {
-      status.value = 'Missing authenticated user.';
+      status.value = resolveUserFacingErrorMessage(i18n, new Error('Missing authenticated user.'), 'offer');
       return;
     }
 
@@ -207,7 +208,7 @@ export default component$(() => {
       analysisRecord.value = parseOfferAnalysisRecord(payload);
       status.value = 'Screenshot analyzed.';
     } catch (error) {
-      status.value = error instanceof Error ? error.message : String(error);
+      status.value = resolveUserFacingErrorMessage(i18n, error, 'offer');
     } finally {
       loading.value = false;
     }

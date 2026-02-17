@@ -3,6 +3,7 @@ import { Link } from '@builder.io/qwik-city';
 import { Button } from '../../../../components/ui/button';
 import { OfferUsageSkeleton } from '../../../../components/ui/page-loading-skeleton';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
+import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
 import {
   startCheckout,
   watchEntitlement,
@@ -145,14 +146,18 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
               class="ui-offer-usage-cta"
               onClick$={async () => {
                 if (!paidPlan?.priceId) {
-                  status.value = t(i18n, 'sourceOpenError', 'Unable to open source.');
+                  status.value = t(
+                    i18n,
+                    'errorPlanUnavailable',
+                    'No paid plan is available right now. Please try again later.',
+                  );
                   return;
                 }
                 status.value = '';
                 try {
                   await startCheckout(paidPlan.priceId);
                 } catch (error) {
-                  status.value = error instanceof Error ? error.message : String(error);
+                  status.value = resolveUserFacingErrorMessage(i18n, error, 'billing');
                 }
               }}
             >

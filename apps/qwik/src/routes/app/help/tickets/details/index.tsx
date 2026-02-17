@@ -20,6 +20,7 @@ import {
   formatHelpDate,
   statusLabel,
 } from '../../../../../lib/features/help/help-ui-utils';
+import { resolveUserFacingErrorMessage } from '../../../../../lib/errors/user-facing-error';
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 import type { HelpTicket, HelpTicketAttachment, HelpTicketTimelineEvent } from '../../../../../lib/types/help';
 import { HelpTicketAttachmentList } from '../../components/help-ticket-attachment-list';
@@ -64,10 +65,7 @@ export default component$(() => {
       attachments.value = [];
       timeline.value = [];
       loading.value = false;
-      loadError.value =
-        error instanceof Error
-          ? error.message
-          : t(i18n, 'helpTicketLoadFailed', 'Failed to load ticket. Please try again.');
+      loadError.value = resolveUserFacingErrorMessage(i18n, error, 'help-load');
     });
     const unsubscribeAttachments = watchHelpTicketAttachments(user.uid, ticketId, (items) => {
       attachments.value = items;

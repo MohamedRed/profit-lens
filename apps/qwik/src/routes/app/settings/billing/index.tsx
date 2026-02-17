@@ -11,6 +11,7 @@ import {
   watchEntitlement,
   watchUsage,
 } from '../../../../lib/features/billing/billing-service';
+import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { Entitlement, OfferUsage } from '../../../../lib/types/billing';
 import { BillingStripePortalCard } from './billing-sections';
@@ -155,7 +156,7 @@ export default component$(() => {
       status.value = t(i18n, 'billingPlanChangeSuccess', 'Subscription plan updated.');
     } catch (error) {
       statusTone.value = 'error';
-      status.value = error instanceof Error ? error.message : String(error);
+      status.value = resolveUserFacingErrorMessage(i18n, error, 'billing');
     } finally {
       actionLoading.value = false;
     }
@@ -176,7 +177,7 @@ export default component$(() => {
         : t(i18n, 'billingResumeSuccess', 'Subscription resumed.');
     } catch (error) {
       statusTone.value = 'error';
-      status.value = error instanceof Error ? error.message : String(error);
+      status.value = resolveUserFacingErrorMessage(i18n, error, 'billing');
     } finally {
       actionLoading.value = false;
     }
@@ -192,7 +193,7 @@ export default component$(() => {
       await openStripeBillingPortal();
     } catch (error) {
       statusTone.value = 'error';
-      status.value = error instanceof Error ? error.message : String(error);
+      status.value = resolveUserFacingErrorMessage(i18n, error, 'billing');
     } finally {
       actionLoading.value = false;
     }

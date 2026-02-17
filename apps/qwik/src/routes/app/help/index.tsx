@@ -8,6 +8,7 @@ import {
   revokeHelpDraftPreview,
   revokeHelpDraftPreviews,
 } from '../../../lib/features/help/help-ui-utils';
+import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import type { HelpAttachmentDraft } from '../../../lib/types/help';
 import { HelpAttachmentDraftList } from './components/help-attachment-draft-list';
@@ -113,7 +114,11 @@ export default component$(() => {
           onClick$={async () => {
             const user = auth.user.value;
             if (!user) {
-              status.value = 'Missing authenticated user.';
+              status.value = resolveUserFacingErrorMessage(
+                i18n,
+                new Error('Missing authenticated user.'),
+                'help-submit',
+              );
               return;
             }
             if (!description.value.trim() && drafts.value.length === 0) {
@@ -137,7 +142,7 @@ export default component$(() => {
               drafts.value = [];
               status.value = t(i18n, 'helpTicketSubmitted', 'Ticket submitted.');
             } catch (error) {
-              status.value = error instanceof Error ? error.message : String(error);
+              status.value = resolveUserFacingErrorMessage(i18n, error, 'help-submit');
             } finally {
               submitting.value = false;
             }

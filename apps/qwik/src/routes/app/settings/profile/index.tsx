@@ -6,6 +6,7 @@ import {
 import { Select } from '../../../../components/ui/select';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { saveUserProfile, watchUserProfile } from '../../../../lib/features/profile/profile-service';
+import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { UserProfile } from '../../../../lib/types/profile';
 
@@ -112,7 +113,7 @@ export default component$(() => {
       await saveUserProfile(nextProfile);
       status.value = '';
     } catch (error) {
-      status.value = error instanceof Error ? error.message : String(error);
+      status.value = resolveUserFacingErrorMessage(i18n, error, 'profile');
     } finally {
       saving.value = false;
     }

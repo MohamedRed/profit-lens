@@ -4,6 +4,7 @@ import { useAuth } from '../../../lib/auth/auth-context';
 import { signOutCurrentUser } from '../../../lib/firebase/auth';
 import { billingPlans } from '../../../lib/config/runtime-config';
 import { applyLocale, formatTemplate, t, useI18n } from '../../../lib/i18n/i18n-context';
+import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
 import { startCheckout } from '../../../lib/features/billing/billing-service';
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
 import { Select } from '../../../components/ui/select';
@@ -113,7 +114,7 @@ export default component$(() => {
               await saveUserProfile({ ...currentProfile, preferredLocale: nextLocale });
             } catch (error) {
               selectedLanguage.value = previous;
-              status.value = error instanceof Error ? error.message : String(error);
+              status.value = resolveUserFacingErrorMessage(i18n, error, 'language');
             } finally {
               languageSaving.value = false;
             }
@@ -165,14 +166,19 @@ export default component$(() => {
               disabled={checkoutLoading.value}
               onClick$={async () => {
                 status.value = '';
+                if (!paidPlan?.priceId) {
+                  status.value = t(
+                    i18n,
+                    'errorPlanUnavailable',
+                    'No paid plan is available right now. Please try again later.',
+                  );
+                  return;
+                }
                 checkoutLoading.value = true;
                 try {
-                  if (!paidPlan?.priceId) {
-                    throw new Error('Paid plan is unavailable.');
-                  }
                   await startCheckout(paidPlan.priceId);
                 } catch (error) {
-                  status.value = error instanceof Error ? error.message : String(error);
+                  status.value = resolveUserFacingErrorMessage(i18n, error, 'billing');
                   checkoutLoading.value = false;
                 }
               }}
