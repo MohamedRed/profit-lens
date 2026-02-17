@@ -149,17 +149,18 @@ export const PwaInstallGuard = component$(() => {
         let dialog = host.querySelector('pwa-install') as PwaInstallElementLike | null;
         if (!dialog) {
           dialog = document.createElement('pwa-install') as PwaInstallElementLike;
-          dialog.setAttribute('disable-close', '');
-          dialog.setAttribute('name', 'Liive Profit');
           host.replaceChildren(dialog);
         }
+        dialog.setAttribute('disable-close', '');
+        dialog.setAttribute('manual-apple', '');
+        dialog.setAttribute('manifest-url', '/next/manifest.webmanifest');
+        dialog.setAttribute('icon', '/next/icons/Icon-192.png');
+        dialog.setAttribute('name', 'Liive Profit');
+        dialog.setAttribute('description', 'Progressive web application');
 
         loadError.value = '';
         dialogReady.value = true;
         dialogRef.value = dialog;
-        window.requestAnimationFrame(() => {
-          dialog?.showDialog(true);
-        });
       } catch (error) {
         loadError.value = error instanceof Error ? error.message : String(error);
       }
