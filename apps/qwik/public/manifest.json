@@ -1,11 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
-  "name": "ProfitLens Next",
-  "short_name": "ProfitLens",
+  "name": "Liive Lens",
+  "short_name": "Liive Lens",
   "start_url": "/next/",
   "scope": "/next/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
-  "description": "ProfitLens Qwik parallel web app."
+  "description": "Liive Lens Qwik parallel web app."
 }

@@ -150,7 +150,7 @@ export const PwaInstallGuard = component$(() => {
         if (!dialog) {
           dialog = document.createElement('pwa-install') as PwaInstallElementLike;
           dialog.setAttribute('disable-close', '');
-          dialog.setAttribute('name', 'ProfitLens');
+          dialog.setAttribute('name', 'Liive Lens');
           host.replaceChildren(dialog);
         }
 
@@ -202,18 +202,18 @@ export const PwaInstallGuard = component$(() => {
       ? t(
           i18n,
           'installAppRequiredNativeBody',
-          'To continue, install ProfitLens and open it from your home screen. Tap Install to open the browser prompt.',
+          'To continue, install Liive Lens and open it from your home screen. Tap Install to open the browser prompt.',
         )
       : installFlow.value === 'native-manual'
         ? t(
             i18n,
             'installAppRequiredManualBody',
-            'To continue, install ProfitLens and open it from your home screen. Tap Install to open guided install steps for your browser.',
+            'To continue, install Liive Lens and open it from your home screen. Tap Install to open guided install steps for your browser.',
           )
       : t(
           i18n,
           'installAppRequiredBody',
-          'To continue, install ProfitLens and open it from your home screen. We show the install guide automatically.',
+          'To continue, install Liive Lens and open it from your home screen. We show the install guide automatically.',
         );
 
   return (
@@ -252,7 +252,7 @@ export const PwaInstallGuard = component$(() => {
                   loadError.value = t(
                     i18n,
                     'installAppDesktopManualHint',
-                    'Install prompt is unavailable in this desktop session. Use your browser install option in the menu or address bar, then reopen ProfitLens from the installed app.',
+                    'Install prompt is unavailable in this desktop session. Use your browser install option in the menu or address bar, then reopen Liive Lens from the installed app.',
                   );
                 } else {
                   loadError.value = t(

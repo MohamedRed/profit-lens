@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'ProfitLens';
+  String get appTitle => 'Liive Lens';
 
   @override
   String get offerDetailsSection => 'تفاصيل العرض';
@@ -463,7 +463,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get installAppTitle => 'تثبيت التطبيق';
 
   @override
-  String get installAppSubtitle => 'أضف ProfitLens إلى الشاشة الرئيسية';
+  String get installAppSubtitle => 'أضف Liive Lens إلى الشاشة الرئيسية';
 
   @override
   String get installAppCta => 'تثبيت';
@@ -473,11 +473,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get installAppRequiredBody =>
-      'للمتابعة، ثبّت ProfitLens ثم افتحه من الشاشة الرئيسية. سيتم عرض دليل التثبيت تلقائيًا.';
+      'للمتابعة، ثبّت Liive Lens ثم افتحه من الشاشة الرئيسية. سيتم عرض دليل التثبيت تلقائيًا.';
 
   @override
   String get installAppRequiredNativeBody =>
-      'للمتابعة، ثبّت ProfitLens ثم افتحه من الشاشة الرئيسية. اضغط على تثبيت لفتح نافذة التثبيت في المتصفح.';
+      'للمتابعة، ثبّت Liive Lens ثم افتحه من الشاشة الرئيسية. اضغط على تثبيت لفتح نافذة التثبيت في المتصفح.';
 
   @override
   String get installAppLoadFailed => 'تعذر تحميل نافذة التثبيت.';

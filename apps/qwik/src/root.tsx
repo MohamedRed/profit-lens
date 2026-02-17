@@ -60,11 +60,11 @@ export default component$(() => {
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="ProfitLens" />
+        <meta name="apple-mobile-web-app-title" content="Liive Lens" />
         <meta name="format-detection" content="telephone=no" />
         <meta
           name="description"
-          content="ProfitLens Qwik app with parallel /next deployment and Firebase parity."
+          content="Liive Lens Qwik app with parallel /next deployment and Firebase parity."
         />
         <meta name="profit-lens-next-entry" content="qwik-next" />
         <link rel="preconnect" href="https://profit-lens-prod-2e417.firebaseapp.com" crossOrigin="anonymous" />

@@ -1,6 +1,6 @@
 {
   "name": "profit-lens-qwik",
-  "description": "ProfitLens Qwik parallel web app",
+  "description": "Liive Lens Qwik parallel web app",
   "engines": {
     "node": "^18.17.0 || ^20.3.0 || >=21.0.0"
   },

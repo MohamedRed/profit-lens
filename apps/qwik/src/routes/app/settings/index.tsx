@@ -129,7 +129,7 @@ export default component$(() => {
           <div class="ui-settings-tile-content">
             <p class="ui-settings-title">{t(i18n, 'installAppTitle', "Install the app")}</p>
             <p class="ui-settings-subtitle">
-              {t(i18n, 'installAppSubtitle', 'Add ProfitLens to your home screen')}
+              {t(i18n, 'installAppSubtitle', 'Add Liive Lens to your home screen')}
             </p>
           </div>
         </div>

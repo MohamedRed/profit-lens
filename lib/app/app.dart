@@ -21,7 +21,7 @@ class ProfitLensApp extends StatelessWidget {
         builder: (context, _) => MaterialApp(
           locale: services.localeController.locale,
           onGenerateTitle: (context) =>
-              AppLocalizations.of(context)?.appTitle ?? 'ProfitLens',
+              AppLocalizations.of(context)?.appTitle ?? 'Liive Lens',
           theme: AppTheme.light(),
           localizationsDelegates: const [
             AppLocalizations.delegate,
