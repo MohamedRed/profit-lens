@@ -58,6 +58,24 @@ const userAgentContainsMobileOs = (userAgent: string): boolean => {
   );
 };
 
+const platformLooksDesktop = (platform: string): boolean => {
+  return (
+    platform.includes('mac') ||
+    platform.includes('win') ||
+    platform.includes('linux') ||
+    platform.includes('x11') ||
+    platform.includes('cros')
+  );
+};
+
+const hasFinePointer = (browser: PwaWindowLike): boolean => {
+  const matchMedia = browser.matchMedia;
+  if (!matchMedia) {
+    return false;
+  }
+  return matchMedia('(pointer: fine)').matches;
+};
+
 export const shouldEnforcePwaInstallGate = (browser: PwaWindowLike | undefined): boolean => {
   if (!browser) {
     return true;
@@ -68,14 +86,22 @@ export const shouldEnforcePwaInstallGate = (browser: PwaWindowLike | undefined):
     return true;
   }
 
-  const userAgent = navigator.userAgent?.toLowerCase() ?? '';
-  if (userAgentContainsMobileOs(userAgent)) {
-    return true;
-  }
-
   const platform = navigator.platform?.toLowerCase() ?? '';
   const maxTouchPoints = navigator.maxTouchPoints ?? 0;
   if (isIpadOsDesktopMode(platform, maxTouchPoints)) {
+    return true;
+  }
+
+  if (platformLooksDesktop(platform) && maxTouchPoints <= 1) {
+    return false;
+  }
+
+  if (hasFinePointer(browser) && maxTouchPoints <= 1) {
+    return false;
+  }
+
+  const userAgent = navigator.userAgent?.toLowerCase() ?? '';
+  if (userAgentContainsMobileOs(userAgent)) {
     return true;
   }
 

@@ -99,6 +99,33 @@ describe('pwa-install-state', () => {
     ).toBe(false);
   });
 
+  it('does not enforce install gate on desktop platform even with spoofed mobile UA', () => {
+    expect(
+      shouldEnforcePwaInstallGate({
+        navigator: {
+          userAgent:
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+          platform: 'MacIntel',
+          maxTouchPoints: 0,
+        },
+        matchMedia: () => ({ matches: false }),
+      }),
+    ).toBe(false);
+  });
+
+  it('does not enforce install gate when pointer is fine and no touch points are reported', () => {
+    expect(
+      shouldEnforcePwaInstallGate({
+        navigator: {
+          userAgent: 'CustomDesktopBrowser',
+          platform: '',
+          maxTouchPoints: 0,
+        },
+        matchMedia: (query: string) => ({ matches: query === '(pointer: fine)' }),
+      }),
+    ).toBe(false);
+  });
+
   it('does not enforce install gate on desktop with coarse pointer only', () => {
     expect(
       shouldEnforcePwaInstallGate({
