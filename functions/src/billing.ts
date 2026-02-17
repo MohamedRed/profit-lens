@@ -14,6 +14,19 @@ import { getOrCreateCustomerId, getStripe, stripeSecretKey } from "./billing_cor
 
 const stripeWebhookSecret = defineSecret("STRIPE_WEBHOOK_SECRET");
 
+const stripTrailingSlashes = (value: string): string => {
+  return value.replace(/\/+$/, "");
+};
+
+const buildQwikBillingReturnUrl = (origin: string, status: "success" | "cancel" | "portal"): string => {
+  const baseOrigin = stripTrailingSlashes(origin);
+  const params = new URLSearchParams({
+    stripe_return: "1",
+    stripe_status: status,
+  });
+  return `${baseOrigin}/next/app/settings/billing?${params.toString()}`;
+};
+
 export const createCheckoutSession = onCall(
   {
     cors: true,
@@ -53,8 +66,8 @@ export const createCheckoutSession = onCall(
           planId: plan.planId,
         },
       },
-      success_url: `${origin}/?stripe_return=1`,
-      cancel_url: `${origin}/?stripe_return=1`,
+      success_url: buildQwikBillingReturnUrl(origin, "success"),
+      cancel_url: buildQwikBillingReturnUrl(origin, "cancel"),
       client_reference_id: uid,
       allow_promotion_codes: true,
       metadata: {
@@ -92,7 +105,7 @@ export const createCustomerPortalSession = onCall(
     const customerId = await getOrCreateCustomerId(uid, stripe);
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: `${origin}/?stripe_return=1`,
+      return_url: buildQwikBillingReturnUrl(origin, "portal"),
     });
     return { url: session.url };
   }
