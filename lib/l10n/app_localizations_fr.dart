@@ -306,6 +306,75 @@ class AppLocalizationsFr extends AppLocalizations {
   String get passwordMismatchError => 'Les mots de passe ne correspondent pas.';
 
   @override
+  String get signInFailedMessage =>
+      'Impossible de se connecter. Vérifiez votre email et mot de passe puis réessayez.';
+
+  @override
+  String get registerFailedMessage =>
+      'Impossible de créer votre compte pour le moment. Réessayez.';
+
+  @override
+  String get offerActionFailedMessage =>
+      'Impossible d’effectuer cette action pour le moment. Réessayez.';
+
+  @override
+  String get billingActionFailedMessage =>
+      'Impossible de mettre à jour l’abonnement pour le moment. Réessayez.';
+
+  @override
+  String get deviceActionFailedMessage =>
+      'Impossible de mettre à jour l’appareil pour le moment. Réessayez.';
+
+  @override
+  String get vehicleActionFailedMessage =>
+      'Impossible de mettre à jour le véhicule pour le moment. Réessayez.';
+
+  @override
+  String get languageSaveFailedMessage =>
+      'Impossible de mettre à jour la langue pour le moment. Réessayez.';
+
+  @override
+  String get genericActionFailedMessage =>
+      'Une erreur est survenue. Réessayez.';
+
+  @override
+  String get errorSessionExpired => 'Votre session a expiré. Reconnectez-vous.';
+
+  @override
+  String get errorPlanUnavailable =>
+      'Aucun forfait payant n’est disponible pour le moment. Réessayez plus tard.';
+
+  @override
+  String get errorInvalidEmail => 'Saisissez une adresse email valide.';
+
+  @override
+  String get errorInvalidCredentials => 'Email ou mot de passe incorrect.';
+
+  @override
+  String get errorEmailAlreadyInUse =>
+      'Cet email est déjà utilisé par un autre compte.';
+
+  @override
+  String get errorWeakPassword =>
+      'Mot de passe trop faible. Utilisez au moins 8 caractères.';
+
+  @override
+  String get errorTooManyRequests =>
+      'Trop de tentatives. Patientez un instant puis réessayez.';
+
+  @override
+  String get errorNetworkUnavailable =>
+      'Problème de réseau. Vérifiez la connexion puis réessayez.';
+
+  @override
+  String get errorPermissionDenied =>
+      'Vous n’avez pas l’autorisation pour cette action sur ce compte.';
+
+  @override
+  String get deviceNotRegisteredMessage =>
+      'Cet appareil n’est pas encore enregistré sur votre compte. Rechargez puis réessayez.';
+
+  @override
   String get offerTabLabel => 'Offre';
 
   @override

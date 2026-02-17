@@ -304,6 +304,76 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordMismatchError => 'Passwords do not match.';
 
   @override
+  String get signInFailedMessage =>
+      'Unable to sign in. Check your email and password and try again.';
+
+  @override
+  String get registerFailedMessage =>
+      'Unable to create your account right now. Please try again.';
+
+  @override
+  String get offerActionFailedMessage =>
+      'Unable to complete this action right now. Please try again.';
+
+  @override
+  String get billingActionFailedMessage =>
+      'Unable to update subscription right now. Please try again.';
+
+  @override
+  String get deviceActionFailedMessage =>
+      'Unable to update device right now. Please try again.';
+
+  @override
+  String get vehicleActionFailedMessage =>
+      'Unable to update vehicle right now. Please try again.';
+
+  @override
+  String get languageSaveFailedMessage =>
+      'Unable to update language right now. Please try again.';
+
+  @override
+  String get genericActionFailedMessage =>
+      'Something went wrong. Please try again.';
+
+  @override
+  String get errorSessionExpired =>
+      'Your session has expired. Please sign in again.';
+
+  @override
+  String get errorPlanUnavailable =>
+      'No paid plan is available right now. Please try again later.';
+
+  @override
+  String get errorInvalidEmail => 'Enter a valid email address.';
+
+  @override
+  String get errorInvalidCredentials => 'Incorrect email or password.';
+
+  @override
+  String get errorEmailAlreadyInUse =>
+      'This email is already used by another account.';
+
+  @override
+  String get errorWeakPassword =>
+      'Password is too weak. Use at least 8 characters.';
+
+  @override
+  String get errorTooManyRequests =>
+      'Too many attempts. Please wait a moment and try again.';
+
+  @override
+  String get errorNetworkUnavailable =>
+      'Network issue. Check your connection and try again.';
+
+  @override
+  String get errorPermissionDenied =>
+      'You don\'t have permission to do this action on this account.';
+
+  @override
+  String get deviceNotRegisteredMessage =>
+      'This device is not registered on your account yet. Refresh and try again.';
+
+  @override
   String get offerTabLabel => 'Offer';
 
   @override

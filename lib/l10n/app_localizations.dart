@@ -669,6 +669,114 @@ abstract class AppLocalizations {
   /// **'Passwords do not match.'**
   String get passwordMismatchError;
 
+  /// No description provided for @signInFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to sign in. Check your email and password and try again.'**
+  String get signInFailedMessage;
+
+  /// No description provided for @registerFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to create your account right now. Please try again.'**
+  String get registerFailedMessage;
+
+  /// No description provided for @offerActionFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to complete this action right now. Please try again.'**
+  String get offerActionFailedMessage;
+
+  /// No description provided for @billingActionFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update subscription right now. Please try again.'**
+  String get billingActionFailedMessage;
+
+  /// No description provided for @deviceActionFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update device right now. Please try again.'**
+  String get deviceActionFailedMessage;
+
+  /// No description provided for @vehicleActionFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update vehicle right now. Please try again.'**
+  String get vehicleActionFailedMessage;
+
+  /// No description provided for @languageSaveFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update language right now. Please try again.'**
+  String get languageSaveFailedMessage;
+
+  /// No description provided for @genericActionFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get genericActionFailedMessage;
+
+  /// No description provided for @errorSessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session has expired. Please sign in again.'**
+  String get errorSessionExpired;
+
+  /// No description provided for @errorPlanUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No paid plan is available right now. Please try again later.'**
+  String get errorPlanUnavailable;
+
+  /// No description provided for @errorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get errorInvalidEmail;
+
+  /// No description provided for @errorInvalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect email or password.'**
+  String get errorInvalidCredentials;
+
+  /// No description provided for @errorEmailAlreadyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is already used by another account.'**
+  String get errorEmailAlreadyInUse;
+
+  /// No description provided for @errorWeakPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is too weak. Use at least 8 characters.'**
+  String get errorWeakPassword;
+
+  /// No description provided for @errorTooManyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please wait a moment and try again.'**
+  String get errorTooManyRequests;
+
+  /// No description provided for @errorNetworkUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Network issue. Check your connection and try again.'**
+  String get errorNetworkUnavailable;
+
+  /// No description provided for @errorPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have permission to do this action on this account.'**
+  String get errorPermissionDenied;
+
+  /// No description provided for @deviceNotRegisteredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This device is not registered on your account yet. Refresh and try again.'**
+  String get deviceNotRegisteredMessage;
+
   /// No description provided for @offerTabLabel.
   ///
   /// In en, this message translates to:

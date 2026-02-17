@@ -302,6 +302,75 @@ class AppLocalizationsAr extends AppLocalizations {
   String get passwordMismatchError => 'كلمتا المرور غير متطابقتين.';
 
   @override
+  String get signInFailedMessage =>
+      'تعذر تسجيل الدخول. تحقق من البريد الإلكتروني وكلمة المرور ثم أعد المحاولة.';
+
+  @override
+  String get registerFailedMessage =>
+      'تعذر إنشاء الحساب الآن. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get offerActionFailedMessage =>
+      'تعذر إكمال هذا الإجراء الآن. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get billingActionFailedMessage =>
+      'تعذر تحديث الاشتراك الآن. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get deviceActionFailedMessage =>
+      'تعذر تحديث الجهاز الآن. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get vehicleActionFailedMessage =>
+      'تعذر تحديث المركبة الآن. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get languageSaveFailedMessage =>
+      'تعذر تحديث اللغة الآن. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get genericActionFailedMessage => 'حدث خطأ. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get errorSessionExpired =>
+      'انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.';
+
+  @override
+  String get errorPlanUnavailable =>
+      'لا توجد باقة مدفوعة متاحة الآن. حاول مرة أخرى لاحقًا.';
+
+  @override
+  String get errorInvalidEmail => 'أدخل بريدًا إلكترونيًا صالحًا.';
+
+  @override
+  String get errorInvalidCredentials =>
+      'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+
+  @override
+  String get errorEmailAlreadyInUse =>
+      'هذا البريد الإلكتروني مستخدم بالفعل في حساب آخر.';
+
+  @override
+  String get errorWeakPassword => 'كلمة المرور ضعيفة. استخدم 8 أحرف على الأقل.';
+
+  @override
+  String get errorTooManyRequests =>
+      'محاولات كثيرة جدًا. انتظر قليلًا ثم أعد المحاولة.';
+
+  @override
+  String get errorNetworkUnavailable =>
+      'مشكلة في الشبكة. تحقق من الاتصال ثم أعد المحاولة.';
+
+  @override
+  String get errorPermissionDenied =>
+      'ليس لديك صلاحية تنفيذ هذا الإجراء على هذا الحساب.';
+
+  @override
+  String get deviceNotRegisteredMessage =>
+      'هذا الجهاز غير مسجل بعد في حسابك. حدّث الصفحة ثم أعد المحاولة.';
+
+  @override
   String get offerTabLabel => 'العرض';
 
   @override
