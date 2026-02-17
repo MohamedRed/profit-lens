@@ -22,7 +22,6 @@ const MANAGEABLE_STATUSES = new Set([
   "past_due",
   "unpaid",
   "incomplete",
-  "incomplete_expired",
 ]);
 
 type ManagedSubscriptionResponse = {
@@ -105,9 +104,14 @@ const resolveManagedSubscription = async (
     status: "all",
     limit: 10,
   });
-  const managed = listed.data.find((subscription) =>
-    MANAGEABLE_STATUSES.has(subscription.status)
+  const managedForUid = listed.data.find(
+    (subscription) =>
+      MANAGEABLE_STATUSES.has(subscription.status) &&
+      subscription.metadata?.uid === uid
   );
+  const managed =
+    managedForUid ??
+    listed.data.find((subscription) => MANAGEABLE_STATUSES.has(subscription.status));
   if (!managed) {
     throw new HttpsError(
       "failed-precondition",
@@ -137,22 +141,30 @@ export const changeSubscriptionPlan = onCall(
     const stripe = getStripe();
     const currentSubscription = await resolveManagedSubscription(uid, stripe);
     const currentItem = readPrimarySubscriptionItem(currentSubscription);
-    const isNoop =
-      currentItem.price.id === priceId && currentSubscription.cancel_at_period_end === false;
-    if (isNoop) {
+    const samePrice = currentItem.price.id === priceId;
+    if (samePrice && currentSubscription.cancel_at_period_end === false) {
       return toManagedResponse(currentSubscription);
     }
 
-    const updated = await stripe.subscriptions.update(currentSubscription.id, {
-      items: [
-        {
-          id: currentItem.id,
-          price: priceId,
-        },
-      ],
-      proration_behavior: "create_prorations",
-      cancel_at_period_end: false,
-    });
+    const updatePayload: Stripe.SubscriptionUpdateParams = samePrice
+      ? {
+          cancel_at_period_end: false,
+        }
+      : {
+          items: [
+            {
+              id: currentItem.id,
+              price: priceId,
+            },
+          ],
+          proration_behavior: "create_prorations",
+          cancel_at_period_end: false,
+        };
+
+    const updated = await stripe.subscriptions.update(
+      currentSubscription.id,
+      updatePayload
+    );
     await syncEntitlementFromSubscription(uid, updated);
     return toManagedResponse(updated);
   }
