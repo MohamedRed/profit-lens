@@ -1,12 +1,14 @@
-import { $, component$, type QRL, type Signal } from '@builder.io/qwik';
+import { $, component$, type QRL, type Signal, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Button } from '../../../../components/ui/button';
 import { Input } from '../../../../components/ui/input';
 import { Label } from '../../../../components/ui/label';
 import { Select } from '../../../../components/ui/select';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { VehicleProfile } from '../../../../lib/types/vehicle';
+import { shouldUseDirectGalleryImport } from '../offer-import-platform';
 import type { OfferAnalysisRecord } from '../offer-analysis-result';
 import { enableCaptureCta, enableManualEntry } from '../offer-feature-flags';
+import { OfferImportSourceDialog } from './offer-import-source-dialog';
 import { OfferManualDetailsSection } from './offer-manual-details-section';
 import { OfferOverviewSections } from './offer-overview-sections';
 import { OfferScreenshotPreview } from './offer-screenshot-preview';
@@ -19,13 +21,12 @@ interface OfferFlowContentProps {
   dropoffAddress: Signal<string>;
   dropoffName: Signal<string>;
   duration: Signal<string>;
-  fileInputRef: Signal<HTMLInputElement | undefined>;
   loading: Signal<boolean>;
   manualEntryRequested: Signal<boolean>;
   minProfitabilityEuro: Signal<number>;
   onAnalyzeManual$: QRL<() => Promise<void>>;
   onClearScreenshotPreview$: QRL<() => void>;
-  onImportScreenshot$: QRL<(input: HTMLInputElement) => Promise<void>>;
+  onImportScreenshotFile$: QRL<(file: File) => Promise<void>>;
   onSaveProfitabilityTarget$: QRL<(value: string) => Promise<void>>;
   payout: Signal<string>;
   pickupAddress: Signal<string>;
@@ -46,6 +47,52 @@ const isSuccessStatus = (value: string): boolean => {
 
 export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
+  const galleryInputRef = useSignal<HTMLInputElement>();
+  const cameraInputRef = useSignal<HTMLInputElement>();
+  const sourceDialogOpen = useSignal(false);
+  const useDirectGalleryImport = useSignal(false);
+
+  useVisibleTask$(() => {
+    useDirectGalleryImport.value = shouldUseDirectGalleryImport(window);
+  });
+
+  const closeSourceDialog$ = $(() => {
+    sourceDialogOpen.value = false;
+  });
+
+  const openGalleryPicker$ = $(() => {
+    sourceDialogOpen.value = false;
+    galleryInputRef.value?.click();
+  });
+
+  const openCameraPicker$ = $(() => {
+    sourceDialogOpen.value = false;
+    cameraInputRef.value?.click();
+  });
+
+  const handleImportButtonClick$ = $(() => {
+    if (props.loading.value || !props.vehicles.value.length) {
+      return;
+    }
+    if (useDirectGalleryImport.value) {
+      galleryInputRef.value?.click();
+      return;
+    }
+    sourceDialogOpen.value = true;
+  });
+
+  const onFileSelected$ = $(async (element: HTMLInputElement) => {
+    const file = element.files?.[0];
+    if (!file) {
+      return;
+    }
+    try {
+      await props.onImportScreenshotFile$(file);
+    } finally {
+      element.value = '';
+    }
+  });
+
   const showOverview = !props.loading.value && props.analysisRecord.value !== null;
   const showDetailsSection = !showOverview && enableManualEntry && props.manualEntryRequested.value;
   const showManualEntryCta = enableManualEntry && !showOverview && !showDetailsSection;
@@ -143,12 +190,22 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
           ) : null}
 
           <input
-            ref={props.fileInputRef}
+            ref={galleryInputRef}
             type="file"
             accept="image/*"
             style="display:none"
             onChange$={(_, element) => {
-              void props.onImportScreenshot$(element);
+              void onFileSelected$(element);
+            }}
+          />
+          <input
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            style="display:none"
+            onChange$={(_, element) => {
+              void onFileSelected$(element);
             }}
           />
 
@@ -157,9 +214,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             size="lg"
             class="ui-offer-primary-cta"
             disabled={props.loading.value || !hasVehicles}
-            onClick$={() => {
-              props.fileInputRef.value?.click();
-            }}
+            onClick$={handleImportButtonClick$}
           >
             {props.loading.value
               ? t(i18n, 'loadingLabel', 'Loading...')
@@ -167,7 +222,12 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
           </Button>
 
           {enableCaptureCta ? (
-            <Button variant="secondary" size="lg" disabled={true}>
+            <Button
+              variant="secondary"
+              size="lg"
+              disabled={props.loading.value || !hasVehicles}
+              onClick$={openCameraPicker$}
+            >
               {t(i18n, 'captureScreenshotButton', 'Capture screenshot')}
             </Button>
           ) : null}
@@ -205,6 +265,13 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               {props.status.value}
             </p>
           ) : null}
+
+          <OfferImportSourceDialog
+            isOpen={sourceDialogOpen.value}
+            onClose$={closeSourceDialog$}
+            onSelectCamera$={openCameraPicker$}
+            onSelectGallery$={openGalleryPicker$}
+          />
         </>
       )}
     </div>

@@ -1,6 +1,7 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
+import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
@@ -13,6 +14,7 @@ import {
   type OfferAnalysisRecord,
 } from './offer-analysis-result';
 import { OfferFlowContent } from './components/offer-flow-content';
+import { ensureWithinOfferLimit } from './offer-flow-limits';
 import { useOfferTabSession } from './use-offer-tab-session';
 
 type OffersServiceModule = typeof import('../../../lib/features/offers/offers-service');
@@ -27,6 +29,7 @@ const loadOffersService = () => {
 
 export default component$(() => {
   const auth = useAuth();
+  const i18n = useI18n();
 
   const payout = useSignal('');
   const distance = useSignal('');
@@ -49,7 +52,6 @@ export default component$(() => {
   const status = useSignal('');
   const analysisRecord = useSignal<OfferAnalysisRecord | null>(null);
   const screenshotPreviewUrl = useSignal<string | null>(null);
-  const fileInputRef = useSignal<HTMLInputElement>();
 
   useOfferTabSession({
     auth,
@@ -135,14 +137,25 @@ export default component$(() => {
     }
   });
 
-  const importScreenshot$ = $(async (input: HTMLInputElement) => {
-    const file = input.files?.[0];
-    if (!file) {
-      return;
-    }
+  const importScreenshotFile$ = $(async (file: File) => {
     if (!selectedVehicleId.value) {
       status.value = 'Select vehicle';
-      input.value = '';
+      return;
+    }
+
+    const user = auth.user.value;
+    if (!user) {
+      status.value = 'Missing authenticated user.';
+      return;
+    }
+
+    const withinLimit = await ensureWithinOfferLimit(user.uid);
+    if (!withinLimit) {
+      status.value = t(
+        i18n,
+        'offerLimitReachedMessage',
+        'You have reached your monthly offer limit. Upgrade to continue.',
+      );
       return;
     }
 
@@ -167,7 +180,6 @@ export default component$(() => {
       status.value = error instanceof Error ? error.message : String(error);
     } finally {
       loading.value = false;
-      input.value = '';
     }
   });
 
@@ -191,13 +203,12 @@ export default component$(() => {
       dropoffAddress={dropoffAddress}
       dropoffName={dropoffName}
       duration={duration}
-      fileInputRef={fileInputRef}
       loading={loading}
       manualEntryRequested={manualEntryRequested}
       minProfitabilityEuro={minProfitabilityEuro}
       onAnalyzeManual$={analyzeManual$}
       onClearScreenshotPreview$={clearScreenshotPreview$}
-      onImportScreenshot$={importScreenshot$}
+      onImportScreenshotFile$={importScreenshotFile$}
       onSaveProfitabilityTarget$={saveProfitabilityTarget$}
       payout={payout}
       pickupAddress={pickupAddress}

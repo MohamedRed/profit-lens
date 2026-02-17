@@ -1,4 +1,4 @@
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import type { DocumentSnapshot } from 'firebase/firestore';
 import type { Entitlement, ManagedSubscriptionSnapshot, OfferUsage } from '../../types/billing';
 import {
@@ -79,6 +79,12 @@ export const watchEntitlement = (
   });
 };
 
+export const fetchEntitlement = async (uid: string): Promise<Entitlement | null> => {
+  const reference = doc(getDb(), 'users', uid, 'entitlements', 'current');
+  const snapshot = await getDoc(reference);
+  return mapEntitlement(snapshot.data() as Record<string, unknown> | undefined);
+};
+
 export const watchUsage = (
   uid: string,
   periodKey: string,
@@ -88,6 +94,12 @@ export const watchUsage = (
   return onSnapshot(reference, (snapshot: DocumentSnapshot) => {
     callback(mapUsage(snapshot.data() as Record<string, unknown> | undefined));
   });
+};
+
+export const fetchUsage = async (uid: string, periodKey: string): Promise<OfferUsage | null> => {
+  const reference = doc(getDb(), 'users', uid, 'usage', periodKey);
+  const snapshot = await getDoc(reference);
+  return mapUsage(snapshot.data() as Record<string, unknown> | undefined);
 };
 
 export const startCheckout = async (priceId: string) => {
