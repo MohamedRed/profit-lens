@@ -72,6 +72,9 @@ const resolveHeaderBackHref = (path: string): string | null => {
   if (path.startsWith('/app/history/')) {
     return '/next/app/history';
   }
+  if (path.startsWith('/app/settings/vehicles/') && !path.startsWith('/app/settings/vehicles/new')) {
+    return '/next/app/settings/vehicles';
+  }
   if (path.startsWith('/app/settings/vehicles/new') || path.startsWith('/app/settings/vehicles/edit')) {
     return '/next/app/settings/vehicles';
   }

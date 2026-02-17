@@ -98,7 +98,7 @@ export default component$(() => {
                   <p class="ui-settings-row-subtitle">{vehicleTypeLabel(i18n, vehicle.type)}</p>
                   <Link
                     class="ui-settings-link-button"
-                    href={`/next/app/settings/vehicles/edit/?vehicleId=${encodeURIComponent(vehicle.id)}`}
+                    href={`/next/app/settings/vehicles/${encodeURIComponent(vehicle.id)}`}
                   >
                     {t(i18n, 'editVehicleButton', 'Edit vehicle')}
                   </Link>
