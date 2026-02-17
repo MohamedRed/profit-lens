@@ -68,7 +68,7 @@ export const OfferImportSourceDialog = component$<OfferImportSourceDialogProps>(
             chevron_right
           </span>
           <input
-            class="ui-offer-source-file-input"
+            class="ui-offer-file-input-hidden"
             type="file"
             accept="image/*"
             onClick$={(_, element) => {
@@ -91,7 +91,7 @@ export const OfferImportSourceDialog = component$<OfferImportSourceDialogProps>(
             chevron_right
           </span>
           <input
-            class="ui-offer-source-file-input"
+            class="ui-offer-file-input-hidden"
             type="file"
             accept="image/*"
             capture="environment"

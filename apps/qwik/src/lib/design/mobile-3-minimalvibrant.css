@@ -229,16 +229,10 @@
 
 .ui-offer-file-trigger {
   position: relative;
-  overflow: hidden;
 }
 
-.ui-offer-file-input-overlay {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
+.ui-offer-file-input-hidden {
+  display: none;
 }
 
 .ui-offer-screenshot-preview {
@@ -350,15 +344,6 @@
   gap: 12px;
   padding: 11px 12px;
   text-align: left;
-  cursor: pointer;
-}
-
-.ui-offer-source-file-input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
   cursor: pointer;
 }
 

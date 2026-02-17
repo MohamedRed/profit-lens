@@ -184,7 +184,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 ? t(i18n, 'loadingLabel', 'Loading...')
                 : t(i18n, 'importScreenshotButton', 'Import screenshot')}
               <input
-                class="ui-offer-file-input-overlay"
+                class="ui-offer-file-input-hidden"
                 type="file"
                 accept="image/*"
                 disabled={props.loading.value || !hasVehicles}
@@ -217,7 +217,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             <label class="ui-button ui-button-secondary ui-button-lg ui-offer-file-trigger">
               {t(i18n, 'captureScreenshotButton', 'Capture screenshot')}
               <input
-                class="ui-offer-file-input-overlay"
+                class="ui-offer-file-input-hidden"
                 type="file"
                 accept="image/*"
                 capture="environment"
