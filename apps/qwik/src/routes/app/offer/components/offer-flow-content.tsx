@@ -1,17 +1,24 @@
-import { $, component$, type QRL, type Signal, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Button } from '../../../../components/ui/button';
-import { t, useI18n } from '../../../../lib/i18n/i18n-context';
-import type { VehicleProfile } from '../../../../lib/types/vehicle';
-import { shouldUseDirectGalleryImport } from '../offer-import-platform';
-import type { OfferAnalysisRecord } from '../offer-analysis-result';
-import { enableCaptureCta, enableManualEntry } from '../offer-feature-flags';
-import { OfferFlowStatus } from './offer-flow-status';
-import { OfferImportSourceDialog } from './offer-import-source-dialog';
-import { OfferManualDetailsSection } from './offer-manual-details-section';
-import { OfferOverviewSections } from './offer-overview-sections';
-import { OfferScreenshotPreview } from './offer-screenshot-preview';
-import { OfferSetupSummary } from './offer-setup-summary';
-import { OfferUsageSection } from './offer-usage-section';
+import {
+  $,
+  component$,
+  type QRL,
+  type Signal,
+  useSignal,
+  useVisibleTask$,
+} from "@builder.io/qwik";
+import { Button } from "../../../../components/ui/button";
+import { t, useI18n } from "../../../../lib/i18n/i18n-context";
+import type { VehicleProfile } from "../../../../lib/types/vehicle";
+import { shouldUseDirectGalleryImport } from "../offer-import-platform";
+import type { OfferAnalysisRecord } from "../offer-analysis-result";
+import { enableCaptureCta, enableManualEntry } from "../offer-feature-flags";
+import { OfferFlowStatus } from "./offer-flow-status";
+import { OfferImportSourceDialog } from "./offer-import-source-dialog";
+import { OfferManualDetailsSection } from "./offer-manual-details-section";
+import { OfferOverviewSections } from "./offer-overview-sections";
+import { OfferScreenshotPreview } from "./offer-screenshot-preview";
+import { OfferSetupSummary } from "./offer-setup-summary";
+import { OfferUsageSection } from "./offer-usage-section";
 
 interface OfferFlowContentProps {
   analysisRecord: Signal<OfferAnalysisRecord | null>;
@@ -69,19 +76,22 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
       return;
     }
     void onFileSelected$(file);
-    element.value = '';
+    element.value = "";
   });
 
-  const showOverview = !props.loading.value && props.analysisRecord.value !== null;
-  const showDetailsSection = !showOverview && enableManualEntry && props.manualEntryRequested.value;
-  const showManualEntryCta = enableManualEntry && !showOverview && !showDetailsSection;
+  const showOverview =
+    !props.loading.value && props.analysisRecord.value !== null;
+  const showDetailsSection =
+    !showOverview && enableManualEntry && props.manualEntryRequested.value;
+  const showManualEntryCta =
+    enableManualEntry && !showOverview && !showDetailsSection;
   const hasVehicles = props.vehicles.value.length > 0;
   const showEmptyState = !props.vehiclesLoading.value && !hasVehicles;
 
   const onVehicleChange$ = $((nextVehicleId: string) => {
     props.selectedVehicleId.value = nextVehicleId;
     props.analysisRecord.value = null;
-    props.status.value = '';
+    props.status.value = "";
     props.manualEntryRequested.value = false;
   });
 
@@ -90,7 +100,11 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
       {showEmptyState ? (
         <div class="ui-offer-no-vehicle-state">
           <p class="ui-offer-empty-copy">
-            {t(i18n, 'noVehiclesMessage', 'Add a vehicle to start analyzing offers.')}
+            {t(
+              i18n,
+              "noVehiclesMessage",
+              "Add a vehicle to start analyzing offers.",
+            )}
           </p>
         </div>
       ) : null}
@@ -107,22 +121,29 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               vehicles={props.vehicles.value}
               vehiclesLoading={props.vehiclesLoading.value}
             />
-            <OfferUsageSection uid={props.userId} variant="inline" />
+            <OfferUsageSection
+              uid={props.userId}
+              backToHref="/next/app/offer"
+              variant="inline"
+            />
           </div>
 
-          <section class="ui-offer-import-hero" aria-label={t(i18n, 'importScreenshotButton', 'Import screenshot')}>
+          <section
+            class="ui-offer-import-hero"
+            aria-label={t(i18n, "importScreenshotButton", "Import screenshot")}
+          >
             {useDirectGalleryImport.value ? (
               <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
                 {props.loading.value
-                  ? t(i18n, 'loadingLabel', 'Loading...')
-                  : t(i18n, 'importScreenshotButton', 'Import screenshot')}
+                  ? t(i18n, "loadingLabel", "Loading...")
+                  : t(i18n, "importScreenshotButton", "Import screenshot")}
                 <input
                   class="ui-offer-file-input-hidden"
                   type="file"
                   accept="image/*"
                   disabled={props.loading.value || !hasVehicles}
                   onClick$={(_, element) => {
-                    element.value = '';
+                    element.value = "";
                   }}
                   onInput$={(_, element) => {
                     void onFileInputEvent$(element);
@@ -141,14 +162,14 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 onClick$={handleImportButtonClick$}
               >
                 {props.loading.value
-                  ? t(i18n, 'loadingLabel', 'Loading...')
-                  : t(i18n, 'importScreenshotButton', 'Import screenshot')}
+                  ? t(i18n, "loadingLabel", "Loading...")
+                  : t(i18n, "importScreenshotButton", "Import screenshot")}
               </Button>
             )}
 
             {enableCaptureCta ? (
               <label class="ui-button ui-button-secondary ui-button-lg ui-offer-file-trigger">
-                {t(i18n, 'captureScreenshotButton', 'Capture screenshot')}
+                {t(i18n, "captureScreenshotButton", "Capture screenshot")}
                 <input
                   class="ui-offer-file-input-hidden"
                   type="file"
@@ -156,7 +177,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                   capture="environment"
                   disabled={props.loading.value || !hasVehicles}
                   onClick$={(_, element) => {
-                    element.value = '';
+                    element.value = "";
                   }}
                   onInput$={(_, element) => {
                     void onFileInputEvent$(element);
@@ -172,7 +193,9 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               <OfferScreenshotPreview
                 src={props.screenshotPreviewUrl.value}
                 onRemove$={props.onClearScreenshotPreview$}
-                removeDisabled={props.loading.value || props.analysisRecord.value !== null}
+                removeDisabled={
+                  props.loading.value || props.analysisRecord.value !== null
+                }
               />
             ) : null}
           </section>
@@ -207,10 +230,10 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               onClick$={() => {
                 props.manualEntryRequested.value = true;
                 props.analysisRecord.value = null;
-                props.status.value = '';
+                props.status.value = "";
               }}
             >
-              {t(i18n, 'manualEntryButton', 'Enter manually')}
+              {t(i18n, "manualEntryButton", "Enter manually")}
             </Button>
           ) : null}
 
