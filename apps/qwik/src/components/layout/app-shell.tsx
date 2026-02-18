@@ -2,6 +2,7 @@ import { $, Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwi
 import { Link, useLocation, useNavigate } from '@builder.io/qwik-city';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 import { prefetchTabRoutes } from '../../lib/navigation/prefetch-tab-routes';
+import { readTabScrollY, saveTabScrollY } from '../../lib/navigation/tab-scroll-memory';
 
 const navItems = [
   {
@@ -60,6 +61,12 @@ const stripNextBase = (path: string): string => {
     return path.slice('/next'.length);
   }
   return path;
+};
+
+const tabRootPaths = navItems.map((item) => stripNextBase(item.href));
+
+const isTabRootPath = (path: string): boolean => {
+  return tabRootPaths.includes(path);
 };
 
 const resolveHeaderBackHref = (path: string): string | null => {
@@ -158,8 +165,40 @@ export const AppShell = component$(() => {
         transitionClass.value = 'is-push';
       }
     }
+
+    const previousSection = previousPath ? resolveSectionKey(previousPath) : null;
+    const currentSection = resolveSectionKey(currentPath);
+    const switchedTab = previousSection !== null && previousSection !== currentSection;
+    const initialHydration = previousSection === null;
+    if ((switchedTab || initialHydration) && isTabRootPath(currentPath)) {
+      const savedScroll = readTabScrollY(currentSection);
+      if (savedScroll !== null) {
+        window.requestAnimationFrame(() => {
+          window.scrollTo({ top: savedScroll, behavior: 'auto' });
+        });
+      }
+    }
+
     previousAppPath.value = currentPath;
     nextTransitionIsPop.value = false;
+  });
+
+  useVisibleTask$(({ track, cleanup }) => {
+    track(() => location.url.pathname);
+    const currentPath = stripNextBase(
+      location.url.pathname.endsWith('/') && location.url.pathname.length > 1
+        ? location.url.pathname.slice(0, -1)
+        : location.url.pathname,
+    );
+    const sectionKey = resolveSectionKey(currentPath);
+    const onScroll = () => {
+      saveTabScrollY(sectionKey, window.scrollY);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    cleanup(() => {
+      saveTabScrollY(sectionKey, window.scrollY);
+      window.removeEventListener('scroll', onScroll);
+    });
   });
 
   useVisibleTask$(({ cleanup }) => {
