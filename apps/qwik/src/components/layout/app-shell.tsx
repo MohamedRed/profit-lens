@@ -1,6 +1,7 @@
 import { $, Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Link, useLocation, useNavigate } from '@builder.io/qwik-city';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
+import { installIosPwaBackSwipeBlocker } from '../../lib/navigation/ios-edge-swipe-blocker';
 import { prefetchTabRoutes } from '../../lib/navigation/prefetch-tab-routes';
 import { readTabScrollY, saveTabScrollY } from '../../lib/navigation/tab-scroll-memory';
 import {
@@ -60,6 +61,13 @@ export const AppShell = component$(() => {
     window.addEventListener('popstate', onPopState);
     cleanup(() => {
       window.removeEventListener('popstate', onPopState);
+    });
+  });
+
+  useVisibleTask$(({ cleanup }) => {
+    const uninstallSwipeBlocker = installIosPwaBackSwipeBlocker(window);
+    cleanup(() => {
+      uninstallSwipeBlocker();
     });
   });
 
