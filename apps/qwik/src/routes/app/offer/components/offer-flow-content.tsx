@@ -94,58 +94,61 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
 
       {showEmptyState ? null : (
         <>
-          <OfferSectionCard title={t(i18n, 'vehicleSection', 'Vehicle')} showBorder={true}>
-            {props.vehiclesLoading.value ? (
-              <div class="ui-skeleton-stack-sm" aria-hidden="true">
-                <SkeletonBlock height="12px" width="112px" />
-                <SkeletonBlock height="44px" width="100%" />
-              </div>
-            ) : (
-              <div class="ui-field">
-                <Label for="offer-vehicle">{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</Label>
-                <Select
-                  id="offer-vehicle"
-                  options={props.vehicles.value.map((vehicle) => ({
-                    label: vehicle.name,
-                    value: vehicle.id,
-                  }))}
-                  value={props.selectedVehicleId.value}
-                  onChange$={(nextVehicleId) => {
-                    props.selectedVehicleId.value = nextVehicleId;
-                    props.analysisRecord.value = null;
-                    props.status.value = '';
-                    props.manualEntryRequested.value = false;
-                  }}
-                />
-              </div>
-            )}
-          </OfferSectionCard>
-
           <OfferSectionCard
-            title={t(i18n, 'profitabilityTargetTitle', 'Profitability target')}
+            title={t(i18n, 'vehicleSection', 'Vehicle')}
+            className="ui-offer-setup-card"
             showBorder={true}
           >
-            <div class="ui-field">
-              <Label for="min-profitability">
-                {t(i18n, 'minProfitabilityLabel', 'Minimum profitability')}
-              </Label>
-              <div class="ui-offer-target-input-wrap">
-                <Input
-                  id="min-profitability"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={props.minProfitabilityEuro.value.toFixed(2)}
-                  onBlur$={(_, el) => {
-                    void props.onSaveProfitabilityTarget$(el.value);
-                  }}
-                />
-                <span class="ui-offer-target-suffix">€</span>
+            <div class="ui-offer-setup-fields">
+              {props.vehiclesLoading.value ? (
+                <div class="ui-skeleton-stack-sm ui-offer-setup-vehicle-skeleton" aria-hidden="true">
+                  <SkeletonBlock height="12px" width="112px" />
+                  <SkeletonBlock height="44px" width="100%" />
+                </div>
+              ) : (
+                <div class="ui-field">
+                  <Label for="offer-vehicle">{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</Label>
+                  <Select
+                    id="offer-vehicle"
+                    options={props.vehicles.value.map((vehicle) => ({
+                      label: vehicle.name,
+                      value: vehicle.id,
+                    }))}
+                    value={props.selectedVehicleId.value}
+                    onChange$={(nextVehicleId) => {
+                      props.selectedVehicleId.value = nextVehicleId;
+                      props.analysisRecord.value = null;
+                      props.status.value = '';
+                      props.manualEntryRequested.value = false;
+                    }}
+                  />
+                </div>
+              )}
+
+              <div class="ui-offer-setup-divider" aria-hidden="true" />
+
+              <div class="ui-field">
+                <Label for="min-profitability">
+                  {t(i18n, 'minProfitabilityLabel', 'Minimum profitability')}
+                </Label>
+                <div class="ui-offer-target-input-wrap">
+                  <Input
+                    id="min-profitability"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={props.minProfitabilityEuro.value.toFixed(2)}
+                    onBlur$={(_, el) => {
+                      void props.onSaveProfitabilityTarget$(el.value);
+                    }}
+                  />
+                  <span class="ui-offer-target-suffix">€</span>
+                </div>
+                <p class="ui-offer-target-hint">{t(i18n, 'minProfitabilityHint', 'Suggested default: €2.00')}</p>
+                {props.savingProfitTarget.value ? (
+                  <p class="ui-offer-target-saving">{t(i18n, 'loadingLabel', 'Loading...')}</p>
+                ) : null}
               </div>
-              <p class="ui-offer-target-hint">{t(i18n, 'minProfitabilityHint', 'Suggested default: €2.00')}</p>
-              {props.savingProfitTarget.value ? (
-                <p class="ui-offer-target-saving">{t(i18n, 'loadingLabel', 'Loading...')}</p>
-              ) : null}
             </div>
           </OfferSectionCard>
 
