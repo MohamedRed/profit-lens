@@ -46,25 +46,12 @@
   gap: 10px;
 }
 
-.ui-offer-import-chips {
-  display: flex;
-  flex-wrap: wrap;
+.ui-offer-setup-vehicle-skeleton {
   gap: 8px;
 }
 
-.ui-offer-import-chip {
-  display: inline-flex;
-  align-items: center;
-  min-height: 30px;
-  border-radius: var(--pl-radius-pill);
-  border: 1px solid rgba(139, 92, 246, 0.2);
-  background: rgba(139, 92, 246, 0.08);
-  color: var(--pl-color-text-primary);
-  font-size: 0.79rem;
-  padding: 0 10px;
-}
-
-.ui-offer-setup-vehicle-skeleton {
+.ui-offer-meta-stack {
+  display: grid;
   gap: 8px;
 }
 
@@ -73,18 +60,29 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  border: 1px solid var(--pl-color-outline);
-  border-radius: var(--pl-radius-xl);
-  background: var(--pl-color-surface);
-  padding: 12px 14px;
+  border: 1px solid rgba(139, 92, 246, 0.18);
+  border-radius: var(--pl-radius-lg);
+  background: rgba(139, 92, 246, 0.06);
+  padding: 10px 12px;
 }
 
-.ui-offer-setup-summary-line {
-  margin: 0;
+.ui-offer-setup-summary-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   min-width: 0;
-  color: var(--pl-color-text-secondary);
-  font-size: 0.85rem;
-  line-height: 1.35;
+}
+
+.ui-offer-setup-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  border-radius: var(--pl-radius-pill);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--pl-color-text-primary);
+  font-size: 0.79rem;
+  padding: 0 10px;
 }
 
 .ui-offer-setup-summary-edit {

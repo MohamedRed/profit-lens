@@ -1,6 +1,6 @@
 import { $, component$, type QRL, useSignal } from '@builder.io/qwik';
 import { Button } from '../../../../components/ui/button';
-import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
+import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { VehicleProfile } from '../../../../lib/types/vehicle';
 import { OfferSetupEditorSheet } from './offer-setup-editor-sheet';
 
@@ -41,19 +41,15 @@ export const OfferSetupSummary = component$<OfferSetupSummaryProps>((props) => {
   return (
     <>
       <section class="ui-offer-setup-summary" aria-label={t(i18n, 'editOfferDetailsButton', 'Edit details')}>
-        <p class="ui-offer-setup-summary-line">
-          {formatTemplate(
-            t(
-              i18n,
-              'offerSetupSummaryLine',
-              'Vehicle: {vehicle} · Minimum profit per offer: {profit}',
-            ),
-            {
-              vehicle: selectedVehicleName,
-              profit: formatCurrency(props.minProfitabilityEuro),
-            },
-          )}
-        </p>
+        <div class="ui-offer-setup-summary-chips">
+          <span class="ui-offer-setup-chip">
+            {t(i18n, 'vehicleSection', 'Vehicle')}: {selectedVehicleName}
+          </span>
+          <span class="ui-offer-setup-chip">
+            {t(i18n, 'minProfitabilityLabel', 'Minimum profit per offer')}:{' '}
+            {formatCurrency(props.minProfitabilityEuro)}
+          </span>
+        </div>
         <Button variant="ghost" type="button" class="ui-offer-setup-summary-edit" onClick$={openEditor$}>
           {t(i18n, 'editOfferDetailsButton', 'Edit details')}
         </Button>

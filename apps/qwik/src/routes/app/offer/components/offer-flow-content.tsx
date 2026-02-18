@@ -44,12 +44,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
   const sourceDialogOpen = useSignal(false);
   const useDirectGalleryImport = useSignal(false);
-  const formatCurrency = (value: number): string =>
-    new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 2,
-    }).format(value);
 
   useVisibleTask$(() => {
     useDirectGalleryImport.value = shouldUseDirectGalleryImport(window);
@@ -84,9 +78,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const showManualEntryCta = enableManualEntry && !showOverview && !showDetailsSection;
   const hasVehicles = props.vehicles.value.length > 0;
   const showEmptyState = !props.vehiclesLoading.value && !hasVehicles;
-  const selectedVehicleName =
-    props.vehicles.value.find((vehicle) => vehicle.id === props.selectedVehicleId.value)?.name ??
-    t(i18n, 'loadingLabel', 'Loading...');
 
   const onVehicleChange$ = $((nextVehicleId: string) => {
     props.selectedVehicleId.value = nextVehicleId;
@@ -175,17 +166,18 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 </label>
               ) : null}
 
-              <div class="ui-offer-import-chips" aria-label={t(i18n, 'vehicleSection', 'Vehicle')}>
-                <span class="ui-offer-import-chip">
-                  {t(i18n, 'vehicleSection', 'Vehicle')}: {selectedVehicleName}
-                </span>
-                <span class="ui-offer-import-chip">
-                  {t(i18n, 'minProfitabilityLabel', 'Minimum profit per offer')}:{' '}
-                  {formatCurrency(props.minProfitabilityEuro.value)}
-                </span>
+              <div class="ui-offer-meta-stack">
+                <OfferUsageSection uid={props.userId} variant="inline" />
+                <OfferSetupSummary
+                  minProfitabilityEuro={props.minProfitabilityEuro.value}
+                  onSaveProfitabilityTarget$={props.onSaveProfitabilityTarget$}
+                  onVehicleChange$={onVehicleChange$}
+                  savingProfitTarget={props.savingProfitTarget.value}
+                  selectedVehicleId={props.selectedVehicleId.value}
+                  vehicles={props.vehicles.value}
+                  vehiclesLoading={props.vehiclesLoading.value}
+                />
               </div>
-
-              <OfferUsageSection uid={props.userId} variant="inline" />
 
               {props.screenshotPreviewUrl.value ? (
                 <OfferScreenshotPreview
@@ -195,16 +187,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               ) : null}
             </div>
           </OfferSectionCard>
-
-          <OfferSetupSummary
-            minProfitabilityEuro={props.minProfitabilityEuro.value}
-            onSaveProfitabilityTarget$={props.onSaveProfitabilityTarget$}
-            onVehicleChange$={onVehicleChange$}
-            savingProfitTarget={props.savingProfitTarget.value}
-            selectedVehicleId={props.selectedVehicleId.value}
-            vehicles={props.vehicles.value}
-            vehiclesLoading={props.vehiclesLoading.value}
-          />
 
           {showOverview && props.analysisRecord.value ? (
             <OfferOverviewSections
