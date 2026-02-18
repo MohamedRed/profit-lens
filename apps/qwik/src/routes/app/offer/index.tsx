@@ -216,6 +216,9 @@ export default component$(() => {
   });
 
   const clearScreenshotPreview$ = $(() => {
+    if (loading.value) {
+      return;
+    }
     if (screenshotPreviewUrl.value) {
       URL.revokeObjectURL(screenshotPreviewUrl.value);
     }

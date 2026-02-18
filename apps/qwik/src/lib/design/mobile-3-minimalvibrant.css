@@ -472,6 +472,11 @@
   cursor: pointer;
 }
 
+.ui-offer-screenshot-remove:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .ui-offer-screenshot-thumb:focus-visible,
 .ui-offer-screenshot-remove:focus-visible {
   outline: 2px solid rgba(139, 92, 246, 0.42);

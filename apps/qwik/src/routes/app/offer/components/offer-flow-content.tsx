@@ -183,6 +183,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 <OfferScreenshotPreview
                   src={props.screenshotPreviewUrl.value}
                   onRemove$={props.onClearScreenshotPreview$}
+                  removeDisabled={props.loading.value}
                 />
               ) : null}
             </div>

@@ -5,9 +5,11 @@ import { ImagePreviewModal } from '../../../../components/ui/image-preview-modal
 interface OfferScreenshotPreviewProps {
   src: string;
   onRemove$: QRL<() => void>;
+  removeDisabled?: boolean;
 }
 
-export const OfferScreenshotPreview = component$<OfferScreenshotPreviewProps>(({ src, onRemove$ }) => {
+export const OfferScreenshotPreview = component$<OfferScreenshotPreviewProps>(
+  ({ src, onRemove$, removeDisabled = false }) => {
   const i18n = useI18n();
   const previewSrc = useSignal<string | null>(null);
 
@@ -44,6 +46,7 @@ export const OfferScreenshotPreview = component$<OfferScreenshotPreviewProps>(({
           type="button"
           class="ui-offer-screenshot-remove"
           aria-label={t(i18n, 'removeScreenshotLabel', 'Remove screenshot')}
+          disabled={removeDisabled}
           onClick$={onRemove$}
         >
           <span class="material-icons-outlined" aria-hidden="true">
