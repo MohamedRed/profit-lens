@@ -97,6 +97,7 @@
   "signInFailedMessage": "تعذر تسجيل الدخول. تحقق من البريد الإلكتروني وكلمة المرور ثم أعد المحاولة.",
   "registerFailedMessage": "تعذر إنشاء الحساب الآن. يرجى المحاولة مرة أخرى.",
   "offerActionFailedMessage": "تعذر إكمال هذا الإجراء الآن. يرجى المحاولة مرة أخرى.",
+  "offerErrorTitle": "إجراء مطلوب",
   "billingActionFailedMessage": "تعذر تحديث الاشتراك الآن. يرجى المحاولة مرة أخرى.",
   "deviceActionFailedMessage": "تعذر تحديث الجهاز الآن. يرجى المحاولة مرة أخرى.",
   "vehicleActionFailedMessage": "تعذر تحديث المركبة الآن. يرجى المحاولة مرة أخرى.",

@@ -139,7 +139,7 @@ export default component$(() => {
 
   const analyzeManual$ = $(async () => {
     if (!selectedVehicleId.value) {
-      status.value = 'Select vehicle';
+      status.value = t(i18n, 'vehicleSelectLabel', 'Select vehicle');
       return;
     }
 
@@ -170,7 +170,7 @@ export default component$(() => {
 
   const importScreenshotFile$ = $(async (file: File) => {
     if (!selectedVehicleId.value) {
-      status.value = 'Select vehicle';
+      status.value = t(i18n, 'vehicleSelectLabel', 'Select vehicle');
       return;
     }
 

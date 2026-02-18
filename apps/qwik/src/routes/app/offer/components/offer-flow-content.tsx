@@ -9,6 +9,7 @@ import type { VehicleProfile } from '../../../../lib/types/vehicle';
 import { shouldUseDirectGalleryImport } from '../offer-import-platform';
 import type { OfferAnalysisRecord } from '../offer-analysis-result';
 import { enableCaptureCta, enableManualEntry } from '../offer-feature-flags';
+import { OfferFlowStatus } from './offer-flow-status';
 import { OfferImportSourceDialog } from './offer-import-source-dialog';
 import { OfferManualDetailsSection } from './offer-manual-details-section';
 import { OfferOverviewSections } from './offer-overview-sections';
@@ -41,11 +42,6 @@ interface OfferFlowContentProps {
   vehicles: Signal<VehicleProfile[]>;
   vehiclesLoading: Signal<boolean>;
 }
-
-const isSuccessStatus = (value: string): boolean => {
-  const lower = value.toLowerCase();
-  return lower.includes('import') || lower.includes('analy');
-};
 
 export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
@@ -256,16 +252,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             />
           ) : null}
 
-          {props.status.value && !isSuccessStatus(props.status.value) ? (
-            <p
-              class={{
-                'ui-status': true,
-                'ui-status-error': true,
-              }}
-            >
-              {props.status.value}
-            </p>
-          ) : null}
+          <OfferFlowStatus status={props.status.value} />
 
           <OfferImportSourceDialog
             isOpen={sourceDialogOpen.value}

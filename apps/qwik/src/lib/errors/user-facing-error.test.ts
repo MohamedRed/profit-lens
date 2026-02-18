@@ -30,6 +30,33 @@ describe('resolveUserFacingErrorMessage', () => {
     expect(message).toBe("We couldn't read this screenshot.");
   });
 
+  it.each([
+    'No offer found in screenshot.',
+    'Failed to parse Gemini JSON response.',
+    'Gemini response was not JSON.',
+    'Unable to extract offer details from the screenshot.',
+  ])('maps screenshot extraction failures to screenshot guidance (%s)', (rawMessage) => {
+    const i18n = createI18n({
+      analysisFailedScreenshotBody: "We couldn't read this screenshot.",
+      offerActionFailedMessage: 'Unable to complete this action right now.',
+    });
+    const message = resolveUserFacingErrorMessage(i18n, new Error(rawMessage), 'offer');
+    expect(message).toBe("We couldn't read this screenshot.");
+  });
+
+  it('keeps non-offer contexts on their own fallback message', () => {
+    const i18n = createI18n({
+      analysisFailedScreenshotBody: "We couldn't read this screenshot.",
+      helpSubmissionFailed: 'Unable to submit ticket.',
+    });
+    const message = resolveUserFacingErrorMessage(
+      i18n,
+      new Error('Gemini response was not JSON.'),
+      'help-submit',
+    );
+    expect(message).toBe('Unable to submit ticket.');
+  });
+
   it('maps unauthenticated style errors to session expired', () => {
     const i18n = createI18n({ errorSessionExpired: 'Your session has expired.' });
     const message = resolveUserFacingErrorMessage(

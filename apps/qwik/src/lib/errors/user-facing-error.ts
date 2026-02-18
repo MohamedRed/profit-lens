@@ -50,6 +50,24 @@ const readRawCode = (error: unknown): string | null => {
   return normalized;
 };
 
+const OFFER_SCREENSHOT_FAILURE_PATTERNS = [
+  'invalid json payload',
+  'generation_config.response_schema',
+  'gemini api error',
+  'gemini response was not json',
+  'failed to parse gemini json',
+  'gemini json parse failed',
+  'no offer found in screenshot',
+  'unable to extract offer details from the screenshot',
+  'unable to extract offer',
+  'failed to extract offer',
+  'missing image payload',
+  'invalid image payload',
+];
+
+const containsAnyPattern = (value: string, patterns: readonly string[]): boolean =>
+  patterns.some((pattern) => value.includes(pattern));
+
 const resolveFallbackMessage = (i18n: I18nStore, context: UserFacingErrorContext): string => {
   switch (context) {
     case 'auth-signin':
@@ -90,11 +108,7 @@ export const resolveUserFacingErrorMessage = (
   const message = readRawMessage(error);
   const messageLower = message.toLowerCase();
 
-  if (
-    messageLower.includes('invalid json payload') ||
-    messageLower.includes('generation_config.response_schema') ||
-    messageLower.includes('gemini api error')
-  ) {
+  if (context === 'offer' && containsAnyPattern(messageLower, OFFER_SCREENSHOT_FAILURE_PATTERNS)) {
     return t(
       i18n,
       'analysisFailedScreenshotBody',
