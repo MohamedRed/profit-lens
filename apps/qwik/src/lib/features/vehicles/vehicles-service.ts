@@ -48,11 +48,14 @@ const mapVehicle = (id: string, data: Record<string, unknown>): VehicleProfile =
 export const watchVehicles = (
   uid: string,
   callback: (vehicles: VehicleProfile[]) => void,
+  onError?: (error: unknown) => void,
 ): (() => void) => {
   const vehiclesQuery = query(userCollection(uid, 'vehicles'), orderBy('createdAt', 'asc'));
   return onSnapshot(vehiclesQuery, (snapshot: QuerySnapshot) => {
     const vehicles = snapshot.docs.map((item) => mapVehicle(item.id, item.data() as Record<string, unknown>));
     callback(vehicles);
+  }, (error) => {
+    onError?.(error);
   });
 };
 

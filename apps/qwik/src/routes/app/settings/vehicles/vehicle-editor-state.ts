@@ -10,7 +10,7 @@ import {
   resolveEnergyPriceDefault,
   type VehicleDraft,
 } from '../../../../lib/features/vehicles/vehicle-form-utils';
-import { useI18n } from '../../../../lib/i18n/i18n-context';
+import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { UserProfile } from '../../../../lib/types/profile';
 import type { VehicleProfile } from '../../../../lib/types/vehicle';
 import {
@@ -102,6 +102,11 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
           draft.value = vehicleToDraft(found);
           useVehiclePresets.value = false;
         }
+        loading.value = false;
+      }, (error) => {
+        status.value = error instanceof Error
+          ? error.message
+          : t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
         loading.value = false;
       });
     } else if (props.mode === 'edit') {

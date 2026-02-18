@@ -208,6 +208,7 @@
   "deleteVehicleConfirm": "حذف",
   "vehicleSaveFailedMessage": "تعذر حفظ المركبة.",
   "vehicleDeleteFailedMessage": "تعذر حذف المركبة.",
+  "vehicleLoadFailedMessage": "تعذر تحميل المركبات حالياً.",
   "vehicleBrandLabel": "العلامة التجارية",
   "vehicleModelLabel": "الطراز",
   "vehicleLicensePlateLabel": "لوحة المركبة",

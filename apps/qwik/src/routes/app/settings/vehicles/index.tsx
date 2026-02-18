@@ -34,6 +34,7 @@ export default component$(() => {
   const vehicles = useSignal<VehicleProfile[]>([]);
   const profile = useSignal<UserProfile | null>(null);
   const loading = useSignal(true);
+  const loadError = useSignal('');
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
@@ -41,12 +42,17 @@ export default component$(() => {
       loading.value = false;
       vehicles.value = [];
       profile.value = null;
+      loadError.value = '';
       return;
     }
 
     loading.value = true;
+    loadError.value = '';
     const unsubscribeVehicles = watchVehicles(user.uid, (items) => {
       vehicles.value = items;
+      loading.value = false;
+    }, (error) => {
+      loadError.value = error instanceof Error ? error.message : t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicles.');
       loading.value = false;
     });
     const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (nextProfile) => {
@@ -71,6 +77,7 @@ export default component$(() => {
   return (
     <div class="ui-settings-detail-root">
       <section class="ui-settings-detail-card">
+        {loadError.value ? <p class="ui-status ui-status-error">{loadError.value}</p> : null}
         <div class="ui-settings-row">
           <h2 class="ui-settings-detail-title">{t(i18n, 'vehiclesSectionTitle', 'Vehicles')}</h2>
           <Link class="ui-settings-link-button" href="/next/app/settings/vehicles/new">
@@ -98,7 +105,7 @@ export default component$(() => {
                   <p class="ui-settings-row-subtitle">{vehicleTypeLabel(i18n, vehicle.type)}</p>
                   <Link
                     class="ui-settings-link-button"
-                    href={`/next/app/settings/vehicles/${encodeURIComponent(vehicle.id)}`}
+                    href={`/next/app/settings/vehicles/edit?vehicleId=${encodeURIComponent(vehicle.id)}`}
                   >
                     {t(i18n, 'editVehicleButton', 'Edit vehicle')}
                   </Link>

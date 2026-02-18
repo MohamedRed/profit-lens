@@ -1,4 +1,4 @@
-import { component$, useSignal } from '@builder.io/qwik';
+import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Link } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { signOutCurrentUser } from '../../../lib/firebase/auth';
@@ -6,6 +6,7 @@ import { billingPlans } from '../../../lib/config/runtime-config';
 import { applyLocale, formatTemplate, t, useI18n } from '../../../lib/i18n/i18n-context';
 import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
 import { startCheckout } from '../../../lib/features/billing/billing-service';
+import { isRunningAsInstalledPwa } from '../../../lib/features/pwa/pwa-install-state';
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
 import { Select } from '../../../components/ui/select';
 import type { Entitlement, OfferUsage } from '../../../lib/types/billing';
@@ -43,9 +44,13 @@ export default component$(() => {
   const selectedLanguage = useSignal<'fr' | 'en' | 'ar'>('fr');
   const languageSaving = useSignal(false);
   const checkoutLoading = useSignal(false);
+  const showInstallTile = useSignal(false);
   const status = useSignal('');
 
   useSettingsTabSession({ auth, profile, vehicles, entitlement, usage, devices, selectedLanguage });
+  useVisibleTask$(() => {
+    showInstallTile.value = !isRunningAsInstalledPwa(window);
+  });
 
   const locale = i18n.locale.value;
   const currentProfile = profile.value;
@@ -122,19 +127,21 @@ export default component$(() => {
         />
       </section>
 
-      <section class="ui-settings-card">
-        <div class="ui-settings-tile">
-          <span class="material-icons-outlined ui-settings-leading" aria-hidden="true">
-            ios_share
-          </span>
-          <div class="ui-settings-tile-content">
-            <p class="ui-settings-title">{t(i18n, 'installAppTitle', "Install the app")}</p>
-            <p class="ui-settings-subtitle">
-              {t(i18n, 'installAppSubtitle', 'Add Liive Profit to your home screen')}
-            </p>
+      {showInstallTile.value ? (
+        <section class="ui-settings-card">
+          <div class="ui-settings-tile">
+            <span class="material-icons-outlined ui-settings-leading" aria-hidden="true">
+              ios_share
+            </span>
+            <div class="ui-settings-tile-content">
+              <p class="ui-settings-title">{t(i18n, 'installAppTitle', "Install the app")}</p>
+              <p class="ui-settings-subtitle">
+                {t(i18n, 'installAppSubtitle', 'Add Liive Profit to your home screen')}
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       <section class="ui-settings-card">
         <div class="ui-settings-tile">
@@ -237,7 +244,7 @@ export default component$(() => {
               <li key={vehicle.id}>
                 <Link
                   class="ui-settings-vehicle-row ui-settings-tile-link"
-                  href={`/next/app/settings/vehicles/${encodeURIComponent(vehicle.id)}`}
+                  href={`/next/app/settings/vehicles/edit?vehicleId=${encodeURIComponent(vehicle.id)}`}
                 >
                   <div>
                     <p class="ui-settings-vehicle-name">{vehicle.name}</p>

@@ -36,6 +36,7 @@ export const AppShell = component$(() => {
   const appPath = toAppPath(location.url.pathname);
   const showHelpTicketsAction = appPath === '/app/help';
   const headerBackHref = resolveHeaderBackHref(appPath);
+  const preferDeterministicBack = appPath.startsWith('/app/settings/vehicles/');
   const activeTabIndex = resolveActiveTabIndex(appPath);
   const activeTab = navItems[activeTabIndex];
 
@@ -43,7 +44,7 @@ export const AppShell = component$(() => {
     if (!headerBackHref) {
       return;
     }
-    if (window.history.length > 1) {
+    if (window.history.length > 1 && !preferDeterministicBack) {
       window.history.back();
       return;
     }
