@@ -62,7 +62,20 @@ const tabRootPaths = navItems.map((item) => toAppPath(item.href));
 
 export const isTabRootPath = (path: string): boolean => tabRootPaths.includes(path);
 
-export const resolveHeaderBackHref = (path: string): string | null => {
+const isValidAppBackHref = (value: string | null | undefined): value is string => {
+  if (!value) {
+    return false;
+  }
+  return value.startsWith('/next/app/');
+};
+
+export const resolveHeaderBackHref = (
+  path: string,
+  explicitBackHref?: string | null,
+): string | null => {
+  if (isValidAppBackHref(explicitBackHref)) {
+    return explicitBackHref;
+  }
   if (path === '/app/help/tickets') {
     return '/next/app/help';
   }

@@ -235,7 +235,11 @@ export default component$(() => {
     }
     saveSelectedHistoryOfferId(record.id);
     upsertHistoryOfferCache(toOfferRecord(record));
-    await navigate(`/next/app/history/details/?offerId=${encodeURIComponent(record.id)}`);
+    const search = new URLSearchParams({
+      offerId: record.id,
+      backTo: '/next/app/offer',
+    });
+    await navigate(`/next/app/history/details/?${search.toString()}`);
   });
 
   const user = auth.user.value;

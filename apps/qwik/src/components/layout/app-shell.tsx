@@ -40,10 +40,14 @@ export const AppShell = component$(() => {
   const previousAppPath = useSignal<string | null>(null);
   const blockNativeBackNavigation = useSignal(false);
   const appPath = toAppPath(location.url.pathname);
+  const explicitBackHref = location.url.searchParams.get('backTo');
+  const hasExplicitBackTarget = Boolean(explicitBackHref?.startsWith('/next/app/'));
   const showHelpTicketsAction = appPath === '/app/help';
-  const headerBackHref = resolveHeaderBackHref(appPath);
+  const headerBackHref = resolveHeaderBackHref(appPath, explicitBackHref);
   const preferDeterministicBack =
-    appPath === '/app/settings/vehicles' || appPath.startsWith('/app/settings/vehicles/');
+    hasExplicitBackTarget ||
+    appPath === '/app/settings/vehicles' ||
+    appPath.startsWith('/app/settings/vehicles/');
   const activeTabIndex = resolveActiveTabIndex(appPath);
   const activeTab = navItems[activeTabIndex];
 
