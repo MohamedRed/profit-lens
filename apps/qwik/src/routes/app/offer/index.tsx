@@ -4,6 +4,7 @@ import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
+import { saveExplicitBackTarget } from '../../../lib/navigation/explicit-back-target';
 import { saveTabScrollY } from '../../../lib/navigation/tab-scroll-memory';
 import type { OfferRecord } from '../../../lib/types/offer';
 import type { UserProfile } from '../../../lib/types/profile';
@@ -235,6 +236,7 @@ export default component$(() => {
     }
     saveSelectedHistoryOfferId(record.id);
     upsertHistoryOfferCache(toOfferRecord(record));
+    saveExplicitBackTarget('history/details', '/next/app/offer');
     const search = new URLSearchParams({
       offerId: record.id,
       backTo: '/next/app/offer',

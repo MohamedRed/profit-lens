@@ -6,6 +6,7 @@ import {
   installIosPwaBackSwipeBlocker,
   shouldBlockIosPwaBackNavigation,
 } from '../../lib/navigation/ios-edge-swipe-blocker';
+import { readExplicitBackTarget } from '../../lib/navigation/explicit-back-target';
 import { prefetchTabRoutes } from '../../lib/navigation/prefetch-tab-routes';
 import { readTabScrollY, saveTabScrollY } from '../../lib/navigation/tab-scroll-memory';
 import {
@@ -40,7 +41,9 @@ export const AppShell = component$(() => {
   const previousAppPath = useSignal<string | null>(null);
   const blockNativeBackNavigation = useSignal(false);
   const appPath = toAppPath(location.url.pathname);
-  const explicitBackHref = location.url.searchParams.get('backTo');
+  const fallbackBackHref =
+    appPath === '/app/history/details' ? readExplicitBackTarget('history/details') : null;
+  const explicitBackHref = location.url.searchParams.get('backTo') ?? fallbackBackHref;
   const hasExplicitBackTarget = Boolean(explicitBackHref?.startsWith('/next/app/'));
   const showHelpTicketsAction = appPath === '/app/help';
   const headerBackHref = resolveHeaderBackHref(appPath, explicitBackHref);

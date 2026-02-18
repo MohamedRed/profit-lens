@@ -6,6 +6,7 @@ import {
   SkeletonBlock,
 } from '../../../components/ui/page-loading-skeleton';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
+import { saveExplicitBackTarget } from '../../../lib/navigation/explicit-back-target';
 import type { OfferRecord } from '../../../lib/types/offer';
 import { formatCurrency, formatShortDateTime } from './history-helpers';
 
@@ -43,8 +44,11 @@ export const HistoryListPanel = component$<HistoryListPanelProps>((props) => {
           <li key={item.id} class="ui-history-item">
             <Link
               class="ui-history-item-link"
-              href={`/next/app/history/details/?offerId=${encodeURIComponent(item.id)}`}
-              onClick$={() => props.onHistoryItemClick$(item.id)}
+              href={`/next/app/history/details/?offerId=${encodeURIComponent(item.id)}&backTo=${encodeURIComponent('/next/app/history')}`}
+              onClick$={() => {
+                saveExplicitBackTarget('history/details', '/next/app/history');
+                props.onHistoryItemClick$(item.id);
+              }}
             >
               <div class="ui-history-item-main">
                 <p class="ui-history-item-profit">{formatCurrency(props.locale, profit)}</p>
