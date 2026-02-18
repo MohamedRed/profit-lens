@@ -8,12 +8,20 @@ body {
   min-height: 100dvh;
   overflow-x: hidden;
   overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
   overscroll-behavior-x: none;
   overscroll-behavior-y: auto;
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
   -webkit-overflow-scrolling: touch;
   touch-action: manipulation;
+}
+
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 @media (min-width: 560px) {
