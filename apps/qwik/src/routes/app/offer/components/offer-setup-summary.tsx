@@ -42,11 +42,8 @@ export const OfferSetupSummary = component$<OfferSetupSummaryProps>((props) => {
     <>
       <section class="ui-offer-setup-summary" aria-label={t(i18n, 'editOfferDetailsButton', 'Edit details')}>
         <div class="ui-offer-setup-summary-chips">
+          <span class="ui-offer-setup-chip">{selectedVehicleName}</span>
           <span class="ui-offer-setup-chip">
-            {t(i18n, 'vehicleSection', 'Vehicle')}: {selectedVehicleName}
-          </span>
-          <span class="ui-offer-setup-chip">
-            {t(i18n, 'minProfitabilityLabel', 'Minimum profit per offer')}:{' '}
             {formatCurrency(props.minProfitabilityEuro)}
           </span>
         </div>
