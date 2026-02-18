@@ -150,26 +150,28 @@
 }
 
 .ui-mobile-content-transition {
-  animation-duration: 230ms;
+  animation-duration: 300ms;
   animation-fill-mode: both;
-  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, opacity;
 }
 
 .ui-mobile-content-transition.is-push {
   animation-name: ui-route-push;
-  animation-duration: 320ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-duration: 430ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .ui-mobile-content-transition.is-pop {
   animation-name: ui-route-pop;
+  animation-duration: 390ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .ui-mobile-content-transition.is-push-deep {
   animation-name: ui-route-push-deep;
-  animation-duration: 360ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-duration: 470ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .ui-mobile-tab-shell {
@@ -350,7 +352,7 @@
 @keyframes ui-route-push {
   from {
     opacity: 0;
-    transform: translate3d(12px, 0, 0);
+    transform: translate3d(18px, 0, 0);
   }
   to {
     opacity: 1;
@@ -361,7 +363,7 @@
 @keyframes ui-route-push-deep {
   from {
     opacity: 0;
-    transform: translate3d(24px, 0, 0);
+    transform: translate3d(30px, 0, 0);
   }
   to {
     opacity: 1;
@@ -372,7 +374,7 @@
 @keyframes ui-route-pop {
   from {
     opacity: 0;
-    transform: translate3d(-22px, 0, 0);
+    transform: translate3d(-18px, 0, 0);
   }
   to {
     opacity: 1;
