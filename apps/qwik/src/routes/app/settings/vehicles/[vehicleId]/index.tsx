@@ -1,9 +1,9 @@
-import { component$, useVisibleTask$ } from '@builder.io/qwik';
-import { useLocation, useNavigate } from '@builder.io/qwik-city';
+import { component$ } from '@builder.io/qwik';
+import { useLocation } from '@builder.io/qwik-city';
+import { VehicleEditor } from '../vehicle-editor';
 
 export default component$(() => {
   const location = useLocation();
-  const navigate = useNavigate();
   const rawVehicleId = location.params.vehicleId ?? null;
   let vehicleId: string | null = null;
   if (rawVehicleId) {
@@ -14,15 +14,5 @@ export default component$(() => {
     }
   }
 
-  useVisibleTask$(({ track }) => {
-    track(() => location.params.vehicleId);
-    if (!vehicleId) {
-      void navigate('/next/app/settings/vehicles');
-      return;
-    }
-    const encodedId = encodeURIComponent(vehicleId);
-    void navigate(`/next/app/settings/vehicles/edit?vehicleId=${encodedId}`);
-  });
-
-  return null;
+  return <VehicleEditor mode="edit" vehicleId={vehicleId} />;
 });

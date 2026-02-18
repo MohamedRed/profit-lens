@@ -244,7 +244,7 @@ export default component$(() => {
               <li key={vehicle.id}>
                 <Link
                   class="ui-settings-vehicle-row ui-settings-tile-link"
-                  href={`/next/app/settings/vehicles/edit?vehicleId=${encodeURIComponent(vehicle.id)}`}
+                  href={`/next/app/settings/vehicles/${encodeURIComponent(vehicle.id)}`}
                 >
                   <div>
                     <p class="ui-settings-vehicle-name">{vehicle.name}</p>
