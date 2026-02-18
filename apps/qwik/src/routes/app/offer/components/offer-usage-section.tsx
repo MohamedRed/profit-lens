@@ -1,7 +1,7 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Link } from '@builder.io/qwik-city';
 import { Button } from '../../../../components/ui/button';
-import { OfferUsageSkeleton } from '../../../../components/ui/page-loading-skeleton';
+import { OfferUsageSkeleton, SkeletonBlock } from '../../../../components/ui/page-loading-skeleton';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
 import {
@@ -15,6 +15,7 @@ import { OfferSectionCard } from './offer-section-card';
 
 interface OfferUsageSectionProps {
   uid: string;
+  variant?: 'card' | 'inline';
 }
 
 interface OfferUsageCacheEntry {
@@ -48,7 +49,7 @@ const resolveStatusLabel = (entitlement: Entitlement, statusUnknown: string): st
   }
 };
 
-export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) => {
+export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid, variant = 'card' }) => {
   const i18n = useI18n();
   const entitlement = useSignal<Entitlement | null>(null);
   const usage = useSignal<OfferUsage | null>(null);
@@ -109,6 +110,14 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
 
   const content = () => {
     if (!entitlement.value) {
+      if (variant === 'inline') {
+        return (
+          <div class="ui-offer-usage-inline ui-skeleton-stack-sm" aria-hidden="true">
+            <SkeletonBlock height="12px" width="124px" />
+            <SkeletonBlock height="14px" width="176px" />
+          </div>
+        );
+      }
       return <OfferUsageSkeleton />;
     }
 
@@ -132,12 +141,62 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
       entitlement.value.status.toLowerCase() === 'free';
     const paidPlan = billingPlans.find((plan) => plan.offerLimit !== null && Boolean(plan.priceId));
 
+    const statusLabel = resolveStatusLabel(
+      entitlement.value,
+      t(i18n, 'subscriptionStatusUnknown', 'Unknown'),
+    );
+
+    const action = isFree ? (
+      <button
+        type="button"
+        class="ui-offer-usage-inline-link"
+        onClick$={async () => {
+          if (!paidPlan?.priceId) {
+            status.value = t(
+              i18n,
+              'errorPlanUnavailable',
+              'No paid plan is available right now. Please try again later.',
+            );
+            return;
+          }
+          status.value = '';
+          try {
+            await startCheckout(paidPlan.priceId);
+          } catch (error) {
+            status.value = resolveUserFacingErrorMessage(i18n, error, 'billing');
+          }
+        }}
+      >
+        {t(i18n, 'upgradePlanButton', 'Upgrade plan')}
+      </button>
+    ) : (
+      <Link href="/next/app/settings/billing" prefetch={true} class="ui-offer-usage-inline-link">
+        {t(i18n, 'managePlanButton', 'Manage plan')}
+      </Link>
+    );
+
+    if (variant === 'inline') {
+      return (
+        <div class="ui-offer-usage-inline">
+          <div class="ui-offer-usage-inline-copy">
+            <p class="ui-offer-usage-inline-title">{t(i18n, 'offersRemainingTitle', 'Offers remaining')}</p>
+            <p class="ui-offer-usage-inline-value">
+              {remainingLabel}
+              <span class="ui-offer-usage-inline-separator">·</span>
+              <span>{statusLabel}</span>
+            </p>
+          </div>
+          {action}
+          {status.value ? <p class="ui-status ui-status-error">{status.value}</p> : null}
+        </div>
+      );
+    }
+
     return (
       <div class="ui-offer-usage-content">
         <p class="ui-offer-usage-value">{remainingLabel}</p>
         <p class="ui-offer-usage-meta">
-          {t(i18n, 'subscriptionStatusLabel', 'Subscription status')}:{' '}
-          {resolveStatusLabel(entitlement.value, t(i18n, 'subscriptionStatusUnknown', 'Unknown'))}
+          {t(i18n, 'subscriptionStatusLabel', 'Subscription status')}: {statusLabel}
         </p>
         <div class="ui-offer-usage-actions">
           {isFree ? (
@@ -177,6 +236,10 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(({ uid }) =>
       </div>
     );
   };
+
+  if (variant === 'inline') {
+    return <section class="ui-offer-usage-inline-shell">{content()}</section>;
+  }
 
   return (
     <OfferSectionCard

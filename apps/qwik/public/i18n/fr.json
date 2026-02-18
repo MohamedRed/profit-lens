@@ -208,7 +208,6 @@
   "deleteVehicleConfirm": "Supprimer",
   "vehicleSaveFailedMessage": "Impossible d’enregistrer le véhicule.",
   "vehicleDeleteFailedMessage": "Impossible de supprimer le véhicule.",
-  "vehicleLoadFailedMessage": "Impossible de charger les véhicules pour le moment.",
   "vehicleBrandLabel": "Marque",
   "vehicleModelLabel": "Modèle",
   "vehicleLicensePlateLabel": "Plaque d'immatriculation",

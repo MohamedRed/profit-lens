@@ -1,9 +1,5 @@
 import { $, component$, type QRL, type Signal, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Button } from '../../../../components/ui/button';
-import { Input } from '../../../../components/ui/input';
-import { Label } from '../../../../components/ui/label';
-import { SkeletonBlock } from '../../../../components/ui/page-loading-skeleton';
-import { Select } from '../../../../components/ui/select';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { VehicleProfile } from '../../../../lib/types/vehicle';
 import { shouldUseDirectGalleryImport } from '../offer-import-platform';
@@ -15,6 +11,7 @@ import { OfferManualDetailsSection } from './offer-manual-details-section';
 import { OfferOverviewSections } from './offer-overview-sections';
 import { OfferScreenshotPreview } from './offer-screenshot-preview';
 import { OfferSectionCard } from './offer-section-card';
+import { OfferSetupSummary } from './offer-setup-summary';
 import { OfferUsageSection } from './offer-usage-section';
 
 interface OfferFlowContentProps {
@@ -47,6 +44,12 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
   const sourceDialogOpen = useSignal(false);
   const useDirectGalleryImport = useSignal(false);
+  const formatCurrency = (value: number): string =>
+    new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 2,
+    }).format(value);
 
   useVisibleTask$(() => {
     useDirectGalleryImport.value = shouldUseDirectGalleryImport(window);
@@ -81,6 +84,16 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const showManualEntryCta = enableManualEntry && !showOverview && !showDetailsSection;
   const hasVehicles = props.vehicles.value.length > 0;
   const showEmptyState = !props.vehiclesLoading.value && !hasVehicles;
+  const selectedVehicleName =
+    props.vehicles.value.find((vehicle) => vehicle.id === props.selectedVehicleId.value)?.name ??
+    t(i18n, 'loadingLabel', 'Loading...');
+
+  const onVehicleChange$ = $((nextVehicleId: string) => {
+    props.selectedVehicleId.value = nextVehicleId;
+    props.analysisRecord.value = null;
+    props.status.value = '';
+    props.manualEntryRequested.value = false;
+  });
 
   return (
     <div class="ui-stack ui-offer-flow">
@@ -95,64 +108,103 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
       {showEmptyState ? null : (
         <>
           <OfferSectionCard
-            title={t(i18n, 'vehicleSection', 'Vehicle')}
-            class="ui-offer-setup-card"
+            title={t(i18n, 'importScreenshotButton', 'Import screenshot')}
+            subtitle={t(
+              i18n,
+              'offerImportHeroSubtitle',
+              'Upload a screenshot first. Vehicle and target stay editable in one tap.',
+            )}
+            class="ui-offer-import-hero-card"
             showBorder={true}
           >
-            <div class="ui-offer-setup-fields">
-              {props.vehiclesLoading.value ? (
-                <div class="ui-skeleton-stack-sm ui-offer-setup-vehicle-skeleton" aria-hidden="true">
-                  <SkeletonBlock height="12px" width="112px" />
-                  <SkeletonBlock height="44px" width="100%" />
-                </div>
-              ) : (
-                <div class="ui-field">
-                  <Label for="offer-vehicle">{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</Label>
-                  <Select
-                    id="offer-vehicle"
-                    options={props.vehicles.value.map((vehicle) => ({
-                      label: vehicle.name,
-                      value: vehicle.id,
-                    }))}
-                    value={props.selectedVehicleId.value}
-                    onChange$={(nextVehicleId) => {
-                      props.selectedVehicleId.value = nextVehicleId;
-                      props.analysisRecord.value = null;
-                      props.status.value = '';
-                      props.manualEntryRequested.value = false;
+            <div class="ui-offer-import-hero-content">
+              {useDirectGalleryImport.value ? (
+                <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
+                  {props.loading.value
+                    ? t(i18n, 'loadingLabel', 'Loading...')
+                    : t(i18n, 'importScreenshotButton', 'Import screenshot')}
+                  <input
+                    class="ui-offer-file-input-hidden"
+                    type="file"
+                    accept="image/*"
+                    disabled={props.loading.value || !hasVehicles}
+                    onClick$={(_, element) => {
+                      element.value = '';
+                    }}
+                    onInput$={(_, element) => {
+                      void onFileInputEvent$(element);
+                    }}
+                    onChange$={(_, element) => {
+                      void onFileInputEvent$(element);
                     }}
                   />
-                </div>
+                </label>
+              ) : (
+                <Button
+                  variant="default"
+                  size="lg"
+                  class="ui-offer-primary-cta"
+                  disabled={props.loading.value || !hasVehicles}
+                  onClick$={handleImportButtonClick$}
+                >
+                  {props.loading.value
+                    ? t(i18n, 'loadingLabel', 'Loading...')
+                    : t(i18n, 'importScreenshotButton', 'Import screenshot')}
+                </Button>
               )}
 
-              <div class="ui-offer-setup-divider" aria-hidden="true" />
-
-              <div class="ui-field">
-                <Label for="min-profitability">
-                  {t(i18n, 'minProfitabilityLabel', 'Minimum profitability')}
-                </Label>
-                <div class="ui-offer-target-input-wrap">
-                  <Input
-                    id="min-profitability"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={props.minProfitabilityEuro.value.toFixed(2)}
-                    onBlur$={(_, el) => {
-                      void props.onSaveProfitabilityTarget$(el.value);
+              {enableCaptureCta ? (
+                <label class="ui-button ui-button-secondary ui-button-lg ui-offer-file-trigger">
+                  {t(i18n, 'captureScreenshotButton', 'Capture screenshot')}
+                  <input
+                    class="ui-offer-file-input-hidden"
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    disabled={props.loading.value || !hasVehicles}
+                    onClick$={(_, element) => {
+                      element.value = '';
+                    }}
+                    onInput$={(_, element) => {
+                      void onFileInputEvent$(element);
+                    }}
+                    onChange$={(_, element) => {
+                      void onFileInputEvent$(element);
                     }}
                   />
-                  <span class="ui-offer-target-suffix">€</span>
-                </div>
-                <p class="ui-offer-target-hint">{t(i18n, 'minProfitabilityHint', 'Suggested default: €2.00')}</p>
-                {props.savingProfitTarget.value ? (
-                  <p class="ui-offer-target-saving">{t(i18n, 'loadingLabel', 'Loading...')}</p>
-                ) : null}
+                </label>
+              ) : null}
+
+              <div class="ui-offer-import-chips" aria-label={t(i18n, 'vehicleSection', 'Vehicle')}>
+                <span class="ui-offer-import-chip">
+                  {t(i18n, 'vehicleSection', 'Vehicle')}: {selectedVehicleName}
+                </span>
+                <span class="ui-offer-import-chip">
+                  {t(i18n, 'minProfitabilityLabel', 'Minimum profit per offer')}:{' '}
+                  {formatCurrency(props.minProfitabilityEuro.value)}
+                </span>
               </div>
+
+              <OfferUsageSection uid={props.userId} variant="inline" />
+
+              {props.screenshotPreviewUrl.value ? (
+                <OfferScreenshotPreview
+                  src={props.screenshotPreviewUrl.value}
+                  onRemove$={props.onClearScreenshotPreview$}
+                />
+              ) : null}
             </div>
           </OfferSectionCard>
 
-          <OfferUsageSection uid={props.userId} />
+          <OfferSetupSummary
+            minProfitabilityEuro={props.minProfitabilityEuro.value}
+            onSaveProfitabilityTarget$={props.onSaveProfitabilityTarget$}
+            onVehicleChange$={onVehicleChange$}
+            savingProfitTarget={props.savingProfitTarget.value}
+            selectedVehicleId={props.selectedVehicleId.value}
+            vehicles={props.vehicles.value}
+            vehiclesLoading={props.vehiclesLoading.value}
+          />
 
           {showOverview && props.analysisRecord.value ? (
             <OfferOverviewSections
@@ -176,63 +228,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             />
           ) : null}
 
-          {useDirectGalleryImport.value ? (
-            <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
-              {props.loading.value
-                ? t(i18n, 'loadingLabel', 'Loading...')
-                : t(i18n, 'importScreenshotButton', 'Import screenshot')}
-              <input
-                class="ui-offer-file-input-hidden"
-                type="file"
-                accept="image/*"
-                disabled={props.loading.value || !hasVehicles}
-                onClick$={(_, element) => {
-                  element.value = '';
-                }}
-                onInput$={(_, element) => {
-                  void onFileInputEvent$(element);
-                }}
-                onChange$={(_, element) => {
-                  void onFileInputEvent$(element);
-                }}
-              />
-            </label>
-          ) : (
-            <Button
-              variant="default"
-              size="lg"
-              class="ui-offer-primary-cta"
-              disabled={props.loading.value || !hasVehicles}
-              onClick$={handleImportButtonClick$}
-            >
-              {props.loading.value
-                ? t(i18n, 'loadingLabel', 'Loading...')
-                : t(i18n, 'importScreenshotButton', 'Import screenshot')}
-            </Button>
-          )}
-
-          {enableCaptureCta ? (
-            <label class="ui-button ui-button-secondary ui-button-lg ui-offer-file-trigger">
-              {t(i18n, 'captureScreenshotButton', 'Capture screenshot')}
-              <input
-                class="ui-offer-file-input-hidden"
-                type="file"
-                accept="image/*"
-                capture="environment"
-                disabled={props.loading.value || !hasVehicles}
-                onClick$={(_, element) => {
-                  element.value = '';
-                }}
-                onInput$={(_, element) => {
-                  void onFileInputEvent$(element);
-                }}
-                onChange$={(_, element) => {
-                  void onFileInputEvent$(element);
-                }}
-              />
-            </label>
-          ) : null}
-
           {showManualEntryCta ? (
             <Button
               variant="secondary"
@@ -246,13 +241,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             >
               {t(i18n, 'manualEntryButton', 'Enter manually')}
             </Button>
-          ) : null}
-
-          {props.screenshotPreviewUrl.value ? (
-            <OfferScreenshotPreview
-              src={props.screenshotPreviewUrl.value}
-              onRemove$={props.onClearScreenshotPreview$}
-            />
           ) : null}
 
           <OfferFlowStatus status={props.status.value} />

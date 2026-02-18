@@ -208,7 +208,6 @@
   "deleteVehicleConfirm": "Delete",
   "vehicleSaveFailedMessage": "Unable to save vehicle.",
   "vehicleDeleteFailedMessage": "Unable to delete vehicle.",
-  "vehicleLoadFailedMessage": "Unable to load vehicles right now.",
   "vehicleBrandLabel": "Brand",
   "vehicleModelLabel": "Model",
   "vehicleLicensePlateLabel": "License plate",
