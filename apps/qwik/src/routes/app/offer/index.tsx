@@ -4,6 +4,7 @@ import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
+import { saveTabScrollY } from '../../../lib/navigation/tab-scroll-memory';
 import type { OfferRecord } from '../../../lib/types/offer';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
@@ -225,6 +226,9 @@ export default component$(() => {
     const record = analysisRecord.value;
     if (!record?.id) {
       return;
+    }
+    if (typeof window !== 'undefined') {
+      saveTabScrollY('app/offer', window.scrollY);
     }
     saveSelectedHistoryOfferId(record.id);
     upsertHistoryOfferCache(toOfferRecord(record));
