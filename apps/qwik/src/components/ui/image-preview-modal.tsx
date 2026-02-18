@@ -1,4 +1,5 @@
 import { component$, type QRL, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { lockPageScroll, unlockPageScroll } from '../../lib/ui/page-scroll-lock';
 
 interface ImagePreviewModalProps {
   alt: string;
@@ -9,22 +10,37 @@ interface ImagePreviewModalProps {
 
 export const ImagePreviewModal = component$<ImagePreviewModalProps>(({ alt, isOpen, onClose$, src }) => {
   const dialogRef = useSignal<HTMLDialogElement>();
+  const hasScrollLock = useSignal(false);
 
-  useVisibleTask$(({ track }) => {
+  useVisibleTask$(({ track, cleanup }) => {
     const open = track(() => isOpen);
     const dialog = dialogRef.value;
     if (!dialog) {
       return;
     }
     if (open) {
+      if (!hasScrollLock.value) {
+        lockPageScroll();
+        hasScrollLock.value = true;
+      }
       if (!dialog.open) {
         dialog.showModal();
       }
-      return;
-    }
-    if (dialog.open) {
+    } else if (dialog.open) {
       dialog.close();
     }
+
+    if (!open && hasScrollLock.value) {
+      unlockPageScroll();
+      hasScrollLock.value = false;
+    }
+
+    cleanup(() => {
+      if (hasScrollLock.value) {
+        unlockPageScroll();
+        hasScrollLock.value = false;
+      }
+    });
   });
 
   if (!src) {
