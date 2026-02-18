@@ -19,6 +19,7 @@ export interface OfferTabSessionState {
   manualEntryRequested: boolean;
   status: string;
   analysisRecord: OfferAnalysisRecord | null;
+  screenshotPreviewUrl: string | null;
 }
 
 let offerTabSessionState: OfferTabSessionState | null = null;

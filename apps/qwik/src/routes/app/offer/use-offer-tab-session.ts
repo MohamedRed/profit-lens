@@ -25,6 +25,7 @@ interface UseOfferTabSessionParams {
   loading: Signal<boolean>;
   status: Signal<string>;
   analysisRecord: Signal<OfferAnalysisRecord | null>;
+  screenshotPreviewUrl: Signal<string | null>;
 }
 
 const resolveSelectedVehicleId = (
@@ -60,6 +61,7 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
     loading,
     status,
     analysisRecord,
+    screenshotPreviewUrl,
   } = params;
 
   useVisibleTask$(({ track, cleanup }) => {
@@ -69,6 +71,7 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
       vehicles.value = [];
       selectedVehicleId.value = '';
       vehiclesLoading.value = false;
+      screenshotPreviewUrl.value = null;
       return;
     }
 
@@ -89,6 +92,7 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
       manualEntryRequested.value = session.manualEntryRequested;
       status.value = session.status;
       analysisRecord.value = session.analysisRecord;
+      screenshotPreviewUrl.value = session.screenshotPreviewUrl;
       loading.value = false;
     } else {
       vehiclesLoading.value = true;
@@ -137,6 +141,7 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
     const currentManualEntryRequested = track(() => manualEntryRequested.value);
     const currentStatus = track(() => status.value);
     const currentAnalysisRecord = track(() => analysisRecord.value);
+    const currentScreenshotPreviewUrl = track(() => screenshotPreviewUrl.value);
 
     if (!uid) {
       return;
@@ -159,6 +164,7 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
       manualEntryRequested: currentManualEntryRequested,
       status: currentStatus,
       analysisRecord: currentAnalysisRecord,
+      screenshotPreviewUrl: currentScreenshotPreviewUrl,
     });
   });
 };

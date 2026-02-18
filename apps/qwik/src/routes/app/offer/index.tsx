@@ -1,4 +1,4 @@
-import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { $, component$, useSignal } from '@builder.io/qwik';
 import { useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
@@ -104,15 +104,7 @@ export default component$(() => {
     loading,
     status,
     analysisRecord,
-  });
-
-  useVisibleTask$(({ track, cleanup }) => {
-    const preview = track(() => screenshotPreviewUrl.value);
-    cleanup(() => {
-      if (preview) {
-        URL.revokeObjectURL(preview);
-      }
-    });
+    screenshotPreviewUrl,
   });
 
   const saveProfitabilityTarget$ = $(async (rawValue: string) => {
