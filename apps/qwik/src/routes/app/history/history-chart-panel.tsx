@@ -65,7 +65,7 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
         {t(i18n, 'latestProfitLabel', 'Latest profit')}: {formatCurrency(locale, latestValue)}
       </p>
 
-      {chartValues.length < 2 ? (
+      {chartValues.length === 0 ? (
         <p class="ui-history-empty">
           {t(i18n, 'historyChartEmptyMessage', 'Add at least 2 offers to see the chart.')}
         </p>
@@ -124,7 +124,7 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
         </span>
         <span class="ui-history-legend-item">
           <span class="ui-history-dot is-threshold" />
-          {t(i18n, 'profitThresholdLabel', 'Profitability threshold')}
+          {t(i18n, 'profitThresholdLabel', 'Break-even')}
         </span>
       </div>
 
@@ -134,7 +134,7 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
         {t(
           i18n,
           'historyChartHintMessage',
-          'Use this chart to compare profits above or below the profitability threshold.',
+          'Use this chart to compare profits above/below the break-even line.',
         )}
       </p>
     </div>

@@ -40,9 +40,8 @@ export const formatShortDateTime = (locale: string, value: Date | null): string 
 };
 
 const isBeforeLocalDay = (value: Date, localDayStart: Date): boolean => {
-  const local = value.toLocaleDateString('en-CA');
-  const localDate = new Date(local);
-  return localDate < localDayStart;
+  const localDate = new Date(value.getFullYear(), value.getMonth(), value.getDate());
+  return localDate.getTime() < localDayStart.getTime();
 };
 
 export const averageProfit = (entries: OfferStatsDay[]): number => {
