@@ -2,6 +2,8 @@ import { isRunningAsInstalledPwa } from '../features/pwa/pwa-install-state';
 
 const EDGE_TRIGGER_PX = 24;
 const HORIZONTAL_SWIPE_PX = 10;
+const IOS_PWA_BACK_GUARD_KEY = '__iosPwaBackGuard';
+const IOS_PWA_BACK_GUARD_TS_KEY = '__iosPwaBackGuardAt';
 
 const isIosDevice = (browser: Window): boolean => {
   const userAgent = browser.navigator.userAgent.toLowerCase();
@@ -13,15 +15,54 @@ const isIosDevice = (browser: Window): boolean => {
   return platform.includes('mac') && touchPoints > 1;
 };
 
-const hasCoarsePointer = (browser: Window): boolean => {
-  if (typeof browser.matchMedia !== 'function') {
-    return false;
+export const shouldBlockIosPwaBackNavigation = (browser: Window): boolean => {
+  return isRunningAsInstalledPwa(browser) && isIosDevice(browser);
+};
+
+const withBackGuardState = (state: unknown): Record<string, unknown> => {
+  const baseState =
+    typeof state === 'object' && state !== null ? (state as Record<string, unknown>) : {};
+  return {
+    ...baseState,
+    [IOS_PWA_BACK_GUARD_KEY]: true,
+    [IOS_PWA_BACK_GUARD_TS_KEY]: Date.now(),
+  };
+};
+
+const installBackGuardSentinel = (browser: Window): void => {
+  if (browser.history.state?.[IOS_PWA_BACK_GUARD_KEY] === true) {
+    return;
   }
-  return browser.matchMedia('(pointer: coarse)').matches;
+  browser.history.pushState(withBackGuardState(browser.history.state), '', browser.location.href);
+};
+
+export const installIosPwaHistoryBackGuard = (browser: Window): (() => void) => {
+  if (!shouldBlockIosPwaBackNavigation(browser)) {
+    return () => {};
+  }
+
+  installBackGuardSentinel(browser);
+
+  const onPopState = (event: PopStateEvent): void => {
+    event.stopImmediatePropagation();
+    installBackGuardSentinel(browser);
+  };
+
+  const onPageShow = (): void => {
+    installBackGuardSentinel(browser);
+  };
+
+  browser.addEventListener('popstate', onPopState, { capture: true });
+  browser.addEventListener('pageshow', onPageShow, { capture: true });
+
+  return () => {
+    browser.removeEventListener('popstate', onPopState, { capture: true });
+    browser.removeEventListener('pageshow', onPageShow, { capture: true });
+  };
 };
 
 export const installIosPwaBackSwipeBlocker = (browser: Window): (() => void) => {
-  if (!isRunningAsInstalledPwa(browser) || !isIosDevice(browser) || !hasCoarsePointer(browser)) {
+  if (!shouldBlockIosPwaBackNavigation(browser)) {
     return () => {};
   }
 

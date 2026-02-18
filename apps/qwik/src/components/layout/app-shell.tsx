@@ -1,7 +1,11 @@
 import { $, Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Link, useLocation, useNavigate } from '@builder.io/qwik-city';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
-import { installIosPwaBackSwipeBlocker } from '../../lib/navigation/ios-edge-swipe-blocker';
+import {
+  installIosPwaHistoryBackGuard,
+  installIosPwaBackSwipeBlocker,
+  shouldBlockIosPwaBackNavigation,
+} from '../../lib/navigation/ios-edge-swipe-blocker';
 import { prefetchTabRoutes } from '../../lib/navigation/prefetch-tab-routes';
 import { readTabScrollY, saveTabScrollY } from '../../lib/navigation/tab-scroll-memory';
 import {
@@ -34,6 +38,7 @@ export const AppShell = component$(() => {
   const nextTransitionIsPop = useSignal(false);
   const transitionClass = useSignal<'is-push' | 'is-pop' | 'is-push-deep'>('is-push');
   const previousAppPath = useSignal<string | null>(null);
+  const blockNativeBackNavigation = useSignal(false);
   const appPath = toAppPath(location.url.pathname);
   const showHelpTicketsAction = appPath === '/app/help';
   const headerBackHref = resolveHeaderBackHref(appPath);
@@ -46,7 +51,7 @@ export const AppShell = component$(() => {
     if (!headerBackHref) {
       return;
     }
-    if (window.history.length > 1 && !preferDeterministicBack) {
+    if (!blockNativeBackNavigation.value && window.history.length > 1 && !preferDeterministicBack) {
       window.history.back();
       return;
     }
@@ -55,12 +60,21 @@ export const AppShell = component$(() => {
   });
 
   useVisibleTask$(({ cleanup }) => {
+    blockNativeBackNavigation.value = shouldBlockIosPwaBackNavigation(window);
+    if (blockNativeBackNavigation.value) {
+      const uninstallHistoryBackGuard = installIosPwaHistoryBackGuard(window);
+      cleanup(() => {
+        uninstallHistoryBackGuard();
+      });
+      return;
+    }
+
     const onPopState = () => {
       nextTransitionIsPop.value = true;
     };
-    window.addEventListener('popstate', onPopState);
+    window.addEventListener('popstate', onPopState, { capture: true });
     cleanup(() => {
-      window.removeEventListener('popstate', onPopState);
+      window.removeEventListener('popstate', onPopState, { capture: true });
     });
   });
 
