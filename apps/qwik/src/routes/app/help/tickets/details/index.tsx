@@ -24,6 +24,7 @@ import { resolveUserFacingErrorMessage } from '../../../../../lib/errors/user-fa
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 import type { HelpTicket, HelpTicketAttachment, HelpTicketTimelineEvent } from '../../../../../lib/types/help';
 import { HelpTicketAttachmentList } from '../../components/help-ticket-attachment-list';
+import { HelpTicketAttachmentSkeleton } from '../../components/help-ticket-attachment-skeleton';
 import { HelpTicketProgressStepper } from '../../components/help-ticket-progress-stepper';
 
 export default component$(() => {
@@ -32,6 +33,7 @@ export default component$(() => {
   const i18n = useI18n();
 
   const loading = useSignal(true);
+  const attachmentsLoading = useSignal(true);
   const ticket = useSignal<HelpTicket | null>(null);
   const attachments = useSignal<HelpTicketAttachment[]>([]);
   const timeline = useSignal<HelpTicketTimelineEvent[]>([]);
@@ -47,6 +49,7 @@ export default component$(() => {
 
     if (!user || !ticketId) {
       loading.value = false;
+      attachmentsLoading.value = false;
       ticket.value = null;
       attachments.value = [];
       timeline.value = [];
@@ -56,6 +59,7 @@ export default component$(() => {
 
     saveSelectedHelpTicketId(ticketId);
     loading.value = true;
+    attachmentsLoading.value = true;
     loadError.value = '';
     const unsubscribeTicket = watchHelpTicket(user.uid, ticketId, (value) => {
       ticket.value = value;
@@ -65,12 +69,15 @@ export default component$(() => {
       attachments.value = [];
       timeline.value = [];
       loading.value = false;
+      attachmentsLoading.value = false;
       loadError.value = resolveUserFacingErrorMessage(i18n, error, 'help-load');
     });
     const unsubscribeAttachments = watchHelpTicketAttachments(user.uid, ticketId, (items) => {
       attachments.value = items;
+      attachmentsLoading.value = false;
     }, () => {
       attachments.value = [];
+      attachmentsLoading.value = false;
     });
     const unsubscribeTimeline = watchHelpTicketTimeline(user.uid, ticketId, (items) => {
       timeline.value = items;
@@ -133,9 +140,13 @@ export default component$(() => {
         </p>
       </section>
 
-      <section class="ui-help-card">
+      <section class="ui-help-card" aria-busy={attachmentsLoading.value}>
         <h2 class="ui-help-section-title">{t(i18n, 'helpTicketAttachmentsTitle', 'Attachments')}</h2>
-        <HelpTicketAttachmentList attachments={attachments.value} />
+        {attachmentsLoading.value ? (
+          <HelpTicketAttachmentSkeleton />
+        ) : (
+          <HelpTicketAttachmentList attachments={attachments.value} />
+        )}
       </section>
 
       <section class="ui-help-card">

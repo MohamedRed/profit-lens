@@ -11,6 +11,8 @@ export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps
   const i18n = useI18n();
   const previewSrc = useSignal<string | null>(null);
   const previewAlt = useSignal('');
+  const imageAttachments = attachments.filter((attachment) => attachment.type === 'image');
+  const audioAttachments = attachments.filter((attachment) => attachment.type === 'audio');
 
   const openPreview$ = $((src: string, alt: string) => {
     previewSrc.value = src;
@@ -24,52 +26,59 @@ export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps
 
   return (
     <>
-      <ul class="ui-help-ticket-list">
+      <div class="ui-help-ticket-attachments-content">
         {attachments.length === 0 ? (
-          <li class="ui-help-ticket-empty">{t(i18n, 'helpAttachmentEmptyState', 'No attachments yet.')}</li>
+          <p class="ui-help-ticket-empty">{t(i18n, 'helpAttachmentEmptyState', 'No attachments yet.')}</p>
         ) : null}
-        {attachments.map((attachment) => (
-          <li key={attachment.id} class="ui-help-attachment-item">
-            <a
-              class="ui-help-ticket-attachment-link"
-              href={attachment.url}
-              target="_blank"
-              rel="noreferrer"
-              onClick$={(event) => {
-                if (attachment.type !== 'image') {
-                  return;
-                }
-                event.preventDefault();
-                openPreview$(attachment.url, attachment.filename);
-              }}
-            >
-              {attachment.type === 'image' ? (
-                <img
-                  class="ui-help-ticket-attachment-image"
-                  src={attachment.url}
-                  alt={attachment.filename}
-                  width={64}
-                  height={64}
-                  loading="lazy"
-                />
-              ) : (
-                <div class="ui-help-attachment-audio" aria-hidden="true">
-                  <span class="material-icons-outlined">graphic_eq</span>
-                </div>
-              )}
 
-              <div class="ui-help-attachment-meta">
-                <p class="ui-help-attachment-name">
-                  {attachment.type === 'audio'
-                    ? t(i18n, 'helpAudioAttachmentLabel', 'Voice note')
-                    : t(i18n, 'helpImageAttachmentLabel', 'Screenshot')}
-                </p>
-                {attachment.type === 'audio' ? <p class="ui-help-attachment-kind">Audio</p> : null}
-              </div>
-            </a>
-          </li>
-        ))}
-      </ul>
+        {imageAttachments.length > 0 ? (
+          <ul class="ui-help-ticket-attachment-gallery">
+            {imageAttachments.map((attachment) => (
+              <li key={attachment.id} class="ui-help-ticket-attachment-gallery-item">
+                <a
+                  class="ui-help-ticket-attachment-thumb"
+                  href={attachment.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  title={attachment.filename}
+                  onClick$={(event) => {
+                    event.preventDefault();
+                    openPreview$(attachment.url, attachment.filename);
+                  }}
+                >
+                  <img
+                    class="ui-help-ticket-attachment-image"
+                    src={attachment.url}
+                    alt={attachment.filename}
+                    width={72}
+                    height={72}
+                    loading="lazy"
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        {audioAttachments.length > 0 ? (
+          <ul class="ui-help-ticket-list">
+            {audioAttachments.map((attachment) => (
+              <li key={attachment.id} class="ui-help-attachment-item">
+                <a class="ui-help-ticket-attachment-link" href={attachment.url} target="_blank" rel="noreferrer">
+                  <div class="ui-help-attachment-audio" aria-hidden="true">
+                    <span class="material-icons-outlined">graphic_eq</span>
+                  </div>
+
+                  <div class="ui-help-attachment-meta">
+                    <p class="ui-help-attachment-name">{t(i18n, 'helpAudioAttachmentLabel', 'Voice note')}</p>
+                    <p class="ui-help-attachment-kind">Audio</p>
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
       <ImagePreviewModal
         alt={previewAlt.value}
         isOpen={previewSrc.value !== null}

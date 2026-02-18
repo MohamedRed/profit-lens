@@ -243,6 +243,49 @@
   gap: 6px;
 }
 
+.ui-help-ticket-attachments-content {
+  display: grid;
+  gap: 10px;
+}
+
+.ui-help-ticket-attachment-gallery,
+.ui-help-ticket-attachment-gallery-skeleton {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 10px;
+}
+
+.ui-help-ticket-attachment-gallery {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.ui-help-ticket-attachment-gallery::-webkit-scrollbar {
+  display: none;
+}
+
+.ui-help-ticket-attachment-gallery-item {
+  flex: 0 0 auto;
+}
+
+.ui-help-ticket-attachment-thumb {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  border: 1px solid var(--pl-color-outline);
+  overflow: hidden;
+  display: block;
+  background: var(--pl-color-surface-elevated);
+}
+
+.ui-help-ticket-attachment-thumb:focus-visible {
+  outline: 2px solid rgba(139, 92, 246, 0.42);
+  outline-offset: 2px;
+}
+
 .ui-help-ticket-attachment-link {
   color: inherit;
   text-decoration: none;
@@ -259,11 +302,15 @@
 }
 
 .ui-help-ticket-attachment-image {
-  width: 64px;
-  height: 64px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 12px;
   display: block;
+}
+
+.ui-help-ticket-attachment-thumb-skeleton {
+  border-radius: 14px;
+  flex: 0 0 auto;
 }
 
 .ui-help-ticket-link-button {
