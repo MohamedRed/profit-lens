@@ -96,7 +96,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
         <>
           <OfferSectionCard
             title={t(i18n, 'vehicleSection', 'Vehicle')}
-            className="ui-offer-setup-card"
+            class="ui-offer-setup-card"
             showBorder={true}
           >
             <div class="ui-offer-setup-fields">

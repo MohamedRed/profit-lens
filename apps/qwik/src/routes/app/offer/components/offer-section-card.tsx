@@ -2,14 +2,14 @@ import { Slot, component$ } from '@builder.io/qwik';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../components/ui/card';
 
 interface OfferSectionCardProps {
-  className?: string;
+  class?: string;
   showBorder?: boolean;
   title: string;
   subtitle?: string;
 }
 
 export const OfferSectionCard = component$<OfferSectionCardProps>(
-  ({ title, subtitle, showBorder = false, className }) => {
+  ({ title, subtitle, showBorder = false, class: className }) => {
     return (
       <Card class={['ui-offer-section', { 'is-bordered': showBorder }, className]}>
         <CardHeader class="ui-offer-section-header">
