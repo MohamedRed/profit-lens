@@ -55,6 +55,10 @@
   gap: 8px;
 }
 
+.ui-offer-meta-stack-top {
+  gap: 10px;
+}
+
 .ui-offer-setup-summary {
   display: flex;
   align-items: center;

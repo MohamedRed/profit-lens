@@ -98,6 +98,19 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
 
       {showEmptyState ? null : (
         <>
+          <div class="ui-offer-meta-stack ui-offer-meta-stack-top">
+            <OfferSetupSummary
+              minProfitabilityEuro={props.minProfitabilityEuro.value}
+              onSaveProfitabilityTarget$={props.onSaveProfitabilityTarget$}
+              onVehicleChange$={onVehicleChange$}
+              savingProfitTarget={props.savingProfitTarget.value}
+              selectedVehicleId={props.selectedVehicleId.value}
+              vehicles={props.vehicles.value}
+              vehiclesLoading={props.vehiclesLoading.value}
+            />
+            <OfferUsageSection uid={props.userId} variant="inline" />
+          </div>
+
           <OfferSectionCard
             title={t(i18n, 'importScreenshotButton', 'Import screenshot')}
             subtitle={t(
@@ -165,19 +178,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                   />
                 </label>
               ) : null}
-
-              <div class="ui-offer-meta-stack">
-                <OfferUsageSection uid={props.userId} variant="inline" />
-                <OfferSetupSummary
-                  minProfitabilityEuro={props.minProfitabilityEuro.value}
-                  onSaveProfitabilityTarget$={props.onSaveProfitabilityTarget$}
-                  onVehicleChange$={onVehicleChange$}
-                  savingProfitTarget={props.savingProfitTarget.value}
-                  selectedVehicleId={props.selectedVehicleId.value}
-                  vehicles={props.vehicles.value}
-                  vehiclesLoading={props.vehiclesLoading.value}
-                />
-              </div>
 
               {props.screenshotPreviewUrl.value ? (
                 <OfferScreenshotPreview
