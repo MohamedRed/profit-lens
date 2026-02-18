@@ -97,7 +97,6 @@
   "signInFailedMessage": "Impossible de se connecter. Vérifiez votre email et mot de passe puis réessayez.",
   "registerFailedMessage": "Impossible de créer votre compte pour le moment. Réessayez.",
   "offerActionFailedMessage": "Impossible d’effectuer cette action pour le moment. Réessayez.",
-  "offerErrorTitle": "Action requise",
   "billingActionFailedMessage": "Impossible de mettre à jour l’abonnement pour le moment. Réessayez.",
   "deviceActionFailedMessage": "Impossible de mettre à jour l’appareil pour le moment. Réessayez.",
   "vehicleActionFailedMessage": "Impossible de mettre à jour le véhicule pour le moment. Réessayez.",

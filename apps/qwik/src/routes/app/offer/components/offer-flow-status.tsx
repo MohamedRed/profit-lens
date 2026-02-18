@@ -46,8 +46,7 @@ export const OfferFlowStatus = component$<OfferFlowStatusProps>(({ status }) => 
     'analysisFailedScreenshotBody',
     "We couldn't read this screenshot. Please upload a valid offer screenshot.",
   );
-  const statusTitle = isScreenshotFailureStatus(currentStatus, screenshotFailureMessage)
-    ? t(i18n, 'analysisFailedTitle', 'Analysis incomplete')
-    : t(i18n, 'offerErrorTitle', 'Action required');
+  const isScreenshotFailure = isScreenshotFailureStatus(currentStatus, screenshotFailureMessage);
+  const statusTitle = isScreenshotFailure ? t(i18n, 'analysisFailedTitle', 'Analysis incomplete') : undefined;
   return <OfferErrorNotice title={statusTitle} message={currentStatus} />;
 });

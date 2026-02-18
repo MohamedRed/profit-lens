@@ -97,7 +97,6 @@
   "signInFailedMessage": "Unable to sign in. Check your email and password and try again.",
   "registerFailedMessage": "Unable to create your account right now. Please try again.",
   "offerActionFailedMessage": "Unable to complete this action right now. Please try again.",
-  "offerErrorTitle": "Action required",
   "billingActionFailedMessage": "Unable to update subscription right now. Please try again.",
   "deviceActionFailedMessage": "Unable to update device right now. Please try again.",
   "vehicleActionFailedMessage": "Unable to update vehicle right now. Please try again.",
