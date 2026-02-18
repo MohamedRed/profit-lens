@@ -33,15 +33,7 @@
   gap: var(--pl-space-lg);
 }
 
-.ui-offer-import-hero-card {
-  padding: 18px 18px 16px;
-}
-
-.ui-offer-import-hero-card .ui-offer-section-header {
-  margin-bottom: 10px;
-}
-
-.ui-offer-import-hero-content {
+.ui-offer-import-hero {
   display: grid;
   gap: 10px;
 }

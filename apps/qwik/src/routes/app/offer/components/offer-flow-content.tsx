@@ -10,7 +10,6 @@ import { OfferImportSourceDialog } from './offer-import-source-dialog';
 import { OfferManualDetailsSection } from './offer-manual-details-section';
 import { OfferOverviewSections } from './offer-overview-sections';
 import { OfferScreenshotPreview } from './offer-screenshot-preview';
-import { OfferSectionCard } from './offer-section-card';
 import { OfferSetupSummary } from './offer-setup-summary';
 import { OfferUsageSection } from './offer-usage-section';
 
@@ -111,83 +110,72 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             <OfferUsageSection uid={props.userId} variant="inline" />
           </div>
 
-          <OfferSectionCard
-            title={t(i18n, 'importScreenshotButton', 'Import screenshot')}
-            subtitle={t(
-              i18n,
-              'offerImportHeroSubtitle',
-              'Upload a screenshot first. Vehicle and target stay editable in one tap.',
-            )}
-            class="ui-offer-import-hero-card"
-            showBorder={true}
-          >
-            <div class="ui-offer-import-hero-content">
-              {useDirectGalleryImport.value ? (
-                <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
-                  {props.loading.value
-                    ? t(i18n, 'loadingLabel', 'Loading...')
-                    : t(i18n, 'importScreenshotButton', 'Import screenshot')}
-                  <input
-                    class="ui-offer-file-input-hidden"
-                    type="file"
-                    accept="image/*"
-                    disabled={props.loading.value || !hasVehicles}
-                    onClick$={(_, element) => {
-                      element.value = '';
-                    }}
-                    onInput$={(_, element) => {
-                      void onFileInputEvent$(element);
-                    }}
-                    onChange$={(_, element) => {
-                      void onFileInputEvent$(element);
-                    }}
-                  />
-                </label>
-              ) : (
-                <Button
-                  variant="default"
-                  size="lg"
-                  class="ui-offer-primary-cta"
+          <section class="ui-offer-import-hero" aria-label={t(i18n, 'importScreenshotButton', 'Import screenshot')}>
+            {useDirectGalleryImport.value ? (
+              <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
+                {props.loading.value
+                  ? t(i18n, 'loadingLabel', 'Loading...')
+                  : t(i18n, 'importScreenshotButton', 'Import screenshot')}
+                <input
+                  class="ui-offer-file-input-hidden"
+                  type="file"
+                  accept="image/*"
                   disabled={props.loading.value || !hasVehicles}
-                  onClick$={handleImportButtonClick$}
-                >
-                  {props.loading.value
-                    ? t(i18n, 'loadingLabel', 'Loading...')
-                    : t(i18n, 'importScreenshotButton', 'Import screenshot')}
-                </Button>
-              )}
-
-              {enableCaptureCta ? (
-                <label class="ui-button ui-button-secondary ui-button-lg ui-offer-file-trigger">
-                  {t(i18n, 'captureScreenshotButton', 'Capture screenshot')}
-                  <input
-                    class="ui-offer-file-input-hidden"
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    disabled={props.loading.value || !hasVehicles}
-                    onClick$={(_, element) => {
-                      element.value = '';
-                    }}
-                    onInput$={(_, element) => {
-                      void onFileInputEvent$(element);
-                    }}
-                    onChange$={(_, element) => {
-                      void onFileInputEvent$(element);
-                    }}
-                  />
-                </label>
-              ) : null}
-
-              {props.screenshotPreviewUrl.value ? (
-                <OfferScreenshotPreview
-                  src={props.screenshotPreviewUrl.value}
-                  onRemove$={props.onClearScreenshotPreview$}
-                  removeDisabled={props.loading.value}
+                  onClick$={(_, element) => {
+                    element.value = '';
+                  }}
+                  onInput$={(_, element) => {
+                    void onFileInputEvent$(element);
+                  }}
+                  onChange$={(_, element) => {
+                    void onFileInputEvent$(element);
+                  }}
                 />
-              ) : null}
-            </div>
-          </OfferSectionCard>
+              </label>
+            ) : (
+              <Button
+                variant="default"
+                size="lg"
+                class="ui-offer-primary-cta"
+                disabled={props.loading.value || !hasVehicles}
+                onClick$={handleImportButtonClick$}
+              >
+                {props.loading.value
+                  ? t(i18n, 'loadingLabel', 'Loading...')
+                  : t(i18n, 'importScreenshotButton', 'Import screenshot')}
+              </Button>
+            )}
+
+            {enableCaptureCta ? (
+              <label class="ui-button ui-button-secondary ui-button-lg ui-offer-file-trigger">
+                {t(i18n, 'captureScreenshotButton', 'Capture screenshot')}
+                <input
+                  class="ui-offer-file-input-hidden"
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  disabled={props.loading.value || !hasVehicles}
+                  onClick$={(_, element) => {
+                    element.value = '';
+                  }}
+                  onInput$={(_, element) => {
+                    void onFileInputEvent$(element);
+                  }}
+                  onChange$={(_, element) => {
+                    void onFileInputEvent$(element);
+                  }}
+                />
+              </label>
+            ) : null}
+
+            {props.screenshotPreviewUrl.value ? (
+              <OfferScreenshotPreview
+                src={props.screenshotPreviewUrl.value}
+                onRemove$={props.onClearScreenshotPreview$}
+                removeDisabled={props.loading.value}
+              />
+            ) : null}
+          </section>
 
           {showOverview && props.analysisRecord.value ? (
             <OfferOverviewSections
