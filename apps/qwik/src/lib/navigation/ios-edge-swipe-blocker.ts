@@ -29,11 +29,14 @@ const withBackGuardState = (state: unknown): Record<string, unknown> => {
   };
 };
 
-const installBackGuardSentinel = (browser: Window): void => {
-  if (browser.history.state?.[IOS_PWA_BACK_GUARD_KEY] === true) {
-    return;
+const toAbsoluteHref = (browser: Window, url: string | URL | null | undefined): string => {
+  if (typeof url === 'string') {
+    return new URL(url, browser.location.href).href;
   }
-  browser.history.pushState(withBackGuardState(browser.history.state), '', browser.location.href);
+  if (url instanceof URL) {
+    return url.href;
+  }
+  return browser.location.href;
 };
 
 export const installIosPwaHistoryBackGuard = (browser: Window): (() => void) => {
@@ -41,21 +44,44 @@ export const installIosPwaHistoryBackGuard = (browser: Window): (() => void) => 
     return () => {};
   }
 
-  installBackGuardSentinel(browser);
+  const historyApi = browser.history as History & {
+    pushState: (data: unknown, unused: string, url?: string | URL | null) => void;
+    replaceState: (data: unknown, unused: string, url?: string | URL | null) => void;
+  };
+  const originalPushState = historyApi.pushState.bind(historyApi);
+  const originalReplaceState = historyApi.replaceState.bind(historyApi);
+  let lockedHref = browser.location.href;
+
+  const lockToHref = (state: unknown, url: string | URL | null | undefined): void => {
+    lockedHref = toAbsoluteHref(browser, url);
+    originalReplaceState(withBackGuardState(state), '', lockedHref);
+  };
+
+  lockToHref(browser.history.state, browser.location.href);
+
+  historyApi.pushState = (state, unused, url) => {
+    lockToHref(state, url);
+  };
+  historyApi.replaceState = (state, unused, url) => {
+    lockToHref(state, url);
+  };
 
   const onPopState = (event: PopStateEvent): void => {
     event.stopImmediatePropagation();
-    installBackGuardSentinel(browser);
+    lockToHref(browser.history.state, lockedHref);
+    browser.history.go(1);
   };
 
   const onPageShow = (): void => {
-    installBackGuardSentinel(browser);
+    lockToHref(browser.history.state, browser.location.href);
   };
 
   browser.addEventListener('popstate', onPopState, { capture: true });
   browser.addEventListener('pageshow', onPageShow, { capture: true });
 
   return () => {
+    historyApi.pushState = originalPushState;
+    historyApi.replaceState = originalReplaceState;
     browser.removeEventListener('popstate', onPopState, { capture: true });
     browser.removeEventListener('pageshow', onPageShow, { capture: true });
   };
