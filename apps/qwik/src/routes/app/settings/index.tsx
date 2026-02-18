@@ -13,6 +13,7 @@ import type { Entitlement, OfferUsage } from '../../../lib/types/billing';
 import type { DeviceEntry } from '../../../lib/types/device';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
+import { buildVehicleEditorHref } from './shared/vehicle-editor-href';
 import { useSettingsTabSession } from './use-settings-tab-session';
 
 const formatCurrency = (locale: string, value: number): string => {
@@ -244,7 +245,7 @@ export default component$(() => {
               <li key={vehicle.id}>
                 <Link
                   class="ui-settings-vehicle-row ui-settings-tile-link"
-                  href={`/next/app/settings/vehicles/${encodeURIComponent(vehicle.id)}`}
+                  href={buildVehicleEditorHref(vehicle.id, '/next/app/settings')}
                 >
                   <div>
                     <p class="ui-settings-vehicle-name">{vehicle.name}</p>

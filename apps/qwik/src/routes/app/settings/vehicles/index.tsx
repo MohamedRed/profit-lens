@@ -10,6 +10,7 @@ import { watchVehicles } from '../../../../lib/features/vehicles/vehicles-servic
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { UserProfile } from '../../../../lib/types/profile';
 import type { VehicleProfile } from '../../../../lib/types/vehicle';
+import { buildVehicleEditorHref } from '../shared/vehicle-editor-href';
 
 const vehicleTypeLabel = (
   i18n: ReturnType<typeof useI18n>,
@@ -105,7 +106,7 @@ export default component$(() => {
                   <p class="ui-settings-row-subtitle">{vehicleTypeLabel(i18n, vehicle.type)}</p>
                   <Link
                     class="ui-settings-link-button"
-                    href={`/next/app/settings/vehicles/${encodeURIComponent(vehicle.id)}`}
+                    href={buildVehicleEditorHref(vehicle.id, '/next/app/settings/vehicles')}
                   >
                     {t(i18n, 'editVehicleButton', 'Edit vehicle')}
                   </Link>
