@@ -88,7 +88,7 @@ export const resolveHeaderBackHref = (
   if (path.startsWith('/app/settings/vehicles/') && !path.startsWith('/app/settings/vehicles/new')) {
     return '/next/app/settings/vehicles';
   }
-  if (path.startsWith('/app/settings/vehicles/new') || path.startsWith('/app/settings/vehicles/edit')) {
+  if (path.startsWith('/app/settings/vehicles/new')) {
     return '/next/app/settings/vehicles';
   }
   if (path.startsWith('/app/settings/')) {
