@@ -2,7 +2,6 @@ import { $, Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwi
 import { Link, useLocation, useNavigate } from '@builder.io/qwik-city';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 import {
-  installIosPwaHistoryBackGuard,
   installIosPwaBackSwipeBlocker,
   shouldBlockIosPwaBackNavigation,
 } from '../../lib/navigation/ios-edge-swipe-blocker';
@@ -68,14 +67,6 @@ export const AppShell = component$(() => {
 
   useVisibleTask$(({ cleanup }) => {
     blockNativeBackNavigation.value = shouldBlockIosPwaBackNavigation(window);
-    if (blockNativeBackNavigation.value) {
-      const uninstallHistoryBackGuard = installIosPwaHistoryBackGuard(window);
-      cleanup(() => {
-        uninstallHistoryBackGuard();
-      });
-      return;
-    }
-
     const onPopState = () => {
       nextTransitionIsPop.value = true;
     };
