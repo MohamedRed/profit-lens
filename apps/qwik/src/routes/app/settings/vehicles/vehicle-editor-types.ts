@@ -14,6 +14,7 @@ export type EditorMode = 'create' | 'edit';
 export interface VehicleEditorProps {
   mode: EditorMode;
   vehicleId?: string | null;
+  returnToHref?: string | null;
 }
 
 export const createVehicleId = (): string => {

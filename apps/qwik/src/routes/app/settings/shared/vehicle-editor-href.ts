@@ -1,4 +1,4 @@
-const isValidBackToHref = (value: string | null | undefined): value is string => {
+export const isValidBackToHref = (value: string | null | undefined): value is string => {
   if (!value) {
     return false;
   }
@@ -12,4 +12,3 @@ export const buildVehicleEditorHref = (vehicleId: string, backToHref?: string): 
   }
   return `/next/app/settings/vehicles/edit?${params.toString()}`;
 };
-
