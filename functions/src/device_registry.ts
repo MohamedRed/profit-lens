@@ -23,6 +23,10 @@ export const registerDevice = onCall(
     cors: true,
     timeoutSeconds: 15,
     memory: "256MiB",
+    cpu: 1,
+    minInstances: 1,
+    maxInstances: 20,
+    concurrency: 20,
     region: "europe-west1",
   },
   async (request) => {

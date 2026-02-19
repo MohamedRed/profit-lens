@@ -13,7 +13,7 @@ import {
   isDeviceRegistrationFresh,
   markDeviceRegistrationFresh,
 } from '../../lib/features/devices/device-registration-cache';
-import { registerDevice } from '../../lib/features/devices/devices-service';
+import { registerDeviceWithBackoff } from '../../lib/features/devices/register-device-with-backoff';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 
 type DeviceGateState = 'ready' | 'limit' | 'error';
@@ -44,6 +44,9 @@ export const DeviceAccessGuard = component$(() => {
   const registrationInFlight = useSignal(false);
 
   const registerCurrentDevice$ = $(async (options?: RegisterCurrentDeviceOptions) => {
+    if (registrationInFlight.value) {
+      return;
+    }
     const user = auth.user.value;
     if (!user) {
       return;
@@ -71,7 +74,7 @@ export const DeviceAccessGuard = component$(() => {
     replacingDeviceId.value = replaceDeviceId ?? '';
 
     try {
-      await registerDevice({
+      await registerDeviceWithBackoff({
         deviceId,
         platform: 'web',
         userAgent: navigator.userAgent ?? '',
