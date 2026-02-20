@@ -3,7 +3,7 @@ import { useLocation } from '@builder.io/qwik-city';
 import {
   LoadingSkeletonAnnouncer,
   SettingsFormSkeleton,
-} from '../../../../components/ui/page-loading-skeleton';
+} from '../../../../../components/ui/page-loading-skeleton';
 import { isValidBackToHref } from '../../shared/vehicle-editor-href';
 import { VehicleEditor } from '../vehicle-editor';
 
