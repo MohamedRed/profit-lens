@@ -2,7 +2,7 @@ import { $, useSignal, useVisibleTask$, type QRL, type Signal } from '@builder.i
 import { useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { watchUserProfile } from '../../../../lib/features/profile/profile-service';
-import { watchVehicleById } from '../../../../lib/features/vehicles/vehicles-service';
+import { fetchVehicleById } from '../../../../lib/features/vehicles/vehicles-service';
 import {
   applyVehiclePresetValues,
   defaultEnergyTypeForVehicle,
@@ -92,22 +92,34 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
       loading.value = false;
     });
 
-    let unsubscribeVehicles: (() => void) | null = null;
+    let cancelled = false;
     if (props.mode === 'edit' && vehicleId) {
       loading.value = true;
-      unsubscribeVehicles = watchVehicleById(user.uid, vehicleId, (found) => {
-        existingVehicle.value = found;
-        if (found) {
-          draft.value = vehicleToDraft(found);
-          useVehiclePresets.value = false;
+      void (async () => {
+        try {
+          const found = await fetchVehicleById(user.uid, vehicleId);
+          if (cancelled) {
+            return;
+          }
+          existingVehicle.value = found;
+          if (found) {
+            draft.value = vehicleToDraft(found);
+            useVehiclePresets.value = false;
+          } else {
+            status.value = t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
+          }
+        } catch (error) {
+          if (!cancelled) {
+            status.value = error instanceof Error
+              ? error.message
+              : t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
+          }
+        } finally {
+          if (!cancelled) {
+            loading.value = false;
+          }
         }
-        loading.value = false;
-      }, (error) => {
-        status.value = error instanceof Error
-          ? error.message
-          : t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
-        loading.value = false;
-      });
+      })();
     } else if (props.mode === 'edit') {
       loading.value = false;
       existingVehicle.value = null;
@@ -115,7 +127,7 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
 
     cleanup(() => {
       unsubscribeProfile();
-      unsubscribeVehicles?.();
+      cancelled = true;
     });
   });
 
