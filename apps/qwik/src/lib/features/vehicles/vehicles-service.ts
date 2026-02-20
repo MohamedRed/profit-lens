@@ -2,7 +2,6 @@ import {
   addDoc,
   deleteDoc,
   doc,
-  getDoc,
   onSnapshot,
   orderBy,
   query,
@@ -60,16 +59,21 @@ export const watchVehicles = (
   });
 };
 
-export const fetchVehicleById = async (
+export const watchVehicleById = (
   uid: string,
   vehicleId: string,
-): Promise<VehicleProfile | null> => {
+  callback: (vehicle: VehicleProfile | null) => void,
+  onError?: (error: unknown) => void,
+): (() => void) => {
   const vehicleRef = doc(getDb(), 'users', uid, 'vehicles', vehicleId);
-  const snapshot = await getDoc(vehicleRef);
-  if (!snapshot.exists()) {
-    return null;
-  }
-  return mapVehicle(snapshot.id, snapshot.data() as Record<string, unknown>);
+  return onSnapshot(vehicleRef, (snapshot) => {
+    callback(snapshot.exists()
+      ? mapVehicle(snapshot.id, snapshot.data() as Record<string, unknown>)
+      : null,
+    );
+  }, (error) => {
+    onError?.(error);
+  });
 };
 
 export const saveVehicle = async (uid: string, vehicle: VehicleProfile) => {
