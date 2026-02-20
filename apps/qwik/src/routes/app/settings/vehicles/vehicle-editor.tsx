@@ -24,7 +24,11 @@ export const VehicleEditor = component$<VehicleEditorProps>((props) => {
   const returnHref = isValidBackToHref(props.returnToHref) ? props.returnToHref : defaultReturnHref;
 
   const missingTarget = props.mode === 'edit' && !props.vehicleId;
-  const notFound = props.mode === 'edit' && !state.loading.value && !state.existingVehicle.value;
+  const notFound =
+    props.mode === 'edit' &&
+    state.hasLoaded.value &&
+    !state.loading.value &&
+    !state.existingVehicle.value;
 
   useVisibleTask$(({ track }) => {
     const shouldRedirect = track(() => missingTarget || notFound);

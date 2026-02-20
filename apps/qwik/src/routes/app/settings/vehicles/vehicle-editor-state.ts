@@ -25,6 +25,7 @@ import { createVehicleLookupActions, createVehicleSubmitActions } from './vehicl
 
 export interface VehicleEditorState {
   loading: Signal<boolean>;
+  hasLoaded: Signal<boolean>;
   saving: Signal<boolean>;
   deleting: Signal<boolean>;
   status: Signal<string>;
@@ -51,6 +52,7 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
   const navigate = useNavigate();
 
   const loading = useSignal(props.mode === 'edit');
+  const hasLoaded = useSignal(props.mode !== 'edit');
   const saving = useSignal(false);
   const deleting = useSignal(false);
   const status = useSignal('');
@@ -65,10 +67,15 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
   const createDraftInitialized = useSignal(false);
 
   useVisibleTask$(({ track, cleanup }) => {
+    const ready = track(() => auth.ready.value);
     const user = track(() => auth.user.value);
     const vehicleId = track(() => props.vehicleId);
+    if (!ready) {
+      return;
+    }
     if (!user) {
       loading.value = false;
+      hasLoaded.value = props.mode !== 'edit';
       profile.value = null;
       existingVehicle.value = null;
       return;
@@ -96,6 +103,7 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
     let unsubscribeVehicle: (() => void) | null = null;
     if (props.mode === 'edit' && vehicleId) {
       loading.value = true;
+      hasLoaded.value = false;
       let hasLoadedOnce = false;
       status.value = '';
       unsubscribeVehicle = watchVehicleById(
@@ -115,6 +123,7 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
           }
           if (!hasLoadedOnce) {
             hasLoadedOnce = true;
+            hasLoaded.value = true;
             loading.value = false;
           }
         },
@@ -125,11 +134,13 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
           status.value = error instanceof Error
             ? error.message
             : t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
+          hasLoaded.value = true;
           loading.value = false;
         },
       );
     } else if (props.mode === 'edit') {
       loading.value = false;
+      hasLoaded.value = true;
       existingVehicle.value = null;
     }
 
@@ -231,6 +242,7 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
 
   return {
     loading,
+    hasLoaded,
     saving,
     deleting,
     status,
