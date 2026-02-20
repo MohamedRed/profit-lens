@@ -245,7 +245,7 @@ export default component$(() => {
               <li key={vehicle.id}>
                 <Link
                   class="ui-settings-vehicle-row ui-settings-tile-link"
-                  href={buildVehicleEditorHref(vehicle.id, '/next/app/settings')}
+                  href={buildVehicleEditorHref(vehicle.id)}
                 >
                   <div>
                     <p class="ui-settings-vehicle-name">{vehicle.name}</p>
@@ -259,11 +259,6 @@ export default component$(() => {
             ))}
           </ul>
         )}
-        <div class="ui-settings-vehicles-foot">
-          <Link class="ui-settings-link-button" href="/next/app/settings/vehicles">
-            {t(i18n, 'vehiclesSectionSubtitle', 'Manage your vehicles')}
-          </Link>
-        </div>
       </section>
 
       <section class="ui-settings-card">
