@@ -112,6 +112,11 @@
   gap: 8px;
   width: 100%;
   cursor: pointer;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .ui-settings-vehicles-inline-list li + li .ui-settings-vehicle-row {
