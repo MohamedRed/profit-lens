@@ -250,9 +250,6 @@ export default component$(() => {
                   <div>
                     <p class="ui-settings-vehicle-name">{vehicle.name}</p>
                     <p class="ui-settings-vehicle-type">{vehicle.type}</p>
-                    <p class="ui-settings-vehicle-action">
-                      {t(i18n, 'editVehicleButton', 'Edit vehicle')}
-                    </p>
                   </div>
                   <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
                     chevron_right

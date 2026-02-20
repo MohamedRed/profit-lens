@@ -110,6 +110,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  width: 100%;
+  cursor: pointer;
 }
 
 .ui-settings-vehicles-inline-list li + li .ui-settings-vehicle-row {
@@ -126,13 +128,6 @@
   margin: 2px 0 0;
   color: var(--pl-color-text-secondary);
   font-size: 0.84rem;
-}
-
-.ui-settings-vehicle-action {
-  margin: 2px 0 0;
-  color: var(--pl-color-purple);
-  font-size: 0.84rem;
-  font-weight: 600;
 }
 
 .ui-settings-vehicles-empty {
