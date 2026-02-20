@@ -96,19 +96,23 @@ export default component$(() => {
             {vehicles.value.map((vehicle) => {
               const isDefault = profile.value?.defaultVehicleId === vehicle.id;
               return (
-                <li key={vehicle.id} class="ui-settings-vehicle-item">
-                  <div class="ui-settings-row">
-                    <p class="ui-settings-row-title">{vehicle.name}</p>
-                    {isDefault ? (
-                      <span class="ui-settings-row-subtitle">{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</span>
-                    ) : null}
-                  </div>
-                  <p class="ui-settings-row-subtitle">{vehicleTypeLabel(i18n, vehicle.type)}</p>
+                <li key={vehicle.id}>
                   <Link
-                    class="ui-settings-link-button"
+                    class="ui-settings-vehicle-item ui-settings-tile-link"
                     href={buildVehicleEditorHref(vehicle.id, '/next/app/settings/vehicles')}
                   >
-                    {t(i18n, 'editVehicleButton', 'Edit vehicle')}
+                    <div class="ui-settings-row">
+                      <p class="ui-settings-row-title">{vehicle.name}</p>
+                      <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
+                        chevron_right
+                      </span>
+                    </div>
+                    <p class="ui-settings-row-subtitle">{vehicleTypeLabel(i18n, vehicle.type)}</p>
+                    {isDefault ? (
+                      <p class="ui-settings-row-subtitle">
+                        {t(i18n, 'vehicleSelectLabel', 'Select vehicle')}
+                      </p>
+                    ) : null}
                   </Link>
                 </li>
               );
