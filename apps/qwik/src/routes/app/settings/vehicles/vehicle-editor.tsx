@@ -10,7 +10,7 @@ import { VehicleEditorForm } from './vehicle-editor-form';
 import { useVehicleEditorState } from './vehicle-editor-state';
 import type { VehicleEditorProps } from './vehicle-editor-types';
 
-const defaultReturnHref = '/next/app/settings/vehicles';
+const defaultReturnHref = '/next/app/settings';
 
 export const VehicleEditor = component$<VehicleEditorProps>((props) => {
   const i18n = useI18n();

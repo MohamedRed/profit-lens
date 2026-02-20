@@ -216,7 +216,7 @@ export const createVehicleSubmitActions = (
         maintenancePerKm,
         depreciationPerKm,
       });
-      await params.navigateTo('/next/app/settings/vehicles');
+      await params.navigateTo('/next/app/settings');
     } catch (error) {
       params.status.value = resolveUserFacingErrorMessage(params.i18n, error, 'vehicle');
     } finally {
@@ -236,7 +236,7 @@ export const createVehicleSubmitActions = (
     params.status.value = '';
     try {
       await deleteVehicle(user.uid, params.existingVehicle.value);
-      await params.navigateTo('/next/app/settings/vehicles');
+      await params.navigateTo('/next/app/settings');
     } catch (error) {
       params.status.value = resolveUserFacingErrorMessage(params.i18n, error, 'vehicle');
     } finally {

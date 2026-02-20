@@ -102,8 +102,7 @@
   cursor: not-allowed;
 }
 
-.ui-settings-device-list,
-.ui-settings-vehicle-list {
+.ui-settings-device-list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -111,14 +110,12 @@
   gap: 10px;
 }
 
-.ui-settings-device-item,
-.ui-settings-vehicle-item {
+.ui-settings-device-item {
   background: var(--pl-color-overlay);
   border-radius: var(--pl-radius-lg);
   padding: 12px;
   display: grid;
   gap: 6px;
-  cursor: pointer;
 }
 
 .ui-settings-row {

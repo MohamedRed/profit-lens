@@ -47,9 +47,7 @@ export const AppShell = component$(() => {
   const showHelpTicketsAction = appPath === '/app/help';
   const headerBackHref = resolveHeaderBackHref(appPath, explicitBackHref);
   const preferDeterministicBack =
-    hasExplicitBackTarget ||
-    appPath === '/app/settings/vehicles' ||
-    appPath.startsWith('/app/settings/vehicles/');
+    hasExplicitBackTarget || appPath.startsWith('/app/settings/vehicles/');
   const activeTabIndex = resolveActiveTabIndex(appPath);
   const activeTab = navItems[activeTabIndex];
 
