@@ -45,6 +45,11 @@ const mapVehicle = (id: string, data: Record<string, unknown>): VehicleProfile =
   };
 };
 
+export interface VehicleWatchSnapshot {
+  vehicle: VehicleProfile | null;
+  fromCache: boolean;
+}
+
 export const watchVehicles = (
   uid: string,
   callback: (vehicles: VehicleProfile[]) => void,
@@ -62,15 +67,17 @@ export const watchVehicles = (
 export const watchVehicleById = (
   uid: string,
   vehicleId: string,
-  callback: (vehicle: VehicleProfile | null) => void,
+  callback: (snapshot: VehicleWatchSnapshot) => void,
   onError?: (error: unknown) => void,
 ): (() => void) => {
   const vehicleRef = doc(getDb(), 'users', uid, 'vehicles', vehicleId);
-  return onSnapshot(vehicleRef, (snapshot) => {
-    callback(snapshot.exists()
-      ? mapVehicle(snapshot.id, snapshot.data() as Record<string, unknown>)
-      : null,
-    );
+  return onSnapshot(vehicleRef, { includeMetadataChanges: true }, (snapshot) => {
+    callback({
+      vehicle: snapshot.exists()
+        ? mapVehicle(snapshot.id, snapshot.data() as Record<string, unknown>)
+        : null,
+      fromCache: snapshot.metadata.fromCache,
+    });
   }, (error) => {
     onError?.(error);
   });

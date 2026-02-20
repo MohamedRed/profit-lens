@@ -104,25 +104,27 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
     if (props.mode === 'edit' && vehicleId) {
       loading.value = true;
       hasLoaded.value = false;
-      let hasLoadedOnce = false;
       status.value = '';
       unsubscribeVehicle = watchVehicleById(
         user.uid,
         vehicleId,
-        (found) => {
+        (snapshot) => {
           if (cancelled) {
             return;
           }
+          const found = snapshot.vehicle;
           existingVehicle.value = found;
           if (found) {
             draft.value = vehicleToDraft(found);
             useVehiclePresets.value = false;
             status.value = '';
+            hasLoaded.value = true;
+            loading.value = false;
           } else {
+            if (snapshot.fromCache) {
+              return;
+            }
             status.value = t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
-          }
-          if (!hasLoadedOnce) {
-            hasLoadedOnce = true;
             hasLoaded.value = true;
             loading.value = false;
           }
