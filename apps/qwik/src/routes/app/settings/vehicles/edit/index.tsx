@@ -26,8 +26,8 @@ export default component$(() => {
   const resolvedBackToHref = useSignal<string | null>(null);
   const searchReady = useSignal(false);
 
-  useVisibleTask$(({ track }) => {
-    const search = track(() => location.url.search);
+  useVisibleTask$(() => {
+    const search = window.location.search || location.url.search;
     const params = new URLSearchParams(search);
     vehicleId.value = readVehicleId(search);
     const returnToHref = params.get('backTo');
