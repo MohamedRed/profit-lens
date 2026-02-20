@@ -2,7 +2,7 @@ import { $, useSignal, useVisibleTask$, type QRL, type Signal } from '@builder.i
 import { useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { watchUserProfile } from '../../../../lib/features/profile/profile-service';
-import { watchVehicles } from '../../../../lib/features/vehicles/vehicles-service';
+import { watchVehicleById } from '../../../../lib/features/vehicles/vehicles-service';
 import {
   applyVehiclePresetValues,
   defaultEnergyTypeForVehicle,
@@ -95,8 +95,7 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
     let unsubscribeVehicles: (() => void) | null = null;
     if (props.mode === 'edit' && vehicleId) {
       loading.value = true;
-      unsubscribeVehicles = watchVehicles(user.uid, (items) => {
-        const found = items.find((item) => item.id === vehicleId) ?? null;
+      unsubscribeVehicles = watchVehicleById(user.uid, vehicleId, (found) => {
         existingVehicle.value = found;
         if (found) {
           draft.value = vehicleToDraft(found);

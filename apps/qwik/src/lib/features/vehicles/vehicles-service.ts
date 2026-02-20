@@ -59,6 +59,24 @@ export const watchVehicles = (
   });
 };
 
+export const watchVehicleById = (
+  uid: string,
+  vehicleId: string,
+  callback: (vehicle: VehicleProfile | null) => void,
+  onError?: (error: unknown) => void,
+): (() => void) => {
+  const vehicleRef = doc(getDb(), 'users', uid, 'vehicles', vehicleId);
+  return onSnapshot(vehicleRef, (snapshot) => {
+    if (!snapshot.exists()) {
+      callback(null);
+      return;
+    }
+    callback(mapVehicle(snapshot.id, snapshot.data() as Record<string, unknown>));
+  }, (error) => {
+    onError?.(error);
+  });
+};
+
 export const saveVehicle = async (uid: string, vehicle: VehicleProfile) => {
   const db = getDb();
   const vehicleRef = doc(db, 'users', uid, 'vehicles', vehicle.id);
