@@ -102,7 +102,7 @@ export const OfferSetupEditorSheet = component$<OfferSetupEditorSheetProps>((pro
 
           <div class="ui-field">
             <Label for="offer-min-profitability-sheet">
-              {t(i18n, 'minProfitabilityLabel', 'Minimum profit per offer')}
+              {t(i18n, 'minProfitabilityLabel', 'Minimum profit per km')}
             </Label>
             <div class="ui-offer-target-input-wrap">
               <Input
@@ -115,9 +115,9 @@ export const OfferSetupEditorSheet = component$<OfferSetupEditorSheetProps>((pro
                   draftMinProfitability.value = el.value;
                 }}
               />
-              <span class="ui-offer-target-suffix">€</span>
+              <span class="ui-offer-target-suffix">€/km</span>
             </div>
-            <p class="ui-offer-target-hint">{t(i18n, 'minProfitabilityHint', 'Suggested default: €2.00')}</p>
+            <p class="ui-offer-target-hint">{t(i18n, 'minProfitabilityHint', 'Suggested default: €2.00/km')}</p>
             {props.savingProfitTarget ? (
               <p class="ui-offer-target-saving">{t(i18n, 'loadingLabel', 'Loading...')}</p>
             ) : null}

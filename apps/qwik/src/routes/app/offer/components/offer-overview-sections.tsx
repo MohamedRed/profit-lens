@@ -20,11 +20,28 @@ const formatCurrency = (value: number): string => {
 
 const formatDistance = (value: number): string => `${value.toFixed(1)} km`;
 const formatDuration = (value: number): string => `${Math.round(value)} min`;
+const formatEuroPerKm = (value: number): string => `${formatCurrency(value)}/km`;
+
+const resolveAnalysisDistanceKm = (record: OfferAnalysisRecord): number => {
+  const verifiedDistance = record.offer.routeVerification?.distanceKm;
+  if (typeof verifiedDistance === 'number' && Number.isFinite(verifiedDistance) && verifiedDistance > 0) {
+    return verifiedDistance;
+  }
+
+  const offerDistance = record.offer.distanceKm;
+  if (typeof offerDistance === 'number' && Number.isFinite(offerDistance) && offerDistance > 0) {
+    return offerDistance;
+  }
+
+  return 0;
+};
 
 export const OfferOverviewSections = component$<OfferOverviewSectionsProps>((props) => {
   const i18n = useI18n();
   const { minProfitabilityEuro, onViewDetails$, record } = props;
-  const targetDelta = record.breakdown.netProfit - minProfitabilityEuro;
+  const distanceKm = resolveAnalysisDistanceKm(record);
+  const minimumTargetEuro = minProfitabilityEuro * distanceKm;
+  const targetDelta = record.breakdown.netProfit - minimumTargetEuro;
   const decisionAccept = targetDelta >= 0;
   const decisionLabel = decisionAccept
     ? t(i18n, 'offerDecisionAccept', 'Accept')
@@ -45,8 +62,7 @@ export const OfferOverviewSections = component$<OfferOverviewSectionsProps>((pro
           })}
         </p>
         <p class="ui-offer-decision-pill">
-          {t(i18n, 'minProfitabilityLabel', 'Minimum profitability')}:{' '}
-          {formatCurrency(minProfitabilityEuro)}
+          {t(i18n, 'minProfitabilityLabel', 'Minimum profit per km')}: {formatEuroPerKm(minProfitabilityEuro)}
         </p>
       </section>
 

@@ -22,6 +22,8 @@ const formatCurrency = (value: number): string => {
   }).format(value);
 };
 
+const formatEuroPerKm = (value: number): string => `${formatCurrency(value)}/km`;
+
 export const OfferSetupSummary = component$<OfferSetupSummaryProps>((props) => {
   const i18n = useI18n();
   const editorOpen = useSignal(false);
@@ -44,7 +46,7 @@ export const OfferSetupSummary = component$<OfferSetupSummaryProps>((props) => {
         <div class="ui-offer-setup-summary-chips">
           <span class="ui-offer-setup-chip">{selectedVehicleName}</span>
           <span class="ui-offer-setup-chip">
-            {formatCurrency(props.minProfitabilityEuro)}
+            {formatEuroPerKm(props.minProfitabilityEuro)}
           </span>
         </div>
         <Button variant="ghost" type="button" class="ui-offer-setup-summary-edit" onClick$={openEditor$}>
