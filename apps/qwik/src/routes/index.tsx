@@ -10,12 +10,12 @@ const decodePathSegment = (value: string): string => {
   }
 };
 
-const buildVehicleEditHref = (vehicleIdSegment: string, search: string, hash: string): string => {
+const buildVehicleEditorHref = (vehicleIdSegment: string, search: string, hash: string): string => {
   const params = new URLSearchParams(search);
   params.delete('vehicleId');
   const encodedVehicleId = encodeURIComponent(decodePathSegment(vehicleIdSegment));
   const query = params.toString();
-  return `/next/app/settings/vehicles/edit/${encodedVehicleId}${query ? `?${query}` : ''}${hash}`;
+  return `/next/app/settings/vehicles/${encodedVehicleId}${query ? `?${query}` : ''}${hash}`;
 };
 
 const normalizeDeepAppPath = (path: string, search: string, hash: string): string | null => {
@@ -37,19 +37,24 @@ const normalizeDeepAppPath = (path: string, search: string, hash: string): strin
     }
     params.delete('vehicleId');
     const query = params.toString();
-    return `/next/app/settings/vehicles/edit/${encodeURIComponent(vehicleId)}${query ? `?${query}` : ''}${hash}`;
+    return `/next/app/settings/vehicles/${encodeURIComponent(vehicleId)}${query ? `?${query}` : ''}${hash}`;
   }
 
   const vehicleEditMatch = path.match(/^\/next\/app\/settings\/vehicles\/edit\/([^/]+)\/?$/);
   if (vehicleEditMatch) {
-    return buildVehicleEditHref(vehicleEditMatch[1], search, hash);
+    return buildVehicleEditorHref(vehicleEditMatch[1], search, hash);
   }
 
-  const legacyVehiclePathMatch = path.match(/^\/next\/app\/settings\/vehicles\/([^/]+)\/?$/);
-  if (legacyVehiclePathMatch) {
-    const vehicleSegment = legacyVehiclePathMatch[1];
-    if (vehicleSegment !== 'new' && vehicleSegment !== 'edit') {
-      return buildVehicleEditHref(vehicleSegment, search, hash);
+  const vehiclePathMatch = path.match(/^\/next\/app\/settings\/vehicles\/([^/]+)\/?$/);
+  if (vehiclePathMatch) {
+    const vehicleSegment = vehiclePathMatch[1];
+    if (vehicleSegment === 'new' || vehicleSegment === 'edit') {
+      return null;
+    }
+    const canonicalHref = buildVehicleEditorHref(vehicleSegment, search, hash);
+    const currentHref = `${path}${search}${hash}`;
+    if (canonicalHref !== currentHref) {
+      return canonicalHref;
     }
   }
 
