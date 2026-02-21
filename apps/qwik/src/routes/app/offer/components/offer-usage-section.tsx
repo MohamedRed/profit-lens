@@ -1,5 +1,4 @@
 import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
 import { Button } from "../../../../components/ui/button";
 import {
   OfferUsageSkeleton,
@@ -14,63 +13,22 @@ import {
 } from "../../../../lib/features/billing/billing-service";
 import type { Entitlement, OfferUsage } from "../../../../lib/types/billing";
 import { billingPlans } from "../../../../lib/config/runtime-config";
+import { OfferBillingSheet } from "./offer-billing-sheet";
+import { offerUsageCache, resolveStatusLabel } from "./offer-usage-helpers";
 import { OfferSectionCard } from "./offer-section-card";
 
 interface OfferUsageSectionProps {
   uid: string;
-  backToHref?: string;
   variant?: "card" | "inline";
 }
 
-interface OfferUsageCacheEntry {
-  entitlement: Entitlement | null;
-  usage: OfferUsage | null;
-}
-
-const offerUsageCache = new Map<string, OfferUsageCacheEntry>();
-
-const resolveStatusLabel = (
-  entitlement: Entitlement,
-  statusUnknown: string,
-): string => {
-  const status = entitlement.status.toLowerCase();
-  switch (status) {
-    case "free":
-      return "Free";
-    case "active":
-      return "Active";
-    case "past_due":
-      return "Past due";
-    case "canceled":
-    case "cancelled":
-      return "Canceled";
-    case "trialing":
-      return "Trialing";
-    case "incomplete":
-    case "incomplete_expired":
-      return "Incomplete";
-    case "unpaid":
-      return "Unpaid";
-    default:
-      return statusUnknown;
-  }
-};
-
-const buildBillingHref = (backToHref?: string): string => {
-  if (!backToHref) {
-    return "/next/app/settings/billing";
-  }
-  const search = new URLSearchParams({ backTo: backToHref });
-  return `/next/app/settings/billing?${search.toString()}`;
-};
-
 export const OfferUsageSection = component$<OfferUsageSectionProps>(
-  ({ uid, backToHref, variant = "card" }) => {
+  ({ uid, variant = "card" }) => {
     const i18n = useI18n();
     const entitlement = useSignal<Entitlement | null>(null);
     const usage = useSignal<OfferUsage | null>(null);
     const status = useSignal("");
-    const managePlanHref = buildBillingHref(backToHref);
+    const billingSheetOpen = useSignal(false);
 
     useVisibleTask$(({ track, cleanup }) => {
       const value = track(() => uid);
@@ -200,13 +158,15 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(
           {t(i18n, "upgradePlanButton", "Upgrade plan")}
         </button>
       ) : (
-        <Link
-          href={managePlanHref}
-          prefetch={true}
+        <button
+          type="button"
           class="ui-offer-usage-inline-link"
+          onClick$={() => {
+            billingSheetOpen.value = true;
+          }}
         >
           {t(i18n, "managePlanButton", "Manage plan")}
-        </Link>
+        </button>
       );
 
       if (variant === "inline") {
@@ -266,13 +226,15 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(
                 {t(i18n, "upgradePlanButton", "Upgrade plan")}
               </Button>
             ) : (
-              <Link
-                href={managePlanHref}
-                prefetch={true}
-                class="ui-button ui-button-default ui-button-md ui-offer-usage-cta"
+              <Button
+                variant="default"
+                class="ui-offer-usage-cta"
+                onClick$={() => {
+                  billingSheetOpen.value = true;
+                }}
               >
                 {t(i18n, "managePlanButton", "Manage plan")}
-              </Link>
+              </Button>
             )}
           </div>
           {status.value ? (
@@ -283,16 +245,36 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(
     };
 
     if (variant === "inline") {
-      return <section class="ui-offer-usage-inline-shell">{content()}</section>;
+      return (
+        <>
+          <section class="ui-offer-usage-inline-shell">{content()}</section>
+          <OfferBillingSheet
+            isOpen={billingSheetOpen.value}
+            uid={uid}
+            onClose$={() => {
+              billingSheetOpen.value = false;
+            }}
+          />
+        </>
+      );
     }
 
     return (
-      <OfferSectionCard
-        title={t(i18n, "offersRemainingTitle", "Offers remaining")}
-        showBorder={true}
-      >
-        {content()}
-      </OfferSectionCard>
+      <>
+        <OfferSectionCard
+          title={t(i18n, "offersRemainingTitle", "Offers remaining")}
+          showBorder={true}
+        >
+          {content()}
+        </OfferSectionCard>
+        <OfferBillingSheet
+          isOpen={billingSheetOpen.value}
+          uid={uid}
+          onClose$={() => {
+            billingSheetOpen.value = false;
+          }}
+        />
+      </>
     );
   },
 );

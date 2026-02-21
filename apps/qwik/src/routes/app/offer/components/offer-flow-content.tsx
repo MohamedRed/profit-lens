@@ -123,7 +123,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             />
             <OfferUsageSection
               uid={props.userId}
-              backToHref="/next/app/offer"
               variant="inline"
             />
           </div>
