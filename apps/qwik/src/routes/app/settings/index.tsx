@@ -1,5 +1,5 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Link, useNavigate } from '@builder.io/qwik-city';
+import { Link } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { signOutCurrentUser } from '../../../lib/firebase/auth';
 import { billingPlans } from '../../../lib/config/runtime-config';
@@ -14,6 +14,7 @@ import type { DeviceEntry } from '../../../lib/types/device';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
 import { buildVehicleEditorHref } from './shared/vehicle-editor-href';
+import { writeVehicleEditorTargetId } from './shared/vehicle-editor-target';
 import { useSettingsTabSession } from './use-settings-tab-session';
 
 const formatCurrency = (locale: string, value: number): string => {
@@ -35,7 +36,6 @@ const flagForLocale = (code: string): string => {
 export default component$(() => {
   const auth = useAuth();
   const i18n = useI18n();
-  const navigate = useNavigate();
 
   const profile = useSignal<UserProfile | null>(null);
   const vehicles = useSignal<VehicleProfile[]>([]);
@@ -248,7 +248,8 @@ export default component$(() => {
                   type="button"
                   class="ui-settings-vehicle-row ui-settings-tile-link"
                   onClick$={() => {
-                    void navigate(buildVehicleEditorHref(vehicle.id), { forceReload: true });
+                    writeVehicleEditorTargetId(vehicle.id);
+                    window.location.assign(buildVehicleEditorHref(vehicle.id));
                   }}
                   aria-label={t(i18n, 'editVehicleButton', 'Edit vehicle')}
                 >

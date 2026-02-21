@@ -10,11 +10,12 @@ const decodePathSegment = (value: string): string => {
   }
 };
 
-const buildVehicleEditQueryHref = (vehicleIdSegment: string, search: string, hash: string): string => {
+const buildVehicleEditHref = (vehicleIdSegment: string, search: string, hash: string): string => {
   const params = new URLSearchParams(search);
-  params.set('vehicleId', decodePathSegment(vehicleIdSegment));
+  params.delete('vehicleId');
+  const encodedVehicleId = encodeURIComponent(decodePathSegment(vehicleIdSegment));
   const query = params.toString();
-  return `/next/app/settings/vehicles/edit/${query ? `?${query}` : ''}${hash}`;
+  return `/next/app/settings/vehicles/edit/${encodedVehicleId}${query ? `?${query}` : ''}${hash}`;
 };
 
 const normalizeDeepAppPath = (path: string, search: string, hash: string): string | null => {
@@ -28,16 +29,27 @@ const normalizeDeepAppPath = (path: string, search: string, hash: string): strin
     return `/next/app/history/details/${query ? `?${query}` : ''}${hash}`;
   }
 
+  if (path === '/next/app/settings/vehicles/edit' || path === '/next/app/settings/vehicles/edit/') {
+    const params = new URLSearchParams(search);
+    const vehicleId = params.get('vehicleId');
+    if (!vehicleId) {
+      return null;
+    }
+    params.delete('vehicleId');
+    const query = params.toString();
+    return `/next/app/settings/vehicles/edit/${encodeURIComponent(vehicleId)}${query ? `?${query}` : ''}${hash}`;
+  }
+
   const vehicleEditMatch = path.match(/^\/next\/app\/settings\/vehicles\/edit\/([^/]+)\/?$/);
   if (vehicleEditMatch) {
-    return buildVehicleEditQueryHref(vehicleEditMatch[1], search, hash);
+    return buildVehicleEditHref(vehicleEditMatch[1], search, hash);
   }
 
   const legacyVehiclePathMatch = path.match(/^\/next\/app\/settings\/vehicles\/([^/]+)\/?$/);
   if (legacyVehiclePathMatch) {
     const vehicleSegment = legacyVehiclePathMatch[1];
     if (vehicleSegment !== 'new' && vehicleSegment !== 'edit') {
-      return buildVehicleEditQueryHref(vehicleSegment, search, hash);
+      return buildVehicleEditHref(vehicleSegment, search, hash);
     }
   }
 

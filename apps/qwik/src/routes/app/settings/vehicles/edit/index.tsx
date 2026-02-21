@@ -6,6 +6,10 @@ import {
 } from '../../../../../components/ui/page-loading-skeleton';
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 import { isValidBackToHref } from '../../shared/vehicle-editor-href';
+import {
+  clearVehicleEditorTargetId,
+  readVehicleEditorTargetId,
+} from '../../shared/vehicle-editor-target';
 import { VehicleEditor } from '../vehicle-editor';
 
 const decodeVehicleId = (raw: string): string => {
@@ -47,7 +51,11 @@ export default component$(() => {
     const params = new URLSearchParams(search);
     const pathVehicleId = readVehicleIdFromPath(pathname);
     const queryVehicleId = readVehicleId(search);
-    vehicleId.value = pathVehicleId ?? queryVehicleId;
+    const resolvedVehicleId = pathVehicleId ?? queryVehicleId ?? readVehicleEditorTargetId();
+    vehicleId.value = resolvedVehicleId;
+    if (resolvedVehicleId) {
+      clearVehicleEditorTargetId();
+    }
     const returnToHref = params.get('backTo');
     resolvedBackToHref.value = isValidBackToHref(returnToHref) ? returnToHref : null;
     routeStateResolved.value = true;
