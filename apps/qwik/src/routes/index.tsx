@@ -12,10 +12,9 @@ const decodePathSegment = (value: string): string => {
 
 const buildVehicleEditorHref = (vehicleIdSegment: string, search: string, hash: string): string => {
   const params = new URLSearchParams(search);
-  params.delete('vehicleId');
-  const encodedVehicleId = encodeURIComponent(decodePathSegment(vehicleIdSegment));
+  params.set('vehicleId', decodePathSegment(vehicleIdSegment));
   const query = params.toString();
-  return `/next/app/settings/vehicles/${encodedVehicleId}${query ? `?${query}` : ''}${hash}`;
+  return `/next/app/settings/vehicles/edit${query ? `?${query}` : ''}${hash}`;
 };
 
 const normalizeDeepAppPath = (path: string, search: string, hash: string): string | null => {
@@ -35,9 +34,12 @@ const normalizeDeepAppPath = (path: string, search: string, hash: string): strin
     if (!vehicleId) {
       return null;
     }
-    params.delete('vehicleId');
-    const query = params.toString();
-    return `/next/app/settings/vehicles/${encodeURIComponent(vehicleId)}${query ? `?${query}` : ''}${hash}`;
+    const canonicalHref = `/next/app/settings/vehicles/edit?${params.toString()}${hash}`;
+    const currentHref = `${path}${search}${hash}`;
+    if (canonicalHref !== currentHref) {
+      return canonicalHref;
+    }
+    return null;
   }
 
   const vehicleEditMatch = path.match(/^\/next\/app\/settings\/vehicles\/edit\/([^/]+)\/?$/);
@@ -51,11 +53,7 @@ const normalizeDeepAppPath = (path: string, search: string, hash: string): strin
     if (vehicleSegment === 'new' || vehicleSegment === 'edit') {
       return null;
     }
-    const canonicalHref = buildVehicleEditorHref(vehicleSegment, search, hash);
-    const currentHref = `${path}${search}${hash}`;
-    if (canonicalHref !== currentHref) {
-      return canonicalHref;
-    }
+    return buildVehicleEditorHref(vehicleSegment, search, hash);
   }
 
   return null;
