@@ -13,6 +13,7 @@ import {
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { UserProfile } from '../../../../lib/types/profile';
 import type { VehicleProfile } from '../../../../lib/types/vehicle';
+import { readSettingsTabSessionState } from '../settings-tab-session';
 import {
   asEnergyType,
   asFuelType,
@@ -114,15 +115,25 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
       loading.value = true;
       hasLoaded.value = false;
       status.value = '';
-      existingVehicle.value = null;
-      waitForServerSyncTimeout = setTimeout(() => {
-        if (cancelled || existingVehicle.value) {
-          return;
-        }
-        status.value = t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
+      const sessionVehicle =
+        readSettingsTabSessionState(user.uid)?.vehicles.find((vehicle) => vehicle.id === vehicleId) ?? null;
+      if (sessionVehicle) {
+        existingVehicle.value = sessionVehicle;
+        draft.value = vehicleToDraft(sessionVehicle);
+        useVehiclePresets.value = false;
         hasLoaded.value = true;
         loading.value = false;
-      }, VEHICLE_SERVER_SYNC_TIMEOUT_MS);
+      } else {
+        existingVehicle.value = null;
+        waitForServerSyncTimeout = setTimeout(() => {
+          if (cancelled || existingVehicle.value) {
+            return;
+          }
+          status.value = t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
+          hasLoaded.value = true;
+          loading.value = false;
+        }, VEHICLE_SERVER_SYNC_TIMEOUT_MS);
+      }
       unsubscribeVehicle = watchVehicleById(
         user.uid,
         vehicleId,
