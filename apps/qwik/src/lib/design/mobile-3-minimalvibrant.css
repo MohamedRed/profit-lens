@@ -38,9 +38,30 @@
   gap: 10px;
 }
 
-.ui-offer-setup-toggle-button {
-  width: 100%;
-  justify-content: center;
+.ui-offer-import-toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ui-offer-setup-settings-button {
+  width: auto;
+  min-height: 34px !important;
+  border-radius: var(--pl-radius-pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-inline: 12px;
+  color: var(--pl-color-purple) !important;
+  border: 1px solid rgba(139, 92, 246, 0.24);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.ui-offer-setup-settings-button[aria-expanded="true"] {
+  background: rgba(139, 92, 246, 0.16);
+}
+
+.ui-offer-setup-settings-icon {
+  font-size: 1rem;
 }
 
 .ui-offer-setup-vehicle-skeleton {

@@ -116,6 +116,32 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             class="ui-offer-import-hero"
             aria-label={t(i18n, "importScreenshotButton", "Import screenshot")}
           >
+            <div class="ui-offer-import-toolbar">
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                class="ui-offer-setup-settings-button"
+                aria-expanded={setupExpanded.value}
+                aria-label={
+                  setupExpanded.value
+                    ? t(i18n, "hideOfferSetupButton", "Hide setup")
+                    : t(i18n, "showOfferSetupButton", "Show setup")
+                }
+                onClick$={() => {
+                  setupExpanded.value = !setupExpanded.value;
+                }}
+              >
+                <span
+                  class="material-icons-outlined ui-offer-setup-settings-icon"
+                  aria-hidden="true"
+                >
+                  settings
+                </span>
+                <span>{t(i18n, "settingsTabLabel", "Settings")}</span>
+              </Button>
+            </div>
+
             {useDirectGalleryImport.value ? (
               <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
                 {props.loading.value
@@ -182,20 +208,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 }
               />
             ) : null}
-
-            <Button
-              variant="ghost"
-              size="sm"
-              type="button"
-              class="ui-offer-setup-toggle-button"
-              onClick$={() => {
-                setupExpanded.value = !setupExpanded.value;
-              }}
-            >
-              {setupExpanded.value
-                ? t(i18n, "hideOfferSetupButton", "Hide setup")
-                : t(i18n, "showOfferSetupButton", "Show setup")}
-            </Button>
           </section>
 
           {setupExpanded.value ? (
