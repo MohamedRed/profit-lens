@@ -316,6 +316,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Unable to complete this action right now. Please try again.';
 
   @override
+  String get offerLocationPermissionRequired =>
+      'Location permission is required to analyze an offer.';
+
+  @override
+  String get offerLocationUnavailable =>
+      'Unable to read your current location. Check GPS and try again.';
+
+  @override
+  String get offerLocationTimeout =>
+      'Location took too long to load. Try again in an open area.';
+
+  @override
+  String get offerLocationUnsupported =>
+      'This device does not support location for offer analysis.';
+
+  @override
   String get billingActionFailedMessage =>
       'Unable to update subscription right now. Please try again.';
 

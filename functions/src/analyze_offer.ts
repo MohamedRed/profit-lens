@@ -11,6 +11,7 @@ import { resolveOfferInput } from "./offer_input_resolver";
 import { buildRouteVerification } from "./route_verification_builder";
 import { assertOfferLimitAvailable, saveOfferWithUsage } from "./offer_usage";
 import { assertDeviceActive } from "./device_registry";
+import { readRequiredCurrentLocation } from "./current_location";
 
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const routesApiKey = defineSecret("ROUTES_API_KEY");
@@ -38,6 +39,7 @@ export const analyzeOffer = onCall(
     if (!deviceId) {
       throw new HttpsError("invalid-argument", "Missing deviceId.");
     }
+    const currentLocation = readRequiredCurrentLocation(payload);
     await assertDeviceActive(uid, deviceId);
     const entitlement = await ensureEntitlement(uid);
     await assertOfferLimitAvailable({ uid, entitlement });
@@ -63,6 +65,7 @@ export const analyzeOffer = onCall(
     const routeVerification = await buildRouteVerification({
       offer,
       vehicleType: vehicle.type,
+      currentLocation,
       routesApiKey: routesApiKey.value(),
       geocodingApiKey: geocodingApiKey.value(),
     });

@@ -1,12 +1,13 @@
 import { HttpsError } from "firebase-functions/v2/https";
 import { normalizeString } from "./offer_normalization";
-import { verifyRoute } from "./route_verification";
+import { verifyRouteLegs } from "./route_verification";
 import { RouteLocationInput, RouteTravelMode } from "./routes_api";
-import { OfferInput } from "./profitability_types";
+import { GeoPoint, OfferInput } from "./profitability_types";
 
 export async function buildRouteVerification(params: {
   offer: OfferInput;
   vehicleType: string;
+  currentLocation: GeoPoint;
   routesApiKey: string | null;
   geocodingApiKey: string | null;
 }) {
@@ -34,13 +35,26 @@ export async function buildRouteVerification(params: {
     );
   }
   const travelMode = mapTravelMode(params.vehicleType);
-  return verifyRoute({
+  const legs = await verifyRouteLegs({
     apiKey: routesKey,
     geocodingKey,
-    origin,
-    destination,
+    currentLocation: params.currentLocation,
+    pickup: origin,
+    dropoff: destination,
     travelMode,
   });
+
+  return {
+    distanceKm: legs.approach.distanceKm + legs.delivery.distanceKm,
+    durationMinutes: legs.approach.durationMinutes + legs.delivery.durationMinutes,
+    approachDistanceKm: legs.approach.distanceKm,
+    approachDurationMinutes: legs.approach.durationMinutes,
+    deliveryDistanceKm: legs.delivery.distanceKm,
+    deliveryDurationMinutes: legs.delivery.durationMinutes,
+    provider: "google_routes",
+    travelMode,
+    verifiedAt: new Date().toISOString(),
+  };
 }
 
 function buildLocationInput(value?: string | null): RouteLocationInput | null {

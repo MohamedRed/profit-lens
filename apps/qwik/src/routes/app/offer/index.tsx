@@ -19,6 +19,11 @@ import {
   analyzeScreenshotOfferAction,
 } from './offer-actions';
 import {
+  isOfferLocationError,
+  readRequiredCurrentLocation,
+  resolveOfferLocationErrorMessage,
+} from './offer-current-location';
+import {
   parseOfferAnalysisRecord,
   type OfferAnalysisRecord,
 } from './offer-analysis-result';
@@ -141,8 +146,10 @@ export default component$(() => {
     status.value = '';
 
     try {
+      const currentLocation = await readRequiredCurrentLocation();
       const payload = await analyzeManualOfferAction({
         deviceId: getDeviceId(),
+        currentLocation,
         payout: payout.value,
         distance: distance.value,
         duration: duration.value,
@@ -156,7 +163,11 @@ export default component$(() => {
       analysisRecord.value = parseOfferAnalysisRecord(payload);
       status.value = 'Offer analyzed.';
     } catch (error) {
-      status.value = resolveUserFacingErrorMessage(i18n, error, 'offer');
+      if (isOfferLocationError(error)) {
+        status.value = resolveOfferLocationErrorMessage(i18n, error.code);
+      } else {
+        status.value = resolveUserFacingErrorMessage(i18n, error, 'offer');
+      }
     } finally {
       loading.value = false;
     }
@@ -193,8 +204,10 @@ export default component$(() => {
     status.value = '';
 
     try {
+      const currentLocation = await readRequiredCurrentLocation();
       const payload = await analyzeScreenshotOfferAction({
         deviceId: getDeviceId(),
+        currentLocation,
         file,
         vehicleId: selectedVehicleId.value,
         loadOffersService,
@@ -202,7 +215,11 @@ export default component$(() => {
       analysisRecord.value = parseOfferAnalysisRecord(payload);
       status.value = 'Screenshot analyzed.';
     } catch (error) {
-      status.value = resolveUserFacingErrorMessage(i18n, error, 'offer');
+      if (isOfferLocationError(error)) {
+        status.value = resolveOfferLocationErrorMessage(i18n, error.code);
+      } else {
+        status.value = resolveUserFacingErrorMessage(i18n, error, 'offer');
+      }
     } finally {
       loading.value = false;
     }

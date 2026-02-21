@@ -1,9 +1,11 @@
 type OffersServiceModule = typeof import('../../../lib/features/offers/offers-service');
+import type { OfferCurrentLocation } from '../../../lib/types/offer';
 
 type LoadOffersService = () => Promise<OffersServiceModule>;
 
 interface AnalyzeManualOfferActionParams {
   deviceId: string;
+  currentLocation: OfferCurrentLocation;
   distance: string;
   dropoffAddress: string;
   dropoffName: string;
@@ -17,6 +19,7 @@ interface AnalyzeManualOfferActionParams {
 
 interface AnalyzeScreenshotOfferActionParams {
   deviceId: string;
+  currentLocation: OfferCurrentLocation;
   file: File;
   loadOffersService: LoadOffersService;
   vehicleId?: string;
@@ -24,6 +27,7 @@ interface AnalyzeScreenshotOfferActionParams {
 
 export const analyzeManualOfferAction = async ({
   deviceId,
+  currentLocation,
   distance,
   dropoffAddress,
   dropoffName,
@@ -37,6 +41,7 @@ export const analyzeManualOfferAction = async ({
   const { analyzeManualOffer } = await loadOffersService();
   return analyzeManualOffer({
     deviceId,
+    currentLocation,
     vehicleId,
     source: 'manual',
     offer: {
@@ -53,6 +58,7 @@ export const analyzeManualOfferAction = async ({
 
 export const analyzeScreenshotOfferAction = async ({
   deviceId,
+  currentLocation,
   file,
   loadOffersService,
   vehicleId,
@@ -60,6 +66,7 @@ export const analyzeScreenshotOfferAction = async ({
   const { analyzeScreenshotOffer } = await loadOffersService();
   return analyzeScreenshotOffer({
     deviceId,
+    currentLocation,
     file,
     vehicleId,
   });

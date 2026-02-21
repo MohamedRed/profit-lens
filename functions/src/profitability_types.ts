@@ -1,8 +1,17 @@
 export type FixedCostAllocation = "perHour" | "perKm" | "perDelivery";
 
+export type GeoPoint = {
+  lat: number;
+  lng: number;
+};
+
 export type RouteVerification = {
   distanceKm: number;
   durationMinutes: number;
+  approachDistanceKm?: number;
+  approachDurationMinutes?: number;
+  deliveryDistanceKm?: number;
+  deliveryDurationMinutes?: number;
   provider: string;
   travelMode: string;
   verifiedAt: string;

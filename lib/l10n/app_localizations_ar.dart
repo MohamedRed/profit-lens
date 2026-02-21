@@ -314,6 +314,22 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذر إكمال هذا الإجراء الآن. يرجى المحاولة مرة أخرى.';
 
   @override
+  String get offerLocationPermissionRequired =>
+      'مطلوب إذن الموقع لتحليل العرض.';
+
+  @override
+  String get offerLocationUnavailable =>
+      'تعذر تحديد موقعك الحالي. تحقق من GPS ثم أعد المحاولة.';
+
+  @override
+  String get offerLocationTimeout =>
+      'استغرق تحديد الموقع وقتًا طويلًا. أعد المحاولة في منطقة مفتوحة.';
+
+  @override
+  String get offerLocationUnsupported =>
+      'هذا الجهاز لا يدعم تحديد الموقع لتحليل العروض.';
+
+  @override
   String get billingActionFailedMessage =>
       'تعذر تحديث الاشتراك الآن. يرجى المحاولة مرة أخرى.';
 

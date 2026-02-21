@@ -687,6 +687,30 @@ abstract class AppLocalizations {
   /// **'Unable to complete this action right now. Please try again.'**
   String get offerActionFailedMessage;
 
+  /// No description provided for @offerLocationPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission is required to analyze an offer.'**
+  String get offerLocationPermissionRequired;
+
+  /// No description provided for @offerLocationUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to read your current location. Check GPS and try again.'**
+  String get offerLocationUnavailable;
+
+  /// No description provided for @offerLocationTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Location took too long to load. Try again in an open area.'**
+  String get offerLocationTimeout;
+
+  /// No description provided for @offerLocationUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This device does not support location for offer analysis.'**
+  String get offerLocationUnsupported;
+
   /// No description provided for @billingActionFailedMessage.
   ///
   /// In en, this message translates to:

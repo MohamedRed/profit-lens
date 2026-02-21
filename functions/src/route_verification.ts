@@ -1,7 +1,7 @@
 import { HttpsError } from "firebase-functions/v2/https";
 import { geocodeAddress } from "./geocoding_api";
 import { computeRoute, RouteLocationInput, RouteTravelMode } from "./routes_api";
-import { RouteVerification } from "./profitability_types";
+import { GeoPoint, RouteVerification } from "./profitability_types";
 
 type VerifyRouteParams = {
   apiKey: string;
@@ -9,6 +9,20 @@ type VerifyRouteParams = {
   origin: RouteLocationInput;
   destination: RouteLocationInput;
   travelMode: RouteTravelMode;
+};
+
+type VerifyRouteLegsParams = {
+  apiKey: string;
+  geocodingKey: string;
+  currentLocation: GeoPoint;
+  pickup: RouteLocationInput;
+  dropoff: RouteLocationInput;
+  travelMode: RouteTravelMode;
+};
+
+type RouteLegMetrics = {
+  distanceKm: number;
+  durationMinutes: number;
 };
 
 export async function verifyRoute(
@@ -25,12 +39,41 @@ export async function verifyRoute(
     destination,
     travelMode: params.travelMode,
   });
+  const metrics = toRouteLegMetrics(route);
   return {
-    distanceKm: route.distanceMeters / 1000,
-    durationMinutes: route.durationSeconds / 60,
+    distanceKm: metrics.distanceKm,
+    durationMinutes: metrics.durationMinutes,
     provider: "google_routes",
     travelMode: params.travelMode,
     verifiedAt: new Date().toISOString(),
+  };
+}
+
+export async function verifyRouteLegs(
+  params: VerifyRouteLegsParams
+): Promise<{ approach: RouteLegMetrics; delivery: RouteLegMetrics }> {
+  const pickup = await resolveLocation(params.pickup, params.geocodingKey);
+  const dropoff = await resolveLocation(params.dropoff, params.geocodingKey);
+  const currentLocation: RouteLocationInput = { latLng: params.currentLocation };
+
+  const [approachRoute, deliveryRoute] = await Promise.all([
+    computeRoute({
+      apiKey: params.apiKey,
+      origin: currentLocation,
+      destination: pickup,
+      travelMode: params.travelMode,
+    }),
+    computeRoute({
+      apiKey: params.apiKey,
+      origin: pickup,
+      destination: dropoff,
+      travelMode: params.travelMode,
+    }),
+  ]);
+
+  return {
+    approach: toRouteLegMetrics(approachRoute),
+    delivery: toRouteLegMetrics(deliveryRoute),
   };
 }
 
@@ -53,4 +96,14 @@ async function resolveLocation(
   }
   const coords = await geocodeAddress({ apiKey: geocodingKey, address });
   return { latLng: coords };
+}
+
+function toRouteLegMetrics(route: {
+  distanceMeters: number;
+  durationSeconds: number;
+}): RouteLegMetrics {
+  return {
+    distanceKm: route.distanceMeters / 1000,
+    durationMinutes: route.durationSeconds / 60,
+  };
 }

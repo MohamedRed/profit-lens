@@ -11,7 +11,12 @@ import {
   type QueryDocumentSnapshot,
   type QuerySnapshot,
 } from 'firebase/firestore';
-import type { OfferInputPayload, OfferRecord, OfferStatsDay } from '../../types/offer';
+import type {
+  OfferCurrentLocation,
+  OfferInputPayload,
+  OfferRecord,
+  OfferStatsDay,
+} from '../../types/offer';
 import { userCollection } from '../../firebase/firestore';
 import { callAnalyzeOffer, callVerifyOfferRoute } from '../../firebase/callables';
 
@@ -229,6 +234,7 @@ export const watchOfferStats = (
 
 export const analyzeManualOffer = async (params: {
   deviceId: string;
+  currentLocation: OfferCurrentLocation;
   vehicleId?: string;
   source?: 'manual' | 'screenshot';
   offer: OfferInputPayload;
@@ -237,6 +243,7 @@ export const analyzeManualOffer = async (params: {
     offer: params.offer,
     source: params.source ?? 'manual',
     deviceId: params.deviceId,
+    currentLocation: params.currentLocation,
   };
   if (params.vehicleId) {
     payload.vehicleId = params.vehicleId;
@@ -246,6 +253,7 @@ export const analyzeManualOffer = async (params: {
 
 export const analyzeScreenshotOffer = async (params: {
   deviceId: string;
+  currentLocation: OfferCurrentLocation;
   file: File;
   vehicleId?: string;
 }): Promise<Record<string, unknown>> => {
@@ -260,6 +268,7 @@ export const analyzeScreenshotOffer = async (params: {
     mimeType: params.file.type,
     source: 'screenshot',
     deviceId: params.deviceId,
+    currentLocation: params.currentLocation,
   };
   if (params.vehicleId) {
     payload.vehicleId = params.vehicleId;

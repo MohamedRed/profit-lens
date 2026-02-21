@@ -318,6 +318,22 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible d’effectuer cette action pour le moment. Réessayez.';
 
   @override
+  String get offerLocationPermissionRequired =>
+      'L’autorisation de localisation est requise pour analyser une offre.';
+
+  @override
+  String get offerLocationUnavailable =>
+      'Impossible de lire votre position actuelle. Vérifiez le GPS puis réessayez.';
+
+  @override
+  String get offerLocationTimeout =>
+      'La localisation prend trop de temps. Réessayez dans une zone dégagée.';
+
+  @override
+  String get offerLocationUnsupported =>
+      'Cet appareil ne prend pas en charge la localisation pour l’analyse des offres.';
+
+  @override
   String get billingActionFailedMessage =>
       'Impossible de mettre à jour l’abonnement pour le moment. Réessayez.';
 

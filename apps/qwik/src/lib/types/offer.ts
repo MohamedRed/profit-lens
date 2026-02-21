@@ -1,3 +1,8 @@
+export interface OfferCurrentLocation {
+  lat: number;
+  lng: number;
+}
+
 export interface OfferInputPayload {
   payoutEuro: number;
   distanceKm?: number;
