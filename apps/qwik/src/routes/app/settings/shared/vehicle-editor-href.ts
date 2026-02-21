@@ -13,6 +13,6 @@ export const buildVehicleEditorHref = (vehicleId: string, backToHref?: string): 
   }
   const query = params.toString();
   return query
-    ? `/next/app/settings/vehicles/edit/${encodedVehicleId}?${query}`
-    : `/next/app/settings/vehicles/edit/${encodedVehicleId}`;
+    ? `/next/app/settings/vehicles/edit/${encodedVehicleId}/?${query}`
+    : `/next/app/settings/vehicles/edit/${encodedVehicleId}/`;
 };

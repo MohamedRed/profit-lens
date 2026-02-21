@@ -13,6 +13,19 @@ const normalizeDeepAppPath = (path: string, search: string, hash: string): strin
     return `/next/app/history/details/${query ? `?${query}` : ''}${hash}`;
   }
 
+  const vehicleEditMatch = path.match(/^\/next\/app\/settings\/vehicles\/edit\/([^/]+)$/);
+  if (vehicleEditMatch) {
+    return `/next/app/settings/vehicles/edit/${vehicleEditMatch[1]}/${search}${hash}`;
+  }
+
+  const legacyVehiclePathMatch = path.match(/^\/next\/app\/settings\/vehicles\/([^/]+)\/?$/);
+  if (legacyVehiclePathMatch) {
+    const vehicleSegment = legacyVehiclePathMatch[1];
+    if (vehicleSegment !== 'new' && vehicleSegment !== 'edit') {
+      return `/next/app/settings/vehicles/edit/${vehicleSegment}/${search}${hash}`;
+    }
+  }
+
   if (path.startsWith('/next/app/') && path !== '/next/app/' && path !== '/next/app') {
     return `${path}${search}${hash}`;
   }
