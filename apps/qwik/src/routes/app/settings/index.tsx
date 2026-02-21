@@ -248,7 +248,7 @@ export default component$(() => {
                   type="button"
                   class="ui-settings-vehicle-row ui-settings-tile-link"
                   onClick$={() => {
-                    void navigate(buildVehicleEditorHref(vehicle.id));
+                    void navigate(buildVehicleEditorHref(vehicle.id), { forceReload: true });
                   }}
                   aria-label={t(i18n, 'editVehicleButton', 'Edit vehicle')}
                 >
