@@ -2,6 +2,21 @@ import { component$, useVisibleTask$ } from '@builder.io/qwik';
 import { useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../lib/auth/auth-context';
 
+const decodePathSegment = (value: string): string => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
+const buildVehicleEditQueryHref = (vehicleIdSegment: string, search: string, hash: string): string => {
+  const params = new URLSearchParams(search);
+  params.set('vehicleId', decodePathSegment(vehicleIdSegment));
+  const query = params.toString();
+  return `/next/app/settings/vehicles/edit/${query ? `?${query}` : ''}${hash}`;
+};
+
 const normalizeDeepAppPath = (path: string, search: string, hash: string): string | null => {
   const legacyHistoryMatch = path.match(/^\/next\/app\/history\/([^/]+)\/?$/);
   if (legacyHistoryMatch) {
@@ -15,14 +30,14 @@ const normalizeDeepAppPath = (path: string, search: string, hash: string): strin
 
   const vehicleEditMatch = path.match(/^\/next\/app\/settings\/vehicles\/edit\/([^/]+)$/);
   if (vehicleEditMatch) {
-    return `/next/app/settings/vehicles/edit/${vehicleEditMatch[1]}/${search}${hash}`;
+    return buildVehicleEditQueryHref(vehicleEditMatch[1], search, hash);
   }
 
   const legacyVehiclePathMatch = path.match(/^\/next\/app\/settings\/vehicles\/([^/]+)\/?$/);
   if (legacyVehiclePathMatch) {
     const vehicleSegment = legacyVehiclePathMatch[1];
     if (vehicleSegment !== 'new' && vehicleSegment !== 'edit') {
-      return `/next/app/settings/vehicles/edit/${vehicleSegment}/${search}${hash}`;
+      return buildVehicleEditQueryHref(vehicleSegment, search, hash);
     }
   }
 
