@@ -15,6 +15,7 @@ import {
   resolveHeaderBackHref,
   resolveRouteDepth,
   resolveSectionKey,
+  shouldPreferDeterministicBack,
   toAppPath,
 } from './app-shell-routing';
 
@@ -43,11 +44,9 @@ export const AppShell = component$(() => {
   const fallbackBackHref =
     appPath === '/app/history/details' ? readExplicitBackTarget('history/details') : null;
   const explicitBackHref = location.url.searchParams.get('backTo') ?? fallbackBackHref;
-  const hasExplicitBackTarget = Boolean(explicitBackHref?.startsWith('/next/app/'));
   const showHelpTicketsAction = appPath === '/app/help';
   const headerBackHref = resolveHeaderBackHref(appPath, explicitBackHref);
-  const preferDeterministicBack =
-    hasExplicitBackTarget || appPath.startsWith('/app/settings/vehicles/');
+  const preferDeterministicBack = shouldPreferDeterministicBack(appPath, explicitBackHref);
   const activeTabIndex = resolveActiveTabIndex(appPath);
   const activeTab = navItems[activeTabIndex];
 

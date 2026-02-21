@@ -66,7 +66,7 @@ export default component$(() => {
             <li key={ticket.id} class="ui-help-ticket-item">
               <Link
                 class="ui-help-ticket-link ui-help-ticket-link-button"
-                href={`/next/app/help/tickets/details/?ticketId=${encodeURIComponent(ticket.id)}`}
+                href={`/next/app/help/tickets/details/?ticketId=${encodeURIComponent(ticket.id)}&backTo=${encodeURIComponent('/next/app/help/tickets')}`}
                 onClick$={() => {
                   saveSelectedHelpTicketId(ticket.id);
                 }}

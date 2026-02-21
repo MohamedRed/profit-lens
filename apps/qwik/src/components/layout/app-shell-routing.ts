@@ -69,6 +69,22 @@ const isValidAppBackHref = (value: string | null | undefined): value is string =
   return value.startsWith('/next/app/');
 };
 
+export const shouldPreferDeterministicBack = (
+  path: string,
+  explicitBackHref?: string | null,
+): boolean => {
+  if (isValidAppBackHref(explicitBackHref)) {
+    return true;
+  }
+  if (path.startsWith('/app/settings/vehicles/')) {
+    return true;
+  }
+  if (path.startsWith('/app/help/tickets/')) {
+    return true;
+  }
+  return false;
+};
+
 export const resolveHeaderBackHref = (
   path: string,
   explicitBackHref?: string | null,
