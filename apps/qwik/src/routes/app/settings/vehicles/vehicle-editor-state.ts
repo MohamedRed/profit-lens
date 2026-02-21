@@ -115,6 +115,14 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
       hasLoaded.value = false;
       status.value = '';
       existingVehicle.value = null;
+      waitForServerSyncTimeout = setTimeout(() => {
+        if (cancelled || existingVehicle.value) {
+          return;
+        }
+        status.value = t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
+        hasLoaded.value = true;
+        loading.value = false;
+      }, VEHICLE_SERVER_SYNC_TIMEOUT_MS);
       unsubscribeVehicle = watchVehicleById(
         user.uid,
         vehicleId,
@@ -133,16 +141,6 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
             loading.value = false;
           } else {
             if (snapshot.fromCache) {
-              if (waitForServerSyncTimeout === null) {
-                waitForServerSyncTimeout = setTimeout(() => {
-                  if (cancelled || existingVehicle.value) {
-                    return;
-                  }
-                  status.value = t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
-                  hasLoaded.value = true;
-                  loading.value = false;
-                }, VEHICLE_SERVER_SYNC_TIMEOUT_MS);
-              }
               return;
             }
             clearWaitForServerSyncTimeout();
