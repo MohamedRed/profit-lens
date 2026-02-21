@@ -50,6 +50,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذر قراءة هذه اللقطة. يرجى رفع لقطة صحيحة للعرض.';
 
   @override
+  String get analysisFailedQuotaBody =>
+      'تحليل لقطة الشاشة غير متاح مؤقتًا لأن حصة الذكاء الاصطناعي وصلت للحد. أدخل التفاصيل يدويًا ثم أعد المحاولة لاحقًا.';
+
+  @override
   String get addOptionalDetailsButton => 'إضافة تفاصيل اختيارية';
 
   @override

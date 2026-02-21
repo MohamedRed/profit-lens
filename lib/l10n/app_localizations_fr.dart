@@ -50,6 +50,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de lire cette capture. Importez une capture d’offre valide.';
 
   @override
+  String get analysisFailedQuotaBody =>
+      'L’analyse par capture est temporairement indisponible car le quota IA est atteint. Saisissez les détails manuellement puis réessayez plus tard.';
+
+  @override
   String get addOptionalDetailsButton => 'Ajouter des détails optionnels';
 
   @override

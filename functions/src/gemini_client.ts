@@ -1,6 +1,7 @@
 import { HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { offerExtractionPrompt } from "./gemini_prompt";
+import { buildGeminiHttpError } from "./gemini_http_error";
 
 type GeminiRequest = {
   apiKey: string;
@@ -83,10 +84,7 @@ export async function requestGeminiOffer(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new HttpsError(
-      "internal",
-      `Gemini API error (${response.status}): ${errorText}`
-    );
+    throw buildGeminiHttpError(response.status, errorText);
   }
 
   const body = (await response.json()) as {
@@ -159,10 +157,7 @@ export async function requestGeminiJson(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new HttpsError(
-      "internal",
-      `Gemini API error (${response.status}): ${errorText}`
-    );
+    throw buildGeminiHttpError(response.status, errorText);
   }
 
   const body = (await response.json()) as {

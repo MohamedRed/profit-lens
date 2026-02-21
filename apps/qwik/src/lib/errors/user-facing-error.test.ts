@@ -30,6 +30,20 @@ describe('resolveUserFacingErrorMessage', () => {
     expect(message).toBe("We couldn't read this screenshot.");
   });
 
+  it('maps gemini quota failures to quota guidance', () => {
+    const i18n = createI18n({
+      analysisFailedQuotaBody:
+        'Screenshot analysis is temporarily unavailable because AI quota is reached.',
+      analysisFailedScreenshotBody: "We couldn't read this screenshot.",
+    });
+    const message = resolveUserFacingErrorMessage(
+      i18n,
+      new Error('Gemini API error (429): {"status":"RESOURCE_EXHAUSTED"}'),
+      'offer',
+    );
+    expect(message).toBe('Screenshot analysis is temporarily unavailable because AI quota is reached.');
+  });
+
   it.each([
     'No offer found in screenshot.',
     'Failed to parse Gemini JSON response.',

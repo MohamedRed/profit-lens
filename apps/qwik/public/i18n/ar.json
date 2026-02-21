@@ -12,6 +12,7 @@
   "analysisFailedTitle": "تحليل غير مكتمل",
   "analysisFailedBody": "تعذر إكمال التحليل. يرجى تعديل التفاصيل والمحاولة مرة أخرى.",
   "analysisFailedScreenshotBody": "تعذر قراءة هذه اللقطة. يرجى رفع لقطة صحيحة للعرض.",
+  "analysisFailedQuotaBody": "تحليل لقطة الشاشة غير متاح مؤقتًا لأن حصة الذكاء الاصطناعي وصلت للحد. أدخل التفاصيل يدويًا ثم أعد المحاولة لاحقًا.",
   "addOptionalDetailsButton": "إضافة تفاصيل اختيارية",
   "hideOptionalDetailsButton": "إخفاء التفاصيل الاختيارية",
   "offerAmountLabel": "العائد (يورو)",

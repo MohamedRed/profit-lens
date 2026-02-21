@@ -65,6 +65,12 @@ const OFFER_SCREENSHOT_FAILURE_PATTERNS = [
   'invalid image payload',
 ];
 
+const OFFER_GEMINI_QUOTA_PATTERNS = [
+  'resource_exhausted',
+  'exceeded your current quota',
+  'gemini quota exceeded',
+];
+
 const containsAnyPattern = (value: string, patterns: readonly string[]): boolean =>
   patterns.some((pattern) => value.includes(pattern));
 
@@ -107,6 +113,14 @@ export const resolveUserFacingErrorMessage = (
   const code = readRawCode(error);
   const message = readRawMessage(error);
   const messageLower = message.toLowerCase();
+
+  if (context === 'offer' && containsAnyPattern(messageLower, OFFER_GEMINI_QUOTA_PATTERNS)) {
+    return t(
+      i18n,
+      'analysisFailedQuotaBody',
+      'Screenshot analysis is temporarily unavailable because AI quota is reached. Enter details manually and try again later.',
+    );
+  }
 
   if (context === 'offer' && containsAnyPattern(messageLower, OFFER_SCREENSHOT_FAILURE_PATTERNS)) {
     return t(

@@ -177,6 +177,12 @@ abstract class AppLocalizations {
   /// **'We couldn\'t read this screenshot. Please upload a valid offer screenshot.'**
   String get analysisFailedScreenshotBody;
 
+  /// No description provided for @analysisFailedQuotaBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshot analysis is temporarily unavailable because AI quota is reached. Enter details manually and try again later.'**
+  String get analysisFailedQuotaBody;
+
   /// No description provided for @addOptionalDetailsButton.
   ///
   /// In en, this message translates to:
