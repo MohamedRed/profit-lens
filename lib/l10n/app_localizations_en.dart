@@ -201,10 +201,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profitabilityTargetTitle => 'Profitability target';
 
   @override
-  String get minProfitabilityLabel => 'Minimum profit per offer';
+  String get minProfitabilityLabel => 'Minimum profit per km';
 
   @override
-  String get minProfitabilityHint => 'Suggested default: €2.00';
+  String get minProfitabilityHint => 'Suggested default: €2.00/km';
 
   @override
   String get viewProfitabilityDetailsButton => 'View details';

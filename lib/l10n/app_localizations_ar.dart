@@ -201,10 +201,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profitabilityTargetTitle => 'هدف الربحية';
 
   @override
-  String get minProfitabilityLabel => 'الحد الأدنى للربح لكل عرض';
+  String get minProfitabilityLabel => 'الحد الأدنى للربح لكل كيلومتر';
 
   @override
-  String get minProfitabilityHint => 'القيمة المقترحة: 2.00 €';
+  String get minProfitabilityHint => 'القيمة المقترحة: 2.00 €/كم';
 
   @override
   String get viewProfitabilityDetailsButton => 'عرض التفاصيل';

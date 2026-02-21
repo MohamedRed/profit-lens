@@ -72,8 +72,8 @@
     }
   },
   "profitabilityTargetTitle": "Profitability target",
-  "minProfitabilityLabel": "Minimum profit per offer",
-  "minProfitabilityHint": "Suggested default: €2.00",
+  "minProfitabilityLabel": "Minimum profit per km",
+  "minProfitabilityHint": "Suggested default: €2.00/km",
   "viewProfitabilityDetailsButton": "View details",
   "resultTitle": "Profitability",
   "grossRevenueLabel": "Gross revenue",

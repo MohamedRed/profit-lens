@@ -474,13 +474,13 @@ abstract class AppLocalizations {
   /// No description provided for @minProfitabilityLabel.
   ///
   /// In en, this message translates to:
-  /// **'Minimum profit per offer'**
+  /// **'Minimum profit per km'**
   String get minProfitabilityLabel;
 
   /// No description provided for @minProfitabilityHint.
   ///
   /// In en, this message translates to:
-  /// **'Suggested default: €2.00'**
+  /// **'Suggested default: €2.00/km'**
   String get minProfitabilityHint;
 
   /// No description provided for @viewProfitabilityDetailsButton.

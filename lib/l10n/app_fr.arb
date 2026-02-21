@@ -72,8 +72,8 @@
     }
   },
   "profitabilityTargetTitle": "Objectif de rentabilité",
-  "minProfitabilityLabel": "Profit minimum par offre",
-  "minProfitabilityHint": "Valeur suggérée : 2,00 €",
+  "minProfitabilityLabel": "Profit minimum par km",
+  "minProfitabilityHint": "Valeur suggérée : 2,00 €/km",
   "viewProfitabilityDetailsButton": "Voir les détails",
   "resultTitle": "Rentabilité",
   "grossRevenueLabel": "Revenu brut",
