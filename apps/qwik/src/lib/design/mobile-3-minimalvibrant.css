@@ -38,6 +38,11 @@
   gap: 10px;
 }
 
+.ui-offer-setup-toggle-button {
+  width: 100%;
+  justify-content: center;
+}
+
 .ui-offer-setup-vehicle-skeleton {
   gap: 8px;
 }

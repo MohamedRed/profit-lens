@@ -49,6 +49,7 @@ interface OfferFlowContentProps {
 export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
   const sourceDialogOpen = useSignal(false);
+  const setupExpanded = useSignal(false);
   const useDirectGalleryImport = useSignal(false);
 
   useVisibleTask$(() => {
@@ -111,22 +112,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
 
       {showEmptyState ? null : (
         <>
-          <div class="ui-offer-meta-stack ui-offer-meta-stack-top">
-            <OfferSetupSummary
-              minProfitabilityEuro={props.minProfitabilityEuro.value}
-              onSaveProfitabilityTarget$={props.onSaveProfitabilityTarget$}
-              onVehicleChange$={onVehicleChange$}
-              savingProfitTarget={props.savingProfitTarget.value}
-              selectedVehicleId={props.selectedVehicleId.value}
-              vehicles={props.vehicles.value}
-              vehiclesLoading={props.vehiclesLoading.value}
-            />
-            <OfferUsageSection
-              uid={props.userId}
-              variant="inline"
-            />
-          </div>
-
           <section
             class="ui-offer-import-hero"
             aria-label={t(i18n, "importScreenshotButton", "Import screenshot")}
@@ -197,7 +182,39 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 }
               />
             ) : null}
+
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
+              class="ui-offer-setup-toggle-button"
+              onClick$={() => {
+                setupExpanded.value = !setupExpanded.value;
+              }}
+            >
+              {setupExpanded.value
+                ? t(i18n, "hideOfferSetupButton", "Hide setup")
+                : t(i18n, "showOfferSetupButton", "Show setup")}
+            </Button>
           </section>
+
+          {setupExpanded.value ? (
+            <div class="ui-offer-meta-stack ui-offer-meta-stack-top">
+              <OfferSetupSummary
+                minProfitabilityEuro={props.minProfitabilityEuro.value}
+                onSaveProfitabilityTarget$={props.onSaveProfitabilityTarget$}
+                onVehicleChange$={onVehicleChange$}
+                savingProfitTarget={props.savingProfitTarget.value}
+                selectedVehicleId={props.selectedVehicleId.value}
+                vehicles={props.vehicles.value}
+                vehiclesLoading={props.vehiclesLoading.value}
+              />
+              <OfferUsageSection
+                uid={props.userId}
+                variant="inline"
+              />
+            </div>
+          ) : null}
 
           {showOverview && props.analysisRecord.value ? (
             <OfferOverviewSections
