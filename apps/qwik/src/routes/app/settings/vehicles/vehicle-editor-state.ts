@@ -23,6 +23,8 @@ import {
 } from './vehicle-editor-types';
 import { createVehicleLookupActions, createVehicleSubmitActions } from './vehicle-editor-actions';
 
+const VEHICLE_SERVER_SYNC_TIMEOUT_MS = 6000;
+
 export interface VehicleEditorState {
   loading: Signal<boolean>;
   hasLoaded: Signal<boolean>;
@@ -101,10 +103,18 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
 
     let cancelled = false;
     let unsubscribeVehicle: (() => void) | null = null;
+    let waitForServerSyncTimeout: ReturnType<typeof setTimeout> | null = null;
+    const clearWaitForServerSyncTimeout = () => {
+      if (waitForServerSyncTimeout !== null) {
+        clearTimeout(waitForServerSyncTimeout);
+        waitForServerSyncTimeout = null;
+      }
+    };
     if (props.mode === 'edit' && vehicleId) {
       loading.value = true;
       hasLoaded.value = false;
       status.value = '';
+      existingVehicle.value = null;
       unsubscribeVehicle = watchVehicleById(
         user.uid,
         vehicleId,
@@ -113,8 +123,9 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
             return;
           }
           const found = snapshot.vehicle;
-          existingVehicle.value = found;
           if (found) {
+            clearWaitForServerSyncTimeout();
+            existingVehicle.value = found;
             draft.value = vehicleToDraft(found);
             useVehiclePresets.value = false;
             status.value = '';
@@ -122,8 +133,20 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
             loading.value = false;
           } else {
             if (snapshot.fromCache) {
+              if (waitForServerSyncTimeout === null) {
+                waitForServerSyncTimeout = setTimeout(() => {
+                  if (cancelled || existingVehicle.value) {
+                    return;
+                  }
+                  status.value = t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
+                  hasLoaded.value = true;
+                  loading.value = false;
+                }, VEHICLE_SERVER_SYNC_TIMEOUT_MS);
+              }
               return;
             }
+            clearWaitForServerSyncTimeout();
+            existingVehicle.value = null;
             status.value = t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
             hasLoaded.value = true;
             loading.value = false;
@@ -133,6 +156,7 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
           if (cancelled) {
             return;
           }
+          clearWaitForServerSyncTimeout();
           status.value = error instanceof Error
             ? error.message
             : t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.');
@@ -148,6 +172,7 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
 
     cleanup(() => {
       unsubscribeProfile();
+      clearWaitForServerSyncTimeout();
       if (unsubscribeVehicle) {
         unsubscribeVehicle();
       }

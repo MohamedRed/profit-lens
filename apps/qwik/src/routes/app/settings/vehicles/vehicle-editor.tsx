@@ -24,25 +24,49 @@ export const VehicleEditor = component$<VehicleEditorProps>((props) => {
   const returnHref = isValidBackToHref(props.returnToHref) ? props.returnToHref : defaultReturnHref;
 
   const missingTarget = props.mode === 'edit' && !props.vehicleId;
-  const notFound =
+  const loadFailed =
     props.mode === 'edit' &&
     state.hasLoaded.value &&
     !state.loading.value &&
     !state.existingVehicle.value;
 
   useVisibleTask$(({ track }) => {
-    const shouldRedirect = track(() => missingTarget || notFound);
+    const shouldRedirect = track(() => missingTarget);
     if (!shouldRedirect) {
       return;
     }
     void navigate(returnHref);
   });
 
-  if (missingTarget || notFound) {
+  if (missingTarget) {
     return (
       <div aria-busy="true">
         <LoadingSkeletonAnnouncer label={t(i18n, 'loadingLabel', 'Loading...')} />
         <SettingsFormSkeleton fieldCount={3} />
+      </div>
+    );
+  }
+
+  if (loadFailed) {
+    return (
+      <div class="ui-settings-detail-root">
+        <section class="ui-settings-detail-card">
+          <h2 class="ui-settings-detail-title">{title}</h2>
+          <p class="ui-status ui-status-error">
+            {state.status.value || t(i18n, 'vehicleLoadFailedMessage', 'Unable to load vehicle.')}
+          </p>
+          <div class="ui-settings-actions">
+            <button
+              type="button"
+              class="ui-settings-action-button"
+              onClick$={() => {
+                void navigate(returnHref);
+              }}
+            >
+              {t(i18n, 'commonBackLabel', 'Back')}
+            </button>
+          </div>
+        </section>
       </div>
     );
   }
