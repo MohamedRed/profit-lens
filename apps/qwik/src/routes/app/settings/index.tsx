@@ -78,25 +78,6 @@ export default component$(() => {
 
   return (
     <div class="ui-settings-root">
-      <section class="ui-settings-card">
-        <Link class="ui-settings-tile ui-settings-tile-link" href="/next/app/settings/profile">
-          <div class="ui-settings-tile-content">
-            <p class="ui-settings-title">{t(i18n, 'profileSectionTitle', 'Business profile')}</p>
-            <p class="ui-settings-subtitle">
-              {t(i18n, 'socialRateLabel', 'Social contribution rate')}:{' '}
-              {currentProfile ? `${(currentProfile.socialContributionRate * 100).toFixed(1)}%` : '—'}
-            </p>
-            <p class="ui-settings-subtitle">
-              {t(i18n, 'monthlyFixedCostsLabel', 'Monthly fixed costs')}:{' '}
-              {currentProfile ? formatCurrency(locale, currentProfile.monthlyFixedCosts) : '—'}
-            </p>
-          </div>
-          <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
-            chevron_right
-          </span>
-        </Link>
-      </section>
-
       <section class="ui-settings-card ui-settings-language">
         <h2 class="ui-settings-section-title">{t(i18n, 'languageSectionTitle', 'Language')}</h2>
         <Select
@@ -130,21 +111,65 @@ export default component$(() => {
         />
       </section>
 
-      {showInstallTile.value ? (
-        <section class="ui-settings-card">
-          <div class="ui-settings-tile">
-            <span class="material-icons-outlined ui-settings-leading" aria-hidden="true">
-              ios_share
-            </span>
-            <div class="ui-settings-tile-content">
-              <p class="ui-settings-title">{t(i18n, 'installAppTitle', "Install the app")}</p>
-              <p class="ui-settings-subtitle">
-                {t(i18n, 'installAppSubtitle', 'Add Liive Profit to your home screen')}
-              </p>
-            </div>
+      <section class="ui-settings-card">
+        <Link class="ui-settings-tile ui-settings-tile-link" href="/next/app/settings/profile">
+          <div class="ui-settings-tile-content">
+            <p class="ui-settings-title">{t(i18n, 'profileSectionTitle', 'Business profile')}</p>
+            <p class="ui-settings-subtitle">
+              {t(i18n, 'socialRateLabel', 'Social contribution rate')}:{' '}
+              {currentProfile ? `${(currentProfile.socialContributionRate * 100).toFixed(1)}%` : '—'}
+            </p>
+            <p class="ui-settings-subtitle">
+              {t(i18n, 'monthlyFixedCostsLabel', 'Monthly fixed costs')}:{' '}
+              {currentProfile ? formatCurrency(locale, currentProfile.monthlyFixedCosts) : '—'}
+            </p>
           </div>
-        </section>
-      ) : null}
+          <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
+            chevron_right
+          </span>
+        </Link>
+      </section>
+
+      <section class="ui-settings-card">
+        <div class="ui-settings-vehicles-head">
+          <p class="ui-settings-title">{t(i18n, 'vehiclesSectionTitle', 'Vehicles')}</p>
+          <Link class="ui-settings-link-button" href="/next/app/settings/vehicles/new">
+            <span class="material-icons-outlined" aria-hidden="true">
+              add
+            </span>
+            <span>{t(i18n, 'addVehicleTitle', 'Add vehicle')}</span>
+          </Link>
+        </div>
+        {vehicles.value.length === 0 ? (
+          <p class="ui-settings-subtitle ui-settings-vehicles-empty">
+            {t(i18n, 'noVehiclesMessage', 'No vehicles found.')}
+          </p>
+        ) : (
+          <ul class="ui-settings-vehicles-inline-list">
+            {vehicles.value.map((vehicle) => (
+              <li key={vehicle.id}>
+                <button
+                  type="button"
+                  class="ui-settings-vehicle-row ui-settings-tile-link"
+                  onClick$={() => {
+                    writeVehicleEditorTargetId(vehicle.id);
+                    void navigate(buildVehicleEditorHref(vehicle.id));
+                  }}
+                  aria-label={t(i18n, 'editVehicleButton', 'Edit vehicle')}
+                >
+                  <div>
+                    <p class="ui-settings-vehicle-name">{vehicle.name}</p>
+                    <p class="ui-settings-vehicle-type">{vehicle.type}</p>
+                  </div>
+                  <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
+                    chevron_right
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       <section class="ui-settings-card">
         <div class="ui-settings-tile">
@@ -227,46 +252,21 @@ export default component$(() => {
         </Link>
       </section>
 
-      <section class="ui-settings-card">
-        <div class="ui-settings-vehicles-head">
-          <p class="ui-settings-title">{t(i18n, 'vehiclesSectionTitle', 'Vehicles')}</p>
-          <Link class="ui-settings-link-button" href="/next/app/settings/vehicles/new">
-            <span class="material-icons-outlined" aria-hidden="true">
-              add
+      {showInstallTile.value ? (
+        <section class="ui-settings-card">
+          <div class="ui-settings-tile">
+            <span class="material-icons-outlined ui-settings-leading" aria-hidden="true">
+              ios_share
             </span>
-            <span>{t(i18n, 'addVehicleTitle', 'Add vehicle')}</span>
-          </Link>
-        </div>
-        {vehicles.value.length === 0 ? (
-          <p class="ui-settings-subtitle ui-settings-vehicles-empty">
-            {t(i18n, 'noVehiclesMessage', 'No vehicles found.')}
-          </p>
-        ) : (
-          <ul class="ui-settings-vehicles-inline-list">
-            {vehicles.value.map((vehicle) => (
-              <li key={vehicle.id}>
-                <button
-                  type="button"
-                  class="ui-settings-vehicle-row ui-settings-tile-link"
-                  onClick$={() => {
-                    writeVehicleEditorTargetId(vehicle.id);
-                    void navigate(buildVehicleEditorHref(vehicle.id));
-                  }}
-                  aria-label={t(i18n, 'editVehicleButton', 'Edit vehicle')}
-                >
-                  <div>
-                    <p class="ui-settings-vehicle-name">{vehicle.name}</p>
-                    <p class="ui-settings-vehicle-type">{vehicle.type}</p>
-                  </div>
-                  <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
-                    chevron_right
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+            <div class="ui-settings-tile-content">
+              <p class="ui-settings-title">{t(i18n, 'installAppTitle', "Install the app")}</p>
+              <p class="ui-settings-subtitle">
+                {t(i18n, 'installAppSubtitle', 'Add Liive Profit to your home screen')}
+              </p>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section class="ui-settings-card">
         <button
