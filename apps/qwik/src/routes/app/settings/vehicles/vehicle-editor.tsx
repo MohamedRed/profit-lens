@@ -1,4 +1,4 @@
-import { component$, useVisibleTask$ } from '@builder.io/qwik';
+import { component$ } from '@builder.io/qwik';
 import { useNavigate } from '@builder.io/qwik-city';
 import {
   LoadingSkeletonAnnouncer,
@@ -30,24 +30,7 @@ export const VehicleEditor = component$<VehicleEditorProps>((props) => {
     !state.loading.value &&
     !state.existingVehicle.value;
 
-  useVisibleTask$(({ track }) => {
-    const shouldRedirect = track(() => missingTarget);
-    if (!shouldRedirect) {
-      return;
-    }
-    void navigate(returnHref);
-  });
-
-  if (missingTarget) {
-    return (
-      <div aria-busy="true">
-        <LoadingSkeletonAnnouncer label={t(i18n, 'loadingLabel', 'Loading...')} />
-        <SettingsFormSkeleton fieldCount={3} />
-      </div>
-    );
-  }
-
-  if (loadFailed) {
+  if (missingTarget || loadFailed) {
     return (
       <div class="ui-settings-detail-root">
         <section class="ui-settings-detail-card">

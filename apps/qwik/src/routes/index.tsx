@@ -28,7 +28,7 @@ const normalizeDeepAppPath = (path: string, search: string, hash: string): strin
     return `/next/app/history/details/${query ? `?${query}` : ''}${hash}`;
   }
 
-  const vehicleEditMatch = path.match(/^\/next\/app\/settings\/vehicles\/edit\/([^/]+)$/);
+  const vehicleEditMatch = path.match(/^\/next\/app\/settings\/vehicles\/edit\/([^/]+)\/?$/);
   if (vehicleEditMatch) {
     return buildVehicleEditQueryHref(vehicleEditMatch[1], search, hash);
   }
@@ -39,10 +39,6 @@ const normalizeDeepAppPath = (path: string, search: string, hash: string): strin
     if (vehicleSegment !== 'new' && vehicleSegment !== 'edit') {
       return buildVehicleEditQueryHref(vehicleSegment, search, hash);
     }
-  }
-
-  if (path.startsWith('/next/app/') && path !== '/next/app/' && path !== '/next/app') {
-    return `${path}${search}${hash}`;
   }
 
   return null;
@@ -59,13 +55,20 @@ export default component$(() => {
     const search = window.location.search;
     const hash = window.location.hash;
     const deepAppPath = normalizeDeepAppPath(path, search, hash);
+    const currentHref = `${path}${search}${hash}`;
+    const hasLegacyRewrite = deepAppPath !== null && deepAppPath !== currentHref;
+
+    if (hasLegacyRewrite) {
+      navigate(deepAppPath);
+      return;
+    }
 
     if (!ready) {
       return;
     }
 
     if (user) {
-      if (deepAppPath) {
+      if (deepAppPath && deepAppPath !== currentHref) {
         navigate(deepAppPath);
         return;
       }
