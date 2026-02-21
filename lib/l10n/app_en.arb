@@ -13,7 +13,7 @@
   "analysisFailedTitle": "Analysis incomplete",
   "analysisFailedBody": "We couldn't complete the analysis. Please edit the details and try again.",
   "analysisFailedScreenshotBody": "We couldn't read this screenshot. Please upload a valid offer screenshot.",
-  "analysisFailedQuotaBody": "Screenshot analysis is temporarily unavailable because AI quota is reached. Enter details manually and try again later.",
+  "analysisFailedQuotaBody": "Screenshot analysis is temporarily unavailable. Enter details manually and try again later.",
   "addOptionalDetailsButton": "Add optional details",
   "hideOptionalDetailsButton": "Hide optional details",
   "offerAmountLabel": "Payout (EUR)",

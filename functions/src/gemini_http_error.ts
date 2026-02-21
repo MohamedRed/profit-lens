@@ -18,7 +18,7 @@ export const buildGeminiHttpError = (
   if (isGeminiQuotaError(status, errorText)) {
     return new HttpsError(
       "resource-exhausted",
-      "Gemini quota exceeded. Upgrade Gemini API billing or wait for quota reset."
+      "Service temporarily unavailable. Please try again later."
     );
   }
 

@@ -51,7 +51,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get analysisFailedQuotaBody =>
-      'Screenshot analysis is temporarily unavailable because AI quota is reached. Enter details manually and try again later.';
+      'Screenshot analysis is temporarily unavailable. Enter details manually and try again later.';
 
   @override
   String get addOptionalDetailsButton => 'Add optional details';

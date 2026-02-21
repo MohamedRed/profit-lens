@@ -8,7 +8,7 @@ describe("buildGeminiHttpError", () => {
       "{\"status\":\"RESOURCE_EXHAUSTED\"}"
     );
     expect(error.code).toBe("resource-exhausted");
-    expect(error.message).toContain("Gemini quota exceeded");
+    expect(error.message).toContain("Service temporarily unavailable");
   });
 
   it("maps authentication failures to failed-precondition", () => {

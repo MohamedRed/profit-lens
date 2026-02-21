@@ -180,7 +180,7 @@ abstract class AppLocalizations {
   /// No description provided for @analysisFailedQuotaBody.
   ///
   /// In en, this message translates to:
-  /// **'Screenshot analysis is temporarily unavailable because AI quota is reached. Enter details manually and try again later.'**
+  /// **'Screenshot analysis is temporarily unavailable. Enter details manually and try again later.'**
   String get analysisFailedQuotaBody;
 
   /// No description provided for @addOptionalDetailsButton.

@@ -118,7 +118,7 @@ export const resolveUserFacingErrorMessage = (
     return t(
       i18n,
       'analysisFailedQuotaBody',
-      'Screenshot analysis is temporarily unavailable because AI quota is reached. Enter details manually and try again later.',
+      'Screenshot analysis is temporarily unavailable. Enter details manually and try again later.',
     );
   }
 
