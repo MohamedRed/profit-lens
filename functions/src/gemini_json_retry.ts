@@ -3,7 +3,6 @@ import { requestGeminiJson } from "./gemini_client";
 import { parseGeminiJson } from "./gemini_json";
 
 type GeminiJsonRetryRequest = {
-  apiKey: string;
   model: string;
   prompt: string;
   schema: Record<string, unknown>;

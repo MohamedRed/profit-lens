@@ -15,12 +15,11 @@ type OfferResolution = {
 
 export async function resolveOfferInput(
   payload: AnalyzeOfferPayload,
-  gemini: { apiKey: string | null; model: string }
+  gemini: { model: string }
 ): Promise<OfferResolution | null> {
   const baseOffer = normalizeOffer(payload.offer);
   if (payload.imageBase64 && payload.mimeType) {
     const extracted = await extractOfferFromImagePayload({
-      apiKey: gemini.apiKey,
       model: gemini.model,
       imageBase64: payload.imageBase64,
       mimeType: payload.mimeType,

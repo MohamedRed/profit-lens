@@ -1,6 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
-import { defineSecret, defineString } from "firebase-functions/params";
+import { defineString } from "firebase-functions/params";
 import { loadAdemeRecords } from "./ademe_dataset";
 import { selectConsumption } from "./ademe_consumption";
 import { findAdemeMatch, LookupEnergy } from "./ademe_matcher";
@@ -31,7 +31,6 @@ export {
   setSubscriptionCancellation,
 } from "./billing_manage";
 
-const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const geminiModel = defineString("GEMINI_MODEL", {
   default: "gemini-3-flash-preview",
 });
@@ -39,7 +38,7 @@ const geminiModel = defineString("GEMINI_MODEL", {
 export const extractOfferFromImage = onCall(
   {
     cors: true,
-    secrets: [geminiApiKey],
+    secrets: [],
     timeoutSeconds: 30,
     memory: "512MiB",
     region: "europe-west1",
@@ -54,11 +53,6 @@ export const extractOfferFromImage = onCall(
 
     if (!payload?.imageBase64 || !payload?.mimeType) {
       throw new HttpsError("invalid-argument", "Missing image payload.");
-    }
-
-    const apiKey = geminiApiKey.value();
-    if (!apiKey) {
-      throw new HttpsError("failed-precondition", "GEMINI_API_KEY is not set.");
     }
 
     const model = geminiModel.value();
@@ -81,7 +75,6 @@ export const extractOfferFromImage = onCall(
     );
     const debugAllowed = debugRequested && debugEnabled;
     let text = await requestGeminiOffer({
-      apiKey,
       model,
       imageBase64: payload.imageBase64,
       mimeType: payload.mimeType,
@@ -113,7 +106,6 @@ export const extractOfferFromImage = onCall(
         let retryText = "";
         try {
           retryText = await requestGeminiOffer({
-            apiKey,
             model,
             imageBase64: payload.imageBase64,
             mimeType: payload.mimeType,

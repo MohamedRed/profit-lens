@@ -13,7 +13,6 @@ import { assertOfferLimitAvailable, saveOfferWithUsage } from "./offer_usage";
 import { assertDeviceActive } from "./device_registry";
 import { readRequiredCurrentLocation } from "./current_location";
 
-const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const routesApiKey = defineSecret("ROUTES_API_KEY");
 const geocodingApiKey = defineSecret("GEOCODING_API_KEY");
 const geminiModel = defineString("GEMINI_MODEL", {
@@ -23,7 +22,7 @@ const geminiModel = defineString("GEMINI_MODEL", {
 export const analyzeOffer = onCall(
   {
     cors: true,
-    secrets: [geminiApiKey, routesApiKey, geocodingApiKey],
+    secrets: [routesApiKey, geocodingApiKey],
     timeoutSeconds: 20,
     memory: "256MiB",
     region: "europe-west1",
@@ -44,7 +43,6 @@ export const analyzeOffer = onCall(
     const entitlement = await ensureEntitlement(uid);
     await assertOfferLimitAvailable({ uid, entitlement });
     const resolved = await resolveOfferInput(payload, {
-      apiKey: geminiApiKey.value(),
       model: geminiModel.value(),
     });
     if (!resolved) {

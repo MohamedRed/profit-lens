@@ -67,7 +67,7 @@ class ProfitabilityOverviewCard extends StatelessWidget {
             ),
             _row(
               l10n.minProfitabilityLabel,
-              CurrencyFormat.euro(minProfitabilityEuro, localeTag),
+              _formatEuroPerKm(minProfitabilityEuro, localeTag),
             ),
             const SizedBox(height: 12),
             PrimaryButton(
@@ -106,14 +106,16 @@ class ProfitabilityDecisionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final localeTag = Localizations.localeOf(context).toString();
-    final targetDelta = record.breakdown.netProfit - minProfitabilityEuro;
+    final distanceKm = _resolveAnalysisDistanceKm(record);
+    final minimumTargetEuro = minProfitabilityEuro * distanceKm;
+    final targetDelta = record.breakdown.netProfit - minimumTargetEuro;
     final isAccept = targetDelta >= 0;
     final decisionColor = isAccept
         ? Colors.green.shade600
         : Theme.of(context).colorScheme.error;
     final decisionBackground = isAccept
-        ? Colors.green.shade600.withOpacity(0.12)
-        : Theme.of(context).colorScheme.error.withOpacity(0.12);
+        ? Colors.green.shade600.withValues(alpha: 0.12)
+        : Theme.of(context).colorScheme.error.withValues(alpha: 0.12);
     final decisionLabel = isAccept
         ? l10n.offerDecisionAccept
         : l10n.offerDecisionDecline;
@@ -125,7 +127,7 @@ class ProfitabilityDecisionCard extends StatelessWidget {
             CurrencyFormat.euro(targetDelta.abs(), localeTag),
           );
     final minLabel = l10n.minProfitabilityLabel;
-    final minValue = CurrencyFormat.euro(minProfitabilityEuro, localeTag);
+    final minValue = _formatEuroPerKm(minProfitabilityEuro, localeTag);
 
     return _DecisionSection(
       label: decisionLabel,
@@ -136,6 +138,22 @@ class ProfitabilityDecisionCard extends StatelessWidget {
       backgroundColor: decisionBackground,
     );
   }
+}
+
+double _resolveAnalysisDistanceKm(OfferRecord record) {
+  final verifiedDistance = record.offer.routeVerification?.distanceKm;
+  if (verifiedDistance != null && verifiedDistance > 0) {
+    return verifiedDistance;
+  }
+  final offerDistance = record.offer.distanceKm;
+  if (offerDistance > 0) {
+    return offerDistance;
+  }
+  return 0;
+}
+
+String _formatEuroPerKm(double amount, String localeTag) {
+  return '${CurrencyFormat.euro(amount, localeTag)}/km';
 }
 
 class _DecisionSection extends StatelessWidget {
@@ -169,7 +187,7 @@ class _DecisionSection extends StatelessWidget {
       color: textColor,
       fontWeight: FontWeight.w600,
     );
-    final pillBackground = textColor.withOpacity(0.12);
+    final pillBackground = textColor.withValues(alpha: 0.12);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),

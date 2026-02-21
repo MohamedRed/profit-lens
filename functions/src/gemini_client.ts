@@ -1,17 +1,16 @@
 import { HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
+import { GoogleAuth } from "google-auth-library";
 import { offerExtractionPrompt } from "./gemini_prompt";
 import { buildGeminiHttpError } from "./gemini_http_error";
 
 type GeminiRequest = {
-  apiKey: string;
   model: string;
   imageBase64: string;
   mimeType: string;
 };
 
 type GeminiJsonRequest = {
-  apiKey: string;
   model: string;
   prompt: string;
   schema: Record<string, unknown>;
@@ -49,45 +48,39 @@ const offerExtractionSchema = {
   additionalProperties: false,
 } as const;
 
+const VERTEX_AUTH_SCOPE = "https://www.googleapis.com/auth/cloud-platform";
+const vertexAuth = new GoogleAuth({
+  scopes: [VERTEX_AUTH_SCOPE],
+});
+
 export async function requestGeminiOffer(
   request: GeminiRequest
 ): Promise<string> {
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${request.model}:generateContent?key=${request.apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [
-              { text: offerExtractionPrompt },
-              {
-                inlineData: {
-                  mimeType: request.mimeType,
-                  data: request.imageBase64,
-                },
+  const body = (await requestGeminiContent({
+    model: request.model,
+    body: {
+      contents: [
+        {
+          role: "user",
+          parts: [
+            { text: offerExtractionPrompt },
+            {
+              inlineData: {
+                mimeType: request.mimeType,
+                data: request.imageBase64,
               },
-            ],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.2,
-          maxOutputTokens: 2048,
-          responseMimeType: "application/json",
-          responseJsonSchema: offerExtractionSchema,
+            },
+          ],
         },
-      }),
-    }
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw buildGeminiHttpError(response.status, errorText);
-  }
-
-  const body = (await response.json()) as {
+      ],
+      generationConfig: {
+        temperature: 0.2,
+        maxOutputTokens: 2048,
+        responseMimeType: "application/json",
+        responseJsonSchema: offerExtractionSchema,
+      },
+    },
+  })) as {
     candidates?: Array<{
       content?: { parts?: Array<{ text?: string }> };
       finishReason?: string;
@@ -133,34 +126,23 @@ export async function requestGeminiOffer(
 export async function requestGeminiJson(
   request: GeminiJsonRequest
 ): Promise<string> {
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${request.model}:generateContent?key=${request.apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: request.prompt }],
-          },
-        ],
-        generationConfig: {
-          temperature: request.temperature ?? 0.2,
-          maxOutputTokens: request.maxOutputTokens ?? 1024,
-          responseMimeType: "application/json",
-          responseJsonSchema: request.schema,
+  const body = (await requestGeminiContent({
+    model: request.model,
+    body: {
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: request.prompt }],
         },
-      }),
-    }
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw buildGeminiHttpError(response.status, errorText);
-  }
-
-  const body = (await response.json()) as {
+      ],
+      generationConfig: {
+        temperature: request.temperature ?? 0.2,
+        maxOutputTokens: request.maxOutputTokens ?? 1024,
+        responseMimeType: "application/json",
+        responseJsonSchema: request.schema,
+      },
+    },
+  })) as {
     candidates?: Array<{
       content?: { parts?: Array<{ text?: string }> };
     }>;
@@ -175,4 +157,74 @@ export async function requestGeminiJson(
   }
 
   return text;
+}
+
+async function requestGeminiContent(request: {
+  model: string;
+  body: Record<string, unknown>;
+}) {
+  const endpoint = buildVertexEndpoint(request.model);
+  const accessToken = await getVertexAccessToken();
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(request.body),
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw buildGeminiHttpError(
+      response.status,
+      extractGeminiErrorMessage(errorText)
+    );
+  }
+  return (await response.json()) as Record<string, unknown>;
+}
+
+function buildVertexEndpoint(model: string): string {
+  const projectId =
+    process.env.GCLOUD_PROJECT ?? process.env.GOOGLE_CLOUD_PROJECT;
+  if (!projectId) {
+    throw new HttpsError("failed-precondition", "Missing project id.");
+  }
+  const location = process.env.GEMINI_VERTEX_LOCATION?.trim() || "global";
+  return `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+}
+
+async function getVertexAccessToken(): Promise<string> {
+  const token = await vertexAuth.getAccessToken();
+  if (!token) {
+    throw new HttpsError(
+      "failed-precondition",
+      "Vertex AI authentication failed."
+    );
+  }
+  return token;
+}
+
+function extractGeminiErrorMessage(errorText: string): string {
+  const trimmed = errorText.trim();
+  if (!trimmed) {
+    return "Unknown Gemini API error.";
+  }
+  try {
+    const parsed = JSON.parse(trimmed) as {
+      error?: { message?: unknown };
+      message?: unknown;
+    };
+    const detailed =
+      typeof parsed.error?.message === "string"
+        ? parsed.error.message
+        : typeof parsed.message === "string"
+          ? parsed.message
+          : null;
+    if (detailed && detailed.trim().length > 0) {
+      return detailed;
+    }
+  } catch {
+    // Keep raw text when response is not JSON.
+  }
+  return trimmed;
 }

@@ -1,4 +1,3 @@
-import { HttpsError } from "firebase-functions/v2/https";
 import { requestGeminiOffer } from "./gemini_client";
 import { parseGeminiJson } from "./gemini_json";
 import { postprocessOfferExtraction } from "./offer_postprocess";
@@ -11,17 +10,11 @@ type ExtractedOffer = {
 };
 
 export async function extractOfferFromImagePayload(params: {
-  apiKey: string | null;
   model: string;
   imageBase64: string;
   mimeType: string;
 }): Promise<ExtractedOffer> {
-  const apiKey = params.apiKey;
-  if (!apiKey) {
-    throw new HttpsError("failed-precondition", "GEMINI_API_KEY is not set.");
-  }
   const text = await requestGeminiOffer({
-    apiKey,
     model: params.model,
     imageBase64: params.imageBase64,
     mimeType: params.mimeType,
@@ -35,7 +28,6 @@ export async function extractOfferFromImagePayload(params: {
       throw error;
     }
     const retryText = await requestGeminiOffer({
-      apiKey,
       model: params.model,
       imageBase64: params.imageBase64,
       mimeType: params.mimeType,

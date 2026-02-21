@@ -1,5 +1,4 @@
 import * as logger from "firebase-functions/logger";
-import { HttpsError } from "firebase-functions/v2/https";
 import { db } from "./firebase_admin";
 import { requestGeminiJsonWithRetry } from "./gemini_json_retry";
 import { helpTriagePrompt } from "./help_triage_prompt";
@@ -47,13 +46,9 @@ export async function runHelpTicketTriage(params: {
   uid: string;
   ticketId: string;
   data: Record<string, unknown>;
-  apiKey: string;
   model: string;
 }) {
-  const { uid, ticketId, data, apiKey, model } = params;
-  if (!apiKey) {
-    throw new HttpsError("failed-precondition", "GEMINI_API_KEY is not set.");
-  }
+  const { uid, ticketId, data, model } = params;
 
   const ticketRef = db
     .collection("users")
@@ -91,7 +86,6 @@ export async function runHelpTicketTriage(params: {
   logger.info("Help ticket triage", { uid, ticketId, model });
 
   const parsed = await requestGeminiJsonWithRetry<HelpTriageResult>({
-    apiKey,
     model,
     prompt,
     schema: helpTriageSchema,
