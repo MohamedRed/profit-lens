@@ -1,10 +1,6 @@
-import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { useLocation } from '@builder.io/qwik-city';
-import {
-  LoadingSkeletonAnnouncer,
-  SettingsFormSkeleton,
-} from '../../../../../components/ui/page-loading-skeleton';
-import { isValidBackToHref } from '../../shared/vehicle-editor-href';
+import { component$, useVisibleTask$ } from '@builder.io/qwik';
+import { useLocation, useNavigate } from '@builder.io/qwik-city';
+import { buildVehicleEditorHref, isValidBackToHref } from '../../shared/vehicle-editor-href';
 import { VehicleEditor } from '../vehicle-editor';
 
 const readVehicleId = (search: string): string | null => {
@@ -22,33 +18,31 @@ const readVehicleId = (search: string): string | null => {
 
 export default component$(() => {
   const location = useLocation();
-  const vehicleId = useSignal<string | null>(null);
-  const resolvedBackToHref = useSignal<string | null>(null);
-  const searchReady = useSignal(false);
+  const navigate = useNavigate();
+  const search = typeof window === 'undefined' ? location.url.search : window.location.search;
+  const params = new URLSearchParams(search);
+  const vehicleId = readVehicleId(search);
+  const returnToHref = params.get('backTo');
+  const resolvedBackToHref = isValidBackToHref(returnToHref) ? returnToHref : null;
 
-  useVisibleTask$(() => {
-    const search = window.location.search || location.url.search;
-    const params = new URLSearchParams(search);
-    vehicleId.value = readVehicleId(search);
-    const returnToHref = params.get('backTo');
-    resolvedBackToHref.value = isValidBackToHref(returnToHref) ? returnToHref : null;
-    searchReady.value = true;
+  useVisibleTask$(({ track }) => {
+    const targetVehicleId = track(() => vehicleId);
+    if (!targetVehicleId) {
+      return;
+    }
+    const href = buildVehicleEditorHref(targetVehicleId, resolvedBackToHref ?? undefined);
+    void navigate(href);
   });
 
-  if (!searchReady.value) {
-    return (
-      <div aria-busy="true">
-        <LoadingSkeletonAnnouncer label="Loading..." />
-        <SettingsFormSkeleton fieldCount={3} />
-      </div>
-    );
+  if (vehicleId) {
+    return null;
   }
 
   return (
     <VehicleEditor
       mode="edit"
-      vehicleId={vehicleId.value}
-      returnToHref={resolvedBackToHref.value}
+      vehicleId={vehicleId}
+      returnToHref={resolvedBackToHref}
     />
   );
 });
