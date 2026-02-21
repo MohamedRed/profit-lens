@@ -2,58 +2,19 @@ import { component$, useVisibleTask$ } from '@builder.io/qwik';
 import { useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../lib/auth/auth-context';
 
-const decodePathSegment = (value: string): string => {
-  try {
-    return decodeURIComponent(value);
-  } catch {
-    return value;
-  }
-};
-
-const buildVehicleEditorHref = (vehicleIdSegment: string, search: string, hash: string): string => {
-  const params = new URLSearchParams(search);
-  params.set('vehicleId', decodePathSegment(vehicleIdSegment));
-  const query = params.toString();
-  return `/next/app/settings/vehicles/edit${query ? `?${query}` : ''}${hash}`;
-};
-
 const normalizeDeepAppPath = (path: string, search: string, hash: string): string | null => {
   const legacyHistoryMatch = path.match(/^\/next\/app\/history\/([^/]+)\/?$/);
   if (legacyHistoryMatch) {
     const params = new URLSearchParams(search);
     if (!params.get('offerId')) {
-      params.set('offerId', decodeURIComponent(legacyHistoryMatch[1]));
+      try {
+        params.set('offerId', decodeURIComponent(legacyHistoryMatch[1]));
+      } catch {
+        params.set('offerId', legacyHistoryMatch[1]);
+      }
     }
     const query = params.toString();
     return `/next/app/history/details/${query ? `?${query}` : ''}${hash}`;
-  }
-
-  if (path === '/next/app/settings/vehicles/edit' || path === '/next/app/settings/vehicles/edit/') {
-    const params = new URLSearchParams(search);
-    const vehicleId = params.get('vehicleId');
-    if (!vehicleId) {
-      return null;
-    }
-    const canonicalHref = `/next/app/settings/vehicles/edit?${params.toString()}${hash}`;
-    const currentHref = `${path}${search}${hash}`;
-    if (canonicalHref !== currentHref) {
-      return canonicalHref;
-    }
-    return null;
-  }
-
-  const vehicleEditMatch = path.match(/^\/next\/app\/settings\/vehicles\/edit\/([^/]+)\/?$/);
-  if (vehicleEditMatch) {
-    return buildVehicleEditorHref(vehicleEditMatch[1], search, hash);
-  }
-
-  const vehiclePathMatch = path.match(/^\/next\/app\/settings\/vehicles\/([^/]+)\/?$/);
-  if (vehiclePathMatch) {
-    const vehicleSegment = vehiclePathMatch[1];
-    if (vehicleSegment === 'new' || vehicleSegment === 'edit') {
-      return null;
-    }
-    return buildVehicleEditorHref(vehicleSegment, search, hash);
   }
 
   return null;
