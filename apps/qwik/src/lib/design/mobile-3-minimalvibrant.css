@@ -51,11 +51,10 @@
 }
 
 .ui-offer-setup-settings-button {
-  width: 34px;
-  min-width: 34px;
-  height: 34px;
-  min-height: 34px !important;
-  border-radius: 10px;
+  width: 3.1rem;
+  min-width: 3.1rem;
+  min-height: 3.1rem !important;
+  border-radius: var(--pl-radius-lg);
   display: inline-flex;
   align-items: center;
   justify-content: center;
