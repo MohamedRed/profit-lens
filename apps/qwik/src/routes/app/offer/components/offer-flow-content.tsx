@@ -116,7 +116,42 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             class="ui-offer-import-hero"
             aria-label={t(i18n, "importScreenshotButton", "Import screenshot")}
           >
-            <div class="ui-offer-import-toolbar">
+            <div class="ui-offer-import-cta-row">
+              {useDirectGalleryImport.value ? (
+                <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
+                  {props.loading.value
+                    ? t(i18n, "loadingLabel", "Loading...")
+                    : t(i18n, "importScreenshotButton", "Import screenshot")}
+                  <input
+                    class="ui-offer-file-input-hidden"
+                    type="file"
+                    accept="image/*"
+                    disabled={props.loading.value || !hasVehicles}
+                    onClick$={(_, element) => {
+                      element.value = "";
+                    }}
+                    onInput$={(_, element) => {
+                      void onFileInputEvent$(element);
+                    }}
+                    onChange$={(_, element) => {
+                      void onFileInputEvent$(element);
+                    }}
+                  />
+                </label>
+              ) : (
+                <Button
+                  variant="default"
+                  size="lg"
+                  class="ui-offer-primary-cta"
+                  disabled={props.loading.value || !hasVehicles}
+                  onClick$={handleImportButtonClick$}
+                >
+                  {props.loading.value
+                    ? t(i18n, "loadingLabel", "Loading...")
+                    : t(i18n, "importScreenshotButton", "Import screenshot")}
+                </Button>
+              )}
+
               <Button
                 variant="ghost"
                 size="sm"
@@ -140,41 +175,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 </span>
               </Button>
             </div>
-
-            {useDirectGalleryImport.value ? (
-              <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
-                {props.loading.value
-                  ? t(i18n, "loadingLabel", "Loading...")
-                  : t(i18n, "importScreenshotButton", "Import screenshot")}
-                <input
-                  class="ui-offer-file-input-hidden"
-                  type="file"
-                  accept="image/*"
-                  disabled={props.loading.value || !hasVehicles}
-                  onClick$={(_, element) => {
-                    element.value = "";
-                  }}
-                  onInput$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
-                  onChange$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
-                />
-              </label>
-            ) : (
-              <Button
-                variant="default"
-                size="lg"
-                class="ui-offer-primary-cta"
-                disabled={props.loading.value || !hasVehicles}
-                onClick$={handleImportButtonClick$}
-              >
-                {props.loading.value
-                  ? t(i18n, "loadingLabel", "Loading...")
-                  : t(i18n, "importScreenshotButton", "Import screenshot")}
-              </Button>
-            )}
 
             {enableCaptureCta ? (
               <label class="ui-button ui-button-secondary ui-button-lg ui-offer-file-trigger">
