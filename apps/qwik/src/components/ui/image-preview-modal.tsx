@@ -27,12 +27,8 @@ const swipeThresholdPx = 40;
 export const ImagePreviewModal = component$<ImagePreviewModalProps>(
   ({ alt, initialIndex, isOpen, items, onClose$, src }) => {
     const dialogRef = useSignal<HTMLDialogElement>();
-    const imageRef = useSignal<HTMLImageElement>();
     const hasScrollLock = useSignal(false);
     const activeIndex = useSignal(0);
-    const requestedIndex = useSignal<number | null>(null);
-    const transitionDirection = useSignal<1 | -1>(1);
-    const isAnimating = useSignal(false);
     const touchStartX = useSignal<number | null>(null);
     const touchStartY = useSignal<number | null>(null);
     const galleryItems = items?.length ? items : src ? [{ src, alt }] : [];
@@ -52,8 +48,6 @@ export const ImagePreviewModal = component$<ImagePreviewModalProps>(
       if (open) {
         const max = nextLength > 0 ? nextLength : src ? 1 : 0;
         activeIndex.value = clampIndex(nextInitialIndex, max);
-        requestedIndex.value = null;
-        isAnimating.value = false;
         if (!hasScrollLock.value) {
           lockPageScroll();
           hasScrollLock.value = true;
@@ -78,64 +72,6 @@ export const ImagePreviewModal = component$<ImagePreviewModalProps>(
       });
     });
 
-    useVisibleTask$(({ track }) => {
-      const nextIndex = track(() => requestedIndex.value);
-      if (nextIndex === null || isAnimating.value || nextIndex === activeIndex.value) {
-        if (nextIndex === activeIndex.value) {
-          requestedIndex.value = null;
-        }
-        return;
-      }
-
-      void (async () => {
-        isAnimating.value = true;
-        const direction = transitionDirection.value;
-        const currentImage = imageRef.value;
-        if (currentImage) {
-          await currentImage
-            .animate(
-              [
-                { opacity: 1, transform: 'translateX(0)' },
-                { opacity: 0.16, transform: `translateX(${direction > 0 ? -26 : 26}px)` },
-              ],
-              {
-                duration: 150,
-                easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
-                fill: 'forwards',
-              },
-            )
-            .finished.catch(() => undefined);
-        }
-
-        activeIndex.value = nextIndex;
-        requestedIndex.value = null;
-
-        await new Promise<void>((resolve) => {
-          window.requestAnimationFrame(() => {
-            resolve();
-          });
-        });
-
-        const nextImage = imageRef.value;
-        if (nextImage) {
-          await nextImage
-            .animate(
-              [
-                { opacity: 0.16, transform: `translateX(${direction > 0 ? 26 : -26}px)` },
-                { opacity: 1, transform: 'translateX(0)' },
-              ],
-              {
-                duration: 210,
-                easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
-              },
-            )
-            .finished.catch(() => undefined);
-        }
-
-        isAnimating.value = false;
-      })();
-    });
-
     if (!currentItem) {
       return null;
     }
@@ -144,7 +80,7 @@ export const ImagePreviewModal = component$<ImagePreviewModalProps>(
       <dialog
         ref={dialogRef}
         class="ui-image-modal-dialog"
-        aria-label={alt}
+        aria-label={currentItem.alt || alt}
         onCancel$={(event) => {
           event.preventDefault();
           onClose$();
@@ -157,22 +93,14 @@ export const ImagePreviewModal = component$<ImagePreviewModalProps>(
         onKeyDown$={(event) => {
           if (event.key === 'ArrowLeft') {
             event.preventDefault();
-            if (hasGallery && !isAnimating.value) {
-              const next = clampIndex(activeIndex.value - 1, maxItems);
-              if (next !== activeIndex.value) {
-                transitionDirection.value = -1;
-                requestedIndex.value = next;
-              }
+            if (hasGallery) {
+              activeIndex.value = clampIndex(activeIndex.value - 1, maxItems);
             }
           }
           if (event.key === 'ArrowRight') {
             event.preventDefault();
-            if (hasGallery && !isAnimating.value) {
-              const next = clampIndex(activeIndex.value + 1, maxItems);
-              if (next !== activeIndex.value) {
-                transitionDirection.value = 1;
-                requestedIndex.value = next;
-              }
+            if (hasGallery) {
+              activeIndex.value = clampIndex(activeIndex.value + 1, maxItems);
             }
           }
         }}
@@ -215,14 +143,10 @@ export const ImagePreviewModal = component$<ImagePreviewModalProps>(
               if (Math.abs(deltaX) < swipeThresholdPx || Math.abs(deltaX) < Math.abs(deltaY)) {
                 return;
               }
-              if (!hasGallery || isAnimating.value) {
+              if (!hasGallery) {
                 return;
               }
-              const next = clampIndex(activeIndex.value + (deltaX < 0 ? 1 : -1), maxItems);
-              if (next !== activeIndex.value) {
-                transitionDirection.value = deltaX < 0 ? 1 : -1;
-                requestedIndex.value = next;
-              }
+              activeIndex.value = clampIndex(activeIndex.value + (deltaX < 0 ? 1 : -1), maxItems);
             }}
           >
             {hasGallery ? (
@@ -231,46 +155,45 @@ export const ImagePreviewModal = component$<ImagePreviewModalProps>(
                 class="ui-image-modal-nav is-prev"
                 aria-label="Previous image"
                 onClick$={() => {
-                  if (isAnimating.value) {
-                    return;
-                  }
-                  const next = clampIndex(activeIndex.value - 1, maxItems);
-                  if (next !== activeIndex.value) {
-                    transitionDirection.value = -1;
-                    requestedIndex.value = next;
-                  }
+                  activeIndex.value = clampIndex(activeIndex.value - 1, maxItems);
                 }}
-                disabled={safeIndex === 0 || isAnimating.value}
+                disabled={safeIndex === 0}
               >
                 <span class="material-icons-outlined" aria-hidden="true">
                   chevron_left
                 </span>
               </button>
             ) : null}
-            <img
-              ref={imageRef}
-              class="ui-image-modal-image"
-              src={currentItem.src}
-              alt={currentItem.alt}
-              width={1200}
-              height={900}
-            />
+            <div class="ui-image-modal-carousel">
+              <div
+                class="ui-image-modal-track"
+                style={{
+                  '--ui-image-modal-slide-index': String(safeIndex),
+                }}
+              >
+                {galleryItems.map((item, index) => (
+                  <figure key={`${item.src}-${index}`} class="ui-image-modal-slide">
+                    <img
+                      class="ui-image-modal-image"
+                      src={item.src}
+                      alt={item.alt}
+                      width={1200}
+                      height={900}
+                      loading={Math.abs(index - safeIndex) <= 1 ? 'eager' : 'lazy'}
+                    />
+                  </figure>
+                ))}
+              </div>
+            </div>
             {hasGallery ? (
               <button
                 type="button"
                 class="ui-image-modal-nav is-next"
                 aria-label="Next image"
                 onClick$={() => {
-                  if (isAnimating.value) {
-                    return;
-                  }
-                  const next = clampIndex(activeIndex.value + 1, maxItems);
-                  if (next !== activeIndex.value) {
-                    transitionDirection.value = 1;
-                    requestedIndex.value = next;
-                  }
+                  activeIndex.value = clampIndex(activeIndex.value + 1, maxItems);
                 }}
-                disabled={safeIndex >= maxItems - 1 || isAnimating.value}
+                disabled={safeIndex >= maxItems - 1}
               >
                 <span class="material-icons-outlined" aria-hidden="true">
                   chevron_right

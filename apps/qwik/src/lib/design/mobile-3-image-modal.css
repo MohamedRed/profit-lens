@@ -47,12 +47,30 @@
   border-radius: calc(var(--pl-radius-lg) - 2px);
   display: block;
   background: rgba(0, 0, 0, 0.2);
-  will-change: transform, opacity;
 }
 
 .ui-image-modal-frame {
   position: relative;
   touch-action: pan-y;
+}
+
+.ui-image-modal-carousel {
+  overflow: hidden;
+  border-radius: calc(var(--pl-radius-lg) - 2px);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.ui-image-modal-track {
+  display: flex;
+  transform: translate3d(calc(var(--ui-image-modal-slide-index, 0) * -100%), 0, 0);
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.ui-image-modal-slide {
+  margin: 0;
+  width: 100%;
+  flex: 0 0 100%;
 }
 
 .ui-image-modal-nav {
@@ -103,6 +121,12 @@
 .ui-image-modal-nav:focus-visible {
   outline: 2px solid rgba(139, 92, 246, 0.58);
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-image-modal-track {
+    transition-duration: 0ms;
+  }
 }
 
 @media (max-width: 720px) {
