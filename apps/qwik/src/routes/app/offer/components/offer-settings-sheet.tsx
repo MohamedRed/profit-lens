@@ -1,17 +1,36 @@
-import { component$, type QRL, type Signal } from "@builder.io/qwik";
+import {
+  $,
+  component$,
+  type QRL,
+  type Signal,
+  useSignal,
+  useTask$,
+  useVisibleTask$,
+} from "@builder.io/qwik";
+import { Button } from "../../../../components/ui/button";
+import { Input } from "../../../../components/ui/input";
+import { Label } from "../../../../components/ui/label";
+import { SkeletonBlock } from "../../../../components/ui/page-loading-skeleton";
+import { Select } from "../../../../components/ui/select";
 import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
+import { BillingManager } from "../../settings/billing/billing-manager";
 import { OfferSetupSummary } from "./offer-setup-summary";
 import { useOfferDialogTransition } from "./use-offer-dialog-transition";
+
+type OfferSettingsView = "menu" | "setup" | "billing";
 
 interface OfferSettingsSheetProps {
   isOpen: Signal<boolean>;
   minProfitabilityEuro: number;
   onClose$: QRL<() => void>;
-  onManagePlan$: QRL<() => void>;
-  onOpenSetupEditor$: QRL<() => void>;
+  onSaveProfitabilityTarget$: QRL<(value: string) => Promise<void>>;
+  onVehicleChange$: QRL<(vehicleId: string) => void>;
+  savingProfitTarget: boolean;
   selectedVehicleId: string;
+  uid: string;
   vehicles: VehicleProfile[];
+  vehiclesLoading: boolean;
 }
 
 export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) => {
@@ -19,6 +38,85 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
   const { dialogRef, isClosing } = useOfferDialogTransition({
     isOpen: props.isOpen,
   });
+  const activeView = useSignal<OfferSettingsView>("menu");
+  const activeViewRef = useSignal<HTMLElement>();
+  const viewHeightPx = useSignal<number | null>(null);
+  const draftMinProfitability = useSignal(props.minProfitabilityEuro.toFixed(2));
+
+  useTask$(({ track }) => {
+    const isOpen = track(() => props.isOpen.value);
+    if (!isOpen) {
+      activeView.value = "menu";
+      viewHeightPx.value = null;
+      return;
+    }
+    if (activeView.value === "menu") {
+      draftMinProfitability.value = props.minProfitabilityEuro.toFixed(2);
+    }
+  });
+
+  useVisibleTask$(({ track, cleanup }) => {
+    const isOpen = track(() => props.isOpen.value);
+    const view = track(() => activeView.value);
+    const activeElement = track(() => activeViewRef.value);
+    if (!isOpen || !activeElement) {
+      viewHeightPx.value = null;
+      return;
+    }
+
+    const updateHeight = () => {
+      const viewportHeight =
+        window.innerHeight || document.documentElement.clientHeight || 0;
+      const maxHeightRatio = view === "billing" ? 0.84 : 0.72;
+      const maxHeight = Math.max(220, Math.floor(viewportHeight * maxHeightRatio));
+      const measuredHeight = Math.ceil(activeElement.scrollHeight);
+      viewHeightPx.value = Math.min(measuredHeight, maxHeight);
+    };
+
+    updateHeight();
+    const animationFrameId = window.requestAnimationFrame(updateHeight);
+    const resizeObserver =
+      typeof ResizeObserver === "function" ? new ResizeObserver(updateHeight) : null;
+    resizeObserver?.observe(activeElement);
+    const onResize = () => {
+      updateHeight();
+    };
+    window.addEventListener("resize", onResize, { passive: true });
+
+    cleanup(() => {
+      window.cancelAnimationFrame(animationFrameId);
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", onResize);
+    });
+  });
+
+  const openSetup$ = $(() => {
+    draftMinProfitability.value = props.minProfitabilityEuro.toFixed(2);
+    activeView.value = "setup";
+  });
+
+  const openBilling$ = $(() => {
+    activeView.value = "billing";
+  });
+
+  const goBackToMenu$ = $(() => {
+    activeView.value = "menu";
+  });
+
+  const applySetup$ = $(async () => {
+    await props.onSaveProfitabilityTarget$(draftMinProfitability.value);
+    activeView.value = "menu";
+  });
+
+  const viewTitle =
+    activeView.value === "menu"
+      ? t(i18n, "offerSetupTitle", "Offer settings")
+      : activeView.value === "setup"
+        ? t(i18n, "editOfferDetailsButton", "Edit details")
+        : t(i18n, "billingManageTitle", "Manage subscription");
+
+  const bodyViewportStyle =
+    viewHeightPx.value === null ? undefined : { height: `${viewHeightPx.value}px` };
 
   return (
     <dialog
@@ -37,9 +135,21 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
     >
       <div class="ui-offer-settings-panel">
         <header class="ui-offer-settings-panel-header">
-          <h3 class="ui-offer-settings-panel-title">
-            {t(i18n, "offerSetupTitle", "Offer settings")}
-          </h3>
+          {activeView.value === "menu" ? (
+            <span class="ui-offer-settings-panel-nav-spacer" aria-hidden="true" />
+          ) : (
+            <button
+              type="button"
+              class="ui-offer-settings-panel-back"
+              onClick$={goBackToMenu$}
+              aria-label={t(i18n, "commonBackLabel", "Back")}
+            >
+              <span class="material-icons-outlined" aria-hidden="true">
+                arrow_back
+              </span>
+            </button>
+          )}
+          <h3 class="ui-offer-settings-panel-title">{viewTitle}</h3>
           <button
             type="button"
             class="ui-offer-settings-panel-close"
@@ -52,34 +162,110 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
           </button>
         </header>
 
-        <div class="ui-offer-settings-panel-body">
-          <OfferSetupSummary
-            minProfitabilityEuro={props.minProfitabilityEuro}
-            onEdit$={props.onOpenSetupEditor$}
-            selectedVehicleId={props.selectedVehicleId}
-            vehicles={props.vehicles}
-          />
+        <div class="ui-offer-settings-view-viewport" style={bodyViewportStyle}>
+          {activeView.value === "menu" ? (
+            <section key="offer-settings-menu" ref={activeViewRef} class="ui-offer-settings-view">
+              <div class="ui-offer-settings-panel-body">
+                <OfferSetupSummary
+                  minProfitabilityEuro={props.minProfitabilityEuro}
+                  onEdit$={openSetup$}
+                  selectedVehicleId={props.selectedVehicleId}
+                  vehicles={props.vehicles}
+                />
 
-          <button type="button" class="ui-offer-settings-link" onClick$={props.onManagePlan$}>
-            <div class="ui-offer-settings-link-copy">
-              <p class="ui-offer-settings-link-title">
-                {t(i18n, "billingManageTitle", "Manage subscription")}
-              </p>
-              <p class="ui-offer-settings-link-subtitle">
-                {t(
-                  i18n,
-                  "offerSubscriptionSettingsHint",
-                  "Open your current plan and billing options.",
+                <button type="button" class="ui-offer-settings-link" onClick$={openBilling$}>
+                  <div class="ui-offer-settings-link-copy">
+                    <p class="ui-offer-settings-link-title">
+                      {t(i18n, "billingManageTitle", "Manage subscription")}
+                    </p>
+                    <p class="ui-offer-settings-link-subtitle">
+                      {t(
+                        i18n,
+                        "offerSubscriptionSettingsHint",
+                        "Open your current plan and billing options.",
+                      )}
+                    </p>
+                  </div>
+                  <span
+                    class="material-icons-outlined ui-offer-settings-link-chevron"
+                    aria-hidden="true"
+                  >
+                    chevron_right
+                  </span>
+                </button>
+              </div>
+            </section>
+          ) : null}
+
+          {activeView.value === "setup" ? (
+            <section key="offer-settings-setup" ref={activeViewRef} class="ui-offer-settings-view">
+              <div class="ui-offer-setup-panel-body">
+                {props.vehiclesLoading ? (
+                  <div class="ui-skeleton-stack-sm ui-offer-setup-vehicle-skeleton" aria-hidden="true">
+                    <SkeletonBlock height="12px" width="112px" />
+                    <SkeletonBlock height="44px" width="100%" />
+                  </div>
+                ) : (
+                  <div class="ui-field">
+                    <Label for="offer-vehicle-sheet">{t(i18n, "vehicleSelectLabel", "Select vehicle")}</Label>
+                    <Select
+                      id="offer-vehicle-sheet"
+                      options={props.vehicles.map((vehicle) => ({
+                        label: vehicle.name,
+                        value: vehicle.id,
+                      }))}
+                      value={props.selectedVehicleId}
+                      onChange$={props.onVehicleChange$}
+                    />
+                  </div>
                 )}
-              </p>
-            </div>
-            <span
-              class="material-icons-outlined ui-offer-settings-link-chevron"
-              aria-hidden="true"
+
+                <div class="ui-field">
+                  <Label for="offer-min-profitability-sheet">
+                    {t(i18n, "minProfitabilityLabel", "Minimum profit per km")}
+                  </Label>
+                  <div class="ui-offer-target-input-wrap">
+                    <Input
+                      id="offer-min-profitability-sheet"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={draftMinProfitability.value}
+                      onInput$={(_, element) => {
+                        draftMinProfitability.value = element.value;
+                      }}
+                    />
+                    <span class="ui-offer-target-suffix">€/km</span>
+                  </div>
+                  <p class="ui-offer-target-hint">
+                    {t(i18n, "minProfitabilityHint", "Suggested default: €2.00/km")}
+                  </p>
+                  {props.savingProfitTarget ? (
+                    <p class="ui-offer-target-saving">{t(i18n, "loadingLabel", "Loading...")}</p>
+                  ) : null}
+                </div>
+              </div>
+
+              <footer class="ui-offer-setup-panel-actions">
+                <Button variant="secondary" type="button" onClick$={goBackToMenu$}>
+                  {t(i18n, "cancelLabel", "Cancel")}
+                </Button>
+                <Button variant="default" type="button" onClick$={applySetup$}>
+                  {t(i18n, "saveLabel", "Save")}
+                </Button>
+              </footer>
+            </section>
+          ) : null}
+
+          {activeView.value === "billing" ? (
+            <section
+              key="offer-settings-billing"
+              ref={activeViewRef}
+              class="ui-offer-settings-view ui-offer-settings-view-scroll"
             >
-              chevron_right
-            </span>
-          </button>
+              <BillingManager uid={props.uid} rootClass="ui-offer-billing-manager" />
+            </section>
+          ) : null}
         </div>
       </div>
     </dialog>
