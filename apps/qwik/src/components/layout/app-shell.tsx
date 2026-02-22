@@ -48,7 +48,7 @@ export const AppShell = component$(() => {
   const headerBackHref = resolveHeaderBackHref(appPath, explicitBackHref);
   const preferDeterministicBack = shouldPreferDeterministicBack(appPath, explicitBackHref);
   const activeTabIndex = resolveActiveTabIndex(appPath);
-  const activeTab = navItems[activeTabIndex];
+  const showHeader = Boolean(headerBackHref) || showHelpTicketsAction;
 
   const onHeaderBack$ = $(async () => {
     if (!headerBackHref) {
@@ -175,32 +175,33 @@ export const AppShell = component$(() => {
   return (
     <div class="ui-mobile-app" id="qwik-app-root-marker">
       <main class="ui-mobile-page">
-        <header class="ui-mobile-header">
-          {headerBackHref ? (
-            <button
-              type="button"
-              class="ui-mobile-header-back"
-              onClick$={onHeaderBack$}
-              aria-label={t(i18n, 'commonBackLabel', 'Back')}
-            >
-              <span class="material-icons-outlined" aria-hidden="true">
-                arrow_back
-              </span>
-            </button>
-          ) : null}
-          <h1 class="ui-mobile-title">{t(i18n, activeTab.labelKey, activeTab.fallback)}</h1>
-          {showHelpTicketsAction ? (
-            <Link
-              class="ui-mobile-header-action"
-              href="/next/app/help/tickets"
-              aria-label={t(i18n, 'helpViewTicketsButton', 'View tickets')}
-            >
-              <span class="material-icons-outlined" aria-hidden="true">
-                list_alt
-              </span>
-            </Link>
-          ) : null}
-        </header>
+        {showHeader ? (
+          <header class="ui-mobile-header">
+            {headerBackHref ? (
+              <button
+                type="button"
+                class="ui-mobile-header-back"
+                onClick$={onHeaderBack$}
+                aria-label={t(i18n, 'commonBackLabel', 'Back')}
+              >
+                <span class="material-icons-outlined" aria-hidden="true">
+                  arrow_back
+                </span>
+              </button>
+            ) : null}
+            {showHelpTicketsAction ? (
+              <Link
+                class="ui-mobile-header-action"
+                href="/next/app/help/tickets"
+                aria-label={t(i18n, 'helpViewTicketsButton', 'View tickets')}
+              >
+                <span class="material-icons-outlined" aria-hidden="true">
+                  list_alt
+                </span>
+              </Link>
+            ) : null}
+          </header>
+        ) : null}
 
         <section
           key={location.url.pathname}
