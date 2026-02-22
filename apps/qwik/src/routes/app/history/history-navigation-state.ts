@@ -1,28 +1,7 @@
-export type HistoryViewMode = 'list' | 'charts';
-
-const viewModeStorageKey = 'pl-history-view-mode';
 const scrollStorageKey = 'pl-history-scroll-y';
 
 const isBrowser = (): boolean => {
   return typeof window !== 'undefined' && typeof sessionStorage !== 'undefined';
-};
-
-export const readHistoryViewMode = (): HistoryViewMode | null => {
-  if (!isBrowser()) {
-    return null;
-  }
-  const value = sessionStorage.getItem(viewModeStorageKey);
-  if (value === 'list' || value === 'charts') {
-    return value;
-  }
-  return null;
-};
-
-export const saveHistoryViewMode = (mode: HistoryViewMode): void => {
-  if (!isBrowser()) {
-    return;
-  }
-  sessionStorage.setItem(viewModeStorageKey, mode);
 };
 
 export const readHistoryScrollY = (): number | null => {

@@ -12,12 +12,7 @@ import { saveHistoryOfferCache, saveSelectedHistoryOfferId } from './history-off
 import { HistoryChartPanel } from './history-chart-panel';
 import { HistoryListPanel } from './history-list-panel';
 import { readHistoryTabSessionState, writeHistoryTabSessionState } from './history-tab-session';
-import {
-  readHistoryScrollY,
-  readHistoryViewMode,
-  saveHistoryScrollY,
-  saveHistoryViewMode,
-} from './history-navigation-state';
+import { readHistoryScrollY, saveHistoryScrollY } from './history-navigation-state';
 
 const historyPageSize = 15;
 const historyLoadMoreThresholdPx = 240;
@@ -30,7 +25,6 @@ const resolveHistoryTabIndex = (value: number): number =>
 export default component$(() => {
   const i18n = useI18n();
   const auth = useAuth();
-  const initialViewMode = inBrowser ? readHistoryViewMode() : null;
   const offers = useSignal<OfferRecord[]>([]);
   const offersCursor = useSignal<OffersPageCursor | null>(null);
   const stats = useSignal<OfferStatsDay[]>([]);
@@ -38,9 +32,7 @@ export default component$(() => {
   const isLoadingMore = useSignal(false);
   const hasMore = useSignal(true);
   const hasLoadMoreError = useSignal(false);
-  const selectedTabIndex = useSignal<number>(
-    initialViewMode === 'list' ? historyListTabIndex : historyChartsTabIndex,
-  );
+  const selectedTabIndex = useSignal<number>(historyChartsTabIndex);
   const suppressAutoLoadMore = useSignal(false);
   const hasHydratedFromSession = useSignal(false);
   const hasActivatedCharts = useSignal(selectedTabIndex.value === historyChartsTabIndex);
@@ -88,11 +80,7 @@ export default component$(() => {
       hasLoadMoreError.value = session.hasLoadMoreError;
       isLoadingInitial.value = false;
     } else {
-      const savedMode = readHistoryViewMode();
-      if (savedMode) {
-        selectedTabIndex.value =
-          savedMode === 'charts' ? historyChartsTabIndex : historyListTabIndex;
-      }
+      selectedTabIndex.value = historyChartsTabIndex;
       hasActivatedCharts.value = selectedTabIndex.value === historyChartsTabIndex;
     }
 
@@ -241,7 +229,6 @@ export default component$(() => {
     saveSelectedHistoryOfferId(offerId);
   });
   const onHistoryModeChange$ = $((nextIndex: number) => {
-    saveHistoryViewMode(nextIndex === historyChartsTabIndex ? 'charts' : 'list');
     if (nextIndex === historyChartsTabIndex) {
       hasActivatedCharts.value = true;
     }
