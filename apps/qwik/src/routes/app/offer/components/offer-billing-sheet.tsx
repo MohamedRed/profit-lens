@@ -1,6 +1,7 @@
-import { component$, type QRL, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { component$, type QRL } from '@builder.io/qwik';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import { BillingManager } from '../../settings/billing/billing-manager';
+import { useOfferDialogTransition } from './use-offer-dialog-transition';
 
 interface OfferBillingSheetProps {
   isOpen: boolean;
@@ -10,49 +11,8 @@ interface OfferBillingSheetProps {
 
 export const OfferBillingSheet = component$<OfferBillingSheetProps>((props) => {
   const i18n = useI18n();
-  const dialogRef = useSignal<HTMLDialogElement>();
-  const isClosing = useSignal(false);
-  const closeTimerId = useSignal<number | null>(null);
-
-  useVisibleTask$(({ track, cleanup }) => {
-    const open = track(() => props.isOpen);
-    const dialog = dialogRef.value;
-    if (!dialog) {
-      return;
-    }
-
-    cleanup(() => {
-      if (closeTimerId.value !== null) {
-        window.clearTimeout(closeTimerId.value);
-        closeTimerId.value = null;
-      }
-    });
-
-    if (open) {
-      if (closeTimerId.value !== null) {
-        window.clearTimeout(closeTimerId.value);
-        closeTimerId.value = null;
-      }
-      isClosing.value = false;
-      dialog.classList.remove('is-closing');
-      if (!dialog.open) {
-        dialog.showModal();
-      }
-      return;
-    }
-
-    if (dialog.open && !isClosing.value) {
-      isClosing.value = true;
-      dialog.classList.add('is-closing');
-      closeTimerId.value = window.setTimeout(() => {
-        closeTimerId.value = null;
-        isClosing.value = false;
-        if (dialog.open) {
-          dialog.close();
-        }
-        dialog.classList.remove('is-closing');
-      }, 220);
-    }
+  const { dialogRef, isClosing } = useOfferDialogTransition({
+    isOpen: props.isOpen,
   });
 
   return (

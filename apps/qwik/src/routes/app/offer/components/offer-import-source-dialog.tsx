@@ -1,5 +1,6 @@
-import { $, component$, type QRL, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { $, component$, type QRL } from '@builder.io/qwik';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
+import { useOfferDialogTransition } from './use-offer-dialog-transition';
 
 interface OfferImportSourceDialogProps {
   isOpen: boolean;
@@ -9,7 +10,9 @@ interface OfferImportSourceDialogProps {
 
 export const OfferImportSourceDialog = component$<OfferImportSourceDialogProps>((props) => {
   const i18n = useI18n();
-  const dialogRef = useSignal<HTMLDialogElement>();
+  const { dialogRef, isClosing } = useOfferDialogTransition({
+    isOpen: props.isOpen,
+  });
   const onFileChange$ = $(async (element: HTMLInputElement) => {
     const file = element.files?.[0];
     if (!file) {
@@ -23,29 +26,10 @@ export const OfferImportSourceDialog = component$<OfferImportSourceDialogProps>(
     }
   });
 
-  useVisibleTask$(({ track }) => {
-    const open = track(() => props.isOpen);
-    const dialog = dialogRef.value;
-    if (!dialog) {
-      return;
-    }
-
-    if (open) {
-      if (!dialog.open) {
-        dialog.showModal();
-      }
-      return;
-    }
-
-    if (dialog.open) {
-      dialog.close();
-    }
-  });
-
   return (
     <dialog
       ref={dialogRef}
-      class="ui-offer-source-dialog"
+      class={{ 'ui-offer-source-dialog': true, 'is-closing': isClosing.value }}
       aria-label={t(i18n, 'importSourceTitle', 'Choose a source')}
       onCancel$={(event) => {
         event.preventDefault();

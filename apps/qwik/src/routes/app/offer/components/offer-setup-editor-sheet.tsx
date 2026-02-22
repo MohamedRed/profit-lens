@@ -1,4 +1,4 @@
-import { $, component$, type QRL, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { $, component$, type QRL, useSignal, useTask$ } from '@builder.io/qwik';
 import { Button } from '../../../../components/ui/button';
 import { Input } from '../../../../components/ui/input';
 import { Label } from '../../../../components/ui/label';
@@ -6,6 +6,7 @@ import { SkeletonBlock } from '../../../../components/ui/page-loading-skeleton';
 import { Select } from '../../../../components/ui/select';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { VehicleProfile } from '../../../../lib/types/vehicle';
+import { useOfferDialogTransition } from './use-offer-dialog-transition';
 
 interface OfferSetupEditorSheetProps {
   isOpen: boolean;
@@ -21,52 +22,18 @@ interface OfferSetupEditorSheetProps {
 
 export const OfferSetupEditorSheet = component$<OfferSetupEditorSheetProps>((props) => {
   const i18n = useI18n();
-  const dialogRef = useSignal<HTMLDialogElement>();
+  const { dialogRef, isClosing } = useOfferDialogTransition({
+    isOpen: props.isOpen,
+  });
   const draftMinProfitability = useSignal(props.minProfitabilityEuro.toFixed(2));
-  const isClosing = useSignal(false);
-  const closeTimerId = useSignal<number | null>(null);
 
-  useVisibleTask$(({ track, cleanup }) => {
+  useTask$(({ track }) => {
     const open = track(() => props.isOpen);
-    track(() => props.minProfitabilityEuro);
-    const dialog = dialogRef.value;
-    if (!dialog) {
+    const minProfitabilityEuro = track(() => props.minProfitabilityEuro);
+    if (!open) {
       return;
     }
-
-    cleanup(() => {
-      if (closeTimerId.value !== null) {
-        window.clearTimeout(closeTimerId.value);
-        closeTimerId.value = null;
-      }
-    });
-
-    if (open) {
-      if (closeTimerId.value !== null) {
-        window.clearTimeout(closeTimerId.value);
-        closeTimerId.value = null;
-      }
-      isClosing.value = false;
-      dialog.classList.remove('is-closing');
-      draftMinProfitability.value = props.minProfitabilityEuro.toFixed(2);
-      if (!dialog.open) {
-        dialog.showModal();
-      }
-      return;
-    }
-
-    if (dialog.open && !isClosing.value) {
-      isClosing.value = true;
-      dialog.classList.add('is-closing');
-      closeTimerId.value = window.setTimeout(() => {
-        closeTimerId.value = null;
-        isClosing.value = false;
-        if (dialog.open) {
-          dialog.close();
-        }
-        dialog.classList.remove('is-closing');
-      }, 220);
-    }
+    draftMinProfitability.value = minProfitabilityEuro.toFixed(2);
   });
 
   const applyAndClose$ = $(async () => {
