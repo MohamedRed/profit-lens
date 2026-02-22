@@ -83,13 +83,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     settingsSheetOpen.value = false;
   });
 
-  const handleSettingsGesture$ = $((event: Event) => {
-    if (event.cancelable) {
-      event.preventDefault();
-    }
-    settingsSheetOpen.value = true;
-  });
-
   const openSetupEditorFromSettings$ = $(() => {
     settingsSheetOpen.value = false;
     if (modalSwitchTimeoutId.value !== null) {
@@ -175,8 +168,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 href="/next/app/settings"
                 class="ui-button ui-button-ghost ui-button-lg ui-offer-setup-settings-button"
                 aria-label={t(i18n, "showOfferSetupButton", "Show setup")}
-                onPointerUp$={handleSettingsGesture$}
-                onTouchEnd$={handleSettingsGesture$}
               >
                 <span
                   class="material-icons-outlined ui-offer-setup-settings-icon"
