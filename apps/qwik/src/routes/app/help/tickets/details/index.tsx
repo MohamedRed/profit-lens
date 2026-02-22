@@ -16,8 +16,6 @@ import {
   watchHelpTicketTimeline,
 } from '../../../../../lib/features/help/help-service';
 import {
-  delivererStatusLabel,
-  formatHelpDate,
   statusLabel,
 } from '../../../../../lib/features/help/help-ui-utils';
 import { resolveUserFacingErrorMessage } from '../../../../../lib/errors/user-facing-error';
@@ -117,26 +115,14 @@ export default component$(() => {
     <div class="ui-help-detail-root">
       <section class="ui-help-card">
         <h2 class="ui-help-card-title">{title}</h2>
-        <p class="ui-help-progress-status">
-          {delivererStatusLabel(currentTicket.delivererStatus, currentTicket.delivererStatus, (key, fallbackText) =>
-            t(i18n, key, fallbackText),
-          )}
-        </p>
-        <p class="ui-help-ticket-date">
-          {t(i18n, 'helpStatusUpdatedLabel', 'Status updated')}: {formatHelpDate(currentTicket.updatedAt)}
-        </p>
+        <h3 class="ui-help-section-title">{t(i18n, 'helpTicketDescriptionTitle', 'Description')}</h3>
         <p class="ui-help-ticket-desc">
-          {currentTicket.delivererStatusMessage ||
+          {currentTicket.description ||
+            currentTicket.delivererStatusMessage ||
             statusLabel(currentTicket.status, currentTicket.status, (key, fallbackText) =>
               t(i18n, key, fallbackText),
-            )}
-        </p>
-      </section>
-
-      <section class="ui-help-card">
-        <h2 class="ui-help-section-title">{t(i18n, 'helpTicketDescriptionTitle', 'Description')}</h2>
-        <p class="ui-help-ticket-desc">
-          {currentTicket.description || t(i18n, 'helpTicketDescriptionEmpty', 'No description provided.')}
+            ) ||
+            t(i18n, 'helpTicketDescriptionEmpty', 'No description provided.')}
         </p>
       </section>
 
