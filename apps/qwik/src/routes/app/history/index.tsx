@@ -28,6 +28,7 @@ const inBrowser = typeof window !== 'undefined';
 export default component$(() => {
   const i18n = useI18n();
   const auth = useAuth();
+  const initialViewMode = inBrowser ? readHistoryViewMode() : null;
   const offers = useSignal<OfferRecord[]>([]);
   const offersCursor = useSignal<OffersPageCursor | null>(null);
   const stats = useSignal<OfferStatsDay[]>([]);
@@ -35,9 +36,12 @@ export default component$(() => {
   const isLoadingMore = useSignal(false);
   const hasMore = useSignal(true);
   const hasLoadMoreError = useSignal(false);
-  const selectedTabIndex = useSignal<number>(0);
+  const selectedTabIndex = useSignal<number>(
+    initialViewMode === 'list' ? historyListTabIndex : historyChartsTabIndex,
+  );
   const suppressAutoLoadMore = useSignal(false);
   const hasHydratedFromSession = useSignal(false);
+  const hasActivatedCharts = useSignal(selectedTabIndex.value === historyChartsTabIndex);
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
@@ -148,12 +152,6 @@ export default component$(() => {
       }
     };
 
-    const savedMode = readHistoryViewMode();
-    if (savedMode) {
-      selectedTabIndex.value =
-        savedMode === 'charts' ? historyChartsTabIndex : historyListTabIndex;
-    }
-
     const onScroll = () => {
       saveHistoryScrollY(window.scrollY);
       if (suppressAutoLoadMore.value) {
@@ -233,6 +231,9 @@ export default component$(() => {
   });
   const onHistoryModeChange$ = $((nextIndex: number) => {
     saveHistoryViewMode(nextIndex === historyChartsTabIndex ? 'charts' : 'list');
+    if (nextIndex === historyChartsTabIndex) {
+      hasActivatedCharts.value = true;
+    }
   });
 
   return (
@@ -254,7 +255,11 @@ export default component$(() => {
         </Tabs.List>
 
         <Tabs.Panel class="ui-history-panel">
-          <HistoryChartPanel stats={stats.value} locale={locale} />
+          <HistoryChartPanel
+            stats={stats.value}
+            locale={locale}
+            isActive={selectedTabIndex.value === historyChartsTabIndex}
+          />
         </Tabs.Panel>
 
         <Tabs.Panel class="ui-history-panel">
@@ -268,6 +273,12 @@ export default component$(() => {
           />
         </Tabs.Panel>
       </Tabs.Root>
+
+      {!hasActivatedCharts.value ? (
+        <div class="ui-history-chart-preload" aria-hidden="true">
+          <HistoryChartPanel stats={stats.value} locale={locale} isActive={false} preload={true} />
+        </div>
+      ) : null}
     </div>
   );
 });

@@ -1,4 +1,4 @@
-import { component$ } from '@builder.io/qwik';
+import { component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import type { OfferStatsDay } from '../../../lib/types/offer';
 import {
@@ -14,10 +14,16 @@ import {
 interface HistoryChartPanelProps {
   stats: OfferStatsDay[];
   locale: string;
+  isActive?: boolean;
+  preload?: boolean;
 }
 
-export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, locale }) => {
+const introAnimationDurationMs = 760;
+
+export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, locale, isActive, preload }) => {
   const i18n = useI18n();
+  const introActive = useSignal(false);
+  const introCompleted = useSignal(false);
 
   const sortedStats = [...stats].sort((a, b) => a.dayStart.getTime() - b.dayStart.getTime());
   const chartValues = sortedStats
@@ -57,6 +63,26 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
   const averageAll = averageProfit(sortedStats);
   const averageTemplate = t(i18n, 'historySummaryAverageProfit', 'Average profit: {amount}');
   const averageText = averageTemplate.replace('{amount}', formatCurrency(locale, averageAll));
+  const isPanelActive = isActive ?? true;
+  const isPreload = preload ?? false;
+
+  useTask$(({ track, cleanup }) => {
+    const active = track(() => isPanelActive);
+    const valueCount = track(() => chartValues.length);
+    if (typeof window === 'undefined' || !active || isPreload || valueCount === 0 || introCompleted.value) {
+      return;
+    }
+    introCompleted.value = true;
+    introActive.value = true;
+    const timer = window.setTimeout(() => {
+      introActive.value = false;
+    }, introAnimationDurationMs);
+    cleanup(() => {
+      window.clearTimeout(timer);
+    });
+  });
+
+  const showIntro = introActive.value && !isPreload;
 
   return (
     <div class="ui-history-chart-block">
@@ -70,7 +96,7 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
           {t(i18n, 'historyChartEmptyMessage', 'Add at least 2 offers to see the chart.')}
         </p>
       ) : (
-        <div class="ui-history-chart-shell">
+        <div class={{ 'ui-history-chart-shell': true, 'is-intro': showIntro }}>
           <div class="ui-history-chart-axis">
             {tickValues.map((value, index) => (
               <span key={`${value}-${index}`}>{formatChartCurrency(locale, value)}</span>
@@ -101,6 +127,7 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
                 />
               ))}
               <line
+                class={{ 'ui-history-chart-threshold': true, 'is-intro': showIntro }}
                 x1="0"
                 x2={String(chartWidth)}
                 y1={String(thresholdY)}
@@ -108,9 +135,24 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
                 stroke="#ef4444"
                 stroke-width="2"
               />
-              <path d={pathData} fill="none" stroke="#7c5cf5" stroke-width="3" />
+              <path
+                class={{ 'ui-history-chart-line': true, 'is-intro': showIntro }}
+                d={pathData}
+                fill="none"
+                stroke="#7c5cf5"
+                stroke-width="3"
+                pathLength={100}
+              />
               {chartPoints.map((point, index) => (
-                <circle key={index} cx={String(point.x)} cy={String(point.y)} r="4" fill="#7c5cf5" />
+                <circle
+                  key={index}
+                  class={{ 'ui-history-chart-point': true, 'is-intro': showIntro }}
+                  cx={String(point.x)}
+                  cy={String(point.y)}
+                  r="4"
+                  fill="#7c5cf5"
+                  style={showIntro ? { animationDelay: `${index * 56}ms` } : undefined}
+                />
               ))}
             </svg>
           </div>

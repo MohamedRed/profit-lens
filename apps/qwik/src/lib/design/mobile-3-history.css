@@ -67,6 +67,14 @@
   margin-top: 12px;
 }
 
+.ui-history-chart-preload {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .ui-history-list {
   list-style: none;
   margin: 0;
@@ -177,6 +185,27 @@
   height: auto;
 }
 
+.ui-history-chart-shell.is-intro {
+  animation: ui-history-chart-shell-intro 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ui-history-chart-line.is-intro {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: ui-history-chart-line-draw 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.ui-history-chart-threshold.is-intro {
+  opacity: 0;
+  animation: ui-history-chart-threshold-intro 440ms ease 120ms forwards;
+}
+
+.ui-history-chart-point.is-intro {
+  opacity: 0;
+  transform-origin: center;
+  animation: ui-history-chart-point-intro 360ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 .ui-history-legend {
   display: flex;
   gap: 16px;
@@ -262,4 +291,51 @@
 
 .ui-history-detail-row span:first-child {
   color: var(--pl-color-text-secondary);
+}
+
+@keyframes ui-history-chart-shell-intro {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ui-history-chart-line-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ui-history-chart-threshold-intro {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ui-history-chart-point-intro {
+  from {
+    opacity: 0;
+    transform: scale(0.45);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-history-chart-shell.is-intro,
+  .ui-history-chart-line.is-intro,
+  .ui-history-chart-threshold.is-intro,
+  .ui-history-chart-point.is-intro {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
 }
