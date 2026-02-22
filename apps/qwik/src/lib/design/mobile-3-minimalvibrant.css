@@ -244,9 +244,13 @@
 }
 
 .ui-offer-setup-panel-close {
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
   width: 24px;
   height: 24px;
   border: 0;
+  border-color: transparent;
   border-radius: 0;
   background: transparent;
   color: var(--pl-color-text-secondary);
@@ -255,6 +259,12 @@
   justify-content: center;
   cursor: pointer;
   padding: 0;
+}
+
+.ui-offer-setup-panel-close:focus,
+.ui-offer-setup-panel-close:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .ui-offer-setup-panel-close .material-icons-outlined {
@@ -343,9 +353,13 @@
 }
 
 .ui-offer-settings-panel-close {
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
   width: 24px;
   height: 24px;
   border: 0;
+  border-color: transparent;
   border-radius: 0;
   background: transparent;
   color: var(--pl-color-text-secondary);
@@ -354,6 +368,12 @@
   justify-content: center;
   cursor: pointer;
   padding: 0;
+}
+
+.ui-offer-settings-panel-close:focus,
+.ui-offer-settings-panel-close:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .ui-offer-settings-panel-close .material-icons-outlined {
@@ -476,9 +496,13 @@
 }
 
 .ui-offer-billing-panel-close {
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
   width: 24px;
   height: 24px;
   border: 0;
+  border-color: transparent;
   border-radius: 0;
   background: transparent;
   color: var(--pl-color-text-secondary);
@@ -487,6 +511,12 @@
   justify-content: center;
   cursor: pointer;
   padding: 0;
+}
+
+.ui-offer-billing-panel-close:focus,
+.ui-offer-billing-panel-close:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .ui-offer-billing-panel-close .material-icons-outlined {
