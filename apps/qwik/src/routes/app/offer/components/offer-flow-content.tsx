@@ -87,6 +87,13 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     settingsSheetOpen.value = true;
   });
 
+  const handleSettingsTap$ = $((event: Event) => {
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+    settingsSheetOpen.value = true;
+  });
+
   const openSetupEditorFromSettings$ = $(() => {
     settingsSheetOpen.value = false;
     if (modalSwitchTimeoutId.value !== null) {
@@ -168,14 +175,13 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             aria-label={importScreenshotLabel}
           >
             <div class="ui-offer-import-cta-row">
-              <Button
-                variant="ghost"
-                size="lg"
-                type="button"
-                class="ui-offer-setup-settings-button"
+              <a
+                href="/next/app/settings"
+                class="ui-button ui-button-ghost ui-button-lg ui-offer-setup-settings-button"
                 aria-label={t(i18n, "showOfferSetupButton", "Show setup")}
-                onClick$={openSettingsSheet$}
+                onClick$={handleSettingsTap$}
                 onPointerUp$={openSettingsSheet$}
+                onTouchEnd$={openSettingsSheet$}
               >
                 <span
                   class="material-icons-outlined ui-offer-setup-settings-icon"
@@ -183,7 +189,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 >
                   settings
                 </span>
-              </Button>
+              </a>
 
               {useDirectGalleryImport.value ? (
                 <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
