@@ -2,7 +2,7 @@ import { component$, type QRL } from "@builder.io/qwik";
 import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import { OfferSetupSummary } from "./offer-setup-summary";
-import { useOfferSheetTransition } from "./use-offer-sheet-transition";
+import { useOfferDialogTransition } from "./use-offer-dialog-transition";
 
 interface OfferSettingsSheetProps {
   isOpen: boolean;
@@ -16,23 +16,19 @@ interface OfferSettingsSheetProps {
 
 export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) => {
   const i18n = useI18n();
-  const { isClosing, isMounted } = useOfferSheetTransition({
+  const { dialogRef, isClosing } = useOfferDialogTransition({
     isOpen: props.isOpen,
   });
 
-  if (!isMounted.value) {
-    return null;
-  }
-
   return (
-    <div
-      class={{
-        "ui-offer-settings-sheet-root": true,
-        "is-closing": isClosing.value,
-      }}
-      role="dialog"
-      aria-modal="true"
+    <dialog
+      ref={dialogRef}
+      class={{ "ui-offer-settings-dialog": true, "is-closing": isClosing.value }}
       aria-label={t(i18n, "offerSetupTitle", "Offer settings")}
+      onCancel$={(event) => {
+        event.preventDefault();
+        props.onClose$();
+      }}
       onClick$={(event, element) => {
         if (event.target === element) {
           props.onClose$();
@@ -86,6 +82,6 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
           </button>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 });

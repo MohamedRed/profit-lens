@@ -131,8 +131,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 aria-label={t(i18n, "showOfferSetupButton", "Show setup")}
                 data-allow-left-edge-tap
                 onClick$={openSettingsSheet$}
-                onPointerDown$={openSettingsSheet$}
-                onTouchStart$={openSettingsSheet$}
               >
                 <span
                   class="material-icons-outlined ui-offer-setup-settings-icon"
