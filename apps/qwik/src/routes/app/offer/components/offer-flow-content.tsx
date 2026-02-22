@@ -54,6 +54,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const setupEditorOpen = useSignal(false);
   const billingSheetOpen = useSignal(false);
   const modalSwitchTimeoutId = useSignal<number | null>(null);
+  const settingsOpenFrameId = useSignal<number | null>(null);
   const useDirectGalleryImport = useSignal(false);
   const importScreenshotLabel = t(
     i18n,
@@ -68,6 +69,10 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
 
   useVisibleTask$(({ cleanup }) => {
     cleanup(() => {
+      if (settingsOpenFrameId.value !== null) {
+        window.cancelAnimationFrame(settingsOpenFrameId.value);
+        settingsOpenFrameId.value = null;
+      }
       if (modalSwitchTimeoutId.value !== null) {
         window.clearTimeout(modalSwitchTimeoutId.value);
         modalSwitchTimeoutId.value = null;
@@ -81,6 +86,17 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
 
   const closeSettingsSheet$ = $(() => {
     settingsSheetOpen.value = false;
+  });
+
+  const openSettingsSheet$ = $(() => {
+    if (settingsOpenFrameId.value !== null) {
+      window.cancelAnimationFrame(settingsOpenFrameId.value);
+      settingsOpenFrameId.value = null;
+    }
+    settingsOpenFrameId.value = window.requestAnimationFrame(() => {
+      settingsOpenFrameId.value = null;
+      settingsSheetOpen.value = true;
+    });
   });
 
   const openSetupEditorFromSettings$ = $(() => {
@@ -170,9 +186,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 type="button"
                 class="ui-offer-setup-settings-button"
                 aria-label={t(i18n, "showOfferSetupButton", "Show setup")}
-                onClick$={() => {
-                  settingsSheetOpen.value = true;
-                }}
+                onClick$={openSettingsSheet$}
               >
                 <span
                   class="material-icons-outlined ui-offer-setup-settings-icon"
