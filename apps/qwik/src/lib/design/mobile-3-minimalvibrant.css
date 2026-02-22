@@ -367,10 +367,11 @@
   background: #fff;
   color: var(--pl-color-text-primary);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 24px;
+  grid-template-columns: minmax(0, 1fr) 28px;
   align-items: center;
-  gap: 10px;
-  padding: 11px 12px;
+  gap: 12px;
+  padding: 14px 14px;
+  min-height: 72px;
   text-decoration: none;
 }
 
@@ -382,23 +383,51 @@
 
 .ui-offer-settings-link-title {
   margin: 0;
-  font-size: 0.86rem;
+  font-size: 0.98rem;
   font-weight: 600;
+  line-height: 1.2;
 }
 
 .ui-offer-settings-link-subtitle {
   margin: 0;
   color: var(--pl-color-text-secondary);
-  font-size: 0.78rem;
+  font-size: 0.87rem;
+  line-height: 1.35;
 }
 
 .ui-offer-settings-link-chevron {
   color: var(--pl-color-text-secondary);
-  font-size: 1.2rem;
+  font-size: 1.35rem;
 }
 
 .ui-offer-billing-manager {
   padding-bottom: 2px;
+}
+
+.ui-offer-billing-manager .ui-settings-billing-card {
+  padding: 16px 18px;
+  gap: 12px;
+}
+
+.ui-offer-billing-manager .ui-settings-billing-title {
+  font-size: 1.3rem;
+}
+
+.ui-offer-billing-manager .ui-settings-title {
+  font-size: 1.08rem;
+}
+
+.ui-offer-billing-manager .ui-settings-subtitle {
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.ui-offer-billing-manager .ui-settings-billing-alert {
+  font-size: 0.96rem;
+}
+
+.ui-offer-billing-manager .ui-settings-billing-action {
+  min-height: 46px;
 }
 
 .ui-offer-grid {
