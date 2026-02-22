@@ -3,7 +3,7 @@ import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import { OfferSetupSummary } from "./offer-setup-summary";
 import { OfferUsageSection } from "./offer-usage-section";
-import { useOfferDialogTransition } from "./use-offer-dialog-transition";
+import { useOfferSheetTransition } from "./use-offer-sheet-transition";
 
 interface OfferSettingsSheetProps {
   isOpen: boolean;
@@ -19,22 +19,23 @@ interface OfferSettingsSheetProps {
 export const OfferSettingsSheet = component$<OfferSettingsSheetProps>(
   (props) => {
     const i18n = useI18n();
-    const { dialogRef, isClosing } = useOfferDialogTransition({
+    const { isClosing, isMounted } = useOfferSheetTransition({
       isOpen: props.isOpen,
     });
 
+    if (!isMounted.value) {
+      return null;
+    }
+
     return (
-      <dialog
-        ref={dialogRef}
+      <div
         class={{
-          "ui-offer-settings-dialog": true,
+          "ui-offer-settings-sheet-root": true,
           "is-closing": isClosing.value,
         }}
+        role="dialog"
+        aria-modal="true"
         aria-label={t(i18n, "offerSetupTitle", "Offer settings")}
-        onCancel$={(event) => {
-          event.preventDefault();
-          props.onClose$();
-        }}
         onClick$={(event, element) => {
           if (event.target === element) {
             props.onClose$();
@@ -71,7 +72,7 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>(
             />
           </div>
         </div>
-      </dialog>
+      </div>
     );
   },
 );
