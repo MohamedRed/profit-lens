@@ -9,7 +9,6 @@ import { saveTabScrollY } from '../../../lib/navigation/tab-scroll-memory';
 import type { OfferRecord } from '../../../lib/types/offer';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
-import { saveUserProfile } from '../../../lib/features/profile/profile-service';
 import {
   saveSelectedHistoryOfferId,
   upsertHistoryOfferCache,
@@ -79,7 +78,6 @@ export default component$(() => {
 
   const profile = useSignal<UserProfile | null>(null);
   const minProfitabilityEuro = useSignal(2);
-  const savingProfitTarget = useSignal(false);
 
   const selectedVehicleId = useSignal('');
   const vehicles = useSignal<VehicleProfile[]>([]);
@@ -110,30 +108,6 @@ export default component$(() => {
     status,
     analysisRecord,
     screenshotPreviewUrl,
-  });
-
-  const saveProfitabilityTarget$ = $(async (rawValue: string) => {
-    const userProfile = profile.value;
-    const parsed = Number(rawValue);
-    if (!userProfile || !Number.isFinite(parsed) || parsed <= 0) {
-      return;
-    }
-    if (parsed === userProfile.minProfitabilityEuro) {
-      return;
-    }
-
-    const nextProfile = { ...userProfile, minProfitabilityEuro: parsed };
-    minProfitabilityEuro.value = parsed;
-    profile.value = nextProfile;
-    savingProfitTarget.value = true;
-
-    try {
-      await saveUserProfile(nextProfile);
-    } catch (error) {
-      status.value = resolveUserFacingErrorMessage(i18n, error, 'profile');
-    } finally {
-      savingProfitTarget.value = false;
-    }
   });
 
   const analyzeManual$ = $(async () => {
@@ -260,7 +234,6 @@ export default component$(() => {
 
   return (
     <OfferFlowContent
-      userId={user.uid}
       analysisRecord={analysisRecord}
       distance={distance}
       dropoffAddress={dropoffAddress}
@@ -272,12 +245,10 @@ export default component$(() => {
       onAnalyzeManual$={analyzeManual$}
       onClearScreenshotPreview$={clearScreenshotPreview$}
       onImportScreenshotFile$={importScreenshotFile$}
-      onSaveProfitabilityTarget$={saveProfitabilityTarget$}
       onViewDetails$={viewDetails$}
       payout={payout}
       pickupAddress={pickupAddress}
       pickupName={pickupName}
-      savingProfitTarget={savingProfitTarget}
       screenshotPreviewUrl={screenshotPreviewUrl}
       selectedVehicleId={selectedVehicleId}
       status={status}

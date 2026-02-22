@@ -284,11 +284,30 @@
   align-items: flex-end;
   justify-content: center;
   background: rgba(15, 23, 42, 0);
-  animation: ui-offer-dialog-backdrop-in 260ms ease forwards;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 220ms ease,
+    background 220ms ease,
+    visibility 0ms linear 220ms;
 }
 
-.ui-offer-settings-sheet-root.is-closing {
-  animation: ui-offer-dialog-backdrop-out 260ms ease forwards;
+.ui-offer-settings-sheet-root:target {
+  background: rgba(15, 23, 42, 0.42);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 240ms ease,
+    background 240ms ease,
+    visibility 0ms linear 0ms;
+}
+
+.ui-offer-settings-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  display: block;
 }
 
 .ui-offer-settings-panel {
@@ -302,17 +321,14 @@
   padding: 14px 14px calc(14px + env(safe-area-inset-bottom, 0px));
   display: grid;
   gap: 12px;
-  opacity: 0;
+  opacity: 1;
   transform: translate3d(0, 24px, 0);
   will-change: transform, opacity;
+  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.ui-offer-settings-sheet-root:not(.is-closing) .ui-offer-settings-panel {
-  animation: ui-offer-modal-rise-in 280ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-.ui-offer-settings-sheet-root.is-closing .ui-offer-settings-panel {
-  animation: ui-offer-modal-drop-out 260ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+.ui-offer-settings-sheet-root:target .ui-offer-settings-panel {
+  transform: translate3d(0, 0, 0);
 }
 
 .ui-offer-settings-panel-header {
@@ -348,6 +364,43 @@
 .ui-offer-settings-panel-body {
   display: grid;
   gap: 10px;
+}
+
+.ui-offer-settings-link {
+  width: 100%;
+  border: 1px solid var(--pl-color-outline);
+  border-radius: var(--pl-radius-lg);
+  background: #fff;
+  color: var(--pl-color-text-primary);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  text-decoration: none;
+}
+
+.ui-offer-settings-link-copy {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.ui-offer-settings-link-title {
+  margin: 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.ui-offer-settings-link-subtitle {
+  margin: 0;
+  color: var(--pl-color-text-secondary);
+  font-size: 0.78rem;
+}
+
+.ui-offer-settings-link-chevron {
+  color: var(--pl-color-text-secondary);
+  font-size: 1.2rem;
 }
 
 .ui-offer-billing-dialog {
