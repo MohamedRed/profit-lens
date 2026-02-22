@@ -47,10 +47,12 @@
   border-radius: calc(var(--pl-radius-lg) - 2px);
   display: block;
   background: rgba(0, 0, 0, 0.2);
+  will-change: transform, opacity;
 }
 
 .ui-image-modal-frame {
   position: relative;
+  touch-action: pan-y;
 }
 
 .ui-image-modal-nav {
