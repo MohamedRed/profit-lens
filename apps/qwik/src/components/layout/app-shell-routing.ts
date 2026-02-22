@@ -89,14 +89,15 @@ export const resolveHeaderBackHref = (
   path: string,
   explicitBackHref?: string | null,
 ): string | null => {
+  // Ticket details should always return to ticket list to avoid stale back targets.
+  if (path.startsWith('/app/help/tickets/')) {
+    return '/next/app/help/tickets';
+  }
   if (isValidAppBackHref(explicitBackHref)) {
     return explicitBackHref;
   }
   if (path === '/app/help/tickets') {
     return '/next/app/help';
-  }
-  if (path.startsWith('/app/help/tickets/')) {
-    return '/next/app/help/tickets';
   }
   if (path.startsWith('/app/history/')) {
     return '/next/app/history';

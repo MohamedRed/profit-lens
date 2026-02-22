@@ -27,4 +27,8 @@ describe('resolveHeaderBackHref', () => {
   it('keeps help ticket details back target on tickets list', () => {
     expect(resolveHeaderBackHref('/app/help/tickets/details')).toBe('/next/app/help/tickets');
   });
+
+  it('ignores explicit back target for help ticket details routes', () => {
+    expect(resolveHeaderBackHref('/app/help/tickets/details', '/next/app/help')).toBe('/next/app/help/tickets');
+  });
 });
