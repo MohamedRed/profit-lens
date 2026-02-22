@@ -24,6 +24,8 @@ const historyLoadMoreThresholdPx = 240;
 const historyChartsTabIndex = 0;
 const historyListTabIndex = 1;
 const inBrowser = typeof window !== 'undefined';
+const resolveHistoryTabIndex = (value: number): number =>
+  value === historyListTabIndex ? historyListTabIndex : historyChartsTabIndex;
 
 export default component$(() => {
   const i18n = useI18n();
@@ -77,12 +79,21 @@ export default component$(() => {
     hasHydratedFromSession.value = session !== null;
 
     if (session) {
+      selectedTabIndex.value = resolveHistoryTabIndex(session.selectedTabIndex);
+      hasActivatedCharts.value = selectedTabIndex.value === historyChartsTabIndex;
       offers.value = session.offers;
       offersCursor.value = session.offersCursor;
       stats.value = session.stats;
       hasMore.value = session.hasMore;
       hasLoadMoreError.value = session.hasLoadMoreError;
       isLoadingInitial.value = false;
+    } else {
+      const savedMode = readHistoryViewMode();
+      if (savedMode) {
+        selectedTabIndex.value =
+          savedMode === 'charts' ? historyChartsTabIndex : historyListTabIndex;
+      }
+      hasActivatedCharts.value = selectedTabIndex.value === historyChartsTabIndex;
     }
 
     const loadInitial = async (): Promise<void> => {
