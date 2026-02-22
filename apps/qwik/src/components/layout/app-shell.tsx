@@ -13,6 +13,7 @@ import {
   navItems,
   resolveActiveTabIndex,
   resolveHeaderBackHref,
+  resolvePopStateRecoveryHref,
   resolveRouteDepth,
   resolveSectionKey,
   shouldPreferDeterministicBack,
@@ -65,6 +66,14 @@ export const AppShell = component$(() => {
   useVisibleTask$(({ cleanup }) => {
     blockNativeBackNavigation.value = shouldBlockIosPwaBackNavigation(window);
     const onPopState = () => {
+      const currentPath = toAppPath(window.location.pathname);
+      const previousPath = previousAppPath.value;
+      const recoveryHref = resolvePopStateRecoveryHref(previousPath, currentPath);
+      if (recoveryHref) {
+        nextTransitionIsPop.value = true;
+        void navigate(recoveryHref);
+        return;
+      }
       nextTransitionIsPop.value = true;
     };
     window.addEventListener('popstate', onPopState, { capture: true });

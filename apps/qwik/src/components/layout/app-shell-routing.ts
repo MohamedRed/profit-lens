@@ -110,3 +110,16 @@ export const resolveHeaderBackHref = (
   }
   return null;
 };
+
+export const resolvePopStateRecoveryHref = (
+  fromPath: string | null,
+  toPath: string,
+): string | null => {
+  if (!fromPath) {
+    return null;
+  }
+  if (fromPath.startsWith('/app/help/tickets/details') && toPath === '/app/help') {
+    return '/next/app/help/tickets';
+  }
+  return null;
+};

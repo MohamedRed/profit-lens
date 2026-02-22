@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   resolveHeaderBackHref,
+  resolvePopStateRecoveryHref,
   shouldPreferDeterministicBack,
 } from './app-shell-routing';
 
@@ -30,5 +31,16 @@ describe('resolveHeaderBackHref', () => {
 
   it('ignores explicit back target for help ticket details routes', () => {
     expect(resolveHeaderBackHref('/app/help/tickets/details', '/next/app/help')).toBe('/next/app/help/tickets');
+  });
+});
+
+describe('resolvePopStateRecoveryHref', () => {
+  it('recovers ticket list when popstate moves from ticket details to help form', () => {
+    expect(resolvePopStateRecoveryHref('/app/help/tickets/details', '/app/help')).toBe('/next/app/help/tickets');
+  });
+
+  it('does not recover for normal popstate transitions', () => {
+    expect(resolvePopStateRecoveryHref('/app/help/tickets/details', '/app/help/tickets')).toBeNull();
+    expect(resolvePopStateRecoveryHref('/app/history/details', '/app/history')).toBeNull();
   });
 });
