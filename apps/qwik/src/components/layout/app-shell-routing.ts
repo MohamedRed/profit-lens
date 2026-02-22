@@ -82,9 +82,6 @@ export const shouldPreferDeterministicBack = (
   if (path.startsWith('/app/help/tickets/')) {
     return true;
   }
-  if (path.startsWith('/app/offer/setup')) {
-    return true;
-  }
   return false;
 };
 
@@ -104,9 +101,6 @@ export const resolveHeaderBackHref = (
   }
   if (path.startsWith('/app/history/')) {
     return '/next/app/history';
-  }
-  if (path.startsWith('/app/offer/setup')) {
-    return '/next/app/offer';
   }
   if (path.startsWith('/app/settings/vehicles/')) {
     return '/next/app/settings';

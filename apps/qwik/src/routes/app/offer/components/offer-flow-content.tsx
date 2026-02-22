@@ -17,6 +17,7 @@ import { OfferImportSourceDialog } from "./offer-import-source-dialog";
 import { OfferManualDetailsSection } from "./offer-manual-details-section";
 import { OfferOverviewSections } from "./offer-overview-sections";
 import { OfferScreenshotPreview } from "./offer-screenshot-preview";
+import { OfferSetupModalStack } from "./offer-setup-modal-stack";
 
 interface OfferFlowContentProps {
   analysisRecord: Signal<OfferAnalysisRecord | null>;
@@ -30,13 +31,16 @@ interface OfferFlowContentProps {
   onAnalyzeManual$: QRL<() => Promise<void>>;
   onClearScreenshotPreview$: QRL<() => void>;
   onImportScreenshotFile$: QRL<(file: File) => Promise<void>>;
+  onSaveProfitabilityTarget$: QRL<(value: string) => Promise<void>>;
   onViewDetails$: QRL<() => void | Promise<void>>;
   payout: Signal<string>;
   pickupAddress: Signal<string>;
   pickupName: Signal<string>;
+  savingProfitTarget: Signal<boolean>;
   screenshotPreviewUrl: Signal<string | null>;
   selectedVehicleId: Signal<string>;
   status: Signal<string>;
+  userId: string;
   vehicles: Signal<VehicleProfile[]>;
   vehiclesLoading: Signal<boolean>;
 }
@@ -44,6 +48,7 @@ interface OfferFlowContentProps {
 export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
   const sourceDialogOpen = useSignal(false);
+  const settingsSheetOpen = useSignal(false);
   const useDirectGalleryImport = useSignal(false);
   const importScreenshotLabel = t(
     i18n,
@@ -88,6 +93,12 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     enableManualEntry && !showOverview && !showDetailsSection;
   const hasVehicles = props.vehicles.value.length > 0;
   const showEmptyState = !props.vehiclesLoading.value && !hasVehicles;
+  const onVehicleChange$ = $((nextVehicleId: string) => {
+    props.selectedVehicleId.value = nextVehicleId;
+    props.analysisRecord.value = null;
+    props.status.value = "";
+    props.manualEntryRequested.value = false;
+  });
 
   return (
     <div class="ui-stack ui-offer-flow">
@@ -110,10 +121,13 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             aria-label={importScreenshotLabel}
           >
             <div class="ui-offer-import-cta-row">
-              <a
-                href="/next/app/offer/setup"
+              <button
+                type="button"
                 class="ui-button ui-button-ghost ui-button-lg ui-offer-setup-settings-button"
                 aria-label={t(i18n, "showOfferSetupButton", "Show setup")}
+                onClick$={() => {
+                  settingsSheetOpen.value = true;
+                }}
               >
                 <span
                   class="material-icons-outlined ui-offer-setup-settings-icon"
@@ -121,7 +135,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 >
                   settings
                 </span>
-              </a>
+              </button>
 
               {useDirectGalleryImport.value ? (
                 <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
@@ -255,6 +269,21 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             isOpen={sourceDialogOpen.value}
             onClose$={closeSourceDialog$}
             onSelectFile$={onFileSelected$}
+          />
+
+          <OfferSetupModalStack
+            isSettingsOpen={settingsSheetOpen.value}
+            minProfitabilityEuro={props.minProfitabilityEuro.value}
+            onCloseSettings$={() => {
+              settingsSheetOpen.value = false;
+            }}
+            onSaveProfitabilityTarget$={props.onSaveProfitabilityTarget$}
+            onVehicleChange$={onVehicleChange$}
+            savingProfitTarget={props.savingProfitTarget.value}
+            selectedVehicleId={props.selectedVehicleId.value}
+            uid={props.userId}
+            vehicles={props.vehicles.value}
+            vehiclesLoading={props.vehiclesLoading.value}
           />
         </>
       )}
