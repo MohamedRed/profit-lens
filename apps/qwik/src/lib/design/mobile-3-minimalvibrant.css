@@ -194,6 +194,11 @@
 }
 
 .ui-offer-settings-dialog {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   margin: 0;
   inset: 0;
   width: 100vw;
@@ -203,6 +208,8 @@
   max-height: 100dvh;
   border: 0;
   padding: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
   background: transparent;
   opacity: 0;
 }
@@ -242,6 +249,7 @@
   background: var(--pl-color-surface);
   box-shadow: 0 -16px 40px rgba(24, 24, 27, 0.18);
   padding: 14px 14px 0;
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) * -1);
   display: grid;
   gap: 12px;
   opacity: 0;
