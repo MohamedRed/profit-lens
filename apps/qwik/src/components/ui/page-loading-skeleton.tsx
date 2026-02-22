@@ -105,16 +105,9 @@ export const HelpTicketDetailSkeleton = component$(() => {
     <div class="ui-help-detail-root" aria-hidden="true">
       <section class="ui-help-card ui-skeleton-stack-sm ui-skeleton-shell">
         <SkeletonBlock class="ui-skeleton-card-title" height="28px" width="52%" />
-        <SkeletonBlock height="14px" width="34%" />
-        <SkeletonBlock height="12px" width="44%" />
-      </section>
-      <section class="ui-help-card ui-skeleton-stack-sm ui-skeleton-shell">
-        <SkeletonBlock height="20px" width="36%" />
-        <SkeletonBlock height="14px" width="100%" />
-        <SkeletonBlock height="14px" width="86%" />
-      </section>
-      <section class="ui-help-card ui-skeleton-stack-sm ui-skeleton-shell">
         <SkeletonBlock height="20px" width="34%" />
+        <SkeletonBlock height="12px" width="44%" />
+        <SkeletonBlock height="20px" width="36%" />
         {range(2).map((index) => (
           <div key={`help-attachment-skeleton-${index}`} class="ui-skeleton-row">
             <SkeletonBlock height="54px" width="54px" />

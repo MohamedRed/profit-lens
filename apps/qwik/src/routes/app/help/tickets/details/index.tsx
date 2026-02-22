@@ -124,15 +124,14 @@ export default component$(() => {
             ) ||
             t(i18n, 'helpTicketDescriptionEmpty', 'No description provided.')}
         </p>
-      </section>
-
-      <section class="ui-help-card" aria-busy={attachmentsLoading.value}>
         <h2 class="ui-help-section-title">{t(i18n, 'helpTicketAttachmentsTitle', 'Attachments')}</h2>
-        {attachmentsLoading.value ? (
-          <HelpTicketAttachmentSkeleton />
-        ) : (
-          <HelpTicketAttachmentList attachments={attachments.value} />
-        )}
+        <div aria-busy={attachmentsLoading.value}>
+          {attachmentsLoading.value ? (
+            <HelpTicketAttachmentSkeleton />
+          ) : (
+            <HelpTicketAttachmentList attachments={attachments.value} />
+          )}
+        </div>
       </section>
 
       <section class="ui-help-card">
