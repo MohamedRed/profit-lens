@@ -65,6 +65,10 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     sourceDialogOpen.value = false;
   });
 
+  const openSettingsSheet$ = $(() => {
+    settingsSheetOpen.value = true;
+  });
+
   const handleImportButtonClick$ = $(() => {
     if (props.loading.value || !props.vehicles.value.length) {
       return;
@@ -125,9 +129,10 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 type="button"
                 class="ui-button ui-button-ghost ui-button-lg ui-offer-setup-settings-button"
                 aria-label={t(i18n, "showOfferSetupButton", "Show setup")}
-                onClick$={() => {
-                  settingsSheetOpen.value = true;
-                }}
+                data-allow-left-edge-tap
+                onClick$={openSettingsSheet$}
+                onPointerDown$={openSettingsSheet$}
+                onTouchStart$={openSettingsSheet$}
               >
                 <span
                   class="material-icons-outlined ui-offer-setup-settings-icon"

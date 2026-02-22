@@ -29,6 +29,19 @@ export const installIosPwaBackSwipeBlocker = (browser: Window): (() => void) => 
   let tracking = false;
   let startedAtLeftEdge = false;
 
+  const resolveTargetElement = (target: EventTarget | null): Element | null => {
+    if (!target) {
+      return null;
+    }
+    if (target instanceof Element) {
+      return target;
+    }
+    if (target instanceof Node) {
+      return target.parentElement;
+    }
+    return null;
+  };
+
   const onTouchStart = (event: TouchEvent): void => {
     if (event.touches.length !== 1) {
       tracking = false;
@@ -38,8 +51,8 @@ export const installIosPwaBackSwipeBlocker = (browser: Window): (() => void) => 
     const touch = event.touches[0];
     startX = touch.clientX;
     startY = touch.clientY;
-    const target = event.target;
-    if (target instanceof Element && target.closest(INTERACTIVE_SELECTOR)) {
+    const targetElement = resolveTargetElement(event.target);
+    if (targetElement?.closest(INTERACTIVE_SELECTOR)) {
       tracking = false;
       startedAtLeftEdge = false;
       return;
