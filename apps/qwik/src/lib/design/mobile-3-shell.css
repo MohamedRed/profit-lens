@@ -135,7 +135,14 @@
 .ui-mobile-content {
   display: grid;
   gap: var(--pl-space-lg);
-  padding: 16px 24px calc(36px + env(safe-area-inset-bottom));
+  padding:
+    calc(16px + env(safe-area-inset-top, 0px))
+    24px
+    calc(36px + env(safe-area-inset-bottom, 0px));
+}
+
+.ui-mobile-header + .ui-mobile-content {
+  padding-top: 16px;
 }
 
 .ui-mobile-content-transition {
