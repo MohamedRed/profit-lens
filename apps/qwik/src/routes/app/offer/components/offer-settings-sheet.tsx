@@ -1,11 +1,11 @@
-import { component$, type QRL } from "@builder.io/qwik";
+import { component$, type QRL, type Signal } from "@builder.io/qwik";
 import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import { OfferSetupSummary } from "./offer-setup-summary";
 import { useOfferDialogTransition } from "./use-offer-dialog-transition";
 
 interface OfferSettingsSheetProps {
-  isOpen: boolean;
+  isOpen: Signal<boolean>;
   minProfitabilityEuro: number;
   onClose$: QRL<() => void>;
   onManagePlan$: QRL<() => void>;

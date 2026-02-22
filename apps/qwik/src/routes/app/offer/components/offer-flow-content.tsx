@@ -269,13 +269,13 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
           <OfferFlowStatus status={props.status.value} />
 
           <OfferImportSourceDialog
-            isOpen={sourceDialogOpen.value}
+            isOpen={sourceDialogOpen}
             onClose$={closeSourceDialog$}
             onSelectFile$={onFileSelected$}
           />
 
           <OfferSetupModalStack
-            isSettingsOpen={settingsSheetOpen.value}
+            isSettingsOpen={settingsSheetOpen}
             minProfitabilityEuro={props.minProfitabilityEuro.value}
             onCloseSettings$={() => {
               settingsSheetOpen.value = false;

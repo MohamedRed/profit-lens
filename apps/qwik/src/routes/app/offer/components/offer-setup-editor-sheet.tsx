@@ -1,4 +1,4 @@
-import { $, component$, type QRL, useSignal, useTask$ } from "@builder.io/qwik";
+import { $, component$, type QRL, type Signal, useSignal, useTask$ } from "@builder.io/qwik";
 import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
 import { Label } from "../../../../components/ui/label";
@@ -9,7 +9,7 @@ import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import { useOfferDialogTransition } from "./use-offer-dialog-transition";
 
 interface OfferSetupEditorSheetProps {
-  isOpen: boolean;
+  isOpen: Signal<boolean>;
   minProfitabilityEuro: number;
   onClose$: QRL<() => void>;
   onSaveProfitabilityTarget$: QRL<(value: string) => Promise<void>>;
@@ -28,7 +28,7 @@ export const OfferSetupEditorSheet = component$<OfferSetupEditorSheetProps>((pro
   const draftMinProfitability = useSignal(props.minProfitabilityEuro.toFixed(2));
 
   useTask$(({ track }) => {
-    const open = track(() => props.isOpen);
+    const open = track(() => props.isOpen.value);
     const minProfitabilityEuro = track(() => props.minProfitabilityEuro);
     if (!open) {
       return;

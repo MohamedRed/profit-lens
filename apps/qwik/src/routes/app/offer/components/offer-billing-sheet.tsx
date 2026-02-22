@@ -1,10 +1,10 @@
-import { component$, type QRL } from "@builder.io/qwik";
+import { component$, type QRL, type Signal } from "@builder.io/qwik";
 import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import { BillingManager } from "../../settings/billing/billing-manager";
 import { useOfferDialogTransition } from "./use-offer-dialog-transition";
 
 interface OfferBillingSheetProps {
-  isOpen: boolean;
+  isOpen: Signal<boolean>;
   onClose$: QRL<() => void>;
   uid: string;
 }

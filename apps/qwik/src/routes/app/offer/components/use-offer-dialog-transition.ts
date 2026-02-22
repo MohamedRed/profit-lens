@@ -4,7 +4,7 @@ const DEFAULT_CLOSE_DURATION_MS = 260;
 
 interface UseOfferDialogTransitionOptions {
   closeDurationMs?: number;
-  isOpen: boolean;
+  isOpen: Signal<boolean>;
 }
 
 interface OfferDialogTransitionState {
@@ -21,7 +21,7 @@ export const useOfferDialogTransition = (
   const closeDurationMs = options.closeDurationMs ?? DEFAULT_CLOSE_DURATION_MS;
 
   useVisibleTask$(({ track, cleanup }) => {
-    const open = track(() => options.isOpen);
+    const open = track(() => options.isOpen.value);
     const dialog = track(() => dialogRef.value);
 
     cleanup(() => {

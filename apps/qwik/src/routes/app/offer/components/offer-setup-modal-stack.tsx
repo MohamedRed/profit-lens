@@ -1,11 +1,11 @@
-import { $, component$, type QRL, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { $, component$, type QRL, type Signal, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import { OfferBillingSheet } from "./offer-billing-sheet";
 import { OfferSettingsSheet } from "./offer-settings-sheet";
 import { OfferSetupEditorSheet } from "./offer-setup-editor-sheet";
 
 interface OfferSetupModalStackProps {
-  isSettingsOpen: boolean;
+  isSettingsOpen: Signal<boolean>;
   minProfitabilityEuro: number;
   onCloseSettings$: QRL<() => void>;
   onSaveProfitabilityTarget$: QRL<(value: string) => Promise<void>>;
@@ -68,7 +68,7 @@ export const OfferSetupModalStack = component$<OfferSetupModalStackProps>((props
       />
 
       <OfferSetupEditorSheet
-        isOpen={setupEditorOpen.value}
+        isOpen={setupEditorOpen}
         minProfitabilityEuro={props.minProfitabilityEuro}
         onClose$={() => {
           setupEditorOpen.value = false;
@@ -82,7 +82,7 @@ export const OfferSetupModalStack = component$<OfferSetupModalStackProps>((props
       />
 
       <OfferBillingSheet
-        isOpen={billingSheetOpen.value}
+        isOpen={billingSheetOpen}
         uid={props.uid}
         onClose$={() => {
           billingSheetOpen.value = false;
