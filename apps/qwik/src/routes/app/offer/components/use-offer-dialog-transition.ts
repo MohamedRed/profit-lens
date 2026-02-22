@@ -22,10 +22,7 @@ export const useOfferDialogTransition = (
 
   useVisibleTask$(({ track, cleanup }) => {
     const open = track(() => options.isOpen);
-    const dialog = dialogRef.value;
-    if (!dialog) {
-      return;
-    }
+    const dialog = track(() => dialogRef.value);
 
     cleanup(() => {
       if (closeTimerId.value !== null) {
@@ -33,6 +30,10 @@ export const useOfferDialogTransition = (
         closeTimerId.value = null;
       }
     });
+
+    if (!dialog) {
+      return;
+    }
 
     if (open) {
       if (closeTimerId.value !== null) {
