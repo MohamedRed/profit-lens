@@ -1,4 +1,5 @@
 import { useSignal, useVisibleTask$, type Signal } from '@builder.io/qwik';
+import { lockPageScroll, unlockPageScroll } from '../../../../lib/ui/page-scroll-lock';
 
 const DEFAULT_CLOSE_DURATION_MS = 260;
 
@@ -18,7 +19,21 @@ export const useOfferDialogTransition = (
   const dialogRef = useSignal<HTMLDialogElement>();
   const isClosing = useSignal(false);
   const closeTimerId = useSignal<number | null>(null);
+  const hasScrollLock = useSignal(false);
   const closeDurationMs = options.closeDurationMs ?? DEFAULT_CLOSE_DURATION_MS;
+
+  useVisibleTask$(({ cleanup }) => {
+    cleanup(() => {
+      if (closeTimerId.value !== null) {
+        window.clearTimeout(closeTimerId.value);
+        closeTimerId.value = null;
+      }
+      if (hasScrollLock.value) {
+        unlockPageScroll();
+        hasScrollLock.value = false;
+      }
+    });
+  });
 
   useVisibleTask$(({ track, cleanup }) => {
     const open = track(() => options.isOpen.value);
@@ -32,6 +47,10 @@ export const useOfferDialogTransition = (
     });
 
     if (!dialog) {
+      if (hasScrollLock.value) {
+        unlockPageScroll();
+        hasScrollLock.value = false;
+      }
       return;
     }
 
@@ -42,6 +61,10 @@ export const useOfferDialogTransition = (
       }
       isClosing.value = false;
       dialog.classList.remove('is-closing');
+      if (!hasScrollLock.value) {
+        lockPageScroll({ disableTouchAction: false });
+        hasScrollLock.value = true;
+      }
       if (!dialog.open) {
         dialog.showModal();
       }
@@ -49,6 +72,10 @@ export const useOfferDialogTransition = (
     }
 
     if (!dialog.open || isClosing.value) {
+      if (!dialog.open && hasScrollLock.value) {
+        unlockPageScroll();
+        hasScrollLock.value = false;
+      }
       return;
     }
 
@@ -61,6 +88,10 @@ export const useOfferDialogTransition = (
         dialog.close();
       }
       dialog.classList.remove('is-closing');
+      if (hasScrollLock.value) {
+        unlockPageScroll();
+        hasScrollLock.value = false;
+      }
     }, closeDurationMs);
   });
 

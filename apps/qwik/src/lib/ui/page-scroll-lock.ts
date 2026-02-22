@@ -4,10 +4,14 @@ interface ScrollLockSnapshot {
   scrollY: number;
 }
 
+interface ScrollLockOptions {
+  disableTouchAction?: boolean;
+}
+
 let activeScrollLocks = 0;
 let snapshot: ScrollLockSnapshot | null = null;
 
-export const lockPageScroll = (): void => {
+export const lockPageScroll = (options: ScrollLockOptions = {}): void => {
   if (typeof window === 'undefined') {
     return;
   }
@@ -33,7 +37,9 @@ export const lockPageScroll = (): void => {
     body.style.width = '100%';
     body.style.overflow = 'hidden';
     body.style.overscrollBehavior = 'none';
-    body.style.touchAction = 'none';
+    if (options.disableTouchAction ?? true) {
+      body.style.touchAction = 'none';
+    }
   }
 
   activeScrollLocks += 1;
