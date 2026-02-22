@@ -49,7 +49,56 @@
   background: rgba(0, 0, 0, 0.2);
 }
 
+.ui-image-modal-frame {
+  position: relative;
+}
+
+.ui-image-modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.ui-image-modal-nav.is-prev {
+  left: 8px;
+}
+
+.ui-image-modal-nav.is-next {
+  right: 8px;
+}
+
+.ui-image-modal-nav:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.ui-image-modal-nav .material-icons-outlined {
+  font-size: 21px;
+}
+
+.ui-image-modal-counter {
+  margin: 0;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.9rem;
+}
+
 .ui-image-modal-close:focus-visible {
+  outline: 2px solid rgba(139, 92, 246, 0.58);
+  outline-offset: 2px;
+}
+
+.ui-image-modal-nav:focus-visible {
   outline: 2px solid rgba(139, 92, 246, 0.58);
   outline-offset: 2px;
 }
@@ -61,5 +110,18 @@
 
   .ui-image-modal-panel {
     padding: 10px;
+  }
+
+  .ui-image-modal-nav {
+    width: 34px;
+    height: 34px;
+  }
+
+  .ui-image-modal-nav.is-prev {
+    left: 6px;
+  }
+
+  .ui-image-modal-nav.is-next {
+    right: 6px;
   }
 }

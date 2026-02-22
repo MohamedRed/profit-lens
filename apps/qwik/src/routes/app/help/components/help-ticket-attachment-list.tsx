@@ -9,19 +9,16 @@ interface HelpTicketAttachmentListProps {
 
 export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps>(({ attachments }) => {
   const i18n = useI18n();
-  const previewSrc = useSignal<string | null>(null);
-  const previewAlt = useSignal('');
+  const previewImageIndex = useSignal<number | null>(null);
   const imageAttachments = attachments.filter((attachment) => attachment.type === 'image');
   const audioAttachments = attachments.filter((attachment) => attachment.type === 'audio');
 
-  const openPreview$ = $((src: string, alt: string) => {
-    previewSrc.value = src;
-    previewAlt.value = alt;
+  const openPreview$ = $((index: number) => {
+    previewImageIndex.value = index;
   });
 
   const closePreview$ = $(() => {
-    previewSrc.value = null;
-    previewAlt.value = '';
+    previewImageIndex.value = null;
   });
 
   return (
@@ -33,7 +30,7 @@ export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps
 
         {imageAttachments.length > 0 ? (
           <ul class="ui-help-ticket-attachment-gallery">
-            {imageAttachments.map((attachment) => (
+            {imageAttachments.map((attachment, index) => (
               <li key={attachment.id} class="ui-help-ticket-attachment-gallery-item">
                 <a
                   class="ui-help-ticket-attachment-thumb"
@@ -43,7 +40,7 @@ export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps
                   title={attachment.filename}
                   onClick$={(event) => {
                     event.preventDefault();
-                    openPreview$(attachment.url, attachment.filename);
+                    openPreview$(index);
                   }}
                 >
                   <img
@@ -80,10 +77,12 @@ export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps
         ) : null}
       </div>
       <ImagePreviewModal
-        alt={previewAlt.value}
-        isOpen={previewSrc.value !== null}
+        alt={previewImageIndex.value !== null ? imageAttachments[previewImageIndex.value]?.filename ?? '' : ''}
+        initialIndex={previewImageIndex.value ?? 0}
+        isOpen={previewImageIndex.value !== null}
+        items={imageAttachments.map((attachment) => ({ src: attachment.url, alt: attachment.filename }))}
         onClose$={closePreview$}
-        src={previewSrc.value}
+        src={previewImageIndex.value !== null ? imageAttachments[previewImageIndex.value]?.url ?? null : null}
       />
     </>
   );
