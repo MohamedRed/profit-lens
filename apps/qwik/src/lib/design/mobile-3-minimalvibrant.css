@@ -658,6 +658,33 @@
   width: 100%;
 }
 
+.ui-offer-cta-loading-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ui-offer-cta-loading-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+  animation: ui-offer-cta-analyzing 920ms ease-in-out infinite;
+}
+
+@keyframes ui-offer-cta-analyzing {
+  0% {
+    transform: translateX(-1px) scale(0.96);
+    opacity: 0.76;
+  }
+  50% {
+    transform: translateX(1px) scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-1px) scale(0.96);
+    opacity: 0.76;
+  }
+}
+
 .ui-offer-file-trigger {
   position: relative;
 }

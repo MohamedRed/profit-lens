@@ -51,6 +51,12 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const sourceDialogOpen = useSignal(false);
   const setupExpanded = useSignal(false);
   const useDirectGalleryImport = useSignal(false);
+  const importScreenshotLabel = t(
+    i18n,
+    "importScreenshotButton",
+    "Import screenshot",
+  );
+  const analyzingCtaLabel = t(i18n, "offerAnalyzingLabel", "Analysing...");
 
   useVisibleTask$(() => {
     useDirectGalleryImport.value = shouldUseDirectGalleryImport(window);
@@ -114,7 +120,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
         <>
           <section
             class="ui-offer-import-hero"
-            aria-label={t(i18n, "importScreenshotButton", "Import screenshot")}
+            aria-label={importScreenshotLabel}
           >
             <div class="ui-offer-import-cta-row">
               <Button
@@ -143,8 +149,18 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               {useDirectGalleryImport.value ? (
                 <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
                   {props.loading.value
-                    ? t(i18n, "loadingLabel", "Loading...")
-                    : t(i18n, "importScreenshotButton", "Import screenshot")}
+                    ? (
+                        <span class="ui-offer-cta-loading-content">
+                          <span
+                            class="material-icons-outlined ui-offer-cta-loading-icon"
+                            aria-hidden="true"
+                          >
+                            manage_search
+                          </span>
+                          <span>{analyzingCtaLabel}</span>
+                        </span>
+                      )
+                    : importScreenshotLabel}
                   <input
                     class="ui-offer-file-input-hidden"
                     type="file"
@@ -170,8 +186,18 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                   onClick$={handleImportButtonClick$}
                 >
                   {props.loading.value
-                    ? t(i18n, "loadingLabel", "Loading...")
-                    : t(i18n, "importScreenshotButton", "Import screenshot")}
+                    ? (
+                        <span class="ui-offer-cta-loading-content">
+                          <span
+                            class="material-icons-outlined ui-offer-cta-loading-icon"
+                            aria-hidden="true"
+                          >
+                            manage_search
+                          </span>
+                          <span>{analyzingCtaLabel}</span>
+                        </span>
+                      )
+                    : importScreenshotLabel}
                 </Button>
               )}
             </div>
