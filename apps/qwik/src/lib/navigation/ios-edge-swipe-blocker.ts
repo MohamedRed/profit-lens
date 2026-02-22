@@ -2,6 +2,8 @@ import { isRunningAsInstalledPwa } from '../features/pwa/pwa-install-state';
 
 const EDGE_TRIGGER_PX = 24;
 const HORIZONTAL_SWIPE_PX = 10;
+const INTERACTIVE_SELECTOR =
+  'a,button,input,select,textarea,label,[role="button"],[role="link"],[data-allow-left-edge-tap]';
 
 const isIosDevice = (browser: Window): boolean => {
   const userAgent = browser.navigator.userAgent.toLowerCase();
@@ -36,6 +38,12 @@ export const installIosPwaBackSwipeBlocker = (browser: Window): (() => void) => 
     const touch = event.touches[0];
     startX = touch.clientX;
     startY = touch.clientY;
+    const target = event.target;
+    if (target instanceof Element && target.closest(INTERACTIVE_SELECTOR)) {
+      tracking = false;
+      startedAtLeftEdge = false;
+      return;
+    }
     tracking = true;
     startedAtLeftEdge = startX <= EDGE_TRIGGER_PX;
   };

@@ -16,7 +16,6 @@ import { OfferFlowStatus } from "./offer-flow-status";
 import { OfferImportSourceDialog } from "./offer-import-source-dialog";
 import { OfferManualDetailsSection } from "./offer-manual-details-section";
 import { OfferOverviewSections } from "./offer-overview-sections";
-import { OfferSetupLinksSheet } from "./offer-setup-links-sheet";
 import { OfferScreenshotPreview } from "./offer-screenshot-preview";
 
 interface OfferFlowContentProps {
@@ -112,7 +111,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
           >
             <div class="ui-offer-import-cta-row">
               <a
-                href="#offer-setup-sheet"
+                href="/next/app/offer/setup"
                 class="ui-button ui-button-ghost ui-button-lg ui-offer-setup-settings-button"
                 aria-label={t(i18n, "showOfferSetupButton", "Show setup")}
               >
@@ -256,12 +255,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             isOpen={sourceDialogOpen.value}
             onClose$={closeSourceDialog$}
             onSelectFile$={onFileSelected$}
-          />
-
-          <OfferSetupLinksSheet
-            minProfitabilityEuro={props.minProfitabilityEuro.value}
-            selectedVehicleId={props.selectedVehicleId.value}
-            vehicles={props.vehicles.value}
           />
         </>
       )}

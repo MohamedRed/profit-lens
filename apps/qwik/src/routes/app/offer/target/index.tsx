@@ -1,5 +1,5 @@
 import { $, component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
-import { useNavigate } from "@builder.io/qwik-city";
+import { useLocation, useNavigate } from "@builder.io/qwik-city";
 import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
 import { Label } from "../../../../components/ui/label";
@@ -16,12 +16,18 @@ export default component$(() => {
   const auth = useAuth();
   const i18n = useI18n();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const profile = useSignal<UserProfile | null>(null);
   const targetValue = useSignal("2.00");
   const loading = useSignal(true);
   const saving = useSignal(false);
   const status = useSignal("");
+  const requestedBackTo = location.url.searchParams.get("backTo");
+  const backToHref =
+    requestedBackTo && requestedBackTo.startsWith("/next/app/")
+      ? requestedBackTo
+      : "/next/app/offer/";
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
@@ -62,7 +68,7 @@ export default component$(() => {
       return;
     }
     if (parsed === currentProfile.minProfitabilityEuro) {
-      await navigate("/next/app/offer/");
+      await navigate(backToHref);
       return;
     }
 
@@ -72,7 +78,7 @@ export default component$(() => {
 
     try {
       await saveUserProfile(nextProfile);
-      await navigate("/next/app/offer/");
+      await navigate(backToHref);
     } catch (error) {
       status.value = resolveUserFacingErrorMessage(i18n, error, "profile");
     } finally {
@@ -126,7 +132,7 @@ export default component$(() => {
             type="button"
             variant="secondary"
             class="ui-settings-action-button"
-            onClick$={() => navigate("/next/app/offer/")}
+            onClick$={() => navigate(backToHref)}
           >
             {t(i18n, "commonBackLabel", "Back")}
           </Button>
