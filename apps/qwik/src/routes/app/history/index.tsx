@@ -21,6 +21,8 @@ import {
 
 const historyPageSize = 15;
 const historyLoadMoreThresholdPx = 240;
+const historyChartsTabIndex = 0;
+const historyListTabIndex = 1;
 const inBrowser = typeof window !== 'undefined';
 
 export default component$(() => {
@@ -76,7 +78,6 @@ export default component$(() => {
       stats.value = session.stats;
       hasMore.value = session.hasMore;
       hasLoadMoreError.value = session.hasLoadMoreError;
-      selectedTabIndex.value = session.selectedTabIndex;
       isLoadingInitial.value = false;
     }
 
@@ -137,7 +138,7 @@ export default component$(() => {
     };
 
     const maybeLoadMore = (): void => {
-      if (selectedTabIndex.value !== 0) {
+      if (selectedTabIndex.value !== historyListTabIndex) {
         return;
       }
       const remaining =
@@ -148,8 +149,9 @@ export default component$(() => {
     };
 
     const savedMode = readHistoryViewMode();
-    if (savedMode && !session) {
-      selectedTabIndex.value = savedMode === 'charts' ? 1 : 0;
+    if (savedMode) {
+      selectedTabIndex.value =
+        savedMode === 'charts' ? historyChartsTabIndex : historyListTabIndex;
     }
 
     const onScroll = () => {
@@ -230,7 +232,7 @@ export default component$(() => {
     saveSelectedHistoryOfferId(offerId);
   });
   const onHistoryModeChange$ = $((nextIndex: number) => {
-    saveHistoryViewMode(nextIndex === 1 ? 'charts' : 'list');
+    saveHistoryViewMode(nextIndex === historyChartsTabIndex ? 'charts' : 'list');
   });
 
   return (
@@ -239,17 +241,21 @@ export default component$(() => {
         <Tabs.List class="ui-history-segmented">
           <Tabs.Tab class="ui-history-segment-btn" selectedClassName="is-active">
             <span class="material-icons-outlined ui-history-segment-icon" aria-hidden="true">
-              list
-            </span>
-            <span>{t(i18n, 'historyViewListLabel', 'List')}</span>
-          </Tabs.Tab>
-          <Tabs.Tab class="ui-history-segment-btn" selectedClassName="is-active">
-            <span class="material-icons-outlined ui-history-segment-icon" aria-hidden="true">
               show_chart
             </span>
             <span>{t(i18n, 'historyViewChartsLabel', 'Charts')}</span>
           </Tabs.Tab>
+          <Tabs.Tab class="ui-history-segment-btn" selectedClassName="is-active">
+            <span class="material-icons-outlined ui-history-segment-icon" aria-hidden="true">
+              list
+            </span>
+            <span>{t(i18n, 'historyViewListLabel', 'List')}</span>
+          </Tabs.Tab>
         </Tabs.List>
+
+        <Tabs.Panel class="ui-history-panel">
+          <HistoryChartPanel stats={stats.value} locale={locale} />
+        </Tabs.Panel>
 
         <Tabs.Panel class="ui-history-panel">
           <HistoryListPanel
@@ -260,10 +266,6 @@ export default component$(() => {
             hasMore={hasMore.value}
             onHistoryItemClick$={onHistoryItemClick$}
           />
-        </Tabs.Panel>
-
-        <Tabs.Panel class="ui-history-panel">
-          <HistoryChartPanel stats={stats.value} locale={locale} />
         </Tabs.Panel>
       </Tabs.Root>
     </div>

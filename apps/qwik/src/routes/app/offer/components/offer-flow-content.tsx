@@ -138,7 +138,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 >
                   settings
                 </span>
-                <span>{t(i18n, "settingsTabLabel", "Settings")}</span>
               </Button>
             </div>
 
@@ -210,8 +209,15 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             ) : null}
           </section>
 
-          {setupExpanded.value ? (
-            <div class="ui-offer-meta-stack ui-offer-meta-stack-top">
+          <div
+            class={{
+              "ui-offer-meta-stack": true,
+              "ui-offer-meta-stack-top": true,
+              "ui-offer-meta-stack-animated": true,
+              "is-open": setupExpanded.value,
+            }}
+            aria-hidden={setupExpanded.value ? "false" : "true"}
+          >
               <OfferSetupSummary
                 minProfitabilityEuro={props.minProfitabilityEuro.value}
                 onSaveProfitabilityTarget$={props.onSaveProfitabilityTarget$}
@@ -226,7 +232,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 variant="inline"
               />
             </div>
-          ) : null}
 
           {showOverview && props.analysisRecord.value ? (
             <OfferOverviewSections

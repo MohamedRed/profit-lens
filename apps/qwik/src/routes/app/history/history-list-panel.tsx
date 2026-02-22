@@ -51,7 +51,15 @@ export const HistoryListPanel = component$<HistoryListPanelProps>((props) => {
               }}
             >
               <div class="ui-history-item-main">
-                <p class="ui-history-item-profit">{formatCurrency(props.locale, profit)}</p>
+                <p
+                  class={{
+                    'ui-history-item-profit': true,
+                    'is-positive': profit >= 0,
+                    'is-negative': profit < 0,
+                  }}
+                >
+                  {formatCurrency(props.locale, profit)}
+                </p>
                 <p class="ui-history-item-meta">
                   {distance.toFixed(1)} km • {formatShortDateTime(props.locale, item.createdAt)}
                 </p>

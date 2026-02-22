@@ -11,30 +11,54 @@ interface OfferBillingSheetProps {
 export const OfferBillingSheet = component$<OfferBillingSheetProps>((props) => {
   const i18n = useI18n();
   const dialogRef = useSignal<HTMLDialogElement>();
+  const isClosing = useSignal(false);
+  const closeTimerId = useSignal<number | null>(null);
 
-  useVisibleTask$(({ track }) => {
+  useVisibleTask$(({ track, cleanup }) => {
     const open = track(() => props.isOpen);
     const dialog = dialogRef.value;
     if (!dialog) {
       return;
     }
 
+    cleanup(() => {
+      if (closeTimerId.value !== null) {
+        window.clearTimeout(closeTimerId.value);
+        closeTimerId.value = null;
+      }
+    });
+
     if (open) {
+      if (closeTimerId.value !== null) {
+        window.clearTimeout(closeTimerId.value);
+        closeTimerId.value = null;
+      }
+      isClosing.value = false;
+      dialog.classList.remove('is-closing');
       if (!dialog.open) {
         dialog.showModal();
       }
       return;
     }
 
-    if (dialog.open) {
-      dialog.close();
+    if (dialog.open && !isClosing.value) {
+      isClosing.value = true;
+      dialog.classList.add('is-closing');
+      closeTimerId.value = window.setTimeout(() => {
+        closeTimerId.value = null;
+        isClosing.value = false;
+        if (dialog.open) {
+          dialog.close();
+        }
+        dialog.classList.remove('is-closing');
+      }, 220);
     }
   });
 
   return (
     <dialog
       ref={dialogRef}
-      class="ui-offer-billing-dialog"
+      class={{ 'ui-offer-billing-dialog': true, 'is-closing': isClosing.value }}
       aria-label={t(i18n, 'billingManageTitle', 'Manage subscription')}
       onCancel$={(event) => {
         event.preventDefault();

@@ -23,8 +23,10 @@ export const OfferSetupEditorSheet = component$<OfferSetupEditorSheetProps>((pro
   const i18n = useI18n();
   const dialogRef = useSignal<HTMLDialogElement>();
   const draftMinProfitability = useSignal(props.minProfitabilityEuro.toFixed(2));
+  const isClosing = useSignal(false);
+  const closeTimerId = useSignal<number | null>(null);
 
-  useVisibleTask$(({ track }) => {
+  useVisibleTask$(({ track, cleanup }) => {
     const open = track(() => props.isOpen);
     track(() => props.minProfitabilityEuro);
     const dialog = dialogRef.value;
@@ -32,7 +34,20 @@ export const OfferSetupEditorSheet = component$<OfferSetupEditorSheetProps>((pro
       return;
     }
 
+    cleanup(() => {
+      if (closeTimerId.value !== null) {
+        window.clearTimeout(closeTimerId.value);
+        closeTimerId.value = null;
+      }
+    });
+
     if (open) {
+      if (closeTimerId.value !== null) {
+        window.clearTimeout(closeTimerId.value);
+        closeTimerId.value = null;
+      }
+      isClosing.value = false;
+      dialog.classList.remove('is-closing');
       draftMinProfitability.value = props.minProfitabilityEuro.toFixed(2);
       if (!dialog.open) {
         dialog.showModal();
@@ -40,8 +55,17 @@ export const OfferSetupEditorSheet = component$<OfferSetupEditorSheetProps>((pro
       return;
     }
 
-    if (dialog.open) {
-      dialog.close();
+    if (dialog.open && !isClosing.value) {
+      isClosing.value = true;
+      dialog.classList.add('is-closing');
+      closeTimerId.value = window.setTimeout(() => {
+        closeTimerId.value = null;
+        isClosing.value = false;
+        if (dialog.open) {
+          dialog.close();
+        }
+        dialog.classList.remove('is-closing');
+      }, 220);
     }
   });
 
@@ -53,7 +77,7 @@ export const OfferSetupEditorSheet = component$<OfferSetupEditorSheetProps>((pro
   return (
     <dialog
       ref={dialogRef}
-      class="ui-offer-setup-dialog"
+      class={{ 'ui-offer-setup-dialog': true, 'is-closing': isClosing.value }}
       aria-label={t(i18n, 'editOfferDetailsButton', 'Edit details')}
       onCancel$={(event) => {
         event.preventDefault();
