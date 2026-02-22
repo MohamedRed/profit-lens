@@ -83,11 +83,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     settingsSheetOpen.value = false;
   });
 
-  const openSettingsSheet$ = $(() => {
-    settingsSheetOpen.value = true;
-  });
-
-  const handleSettingsTap$ = $((event: Event) => {
+  const handleSettingsGesture$ = $((event: Event) => {
     if (event.cancelable) {
       event.preventDefault();
     }
@@ -179,9 +175,8 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 href="/next/app/settings"
                 class="ui-button ui-button-ghost ui-button-lg ui-offer-setup-settings-button"
                 aria-label={t(i18n, "showOfferSetupButton", "Show setup")}
-                onClick$={handleSettingsTap$}
-                onPointerUp$={openSettingsSheet$}
-                onTouchEnd$={openSettingsSheet$}
+                onPointerUp$={handleSettingsGesture$}
+                onTouchEnd$={handleSettingsGesture$}
               >
                 <span
                   class="material-icons-outlined ui-offer-setup-settings-icon"
