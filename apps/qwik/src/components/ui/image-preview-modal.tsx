@@ -23,6 +23,15 @@ const clampIndex = (value: number, max: number): number => {
 };
 
 const swipeThresholdPx = 40;
+const imageModalOpenClass = 'ui-image-modal-open';
+
+const setImageModalOpenState = (isOpen: boolean): void => {
+  if (typeof document === 'undefined') {
+    return;
+  }
+  document.documentElement.classList.toggle(imageModalOpenClass, isOpen);
+  document.body.classList.toggle(imageModalOpenClass, isOpen);
+};
 
 export const ImagePreviewModal = component$<ImagePreviewModalProps>(
   ({ alt, initialIndex, isOpen, items, onClose$, src }) => {
@@ -48,6 +57,7 @@ export const ImagePreviewModal = component$<ImagePreviewModalProps>(
       if (open) {
         const max = nextLength > 0 ? nextLength : src ? 1 : 0;
         activeIndex.value = clampIndex(nextInitialIndex, max);
+        setImageModalOpenState(true);
         if (!hasScrollLock.value) {
           lockPageScroll();
           hasScrollLock.value = true;
@@ -63,8 +73,12 @@ export const ImagePreviewModal = component$<ImagePreviewModalProps>(
         unlockPageScroll();
         hasScrollLock.value = false;
       }
+      if (!open) {
+        setImageModalOpenState(false);
+      }
 
       cleanup(() => {
+        setImageModalOpenState(false);
         if (hasScrollLock.value) {
           unlockPageScroll();
           hasScrollLock.value = false;

@@ -12,6 +12,11 @@
   background: rgba(15, 23, 42, 0.72);
 }
 
+html.ui-image-modal-open,
+body.ui-image-modal-open {
+  background: rgba(15, 23, 42, 0.72);
+}
+
 .ui-image-modal-panel {
   width: 100%;
   border-radius: var(--pl-radius-xl);
