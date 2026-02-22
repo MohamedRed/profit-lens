@@ -1,4 +1,4 @@
-import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, type QRL, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import { Button } from "../../../../components/ui/button";
 import {
   OfferUsageSkeleton,
@@ -20,10 +20,11 @@ import { OfferSectionCard } from "./offer-section-card";
 interface OfferUsageSectionProps {
   uid: string;
   variant?: "card" | "inline";
+  onManagePlan$?: QRL<() => void>;
 }
 
 export const OfferUsageSection = component$<OfferUsageSectionProps>(
-  ({ uid, variant = "card" }) => {
+  ({ uid, variant = "card", onManagePlan$ }) => {
     const i18n = useI18n();
     const entitlement = useSignal<Entitlement | null>(null);
     const usage = useSignal<OfferUsage | null>(null);
@@ -162,6 +163,10 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(
           type="button"
           class="ui-offer-usage-inline-link"
           onClick$={() => {
+            if (onManagePlan$) {
+              void onManagePlan$();
+              return;
+            }
             billingSheetOpen.value = true;
           }}
         >
@@ -230,6 +235,10 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(
                 variant="default"
                 class="ui-offer-usage-cta"
                 onClick$={() => {
+                  if (onManagePlan$) {
+                    void onManagePlan$();
+                    return;
+                  }
                   billingSheetOpen.value = true;
                 }}
               >
@@ -248,13 +257,15 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(
       return (
         <>
           <section class="ui-offer-usage-inline-shell">{content()}</section>
-          <OfferBillingSheet
-            isOpen={billingSheetOpen.value}
-            uid={uid}
-            onClose$={() => {
-              billingSheetOpen.value = false;
-            }}
-          />
+          {onManagePlan$ ? null : (
+            <OfferBillingSheet
+              isOpen={billingSheetOpen.value}
+              uid={uid}
+              onClose$={() => {
+                billingSheetOpen.value = false;
+              }}
+            />
+          )}
         </>
       );
     }
@@ -267,13 +278,15 @@ export const OfferUsageSection = component$<OfferUsageSectionProps>(
         >
           {content()}
         </OfferSectionCard>
-        <OfferBillingSheet
-          isOpen={billingSheetOpen.value}
-          uid={uid}
-          onClose$={() => {
-            billingSheetOpen.value = false;
-          }}
-        />
+        {onManagePlan$ ? null : (
+          <OfferBillingSheet
+            isOpen={billingSheetOpen.value}
+            uid={uid}
+            onClose$={() => {
+              billingSheetOpen.value = false;
+            }}
+          />
+        )}
       </>
     );
   },

@@ -14,11 +14,12 @@ import type { OfferAnalysisRecord } from "../offer-analysis-result";
 import { enableCaptureCta, enableManualEntry } from "../offer-feature-flags";
 import { OfferFlowStatus } from "./offer-flow-status";
 import { OfferImportSourceDialog } from "./offer-import-source-dialog";
+import { OfferBillingSheet } from "./offer-billing-sheet";
 import { OfferManualDetailsSection } from "./offer-manual-details-section";
 import { OfferOverviewSections } from "./offer-overview-sections";
+import { OfferSettingsSheet } from "./offer-settings-sheet";
 import { OfferScreenshotPreview } from "./offer-screenshot-preview";
-import { OfferSetupSummary } from "./offer-setup-summary";
-import { OfferUsageSection } from "./offer-usage-section";
+import { OfferSetupEditorSheet } from "./offer-setup-editor-sheet";
 
 interface OfferFlowContentProps {
   analysisRecord: Signal<OfferAnalysisRecord | null>;
@@ -49,7 +50,10 @@ interface OfferFlowContentProps {
 export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
   const sourceDialogOpen = useSignal(false);
-  const setupExpanded = useSignal(false);
+  const settingsSheetOpen = useSignal(false);
+  const setupEditorOpen = useSignal(false);
+  const billingSheetOpen = useSignal(false);
+  const modalSwitchTimeoutId = useSignal<number | null>(null);
   const useDirectGalleryImport = useSignal(false);
   const importScreenshotLabel = t(
     i18n,
@@ -62,8 +66,45 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     useDirectGalleryImport.value = shouldUseDirectGalleryImport(window);
   });
 
+  useVisibleTask$(({ cleanup }) => {
+    cleanup(() => {
+      if (modalSwitchTimeoutId.value !== null) {
+        window.clearTimeout(modalSwitchTimeoutId.value);
+        modalSwitchTimeoutId.value = null;
+      }
+    });
+  });
+
   const closeSourceDialog$ = $(() => {
     sourceDialogOpen.value = false;
+  });
+
+  const closeSettingsSheet$ = $(() => {
+    settingsSheetOpen.value = false;
+  });
+
+  const openSetupEditorFromSettings$ = $(() => {
+    settingsSheetOpen.value = false;
+    if (modalSwitchTimeoutId.value !== null) {
+      window.clearTimeout(modalSwitchTimeoutId.value);
+      modalSwitchTimeoutId.value = null;
+    }
+    modalSwitchTimeoutId.value = window.setTimeout(() => {
+      setupEditorOpen.value = true;
+      modalSwitchTimeoutId.value = null;
+    }, 280);
+  });
+
+  const openBillingFromSettings$ = $(() => {
+    settingsSheetOpen.value = false;
+    if (modalSwitchTimeoutId.value !== null) {
+      window.clearTimeout(modalSwitchTimeoutId.value);
+      modalSwitchTimeoutId.value = null;
+    }
+    modalSwitchTimeoutId.value = window.setTimeout(() => {
+      billingSheetOpen.value = true;
+      modalSwitchTimeoutId.value = null;
+    }, 280);
   });
 
   const handleImportButtonClick$ = $(() => {
@@ -128,14 +169,9 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 size="lg"
                 type="button"
                 class="ui-offer-setup-settings-button"
-                aria-expanded={setupExpanded.value}
-                aria-label={
-                  setupExpanded.value
-                    ? t(i18n, "hideOfferSetupButton", "Hide setup")
-                    : t(i18n, "showOfferSetupButton", "Show setup")
-                }
+                aria-label={t(i18n, "showOfferSetupButton", "Show setup")}
                 onClick$={() => {
-                  setupExpanded.value = !setupExpanded.value;
+                  settingsSheetOpen.value = true;
                 }}
               >
                 <span
@@ -235,30 +271,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             ) : null}
           </section>
 
-          <div
-            class={{
-              "ui-offer-meta-stack": true,
-              "ui-offer-meta-stack-top": true,
-              "ui-offer-meta-stack-animated": true,
-              "is-open": setupExpanded.value,
-            }}
-            aria-hidden={setupExpanded.value ? "false" : "true"}
-          >
-              <OfferSetupSummary
-                minProfitabilityEuro={props.minProfitabilityEuro.value}
-                onSaveProfitabilityTarget$={props.onSaveProfitabilityTarget$}
-                onVehicleChange$={onVehicleChange$}
-                savingProfitTarget={props.savingProfitTarget.value}
-                selectedVehicleId={props.selectedVehicleId.value}
-                vehicles={props.vehicles.value}
-                vehiclesLoading={props.vehiclesLoading.value}
-              />
-              <OfferUsageSection
-                uid={props.userId}
-                variant="inline"
-              />
-            </div>
-
           {showOverview && props.analysisRecord.value ? (
             <OfferOverviewSections
               record={props.analysisRecord.value}
@@ -302,6 +314,39 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             isOpen={sourceDialogOpen.value}
             onClose$={closeSourceDialog$}
             onSelectFile$={onFileSelected$}
+          />
+
+          <OfferSettingsSheet
+            isOpen={settingsSheetOpen.value}
+            minProfitabilityEuro={props.minProfitabilityEuro.value}
+            onClose$={closeSettingsSheet$}
+            onManagePlan$={openBillingFromSettings$}
+            onOpenSetupEditor$={openSetupEditorFromSettings$}
+            selectedVehicleId={props.selectedVehicleId.value}
+            uid={props.userId}
+            vehicles={props.vehicles.value}
+          />
+
+          <OfferSetupEditorSheet
+            isOpen={setupEditorOpen.value}
+            minProfitabilityEuro={props.minProfitabilityEuro.value}
+            onClose$={() => {
+              setupEditorOpen.value = false;
+            }}
+            onSaveProfitabilityTarget$={props.onSaveProfitabilityTarget$}
+            onVehicleChange$={onVehicleChange$}
+            savingProfitTarget={props.savingProfitTarget.value}
+            selectedVehicleId={props.selectedVehicleId.value}
+            vehicles={props.vehicles.value}
+            vehiclesLoading={props.vehiclesLoading.value}
+          />
+
+          <OfferBillingSheet
+            isOpen={billingSheetOpen.value}
+            uid={props.userId}
+            onClose$={() => {
+              billingSheetOpen.value = false;
+            }}
           />
         </>
       )}
