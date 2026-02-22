@@ -28,6 +28,7 @@
   justify-self: end;
   border: 0;
   border-radius: 999px;
+  -webkit-tap-highlight-color: transparent;
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
   display: inline-flex;
@@ -113,9 +114,10 @@
   font-size: 0.9rem;
 }
 
+.ui-image-modal-close:focus,
 .ui-image-modal-close:focus-visible {
-  outline: 2px solid rgba(139, 92, 246, 0.58);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: none;
 }
 
 .ui-image-modal-nav:focus-visible {
