@@ -18,6 +18,20 @@ const closeOpenDialogs = (): void => {
   });
 };
 
+const removeInstallPromptHosts = (): void => {
+  if (typeof document === 'undefined') {
+    return;
+  }
+  const installElements = Array.from(document.querySelectorAll('pwa-install'));
+  installElements.forEach((element) => {
+    try {
+      element.remove();
+    } catch {
+      // Ignore detached nodes.
+    }
+  });
+};
+
 export const restoreAuthFormInteraction = (): (() => void) => {
   resetPageScrollLock();
   if (typeof document === 'undefined') {
@@ -25,6 +39,7 @@ export const restoreAuthFormInteraction = (): (() => void) => {
   }
 
   closeOpenDialogs();
+  removeInstallPromptHosts();
 
   document.documentElement.classList.remove(modalOpenClass);
   document.body.classList.remove(modalOpenClass);

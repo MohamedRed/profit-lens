@@ -18,8 +18,7 @@ body {
   overscroll-behavior-y: auto;
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
-  -webkit-overflow-scrolling: touch;
-  touch-action: manipulation;
+  touch-action: auto;
 }
 
 html.ui-auth-route-active,

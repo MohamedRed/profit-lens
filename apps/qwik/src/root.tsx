@@ -9,7 +9,44 @@ const buildRefreshGuard = (basePath: string): string => `
 (() => {
   try {
     if (!('serviceWorker' in navigator) || !('caches' in window)) return;
+    const basePath = ${JSON.stringify(basePath)};
+    const loginPath = basePath.endsWith('/') ? \`\${basePath}login\` : \`\${basePath}/login\`;
+    const registerPath = basePath.endsWith('/') ? \`\${basePath}register\` : \`\${basePath}/register\`;
+    const normalizePath = (value) => value.endsWith('/') ? value.slice(0, -1) : value;
+    const currentPath = normalizePath(window.location.pathname);
+    const isAuthRoute = currentPath === normalizePath(loginPath) || currentPath === normalizePath(registerPath);
     const hash = document.documentElement.getAttribute('q:manifest-hash');
+    const clearNextRuntime = () =>
+      Promise.all([
+        navigator.serviceWorker.getRegistrations().then((regs) =>
+          Promise.all(
+            regs
+              .filter((reg) => new URL(reg.scope).pathname.startsWith(basePath))
+              .map((reg) => reg.unregister()),
+          ),
+        ),
+        caches.keys().then((keys) =>
+          Promise.all(
+            keys
+              .filter((key) => key.includes('workbox') || key.includes('/next/'))
+              .map((key) => caches.delete(key)),
+          ),
+        ),
+      ]);
+
+    if (isAuthRoute) {
+      const authResetKey = 'pl-next-auth-sw-reset-hash';
+      const authResetHash = hash || 'no-hash';
+      const lastAuthResetHash = localStorage.getItem(authResetKey);
+      if (lastAuthResetHash !== authResetHash) {
+        localStorage.setItem(authResetKey, authResetHash);
+        clearNextRuntime().finally(() => {
+          window.location.reload();
+        });
+        return;
+      }
+    }
+
     if (!hash) return;
     const hashKey = 'pl-next-manifest-hash';
     const reloadKey = 'pl-next-manifest-reload-hash';
@@ -28,22 +65,7 @@ const buildRefreshGuard = (basePath: string): string => `
     localStorage.setItem(hashKey, hash);
     localStorage.setItem(reloadKey, hash);
 
-    Promise.all([
-      navigator.serviceWorker.getRegistrations().then((regs) =>
-        Promise.all(
-          regs
-            .filter((reg) => new URL(reg.scope).pathname.startsWith(${JSON.stringify(basePath)}))
-            .map((reg) => reg.unregister()),
-        ),
-      ),
-      caches.keys().then((keys) =>
-        Promise.all(
-          keys
-            .filter((key) => key.includes('workbox') || key.includes('/next/'))
-            .map((key) => caches.delete(key)),
-        ),
-      ),
-    ]).finally(() => {
+    clearNextRuntime().finally(() => {
       window.location.reload();
     });
   } catch (_) {}
