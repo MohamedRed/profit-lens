@@ -219,7 +219,6 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .ui-offer-settings-dialog[open]:not(.is-closing) {
@@ -250,7 +249,7 @@
   border-bottom: 0;
   background: #fff;
   box-shadow: 0 -16px 40px rgba(24, 24, 27, 0.18);
-  padding: 18px 18px 0;
+  padding: 18px 18px calc(14px + env(safe-area-inset-bottom, 0px));
   display: grid;
   gap: 14px;
   opacity: 0;
