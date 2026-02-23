@@ -6,6 +6,17 @@ interface AuthGuardProps {
   requireAuth: boolean;
 }
 
+const resolveSignedInRedirect = (url: URL): string => {
+  const redirect = url.searchParams.get('redirect');
+  if (!redirect || !redirect.startsWith('/next/')) {
+    return '/next/app/offer';
+  }
+  if (redirect.startsWith('/next/login') || redirect.startsWith('/next/register')) {
+    return '/next/app/offer';
+  }
+  return redirect;
+};
+
 export const AuthGuard = component$<AuthGuardProps>(({ requireAuth }) => {
   const auth = useAuth();
   const navigate = useNavigate();
@@ -26,7 +37,7 @@ export const AuthGuard = component$<AuthGuardProps>(({ requireAuth }) => {
     }
 
     if (!requireAuth && user) {
-      navigate('/next/app/offer');
+      navigate(resolveSignedInRedirect(location.url));
     }
   });
 

@@ -1,5 +1,5 @@
 import { component$, useSignal } from '@builder.io/qwik';
-import { useLocation, useNavigate } from '@builder.io/qwik-city';
+import { useNavigate } from '@builder.io/qwik-city';
 import { AuthGuard } from '../../components/guards/auth-guard';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
@@ -13,7 +13,6 @@ import { t, useI18n } from '../../lib/i18n/i18n-context';
 export default component$(() => {
   const i18n = useI18n();
   const navigate = useNavigate();
-  const location = useLocation();
   const email = useSignal('');
   const password = useSignal('');
   const loading = useSignal(false);
@@ -65,8 +64,6 @@ export default component$(() => {
                 loading.value = true;
                 try {
                   await signInWithEmail(email.value.trim(), password.value);
-                  const redirect = location.url.searchParams.get('redirect');
-                  navigate(redirect ?? '/next/app/offer');
                 } catch (error) {
                   status.value = resolveUserFacingErrorMessage(i18n, error, 'auth-signin');
                 } finally {
