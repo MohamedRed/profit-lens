@@ -72,3 +72,37 @@ export const unlockPageScroll = (): void => {
     window.scrollTo(0, scrollY);
   }
 };
+
+export const resetPageScrollLock = (): void => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  activeScrollLocks = 0;
+  const { body, documentElement } = document;
+  if (!body || !documentElement) {
+    snapshot = null;
+    return;
+  }
+
+  if (snapshot) {
+    body.style.cssText = snapshot.bodyCssText;
+    documentElement.style.cssText = snapshot.htmlCssText;
+    if (snapshot.mode === 'freeze') {
+      window.scrollTo(0, snapshot.scrollY);
+    }
+    snapshot = null;
+    return;
+  }
+
+  body.style.overflow = '';
+  body.style.overscrollBehavior = '';
+  body.style.position = '';
+  body.style.top = '';
+  body.style.left = '';
+  body.style.right = '';
+  body.style.width = '';
+  body.style.touchAction = '';
+  documentElement.style.overflow = '';
+  documentElement.style.overscrollBehavior = '';
+};
