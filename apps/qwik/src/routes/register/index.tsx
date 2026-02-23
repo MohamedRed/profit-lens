@@ -20,8 +20,11 @@ export default component$(() => {
   const loading = useSignal(false);
   const status = useSignal('');
 
-  useVisibleTask$(() => {
-    restoreAuthFormInteraction();
+  useVisibleTask$(({ cleanup }) => {
+    const teardown = restoreAuthFormInteraction();
+    cleanup(() => {
+      teardown();
+    });
   });
 
   return (

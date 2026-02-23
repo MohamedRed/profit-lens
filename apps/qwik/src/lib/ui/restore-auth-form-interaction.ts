@@ -1,13 +1,38 @@
 import { resetPageScrollLock } from './page-scroll-lock';
 
 const modalOpenClass = 'ui-image-modal-open';
+const authRouteClass = 'ui-auth-route-active';
 
-export const restoreAuthFormInteraction = (): void => {
-  resetPageScrollLock();
+const closeOpenDialogs = (): void => {
   if (typeof document === 'undefined') {
     return;
   }
+  const dialogs = Array.from(document.querySelectorAll('dialog[open]')) as HTMLDialogElement[];
+  dialogs.forEach((dialog) => {
+    try {
+      dialog.classList.remove('is-closing');
+      dialog.close();
+    } catch {
+      // Ignore if dialog is already detached or cannot close.
+    }
+  });
+};
+
+export const restoreAuthFormInteraction = (): (() => void) => {
+  resetPageScrollLock();
+  if (typeof document === 'undefined') {
+    return () => {};
+  }
+
+  closeOpenDialogs();
 
   document.documentElement.classList.remove(modalOpenClass);
   document.body.classList.remove(modalOpenClass);
+  document.documentElement.classList.add(authRouteClass);
+  document.body.classList.add(authRouteClass);
+
+  return () => {
+    document.documentElement.classList.remove(authRouteClass);
+    document.body.classList.remove(authRouteClass);
+  };
 };
