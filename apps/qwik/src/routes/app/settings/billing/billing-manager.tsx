@@ -15,6 +15,7 @@ import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { Entitlement, OfferUsage } from '../../../../lib/types/billing';
 import { formatDate, resolveDefaultPlanPriceId, resolveSelectedPriceId } from './billing-manager-helpers';
 import { BillingStripePortalCard } from './billing-sections';
+import { emphasizeFirstValue, resolveSubscriptionStatusToneClass } from './billing-view-utils';
 
 interface BillingManagerProps {
   uid: string | null;
@@ -92,6 +93,20 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
   const offerLimit = entitlement.value?.offerLimit ?? null;
   const usedOffers = usage.value?.offerCount ?? 0;
   const remainingOffers = offerLimit == null ? null : Math.max(0, offerLimit - usedOffers);
+  const remainingOffersValue = remainingOffers == null ? '' : String(remainingOffers);
+  const periodEndValue = entitlement.value ? formatDate(locale, entitlement.value.periodEnd) : '';
+  const remainingOffersLabel =
+    entitlement.value && remainingOffers != null
+      ? formatTemplate(t(i18n, 'offersRemainingValue', '{remaining} remaining this month'), {
+          remaining: remainingOffersValue,
+          count: remainingOffersValue,
+        })
+      : '';
+  const periodEndsOnLabel = entitlement.value
+    ? formatTemplate(t(i18n, 'billingPeriodEndsOn', 'Period ends on {date}'), {
+        date: periodEndValue,
+      })
+    : '';
   const planOptions = billingPlans
     .filter((plan) => Boolean(plan.priceId))
     .map((plan) => ({
@@ -180,28 +195,24 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
     <div class={rootClassName}>
       <section class="ui-settings-card ui-settings-billing-card">
         <h2 class="ui-settings-billing-title">{t(i18n, 'billingManageTitle', 'Manage subscription')}</h2>
-        <p class="ui-settings-subtitle">
-          {t(i18n, 'billingManageSubtitle', 'Change plan, pause cancellation, or schedule cancellation.')}
-        </p>
         {entitlement.value ? (
           <p class="ui-settings-subtitle">
             {t(i18n, 'subscriptionStatusLabel', 'Subscription status')}:{' '}
-            <strong>{entitlement.value.status}</strong>
+            <strong
+              class={`ui-settings-billing-status-value ${resolveSubscriptionStatusToneClass(entitlement.value.status)}`}
+            >
+              {entitlement.value.status}
+            </strong>
           </p>
         ) : null}
-        {entitlement.value && remainingOffers != null ? (
+        {remainingOffersLabel ? (
           <p class="ui-settings-subtitle">
-            {formatTemplate(t(i18n, 'offersRemainingValue', '{remaining} remaining this month'), {
-              remaining: String(remainingOffers),
-              count: String(remainingOffers),
-            })}
+            {emphasizeFirstValue(remainingOffersLabel, remainingOffersValue)}
           </p>
         ) : null}
-        {entitlement.value ? (
+        {periodEndsOnLabel ? (
           <p class="ui-settings-subtitle">
-            {formatTemplate(t(i18n, 'billingPeriodEndsOn', 'Period ends on {date}'), {
-              date: formatDate(locale, entitlement.value.periodEnd),
-            })}
+            {emphasizeFirstValue(periodEndsOnLabel, periodEndValue)}
           </p>
         ) : null}
         {entitlement.value?.cancelAtPeriodEnd ? (
