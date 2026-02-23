@@ -8,7 +8,7 @@ import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-e
 import { startCheckout } from '../../../lib/features/billing/billing-service';
 import { isRunningAsInstalledPwa } from '../../../lib/features/pwa/pwa-install-state';
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
-import { Select } from '../../../components/ui/select';
+import { VisualOptionPicker } from '../../../components/ui/visual-option-picker';
 import type { Entitlement, OfferUsage } from '../../../lib/types/billing';
 import type { DeviceEntry } from '../../../lib/types/device';
 import type { UserProfile } from '../../../lib/types/profile';
@@ -24,13 +24,6 @@ const formatCurrency = (locale: string, value: number): string => {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value);
-};
-
-const flagForLocale = (code: string): string => {
-  if (code === 'fr') return '🇫🇷';
-  if (code === 'en') return '🇬🇧';
-  if (code === 'ar') return '🇲🇦';
-  return '🏳️';
 };
 
 export default component$(() => {
@@ -71,18 +64,20 @@ export default component$(() => {
       );
 
   const languageOptions = [
-    { value: 'fr', label: `${flagForLocale('fr')} ${t(i18n, 'languageFrench', 'French')}` },
-    { value: 'en', label: `${flagForLocale('en')} ${t(i18n, 'languageEnglish', 'English')}` },
-    { value: 'ar', label: `${flagForLocale('ar')} ${t(i18n, 'languageArabic', 'Arabic')}` },
+    { value: 'fr', label: t(i18n, 'languageFrench', 'French'), mediaText: '🇫🇷' },
+    { value: 'en', label: t(i18n, 'languageEnglish', 'English'), mediaText: '🇬🇧' },
+    { value: 'ar', label: t(i18n, 'languageArabic', 'Arabic'), mediaText: '🇲🇦' },
   ];
 
   return (
     <div class="ui-settings-root">
       <section class="ui-settings-card ui-settings-language">
         <h2 class="ui-settings-section-title">{t(i18n, 'languageSectionTitle', 'Language')}</h2>
-        <Select
-          id="settings-language"
-          class="ui-select ui-settings-language-select"
+        <VisualOptionPicker
+          ariaLabel={t(i18n, 'languageSectionTitle', 'Language')}
+          class="ui-settings-language-select"
+          compact
+          columns={3}
           options={languageOptions}
           value={selectedLanguage.value}
           disabled={languageSaving.value || !currentProfile}

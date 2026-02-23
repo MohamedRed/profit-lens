@@ -11,9 +11,10 @@ import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
 import { Label } from "../../../../components/ui/label";
 import { SkeletonBlock } from "../../../../components/ui/page-loading-skeleton";
-import { Select } from "../../../../components/ui/select";
+import { VisualOptionPicker } from "../../../../components/ui/visual-option-picker";
 import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
+import { resolveVehicleTypeIcon } from "../../shared/vehicle-visuals";
 import { BillingManager } from "../../settings/billing/billing-manager";
 import { OfferSetupSummary } from "./offer-setup-summary";
 import { useOfferDialogTransition } from "./use-offer-dialog-transition";
@@ -224,12 +225,15 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
                   </div>
                 ) : (
                   <div class="ui-field">
-                    <Label for="offer-vehicle-sheet">{t(i18n, "vehicleSelectLabel", "Select vehicle")}</Label>
-                    <Select
-                      id="offer-vehicle-sheet"
+                    <Label>{t(i18n, "vehicleSelectLabel", "Select vehicle")}</Label>
+                    <VisualOptionPicker
+                      ariaLabel={t(i18n, "vehicleSelectLabel", "Select vehicle")}
+                      columns={1}
                       options={props.vehicles.map((vehicle) => ({
                         label: vehicle.name,
+                        subtitle: vehicle.type,
                         value: vehicle.id,
+                        icon: resolveVehicleTypeIcon(vehicle.type),
                       }))}
                       value={props.selectedVehicleId}
                       onChange$={props.onVehicleChange$}

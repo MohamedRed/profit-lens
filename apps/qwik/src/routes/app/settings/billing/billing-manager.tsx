@@ -1,6 +1,6 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Button } from '../../../../components/ui/button';
-import { Select } from '../../../../components/ui/select';
+import { VisualOptionPicker } from '../../../../components/ui/visual-option-picker';
 import { billingPlans } from '../../../../lib/config/runtime-config';
 import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
 import {
@@ -96,11 +96,15 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
     .filter((plan) => Boolean(plan.priceId))
     .map((plan) => ({
       value: plan.priceId,
-      offerLimit: plan.offerLimit,
-      label:
+      label: plan.priceLabel,
+      subtitle:
         plan.offerLimit == null
-          ? `${plan.priceLabel} · ${t(i18n, 'planUnlimitedLabel', 'Unlimited offers')}`
-          : `${plan.priceLabel} · ${formatTemplate(t(i18n, 'planOffersPerMonth', '{count} offers per month'), { count: plan.offerLimit })}`,
+          ? t(i18n, 'planUnlimitedLabel', 'Unlimited offers')
+          : formatTemplate(t(i18n, 'planOffersPerMonth', '{count} offers per month'), {
+              count: plan.offerLimit,
+            }),
+      icon:
+        plan.offerLimit == null ? 'all_inclusive' : plan.offerLimit >= 1000 ? 'rocket_launch' : 'workspace_premium',
     }));
 
   const applyPlan$ = $(async () => {
@@ -211,12 +215,12 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
 
       <section class="ui-settings-card ui-settings-billing-card">
         <p class="ui-settings-title">{t(i18n, 'billingPlanSelectionLabel', 'Plan')}</p>
-        <Select
-          id="billing-plan-select"
-          class="ui-select ui-settings-language-select"
+        <VisualOptionPicker
+          ariaLabel={t(i18n, 'billingPlanSelectionLabel', 'Plan')}
+          columns={1}
           options={planOptions}
           value={selectedPlanPriceId.value}
-          disabled={planOptions.length === 0}
+          disabled={planOptions.length === 0 || actionLoading.value}
           onChange$={(next) => {
             selectedPlanPriceId.value = String(next);
           }}

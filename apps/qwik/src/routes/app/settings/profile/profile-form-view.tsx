@@ -8,7 +8,7 @@ import {
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import { PresetSourcesSection } from '../shared/preset-sources-section';
 import type { ProfileFormState } from './profile-form-state';
-import { Select } from '../../../../components/ui/select';
+import { VisualOptionPicker } from '../../../../components/ui/visual-option-picker';
 
 interface ProfileFormViewProps {
   state: ProfileFormState;
@@ -18,15 +18,23 @@ export const ProfileFormView = component$<ProfileFormViewProps>(({ state }) => {
   const i18n = useI18n();
 
   const activityOptions = [
-    { value: 'deliveryServices', label: t(i18n, 'activityDelivery', 'Delivery services') },
-    { value: 'services', label: t(i18n, 'activityServices', 'Services') },
-    { value: 'sales', label: t(i18n, 'activitySales', 'Sales') },
+    {
+      value: 'deliveryServices',
+      label: t(i18n, 'activityDelivery', 'Delivery services'),
+      icon: 'local_shipping',
+    },
+    { value: 'services', label: t(i18n, 'activityServices', 'Services'), icon: 'build' },
+    { value: 'sales', label: t(i18n, 'activitySales', 'Sales'), icon: 'storefront' },
   ];
 
   const allocationOptions = [
-    { value: 'perHour', label: t(i18n, 'fixedCostPerHourLabel', 'Per hour') },
-    { value: 'perKm', label: t(i18n, 'fixedCostPerKmLabel', 'Per km') },
-    { value: 'perDelivery', label: t(i18n, 'fixedCostPerDeliveryLabel', 'Per delivery') },
+    { value: 'perHour', label: t(i18n, 'fixedCostPerHourLabel', 'Per hour'), icon: 'schedule' },
+    { value: 'perKm', label: t(i18n, 'fixedCostPerKmLabel', 'Per km'), icon: 'route' },
+    {
+      value: 'perDelivery',
+      label: t(i18n, 'fixedCostPerDeliveryLabel', 'Per delivery'),
+      icon: 'local_shipping',
+    },
   ];
 
   return (
@@ -35,11 +43,11 @@ export const ProfileFormView = component$<ProfileFormViewProps>(({ state }) => {
         <h2 class="ui-settings-detail-title">{t(i18n, 'profileEditTitle', 'Edit profile')}</h2>
         <div class="ui-settings-form-grid">
           <div class="ui-settings-field">
-            <label class="ui-label" for="profile-activity">
-              {t(i18n, 'activityLabel', 'Business activity')}
-            </label>
-            <Select
-              id="profile-activity"
+            <span class="ui-label">{t(i18n, 'activityLabel', 'Business activity')}</span>
+            <VisualOptionPicker
+              ariaLabel={t(i18n, 'activityLabel', 'Business activity')}
+              compact
+              columns={3}
               options={activityOptions}
               value={state.activity.value}
               onChange$={(value) => {
@@ -156,11 +164,11 @@ export const ProfileFormView = component$<ProfileFormViewProps>(({ state }) => {
           </div>
 
           <div class="ui-settings-field">
-            <label class="ui-label" for="profile-allocation">
-              {t(i18n, 'fixedCostAllocationLabel', 'Allocate fixed costs by')}
-            </label>
-            <Select
-              id="profile-allocation"
+            <span class="ui-label">{t(i18n, 'fixedCostAllocationLabel', 'Allocate fixed costs by')}</span>
+            <VisualOptionPicker
+              ariaLabel={t(i18n, 'fixedCostAllocationLabel', 'Allocate fixed costs by')}
+              compact
+              columns={3}
               options={allocationOptions}
               value={state.fixedCostAllocation.value}
               onChange$={(value) => {

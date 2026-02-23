@@ -1,5 +1,5 @@
 import { component$ } from '@builder.io/qwik';
-import { Select } from '../../../../components/ui/select';
+import { VisualOptionPicker } from '../../../../components/ui/visual-option-picker';
 import {
   showEnergySectionForVehicleType,
   showEnergyTypeSelectorForVehicleType,
@@ -11,11 +11,7 @@ import {
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import { PresetSourcesSection } from '../shared/preset-sources-section';
 import type { VehicleEditorState } from './vehicle-editor-state';
-import {
-  buildEnergyTypeOptions,
-  buildFuelTypeOptions,
-  buildVehicleTypeOptions,
-} from './vehicle-editor-options';
+import { buildVehicleEditorVisualOptions } from './vehicle-editor-visual-options';
 import type { VehicleEditorProps } from './vehicle-editor-types';
 
 interface VehicleEditorFormProps {
@@ -31,9 +27,7 @@ export const VehicleEditorForm = component$<VehicleEditorFormProps>(({ props, st
   const showEnergyType = showEnergyTypeSelectorForVehicleType(state.draft.value.type);
   const showFuelType = showEnergyType && state.draft.value.energyType === 'fuel';
 
-  const typeOptions = buildVehicleTypeOptions(i18n);
-  const energyOptions = buildEnergyTypeOptions(i18n);
-  const fuelOptions = buildFuelTypeOptions(i18n);
+  const { typeOptions, energyOptions, fuelOptions } = buildVehicleEditorVisualOptions(i18n);
 
   return (
     <div class="ui-settings-detail-root">
@@ -52,11 +46,10 @@ export const VehicleEditorForm = component$<VehicleEditorFormProps>(({ props, st
           </label>
 
           <div class="ui-settings-field">
-            <label class="ui-label" for="vehicle-type">
-              {t(i18n, 'vehicleTypeLabel', 'Vehicle type')}
-            </label>
-            <Select
-              id="vehicle-type"
+            <span class="ui-label">{t(i18n, 'vehicleTypeLabel', 'Vehicle type')}</span>
+            <VisualOptionPicker
+              ariaLabel={t(i18n, 'vehicleTypeLabel', 'Vehicle type')}
+              columns={2}
               value={state.draft.value.type}
               options={typeOptions}
               onChange$={(value) => state.applyVehicleType$(value)}
@@ -151,11 +144,11 @@ export const VehicleEditorForm = component$<VehicleEditorFormProps>(({ props, st
 
           {showEnergyType ? (
             <div class="ui-settings-field">
-              <label class="ui-label" for="vehicle-energy">
-                {t(i18n, 'energyTypeLabel', 'Energy type')}
-              </label>
-              <Select
-                id="vehicle-energy"
+              <span class="ui-label">{t(i18n, 'energyTypeLabel', 'Energy type')}</span>
+              <VisualOptionPicker
+                ariaLabel={t(i18n, 'energyTypeLabel', 'Energy type')}
+                compact
+                columns={3}
                 value={state.draft.value.energyType}
                 options={energyOptions}
                 onChange$={(value) => state.applyEnergyType$(value)}
@@ -165,11 +158,10 @@ export const VehicleEditorForm = component$<VehicleEditorFormProps>(({ props, st
 
           {showFuelType ? (
             <div class="ui-settings-field">
-              <label class="ui-label" for="vehicle-fuel">
-                {t(i18n, 'fuelTypeLabel', 'Fuel type')}
-              </label>
-              <Select
-                id="vehicle-fuel"
+              <span class="ui-label">{t(i18n, 'fuelTypeLabel', 'Fuel type')}</span>
+              <VisualOptionPicker
+                ariaLabel={t(i18n, 'fuelTypeLabel', 'Fuel type')}
+                columns={2}
                 value={state.draft.value.fuelType || 'e10'}
                 options={fuelOptions}
                 onChange$={(value) => state.applyFuelType$(value)}

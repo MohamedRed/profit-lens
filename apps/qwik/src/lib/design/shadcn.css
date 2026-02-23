@@ -56,7 +56,6 @@
 }
 
 .ui-input,
-.ui-select,
 .ui-textarea {
   width: 100%;
   min-height: var(--pl-size-control-height);
@@ -78,111 +77,6 @@
     background-color 120ms ease;
 }
 
-.ui-select-root {
-  position: relative;
-}
-
-.ui-select {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  text-align: left;
-  cursor: pointer;
-}
-
-.ui-select-icon {
-  color: var(--pl-color-text-subtle);
-  font-size: 20px;
-  line-height: 1;
-}
-
-.ui-select-value {
-  min-width: 0;
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.ui-select-placeholder {
-  color: var(--pl-color-text-secondary);
-}
-
-.ui-select-popover {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  right: 0;
-  box-sizing: border-box;
-  border: 1px solid var(--pl-color-outline);
-  border-radius: var(--pl-radius-lg);
-  background: #fff;
-  box-shadow: 0 8px 26px rgba(24, 24, 27, 0.08);
-  padding: 6px;
-  max-height: 240px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  z-index: 30;
-  animation: none !important;
-  transition: none !important;
-}
-
-.ui-select-item {
-  width: 100%;
-  border: 0;
-  background: transparent;
-  min-height: 38px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 0 10px;
-  color: var(--pl-color-text-primary);
-  font-size: 0.95rem;
-  cursor: pointer;
-  text-align: left;
-}
-
-.ui-select-item-label {
-  min-width: 0;
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.ui-select-item[data-highlighted],
-.ui-select-item:focus-visible {
-  outline: none;
-  background: rgba(139, 92, 246, 0.1);
-}
-
-.ui-select-item[aria-selected='true'] {
-  background: rgba(139, 92, 246, 0.08);
-}
-
-.ui-select-item[data-disabled] {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-.ui-select-item-indicator {
-  font-size: 16px;
-  color: var(--pl-color-purple);
-  flex-shrink: 0;
-}
-
-.ui-select-item-indicator-empty {
-  width: 16px;
-  height: 16px;
-}
-
-.ui-select-native {
-  display: none;
-}
-
 .ui-input::placeholder {
   color: var(--pl-color-text-secondary);
   font-weight: 400;
@@ -194,7 +88,6 @@
 }
 
 .ui-input:focus,
-.ui-select:focus,
 .ui-textarea:focus {
   border-color: var(--pl-color-purple);
   box-shadow:
