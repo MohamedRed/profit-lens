@@ -72,11 +72,11 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
     const updateHeight = () => {
       const viewportHeight =
         window.innerHeight || document.documentElement.clientHeight || 0;
-      const maxHeightRatio = view === "billing" ? 0.9 : 0.72;
+      const maxHeightRatio = view === "billing" ? 0.96 : 0.72;
       const maxHeight = Math.max(220, Math.floor(viewportHeight * maxHeightRatio));
       const measuredHeight = Math.ceil(activeElement.scrollHeight);
       if (view === "billing") {
-        const minHeight = Math.max(320, Math.floor(viewportHeight * 0.72));
+        const minHeight = Math.max(360, Math.floor(viewportHeight * 0.84));
         const boundedHeight = Math.min(measuredHeight, maxHeight);
         viewHeightPx.value = Math.max(boundedHeight, minHeight);
         return;
