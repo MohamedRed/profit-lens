@@ -12,16 +12,29 @@
   gap: 16px;
 }
 
+.ui-help-form-card {
+  padding: 20px 16px;
+  gap: 12px;
+}
+
 .ui-help-card-title {
   margin: 0;
   font-family: var(--pl-font-display);
   font-size: 1.8rem;
 }
 
+.ui-help-form-card .ui-help-card-title {
+  font-size: 1.4rem;
+}
+
 .ui-help-intro-row {
   display: flex;
   align-items: flex-start;
   gap: 12px;
+}
+
+.ui-help-intro-row-compact {
+  gap: 10px;
 }
 
 .ui-help-intro-icon {

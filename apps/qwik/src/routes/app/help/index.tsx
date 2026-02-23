@@ -38,9 +38,9 @@ export default component$(() => {
 
   return (
     <div class="ui-help-root">
-      <section class="ui-help-card">
-        <h2 class="ui-help-card-title">{t(i18n, 'helpIntroTitle', 'Get help quickly')}</h2>
-        <div class="ui-help-intro-row">
+      <section class="ui-help-card ui-help-form-card">
+        <h2 class="ui-help-card-title">{t(i18n, 'helpFormTitle', 'Submit a ticket')}</h2>
+        <div class="ui-help-intro-row ui-help-intro-row-compact">
           <span class="material-icons-outlined ui-help-intro-icon" aria-hidden="true">
             support_agent
           </span>
@@ -52,10 +52,6 @@ export default component$(() => {
             )}
           </p>
         </div>
-      </section>
-
-      <section class="ui-help-card">
-        <h2 class="ui-help-card-title">{t(i18n, 'helpFormTitle', 'Submit a ticket')}</h2>
 
         <textarea
           class="ui-help-textarea"
