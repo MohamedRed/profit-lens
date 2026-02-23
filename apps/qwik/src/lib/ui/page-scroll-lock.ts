@@ -2,6 +2,7 @@ interface ScrollLockSnapshot {
   bodyCssText: string;
   htmlCssText: string;
   scrollY: number;
+  mode: 'freeze' | 'overflow';
 }
 
 interface ScrollLockOptions {
@@ -21,23 +22,25 @@ export const lockPageScroll = (options: ScrollLockOptions = {}): void => {
   }
 
   if (activeScrollLocks === 0) {
+    const shouldDisableTouchAction = options.disableTouchAction ?? true;
+    const lockMode: ScrollLockSnapshot['mode'] = shouldDisableTouchAction ? 'freeze' : 'overflow';
     snapshot = {
       bodyCssText: body.style.cssText,
       htmlCssText: documentElement.style.cssText,
       scrollY: window.scrollY,
+      mode: lockMode,
     };
 
     documentElement.style.overflow = 'hidden';
     documentElement.style.overscrollBehavior = 'none';
-
-    body.style.position = 'fixed';
-    body.style.top = `-${snapshot.scrollY}px`;
-    body.style.left = '0';
-    body.style.right = '0';
-    body.style.width = '100%';
     body.style.overflow = 'hidden';
     body.style.overscrollBehavior = 'none';
-    if (options.disableTouchAction ?? true) {
+    if (lockMode === 'freeze') {
+      body.style.position = 'fixed';
+      body.style.top = `-${snapshot.scrollY}px`;
+      body.style.left = '0';
+      body.style.right = '0';
+      body.style.width = '100%';
       body.style.touchAction = 'none';
     }
   }
@@ -61,9 +64,11 @@ export const unlockPageScroll = (): void => {
     return;
   }
 
-  const { scrollY, bodyCssText, htmlCssText } = snapshot;
+  const { scrollY, bodyCssText, htmlCssText, mode } = snapshot;
   body.style.cssText = bodyCssText;
   documentElement.style.cssText = htmlCssText;
   snapshot = null;
-  window.scrollTo(0, scrollY);
+  if (mode === 'freeze') {
+    window.scrollTo(0, scrollY);
+  }
 };
