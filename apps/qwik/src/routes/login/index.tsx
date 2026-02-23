@@ -64,6 +64,7 @@ export default component$(() => {
                 loading.value = true;
                 try {
                   await signInWithEmail(email.value.trim(), password.value);
+                  await navigate('/next/app/offer');
                 } catch (error) {
                   status.value = resolveUserFacingErrorMessage(i18n, error, 'auth-signin');
                 } finally {
