@@ -6,6 +6,7 @@ import {
 } from '../../../../components/ui/page-loading-skeleton';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { saveSelectedHelpTicketId } from '../../../../lib/features/help/help-ticket-selection';
+import { formatHelpTicketDisplayNumber } from '../../../../lib/features/help/help-ticket-reference';
 import { watchHelpTickets } from '../../../../lib/features/help/help-service';
 import { formatHelpDate, statusLabel } from '../../../../lib/features/help/help-ui-utils';
 import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
@@ -72,7 +73,7 @@ export default component$(() => {
                 }}
               >
                 <div class="ui-help-ticket-row">
-                  <span class="ui-help-ticket-id">#{ticket.id.slice(0, 8)}</span>
+                  <span class="ui-help-ticket-id">#{formatHelpTicketDisplayNumber(ticket.id)}</span>
                   <span class="ui-help-ticket-status">
                     {statusLabel(ticket.status, ticket.status, (key, fallbackText) =>
                       t(i18n, key, fallbackText),
