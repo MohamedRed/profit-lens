@@ -59,6 +59,10 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
     const isOpen = track(() => props.isOpen.value);
     const view = track(() => activeView.value);
     const activeElement = track(() => activeViewRef.value);
+    if (view === "menu") {
+      viewHeightPx.value = null;
+      return;
+    }
     if (!isOpen || !activeElement) {
       viewHeightPx.value = null;
       return;
@@ -115,8 +119,9 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
         ? t(i18n, "editOfferDetailsButton", "Edit details")
         : t(i18n, "billingManageTitle", "Manage subscription");
 
+  const isMenuView = activeView.value === "menu";
   const bodyViewportStyle =
-    activeView.value === "menu" || viewHeightPx.value === null
+    isMenuView || viewHeightPx.value === null
       ? undefined
       : { height: `${viewHeightPx.value}px` };
 
@@ -164,7 +169,11 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
           </button>
         </header>
 
-        <div class="ui-offer-settings-view-viewport" style={bodyViewportStyle}>
+        <div
+          key={`offer-settings-viewport-${activeView.value}`}
+          class={{ "ui-offer-settings-view-viewport": true, "is-menu": isMenuView }}
+          style={bodyViewportStyle}
+        >
           {activeView.value === "menu" ? (
             <section key="offer-settings-menu" ref={activeViewRef} class="ui-offer-settings-view">
               <div class="ui-offer-settings-panel-body">
