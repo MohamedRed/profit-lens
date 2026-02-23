@@ -17,7 +17,8 @@
 }
 
 .ui-device-limit-root {
-  padding-block: 8px 18px;
+  padding-top: calc(16px + env(safe-area-inset-top, 0px));
+  padding-bottom: 18px;
 }
 
 .ui-settings-detail-card {
