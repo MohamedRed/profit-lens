@@ -1,3 +1,16 @@
+.ui-device-gate-root {
+  min-height: 100svh;
+  min-height: 100dvh;
+  width: min(100%, 430px);
+  margin: 0 auto;
+  padding:
+    calc(16px + env(safe-area-inset-top, 0px))
+    16px
+    calc(24px + env(safe-area-inset-bottom, 0px));
+  background: var(--pl-color-background);
+  align-content: start;
+}
+
 .ui-settings-detail-root {
   display: grid;
   gap: 12px;

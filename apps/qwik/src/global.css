@@ -48,7 +48,10 @@ select {
 .ui-page {
   width: min(980px, 100% - 40px);
   margin: 0 auto;
-  padding: var(--pl-space-section) 0;
+  padding:
+    max(var(--pl-space-section), calc(20px + env(safe-area-inset-top, 0px)))
+    0
+    max(var(--pl-space-section), calc(20px + env(safe-area-inset-bottom, 0px)));
 }
 
 .ui-stack {
@@ -131,7 +134,10 @@ select {
 @media (max-width: 900px) {
   .ui-page {
     width: min(100% - 24px, 980px);
-    padding: 24px 0;
+    padding:
+      max(24px, calc(16px + env(safe-area-inset-top, 0px)))
+      0
+      max(24px, calc(16px + env(safe-area-inset-bottom, 0px)));
   }
 }
 
