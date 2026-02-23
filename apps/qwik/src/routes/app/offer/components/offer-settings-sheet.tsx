@@ -107,10 +107,15 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
   });
 
   const openBilling$ = $(() => {
+    if (typeof window !== "undefined") {
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+      viewHeightPx.value = Math.max(360, Math.floor(viewportHeight * 0.84));
+    }
     activeView.value = "billing";
   });
 
   const goBackToMenu$ = $(() => {
+    viewHeightPx.value = null;
     activeView.value = "menu";
   });
 
