@@ -116,7 +116,9 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
         : t(i18n, "billingManageTitle", "Manage subscription");
 
   const bodyViewportStyle =
-    viewHeightPx.value === null ? undefined : { height: `${viewHeightPx.value}px` };
+    activeView.value === "menu" || viewHeightPx.value === null
+      ? undefined
+      : { height: `${viewHeightPx.value}px` };
 
   return (
     <dialog
