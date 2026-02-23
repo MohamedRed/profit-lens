@@ -249,6 +249,20 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
       </section>
 
       {!isFreePlan ? (
+        <BillingStripePortalCard
+          title={t(i18n, 'billingStripePortalTitle', 'Stripe billing')}
+          subtitle={t(
+            i18n,
+            'billingStripePortalSubtitle',
+            'Open Stripe to manage invoices, payment methods, and billing details.',
+          )}
+          buttonLabel={t(i18n, 'billingStripePortalButton', 'Open Stripe billing')}
+          disabled={actionLoading.value}
+          onOpen$={openStripePortal$}
+        />
+      ) : null}
+
+      {!isFreePlan ? (
         <section class="ui-settings-card ui-settings-billing-card">
           <p class="ui-settings-title">{t(i18n, 'billingCancellationTitle', 'Cancellation')}</p>
           <p class="ui-settings-subtitle">
@@ -269,20 +283,6 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
               : t(i18n, 'billingCancelAtPeriodEndButton', 'Cancel at period end')}
           </Button>
         </section>
-      ) : null}
-
-      {!isFreePlan ? (
-        <BillingStripePortalCard
-          title={t(i18n, 'billingStripePortalTitle', 'Stripe billing')}
-          subtitle={t(
-            i18n,
-            'billingStripePortalSubtitle',
-            'Open Stripe to manage invoices, payment methods, and billing details.',
-          )}
-          buttonLabel={t(i18n, 'billingStripePortalButton', 'Open Stripe billing')}
-          disabled={actionLoading.value}
-          onOpen$={openStripePortal$}
-        />
       ) : null}
 
       {status.value ? (
