@@ -246,7 +246,7 @@
   border-radius: 20px 20px 0 0;
   border: 1px solid var(--pl-color-outline);
   border-bottom: 0;
-  background: var(--pl-color-surface);
+  background: #fff;
   box-shadow: 0 -16px 40px rgba(24, 24, 27, 0.18);
   padding: 14px;
   display: grid;
