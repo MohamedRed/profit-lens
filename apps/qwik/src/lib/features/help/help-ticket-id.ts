@@ -34,11 +34,6 @@ const readFromPath = (path: string): string | null => {
     return decodeTicketId(detailsMatch[1]);
   }
 
-  const directMatch = path.match(/\/(?:next\/)?app\/help\/tickets\/([^/?#]+)\/?$/);
-  if (directMatch) {
-    return decodeTicketId(directMatch[1]);
-  }
-
   return null;
 };
 
