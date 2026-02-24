@@ -87,7 +87,6 @@ export default component$(() => {
                 loading.value = true;
                 try {
                   await registerWithEmail(email.value.trim(), password.value);
-                  navigate('/next/app/offer');
                 } catch (error) {
                   status.value = resolveUserFacingErrorMessage(i18n, error, 'auth-register');
                 } finally {
