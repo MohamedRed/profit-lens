@@ -1,5 +1,5 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Link, useNavigate } from '@builder.io/qwik-city';
+import { Link } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { signOutCurrentUser } from '../../../lib/firebase/auth';
 import { billingPlans } from '../../../lib/config/runtime-config';
@@ -29,7 +29,6 @@ const formatCurrency = (locale: string, value: number): string => {
 export default component$(() => {
   const auth = useAuth();
   const i18n = useI18n();
-  const navigate = useNavigate();
 
   const profile = useSignal<UserProfile | null>(null);
   const vehicles = useSignal<VehicleProfile[]>([]);
@@ -148,7 +147,7 @@ export default component$(() => {
                   class="ui-settings-vehicle-row ui-settings-tile-link"
                   onClick$={() => {
                     writeVehicleEditorTargetId(vehicle.id);
-                    void navigate(buildVehicleEditorHref(vehicle.id));
+                    window.location.assign(buildVehicleEditorHref(vehicle.id));
                   }}
                   aria-label={t(i18n, 'editVehicleButton', 'Edit vehicle')}
                 >
