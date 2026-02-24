@@ -26,6 +26,9 @@ export const emphasizeFirstValue = (copy: string, value: string): JSXOutput => {
 
 export const resolveSubscriptionStatusToneClass = (statusRaw: string | null | undefined): string => {
   const normalized = String(statusRaw ?? '').trim().toLowerCase();
+  if (normalized === 'free') {
+    return 'is-info';
+  }
   if (normalized === 'active' || normalized === 'trialing') {
     return 'is-success';
   }

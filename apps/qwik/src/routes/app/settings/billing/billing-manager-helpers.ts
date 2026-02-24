@@ -17,6 +17,12 @@ export const resolveSelectedPriceId = (entitlement: Entitlement | null): string 
   if (!entitlement) {
     return '';
   }
+  const normalizedPlanId = entitlement.planId.trim().toLowerCase();
+  const normalizedStatus = entitlement.status.trim().toLowerCase();
+  const isFreeEntitlement = normalizedPlanId === 'free' || normalizedStatus === 'free';
+  if (isFreeEntitlement) {
+    return resolveDefaultPlanPriceId();
+  }
   if (
     entitlement.stripePriceId &&
     billingPlans.some((plan) => plan.priceId === entitlement.stripePriceId)

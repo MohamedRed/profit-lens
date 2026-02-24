@@ -197,6 +197,10 @@
   color: var(--pl-color-success);
 }
 
+.ui-settings-billing-status-value.is-info {
+  color: var(--pl-color-purple);
+}
+
 .ui-settings-billing-status-value.is-warning {
   color: #b45309;
 }
