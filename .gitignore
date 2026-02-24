@@ -23,22 +23,17 @@ migrate_working_dir/
 # is commented out by default.
 #.vscode/
 
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+# Build and local tooling
 .dart_tool/
-.flutter-plugins-dependencies
 .gemini/
 gha-creds-*.json
 .firebase/
 .codex/
-.pub-cache/
-.pub/
 /build/
 /coverage/
 
 # Local dev config (keys)
-/tool/dev_dart_defines.json
+/tool/dev_runtime_defines.json
 functions/.env.*
 
 # Terraform local state/cache
@@ -51,8 +46,3 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release

@@ -5,16 +5,11 @@ on:
     types: [closed]
     branches: [main]
     paths:
-      - "lib/**"
-      - "web/**"
       - "apps/qwik/**"
-      - "assets/**"
       - "tool/**"
-      - "l10n.yaml"
-      - "pubspec.yaml"
-      - "pubspec.lock"
       - "firebase.json"
       - ".firebaserc"
+      - ".github/workflows/firebase-hosting-deploy.yml"
 
 permissions:
   contents: read
@@ -27,7 +22,7 @@ jobs:
     env:
       FIREBASE_PROJECT_ID: profit-lens-prod-2e417
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROFIT_LENS_PROD_2E417 }}
-      WEB_DART_DEFINES_JSON: ${{ secrets.WEB_DART_DEFINES_JSON }}
+      WEB_RUNTIME_DEFINES_JSON: ${{ secrets.WEB_RUNTIME_DEFINES_JSON }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,24 +32,13 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-
-      - name: Enable web
-        run: flutter config --enable-web
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Write Dart defines
+      - name: Write runtime defines
         run: |
-          if [ -z "$WEB_DART_DEFINES_JSON" ]; then
-            echo "Missing WEB_DART_DEFINES_JSON secret."
+          if [ -z "$WEB_RUNTIME_DEFINES_JSON" ]; then
+            echo "Missing WEB_RUNTIME_DEFINES_JSON secret."
             exit 1
           fi
-          printf "%s" "$WEB_DART_DEFINES_JSON" > tool/dev_dart_defines.json
+          printf "%s" "$WEB_RUNTIME_DEFINES_JSON" > tool/dev_runtime_defines.json
 
       - name: Install Firebase CLI
         run: npm install -g firebase-tools

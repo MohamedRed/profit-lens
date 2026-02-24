@@ -22,7 +22,7 @@ export default defineConfig(({ mode }): UserConfig => {
           skipWaiting: true,
           navigateFallback: null,
           globPatterns: ['**/*.{js,css,json,webmanifest,png,svg,ico,woff2,ttf}'],
-          navigateFallbackDenylist: [/^\/app\//, /^\/$/, /^\/index\.html$/],
+          navigateFallbackDenylist: [/^\/$/, /^\/index\.html$/],
         },
         manifest: {
           name: 'Liive Profit',

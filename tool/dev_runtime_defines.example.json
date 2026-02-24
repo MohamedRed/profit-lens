@@ -1,0 +1,5 @@
+{
+  "STRIPE_PRICE_TIER_9": "price_tier_9_id",
+  "STRIPE_PRICE_TIER_24": "price_tier_24_id",
+  "STRIPE_PRICE_TIER_34": "price_tier_34_id"
+}

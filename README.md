@@ -1,64 +1,58 @@
 # ProfitLens
 
-ProfitLens is a Flutter app to analyze delivery offers (e.g., Uber Eats) and compute profitability after energy costs and auto-entrepreneur contributions. It targets mobile + PWA with French, Arabic, and English localization.
+ProfitLens is a Qwik web app for analyzing delivery offers (for example Uber Eats) and estimating profitability after costs and contributions.
 
-## Features (MVP)
-- Manual offer entry (payout + distance) and vehicle cost profile
-- Profitability breakdown (energy, maintenance, depreciation, social contributions)
-- France presets with sources visible in-app (editable)
-- Gemini-only screenshot extraction via Cloud Functions
+## Repository layout
 
-## Local setup
+- `apps/qwik`: Main web application (Qwik + Qwik City)
+- `functions`: Firebase Cloud Functions backend
+- `infrastructure/terraform`: Infrastructure as code
+- `tool`: Build and deployment helper scripts
+
+## Local development
+
+1. Create local runtime defines:
+   ```bash
+   cp tool/dev_runtime_defines.example.json tool/dev_runtime_defines.json
+   ```
+2. Fill `tool/dev_runtime_defines.json` with valid Stripe price IDs.
+3. Run the Qwik app:
+   ```bash
+   ./tool/run_web.sh
+   ```
+
+## Production web bundle
+
+Build the Firebase Hosting bundle:
+
 ```bash
-flutter pub get
-flutter gen-l10n
-flutter run
+./tool/build_web.sh
 ```
 
-## Firebase setup (Auth + Firestore + Functions)
-Firebase app configs are already added for:
-- Android: `android/app/google-services.json`
-- iOS: `ios/Runner/GoogleService-Info.plist`
-- Web: `lib/firebase_options.dart`
+Validate the expected bundle structure:
 
-Enable Firebase initialization by setting:
 ```bash
-flutter run --dart-define=FIREBASE_CONFIGURED=true
+./tool/verify_web_bundle_layout.sh
 ```
 
-## Gemini-only extraction (Cloud Function)
-The app calls a Firebase callable function named `extractOfferFromImage`.
-1. Set the Gemini API key as a secret:
-   ```bash
-   firebase functions:secrets:set GEMINI_API_KEY
-   ```
-2. Deploy functions:
-   ```bash
-   firebase deploy --only functions
-   ```
+## Firebase deployment
 
-## France license plate lookup (RapidAPI)
-Vehicle lookup via plate uses the `lookupVehicleByPlate` callable function.
-1. Set the RapidAPI key as a secret:
-   ```bash
-   firebase functions:secrets:set RAPIDAPI_PLAQUE_KEY
-   ```
-2. Deploy functions:
-   ```bash
-   firebase deploy --only functions
-   ```
+- Hosting deploy uses `firebase.json` and `tool/build_web.sh`
+- Functions deploy uses `functions/`
 
-## France presets
-Defaults live in `lib/features/defaults/data/france_defaults.dart` and can be overridden by the user. Sources are shown in the app under "Preset sources".
+Examples:
 
-Update cadence: add a scheduled backend task later if you want live updates.
+```bash
+firebase deploy --only hosting
+firebase deploy --only functions
+```
 
-## Structure
-`lib/features` is organized by domain (offers, profitability, vehicles, auth). Keep files small and move UI sections into sub-widgets to stay modular.
+## Runtime config
 
-## Lighthouse flow modes (web)
-To benchmark specific auth entry flows on web, use the `entry` query param:
-- Install gate flow: `https://profit-lens-prod-2e417.web.app/?entry=install`
-- Login flow: `https://profit-lens-prod-2e417.web.app/?entry=login`
+- Firebase client config source: `apps/qwik/public/firebase-web-config.js`
+- Billing runtime defines source: `tool/dev_runtime_defines.json`
+- Generated TypeScript config files:
+  - `apps/qwik/src/lib/config/firebase-web-config.ts`
+  - `apps/qwik/src/lib/config/billing-defines.ts`
 
-If `entry` is omitted, default runtime behavior is used.
+Use `tool/sync_web_runtime_config.sh` to regenerate generated config files after runtime changes.

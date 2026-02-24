@@ -1,1 +1,0 @@
-enum OfferSource { manual, screenshot }

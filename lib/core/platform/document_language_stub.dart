@@ -1,1 +1,0 @@
-void setDocumentLanguage(String languageCode) {}

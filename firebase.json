@@ -34,15 +34,6 @@
         ]
       },
       {
-        "source": "/app/index.html",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      },
-      {
         "source": "/next/index.html",
         "headers": [
           {
@@ -106,96 +97,6 @@
         ]
       },
       {
-        "source": "/bootstrap.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      },
-      {
-        "source": "/bootstrap_core.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      },
-      {
-        "source": "/bootstrap_auth.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      },
-      {
-        "source": "/locales.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      },
-      {
-        "source": "/firebase-web-config.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      },
-      {
-        "source": "/firebase-messaging-sw.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      },
-      {
-        "source": "/app/flutter_service_worker.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      },
-      {
-        "source": "/app/flutter_bootstrap.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      },
-      {
-        "source": "/app/main.dart.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      },
-      {
-        "source": "/app/manifest.json",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      },
-      {
         "source": "/next/sw.js",
         "headers": [
           {
@@ -232,6 +133,15 @@
         ]
       },
       {
+        "source": "/next/i18n/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
         "source": "/next/build/**",
         "headers": [
           {
@@ -250,25 +160,7 @@
         ]
       },
       {
-        "source": "/app/assets/**",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public,max-age=31536000,immutable"
-          }
-        ]
-      },
-      {
-        "source": "/app/canvaskit/**",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public,max-age=31536000,immutable"
-          }
-        ]
-      },
-      {
-        "source": "**/*.@(png|jpg|jpeg|gif|svg|webp|ico|wasm|ttf|otf)",
+        "source": "**/*.@(png|jpg|jpeg|gif|svg|webp|ico|wasm|ttf|otf|woff2)",
         "headers": [
           {
             "key": "Cache-Control",
@@ -285,14 +177,6 @@
       {
         "source": "/next/**",
         "destination": "/next/index.html"
-      },
-      {
-        "source": "/app",
-        "destination": "/app/index.html"
-      },
-      {
-        "source": "/app/**",
-        "destination": "/app/index.html"
       }
     ]
   }
