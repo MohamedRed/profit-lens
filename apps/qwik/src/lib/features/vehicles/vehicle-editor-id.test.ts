@@ -17,7 +17,16 @@ describe('vehicle-editor-id', () => {
     expect(readVehicleEditorId(undefined, '/next/app/settings/vehicles/edit', '')).toBeNull();
   });
 
+  it('reads id from legacy edit path', () => {
+    expect(readVehicleEditorId(undefined, '/next/app/settings/vehicles/edit/vehicle-123', '')).toBe('vehicle-123');
+  });
+
+  it('reads id from legacy direct vehicle path', () => {
+    expect(readVehicleEditorId(undefined, '/next/app/settings/vehicles/vehicle-123', '')).toBe('vehicle-123');
+  });
+
   it('rejects ids containing a slash', () => {
     expect(readVehicleEditorId(undefined, '/next/app/settings/vehicles/edit', '?vehicleId=a%2Fb')).toBeNull();
+    expect(readVehicleEditorId(undefined, '/next/app/settings/vehicles/edit/a%2Fb', '')).toBeNull();
   });
 });

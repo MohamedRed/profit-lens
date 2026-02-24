@@ -31,9 +31,23 @@ const decodeVehicleId = (raw: string | null | undefined): string | null => {
   return normalized;
 };
 
+const readFromPath = (path: string): string | null => {
+  const legacyEditMatch = path.match(/\/(?:next\/)?app\/settings\/vehicles\/edit\/([^/?#]+)\/?$/);
+  if (legacyEditMatch) {
+    return decodeVehicleId(legacyEditMatch[1]);
+  }
+
+  const legacyDirectMatch = path.match(/\/(?:next\/)?app\/settings\/vehicles\/([^/?#]+)\/?$/);
+  if (legacyDirectMatch) {
+    return decodeVehicleId(legacyDirectMatch[1]);
+  }
+
+  return null;
+};
+
 export const readVehicleEditorId = (
   paramsVehicleId: string | undefined,
-  _path: string,
+  path: string,
   search: string,
 ): string | null => {
   const fromParams = decodeVehicleId(paramsVehicleId);
@@ -47,5 +61,5 @@ export const readVehicleEditorId = (
     return fromQuery;
   }
 
-  return null;
+  return readFromPath(path);
 };
