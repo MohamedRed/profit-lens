@@ -30,12 +30,31 @@ describe('help-ticket-id', () => {
     expect(readHelpTicketId(undefined, '/app/help/tickets/details/abc-123', '', '')).toBe('abc-123');
   });
 
+  it('reads ticket id from /next details path', () => {
+    expect(readHelpTicketId(undefined, '/next/app/help/tickets/details/abc-123', '', '')).toBe('abc-123');
+  });
+
+  it('reads ticket id from /next direct path', () => {
+    expect(readHelpTicketId(undefined, '/next/app/help/tickets/abc-123', '', '')).toBe('abc-123');
+  });
+
   it('reads ticket id from redirect query payload', () => {
     expect(
       readHelpTicketId(
         undefined,
         '/app/help/tickets/details',
         '?redirect=%2Fapp%2Fhelp%2Ftickets%2Fdetails%2Fabc-123',
+        '',
+      ),
+    ).toBe('abc-123');
+  });
+
+  it('reads ticket id from /next redirect query payload', () => {
+    expect(
+      readHelpTicketId(
+        undefined,
+        '/next/app/help/tickets/details',
+        '?redirect=%2Fnext%2Fapp%2Fhelp%2Ftickets%2Fdetails%2Fabc-123',
         '',
       ),
     ).toBe('abc-123');

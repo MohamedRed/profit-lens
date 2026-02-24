@@ -29,12 +29,12 @@ const decodeTicketId = (raw: string | null | undefined): string | null => {
 };
 
 const readFromPath = (path: string): string | null => {
-  const detailsMatch = path.match(/\/app\/help\/tickets\/details\/([^/?#]+)\/?$/);
+  const detailsMatch = path.match(/\/(?:next\/)?app\/help\/tickets\/details\/([^/?#]+)\/?$/);
   if (detailsMatch) {
     return decodeTicketId(detailsMatch[1]);
   }
 
-  const directMatch = path.match(/\/app\/help\/tickets\/([^/?#]+)\/?$/);
+  const directMatch = path.match(/\/(?:next\/)?app\/help\/tickets\/([^/?#]+)\/?$/);
   if (directMatch) {
     return decodeTicketId(directMatch[1]);
   }
