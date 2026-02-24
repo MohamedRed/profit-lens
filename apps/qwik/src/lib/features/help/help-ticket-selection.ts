@@ -1,20 +1,40 @@
 const selectedHelpTicketIdKey = 'pl-help-selected-ticket-id';
 
-const isBrowser = (): boolean => {
-  return typeof window !== 'undefined' && typeof sessionStorage !== 'undefined';
+const readSessionStorage = (): Storage | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  try {
+    return window.sessionStorage;
+  } catch {
+    return null;
+  }
 };
 
 export const saveSelectedHelpTicketId = (ticketId: string): void => {
-  if (!isBrowser() || !ticketId) {
+  if (!ticketId) {
     return;
   }
-  sessionStorage.setItem(selectedHelpTicketIdKey, ticketId);
+  const storage = readSessionStorage();
+  if (!storage) {
+    return;
+  }
+  try {
+    storage.setItem(selectedHelpTicketIdKey, ticketId);
+  } catch {
+    // Ignore storage failures to avoid breaking ticket navigation.
+  }
 };
 
 export const readSelectedHelpTicketId = (): string | null => {
-  if (!isBrowser()) {
+  const storage = readSessionStorage();
+  if (!storage) {
     return null;
   }
-  const value = sessionStorage.getItem(selectedHelpTicketIdKey);
-  return value && value.length > 0 ? value : null;
+  try {
+    const value = storage.getItem(selectedHelpTicketIdKey);
+    return value && value.length > 0 ? value : null;
+  } catch {
+    return null;
+  }
 };
