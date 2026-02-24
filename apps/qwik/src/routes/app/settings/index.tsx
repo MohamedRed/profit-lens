@@ -14,7 +14,6 @@ import type { DeviceEntry } from '../../../lib/types/device';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
 import { buildVehicleEditorHref } from './shared/vehicle-editor-href';
-import { writeVehicleEditorTargetId } from './shared/vehicle-editor-target';
 import { useSettingsTabSession } from './use-settings-tab-session';
 
 const formatCurrency = (locale: string, value: number): string => {
@@ -142,13 +141,9 @@ export default component$(() => {
           <ul class="ui-settings-vehicles-inline-list">
             {vehicles.value.map((vehicle) => (
               <li key={vehicle.id}>
-                <button
-                  type="button"
+                <Link
                   class="ui-settings-vehicle-row ui-settings-tile-link"
-                  onClick$={() => {
-                    writeVehicleEditorTargetId(vehicle.id);
-                    window.location.assign(buildVehicleEditorHref(vehicle.id));
-                  }}
+                  href={buildVehicleEditorHref(vehicle.id)}
                   aria-label={t(i18n, 'editVehicleButton', 'Edit vehicle')}
                 >
                   <div>
@@ -158,7 +153,7 @@ export default component$(() => {
                   <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
                     chevron_right
                   </span>
-                </button>
+                </Link>
               </li>
             ))}
           </ul>
