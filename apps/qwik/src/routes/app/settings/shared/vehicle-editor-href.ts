@@ -10,5 +10,5 @@ export const buildVehicleEditorHref = (vehicleId: string, backToHref?: string): 
   if (isValidBackToHref(backToHref)) {
     params.set('backTo', backToHref);
   }
-  return `/next/app/settings/vehicles/edit/?${params.toString()}`;
+  return `/next/app/settings/vehicles/edit?${params.toString()}`;
 };

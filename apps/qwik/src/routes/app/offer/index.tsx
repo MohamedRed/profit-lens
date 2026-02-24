@@ -250,7 +250,7 @@ export default component$(() => {
       offerId: record.id,
       backTo: '/next/app/offer',
     });
-    await navigate(`/next/app/history/details/?${search.toString()}`);
+    await navigate(`/next/app/history/details?${search.toString()}`);
   });
 
   const user = auth.user.value;

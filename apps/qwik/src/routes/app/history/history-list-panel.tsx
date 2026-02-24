@@ -44,7 +44,7 @@ export const HistoryListPanel = component$<HistoryListPanelProps>((props) => {
           <li key={item.id} class="ui-history-item">
             <Link
               class="ui-history-item-link"
-              href={`/next/app/history/details/?offerId=${encodeURIComponent(item.id)}&backTo=${encodeURIComponent('/next/app/history')}`}
+              href={`/next/app/history/details?offerId=${encodeURIComponent(item.id)}&backTo=${encodeURIComponent('/next/app/history')}`}
               onClick$={() => {
                 saveExplicitBackTarget('history/details', '/next/app/history');
                 props.onHistoryItemClick$(item.id);

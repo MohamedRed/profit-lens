@@ -7,6 +7,10 @@ import {
 import { useAuth } from '../../../../../lib/auth/auth-context';
 import { readHelpTicketId } from '../../../../../lib/features/help/help-ticket-id';
 import {
+  readSelectedHelpTicketId,
+  saveSelectedHelpTicketId,
+} from '../../../../../lib/features/help/help-ticket-selection';
+import {
   watchHelpTicket,
   watchHelpTicketAttachments,
   watchHelpTicketTimeline,
@@ -39,7 +43,7 @@ export default component$(() => {
     const path = track(() => location.url.pathname);
     const search = track(() => location.url.search);
     const hash = track(() => location.url.hash);
-    const ticketId = readHelpTicketId(ticketParam, path, search, hash);
+    const ticketId = readHelpTicketId(ticketParam, path, search, hash) ?? readSelectedHelpTicketId();
 
     if (!user || !ticketId) {
       loading.value = false;
@@ -54,6 +58,7 @@ export default component$(() => {
     loading.value = true;
     attachmentsLoading.value = true;
     loadError.value = '';
+    saveSelectedHelpTicketId(ticketId);
     const unsubscribeTicket = watchHelpTicket(user.uid, ticketId, (value) => {
       ticket.value = value;
       loading.value = false;

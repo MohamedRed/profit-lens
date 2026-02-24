@@ -5,6 +5,10 @@ import {
   SettingsFormSkeleton,
 } from '../../../../../components/ui/page-loading-skeleton';
 import { readVehicleEditorId } from '../../../../../lib/features/vehicles/vehicle-editor-id';
+import {
+  readSelectedVehicleEditorId,
+  saveSelectedVehicleEditorId,
+} from '../../../../../lib/features/vehicles/vehicle-editor-selection';
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 import { isValidBackToHref } from '../../shared/vehicle-editor-href';
 import { VehicleEditor } from '../vehicle-editor';
@@ -18,7 +22,12 @@ export default component$(() => {
 
   useVisibleTask$(({ track }) => {
     track(() => location.url.href);
-    vehicleId.value = readVehicleEditorId(undefined, location.url.pathname, location.url.search);
+    const resolvedVehicleId =
+      readVehicleEditorId(undefined, location.url.pathname, location.url.search) ?? readSelectedVehicleEditorId();
+    vehicleId.value = resolvedVehicleId;
+    if (resolvedVehicleId) {
+      saveSelectedVehicleEditorId(resolvedVehicleId);
+    }
     const returnToHref = location.url.searchParams.get('backTo');
     resolvedBackToHref.value = isValidBackToHref(returnToHref) ? returnToHref : null;
     routeStateResolved.value = true;

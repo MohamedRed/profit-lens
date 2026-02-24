@@ -6,6 +6,7 @@ import {
 } from '../../../../components/ui/page-loading-skeleton';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { formatHelpTicketDisplayNumber } from '../../../../lib/features/help/help-ticket-reference';
+import { saveSelectedHelpTicketId } from '../../../../lib/features/help/help-ticket-selection';
 import { watchHelpTickets } from '../../../../lib/features/help/help-service';
 import { formatHelpDate, statusLabel } from '../../../../lib/features/help/help-ui-utils';
 import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
@@ -66,7 +67,10 @@ export default component$(() => {
             <li key={ticket.id} class="ui-help-ticket-item">
               <Link
                 class="ui-help-ticket-link ui-help-ticket-link-button"
-                href={`/next/app/help/tickets/details/?ticketId=${encodeURIComponent(ticket.id)}`}
+                href={`/next/app/help/tickets/details?ticketId=${encodeURIComponent(ticket.id)}`}
+                onClick$={() => {
+                  saveSelectedHelpTicketId(ticket.id);
+                }}
               >
                 <div class="ui-help-ticket-row">
                   <span class="ui-help-ticket-id">#{formatHelpTicketDisplayNumber(ticket.id)}</span>

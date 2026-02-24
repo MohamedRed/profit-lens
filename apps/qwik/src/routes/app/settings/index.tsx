@@ -8,6 +8,7 @@ import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-e
 import { startCheckout } from '../../../lib/features/billing/billing-service';
 import { isRunningAsInstalledPwa } from '../../../lib/features/pwa/pwa-install-state';
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
+import { saveSelectedVehicleEditorId } from '../../../lib/features/vehicles/vehicle-editor-selection';
 import { VisualOptionPicker } from '../../../components/ui/visual-option-picker';
 import type { Entitlement, OfferUsage } from '../../../lib/types/billing';
 import type { DeviceEntry } from '../../../lib/types/device';
@@ -145,6 +146,9 @@ export default component$(() => {
                   class="ui-settings-vehicle-row ui-settings-tile-link"
                   href={buildVehicleEditorHref(vehicle.id)}
                   aria-label={t(i18n, 'editVehicleButton', 'Edit vehicle')}
+                  onClick$={() => {
+                    saveSelectedVehicleEditorId(vehicle.id);
+                  }}
                 >
                   <div>
                     <p class="ui-settings-vehicle-name">{vehicle.name}</p>
