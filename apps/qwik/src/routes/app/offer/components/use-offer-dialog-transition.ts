@@ -1,7 +1,7 @@
 import { useSignal, useVisibleTask$, type Signal } from '@builder.io/qwik';
 import { lockPageScroll, unlockPageScroll } from '../../../../lib/ui/page-scroll-lock';
 
-const DEFAULT_CLOSE_DURATION_MS = 260;
+const DEFAULT_CLOSE_DURATION_MS = 280;
 
 interface UseOfferDialogTransitionOptions {
   closeDurationMs?: number;
@@ -11,6 +11,7 @@ interface UseOfferDialogTransitionOptions {
 interface OfferDialogTransitionState {
   dialogRef: Signal<HTMLDialogElement | undefined>;
   isClosing: Signal<boolean>;
+  isOpened: Signal<boolean>;
 }
 
 export const useOfferDialogTransition = (
@@ -18,7 +19,9 @@ export const useOfferDialogTransition = (
 ): OfferDialogTransitionState => {
   const dialogRef = useSignal<HTMLDialogElement>();
   const isClosing = useSignal(false);
+  const isOpened = useSignal(false);
   const closeTimerId = useSignal<number | null>(null);
+  const openFrameId = useSignal<number | null>(null);
   const hasScrollLock = useSignal(false);
   const closeDurationMs = options.closeDurationMs ?? DEFAULT_CLOSE_DURATION_MS;
 
@@ -28,10 +31,15 @@ export const useOfferDialogTransition = (
         window.clearTimeout(closeTimerId.value);
         closeTimerId.value = null;
       }
+      if (openFrameId.value !== null) {
+        window.cancelAnimationFrame(openFrameId.value);
+        openFrameId.value = null;
+      }
       if (hasScrollLock.value) {
         unlockPageScroll();
         hasScrollLock.value = false;
       }
+      isOpened.value = false;
     });
   });
 
@@ -44,6 +52,10 @@ export const useOfferDialogTransition = (
         window.clearTimeout(closeTimerId.value);
         closeTimerId.value = null;
       }
+      if (openFrameId.value !== null) {
+        window.cancelAnimationFrame(openFrameId.value);
+        openFrameId.value = null;
+      }
     });
 
     if (!dialog) {
@@ -51,6 +63,7 @@ export const useOfferDialogTransition = (
         unlockPageScroll();
         hasScrollLock.value = false;
       }
+      isOpened.value = false;
       return;
     }
 
@@ -59,7 +72,12 @@ export const useOfferDialogTransition = (
         window.clearTimeout(closeTimerId.value);
         closeTimerId.value = null;
       }
+      if (openFrameId.value !== null) {
+        window.cancelAnimationFrame(openFrameId.value);
+        openFrameId.value = null;
+      }
       isClosing.value = false;
+      isOpened.value = false;
       dialog.classList.remove('is-closing');
       if (!hasScrollLock.value) {
         lockPageScroll({ disableTouchAction: false });
@@ -68,6 +86,10 @@ export const useOfferDialogTransition = (
       if (!dialog.open) {
         dialog.showModal();
       }
+      openFrameId.value = window.requestAnimationFrame(() => {
+        openFrameId.value = null;
+        isOpened.value = true;
+      });
       return;
     }
 
@@ -76,14 +98,23 @@ export const useOfferDialogTransition = (
         unlockPageScroll();
         hasScrollLock.value = false;
       }
+      if (!dialog.open) {
+        isOpened.value = false;
+      }
       return;
     }
 
+    if (openFrameId.value !== null) {
+      window.cancelAnimationFrame(openFrameId.value);
+      openFrameId.value = null;
+    }
+    isOpened.value = false;
     isClosing.value = true;
     dialog.classList.add('is-closing');
     closeTimerId.value = window.setTimeout(() => {
       closeTimerId.value = null;
       isClosing.value = false;
+      isOpened.value = false;
       if (dialog.open) {
         dialog.close();
       }
@@ -98,5 +129,6 @@ export const useOfferDialogTransition = (
   return {
     dialogRef,
     isClosing,
+    isOpened,
   };
 };
