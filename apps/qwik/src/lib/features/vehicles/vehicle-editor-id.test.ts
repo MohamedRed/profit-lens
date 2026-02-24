@@ -12,24 +12,12 @@ describe('vehicle-editor-id', () => {
     );
   });
 
-  it('reads id from direct /next path', () => {
-    expect(readVehicleEditorId(undefined, '/next/app/settings/vehicles/vehicle-123', '')).toBe('vehicle-123');
-  });
-
-  it('reads id from direct /app path', () => {
-    expect(readVehicleEditorId(undefined, '/app/settings/vehicles/vehicle-123', '')).toBe('vehicle-123');
-  });
-
-  it('reads id from legacy /edit path', () => {
-    expect(readVehicleEditorId(undefined, '/next/app/settings/vehicles/edit/vehicle-123', '')).toBe('vehicle-123');
-  });
-
-  it('rejects reserved route keywords', () => {
+  it('returns null when no id is provided', () => {
     expect(readVehicleEditorId(undefined, '/next/app/settings/vehicles/new', '')).toBeNull();
     expect(readVehicleEditorId(undefined, '/next/app/settings/vehicles/edit', '')).toBeNull();
   });
 
   it('rejects ids containing a slash', () => {
-    expect(readVehicleEditorId(undefined, '/next/app/settings/vehicles/a%2Fb', '')).toBeNull();
+    expect(readVehicleEditorId(undefined, '/next/app/settings/vehicles/edit', '?vehicleId=a%2Fb')).toBeNull();
   });
 });

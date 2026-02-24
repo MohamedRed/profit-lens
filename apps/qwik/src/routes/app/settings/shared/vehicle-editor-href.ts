@@ -6,12 +6,9 @@ export const isValidBackToHref = (value: string | null | undefined): value is st
 };
 
 export const buildVehicleEditorHref = (vehicleId: string, backToHref?: string): string => {
-  const encodedVehicleId = encodeURIComponent(vehicleId);
-  const basePath = `/next/app/settings/vehicles/${encodedVehicleId}`;
-  const params = new URLSearchParams();
+  const params = new URLSearchParams({ vehicleId });
   if (isValidBackToHref(backToHref)) {
     params.set('backTo', backToHref);
   }
-  const query = params.toString();
-  return query ? `${basePath}?${query}` : basePath;
+  return `/next/app/settings/vehicles/edit?${params.toString()}`;
 };

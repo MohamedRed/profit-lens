@@ -1,5 +1,5 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Link, useNavigate } from '@builder.io/qwik-city';
+import { Link } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { signOutCurrentUser } from '../../../lib/firebase/auth';
 import { billingPlans } from '../../../lib/config/runtime-config';
@@ -28,7 +28,6 @@ const formatCurrency = (locale: string, value: number): string => {
 export default component$(() => {
   const auth = useAuth();
   const i18n = useI18n();
-  const navigate = useNavigate();
 
   const profile = useSignal<UserProfile | null>(null);
   const vehicles = useSignal<VehicleProfile[]>([]);
@@ -142,12 +141,9 @@ export default component$(() => {
           <ul class="ui-settings-vehicles-inline-list">
             {vehicles.value.map((vehicle) => (
               <li key={vehicle.id}>
-                <button
-                  type="button"
+                <Link
                   class="ui-settings-vehicle-row ui-settings-tile-link"
-                  onClick$={() => {
-                    void navigate(buildVehicleEditorHref(vehicle.id));
-                  }}
+                  href={buildVehicleEditorHref(vehicle.id)}
                   aria-label={t(i18n, 'editVehicleButton', 'Edit vehicle')}
                 >
                   <div>
@@ -157,7 +153,7 @@ export default component$(() => {
                   <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">
                     chevron_right
                   </span>
-                </button>
+                </Link>
               </li>
             ))}
           </ul>

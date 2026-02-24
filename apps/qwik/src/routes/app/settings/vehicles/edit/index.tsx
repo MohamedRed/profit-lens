@@ -1,52 +1,19 @@
-import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { component$ } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
-import {
-  LoadingSkeletonAnnouncer,
-  SettingsFormSkeleton,
-} from '../../../../../components/ui/page-loading-skeleton';
 import { readVehicleEditorId } from '../../../../../lib/features/vehicles/vehicle-editor-id';
-import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 import { isValidBackToHref } from '../../shared/vehicle-editor-href';
-import {
-  clearVehicleEditorTargetId,
-  readVehicleEditorTargetId,
-} from '../../shared/vehicle-editor-target';
 import { VehicleEditor } from '../vehicle-editor';
 
 export default component$(() => {
-  const i18n = useI18n();
   const location = useLocation();
-  const vehicleId = useSignal<string | null>(null);
-  const resolvedBackToHref = useSignal<string | null>(null);
-  const routeStateResolved = useSignal(false);
-
-  useVisibleTask$(({ track }) => {
-    track(() => location.url.href);
-    const resolvedVehicleId =
-      readVehicleEditorId(undefined, location.url.pathname, location.url.search) ?? readVehicleEditorTargetId();
-    vehicleId.value = resolvedVehicleId;
-    if (resolvedVehicleId) {
-      clearVehicleEditorTargetId();
-    }
-    const returnToHref = location.url.searchParams.get('backTo');
-    resolvedBackToHref.value = isValidBackToHref(returnToHref) ? returnToHref : null;
-    routeStateResolved.value = true;
-  });
-
-  if (!routeStateResolved.value) {
-    return (
-      <div aria-busy="true">
-        <LoadingSkeletonAnnouncer label={t(i18n, 'loadingLabel', 'Loading...')} />
-        <SettingsFormSkeleton fieldCount={3} />
-      </div>
-    );
-  }
+  const vehicleId = readVehicleEditorId(undefined, location.url.pathname, location.url.search);
+  const returnToHref = location.url.searchParams.get('backTo');
 
   return (
     <VehicleEditor
       mode="edit"
-      vehicleId={vehicleId.value}
-      returnToHref={resolvedBackToHref.value}
+      vehicleId={vehicleId}
+      returnToHref={isValidBackToHref(returnToHref) ? returnToHref : null}
     />
   );
 });
