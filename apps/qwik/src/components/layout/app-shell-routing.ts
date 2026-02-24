@@ -118,7 +118,10 @@ export const resolvePopStateRecoveryHref = (
   if (!fromPath) {
     return null;
   }
-  if (fromPath.startsWith('/app/help/tickets/details') && toPath === '/app/help') {
+  if (
+    fromPath.startsWith('/app/help/tickets/details') &&
+    !toPath.startsWith('/app/help/tickets')
+  ) {
     return '/next/app/help/tickets';
   }
   return null;

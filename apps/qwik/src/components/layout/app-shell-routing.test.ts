@@ -39,6 +39,12 @@ describe('resolvePopStateRecoveryHref', () => {
     expect(resolvePopStateRecoveryHref('/app/help/tickets/details', '/app/help')).toBe('/next/app/help/tickets');
   });
 
+  it('recovers ticket list when popstate leaves ticket details to any non-ticket route', () => {
+    expect(resolvePopStateRecoveryHref('/app/help/tickets/details/abc123', '/app/offer')).toBe(
+      '/next/app/help/tickets',
+    );
+  });
+
   it('does not recover for normal popstate transitions', () => {
     expect(resolvePopStateRecoveryHref('/app/help/tickets/details', '/app/help/tickets')).toBeNull();
     expect(resolvePopStateRecoveryHref('/app/history/details', '/app/history')).toBeNull();

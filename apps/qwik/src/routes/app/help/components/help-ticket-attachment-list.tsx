@@ -10,6 +10,7 @@ interface HelpTicketAttachmentListProps {
 export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps>(({ attachments }) => {
   const i18n = useI18n();
   const previewImageIndex = useSignal<number | null>(null);
+  const loadedImageIds = useSignal<Record<string, true>>({});
   const imageAttachments = attachments.filter((attachment) => attachment.type === 'image');
   const audioAttachments = attachments.filter((attachment) => attachment.type === 'audio');
 
@@ -21,6 +22,16 @@ export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps
     previewImageIndex.value = null;
   });
 
+  const markImageLoaded$ = $((attachmentId: string) => {
+    if (loadedImageIds.value[attachmentId]) {
+      return;
+    }
+    loadedImageIds.value = {
+      ...loadedImageIds.value,
+      [attachmentId]: true,
+    };
+  });
+
   return (
     <>
       <div class="ui-help-ticket-attachments-content">
@@ -30,8 +41,11 @@ export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps
 
         {imageAttachments.length > 0 ? (
           <ul class="ui-help-ticket-attachment-gallery">
-            {imageAttachments.map((attachment, index) => (
-              <li key={attachment.id} class="ui-help-ticket-attachment-gallery-item">
+            {imageAttachments.map((attachment, index) => {
+              const isLoaded = loadedImageIds.value[attachment.id] === true;
+
+              return (
+                <li key={attachment.id} class="ui-help-ticket-attachment-gallery-item">
                 <a
                   class="ui-help-ticket-attachment-thumb"
                   href={attachment.url}
@@ -43,17 +57,32 @@ export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps
                     openPreview$(index);
                   }}
                 >
+                  <span
+                    class={{
+                      'ui-help-ticket-attachment-thumb-placeholder': true,
+                      'is-hidden': isLoaded,
+                    }}
+                    aria-hidden="true"
+                  >
+                    <span class="ui-spinner ui-help-ticket-attachment-thumb-spinner" />
+                  </span>
                   <img
-                    class="ui-help-ticket-attachment-image"
+                    class={{
+                      'ui-help-ticket-attachment-image': true,
+                      'is-loaded': isLoaded,
+                    }}
                     src={attachment.url}
                     alt={attachment.filename}
                     width={72}
                     height={72}
                     loading="lazy"
+                    onLoad$={() => markImageLoaded$(attachment.id)}
+                    onError$={() => markImageLoaded$(attachment.id)}
                   />
                 </a>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         ) : null}
 
