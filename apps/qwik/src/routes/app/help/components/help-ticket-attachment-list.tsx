@@ -46,40 +46,40 @@ export const HelpTicketAttachmentList = component$<HelpTicketAttachmentListProps
 
               return (
                 <li key={attachment.id} class="ui-help-ticket-attachment-gallery-item">
-                <a
-                  class="ui-help-ticket-attachment-thumb"
-                  href={attachment.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  title={attachment.filename}
-                  onClick$={(event) => {
-                    event.preventDefault();
-                    openPreview$(index);
-                  }}
-                >
-                  <span
-                    class={{
-                      'ui-help-ticket-attachment-thumb-placeholder': true,
-                      'is-hidden': isLoaded,
+                  <a
+                    class="ui-help-ticket-attachment-thumb"
+                    href={attachment.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={attachment.filename}
+                    onClick$={(event) => {
+                      event.preventDefault();
+                      openPreview$(index);
                     }}
-                    aria-hidden="true"
                   >
-                    <span class="ui-spinner ui-help-ticket-attachment-thumb-spinner" />
-                  </span>
-                  <img
-                    class={{
-                      'ui-help-ticket-attachment-image': true,
-                      'is-loaded': isLoaded,
-                    }}
-                    src={attachment.url}
-                    alt={attachment.filename}
-                    width={72}
-                    height={72}
-                    loading="lazy"
-                    onLoad$={() => markImageLoaded$(attachment.id)}
-                    onError$={() => markImageLoaded$(attachment.id)}
-                  />
-                </a>
+                    <span
+                      class={{
+                        'ui-help-ticket-attachment-thumb-placeholder': true,
+                        'is-hidden': isLoaded,
+                      }}
+                      aria-hidden="true"
+                    >
+                      <span class="ui-spinner ui-help-ticket-attachment-thumb-spinner" />
+                    </span>
+                    <img
+                      class={{
+                        'ui-help-ticket-attachment-image': true,
+                        'is-loaded': isLoaded,
+                      }}
+                      src={attachment.url}
+                      alt={attachment.filename}
+                      width={72}
+                      height={72}
+                      loading="lazy"
+                      onLoad$={() => markImageLoaded$(attachment.id)}
+                      onError$={() => markImageLoaded$(attachment.id)}
+                    />
+                  </a>
                 </li>
               );
             })}
