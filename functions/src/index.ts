@@ -27,6 +27,7 @@ export {
   stripeWebhook,
 } from "./billing";
 export {
+  getManagedSubscriptionState,
   changeSubscriptionPlan,
   setSubscriptionCancellation,
 } from "./billing_manage";

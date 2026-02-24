@@ -5,6 +5,7 @@ import { billingPlans } from '../../../../lib/config/runtime-config';
 import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
 import {
   changeSubscriptionPlan,
+  fetchManagedSubscriptionState,
   openStripeBillingPortal,
   setSubscriptionCancellation,
   startCheckout,
@@ -12,10 +13,12 @@ import {
   watchUsage,
 } from '../../../../lib/features/billing/billing-service';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
-import type { Entitlement, OfferUsage } from '../../../../lib/types/billing';
-import { formatDate, resolveDefaultPlanPriceId, resolveSelectedPriceId } from './billing-manager-helpers';
+import type { Entitlement, ManagedSubscriptionStateSnapshot, OfferUsage } from '../../../../lib/types/billing';
+import { resolveDefaultPlanPriceId, resolveSelectedPriceId } from './billing-manager-helpers';
+import { BillingCancellationCard } from './billing-cancellation-card';
+import { BillingOngoingSubscriptionsCard } from './billing-ongoing-subscriptions-card';
 import { BillingStripePortalCard } from './billing-sections';
-import { emphasizeFirstValue, resolveSubscriptionStatusToneClass } from './billing-view-utils';
+import { BillingSummaryCard } from './billing-summary-card';
 
 interface BillingManagerProps {
   uid: string | null;
@@ -24,11 +27,11 @@ interface BillingManagerProps {
 
 export const BillingManager = component$<BillingManagerProps>((props) => {
   const i18n = useI18n();
-  const locale = i18n.locale.value;
 
   const entitlement = useSignal<Entitlement | null>(null);
   const usage = useSignal<OfferUsage | null>(null);
   const selectedPlanPriceId = useSignal(resolveDefaultPlanPriceId());
+  const managedSubscriptionState = useSignal<ManagedSubscriptionStateSnapshot | null>(null);
   const actionLoading = useSignal(false);
   const status = useSignal('');
   const statusTone = useSignal<'success' | 'error'>('success');
@@ -59,16 +62,35 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
     if (!uid) {
       entitlement.value = null;
       usage.value = null;
+      managedSubscriptionState.value = null;
       selectedPlanPriceId.value = resolveDefaultPlanPriceId();
       return;
     }
 
     let unsubscribeUsage: (() => void) | null = null;
+    let isActive = true;
+
+    const loadManagedSubscriptions = async (nextEntitlement: Entitlement | null) => {
+      if (!isActive) {
+        return;
+      }
+      if (!nextEntitlement || nextEntitlement.planId.toLowerCase() === 'free') {
+        managedSubscriptionState.value = null;
+        return;
+      }
+      try {
+        managedSubscriptionState.value = await fetchManagedSubscriptionState();
+      } catch {
+        managedSubscriptionState.value = null;
+      }
+    };
+
     const unsubscribeEntitlement = watchEntitlement(uid, (nextEntitlement) => {
       entitlement.value = nextEntitlement;
       const resolved = resolveSelectedPriceId(nextEntitlement);
       const isKnownPlan = billingPlans.some((plan) => plan.priceId === resolved);
       selectedPlanPriceId.value = isKnownPlan ? resolved : resolveDefaultPlanPriceId();
+      void loadManagedSubscriptions(nextEntitlement);
       usage.value = null;
       if (unsubscribeUsage) {
         unsubscribeUsage();
@@ -82,6 +104,7 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
     });
 
     cleanup(() => {
+      isActive = false;
       unsubscribeEntitlement();
       if (unsubscribeUsage) {
         unsubscribeUsage();
@@ -90,23 +113,6 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
   });
 
   const isFreePlan = entitlement.value?.planId.toLowerCase() === 'free' || entitlement.value == null;
-  const offerLimit = entitlement.value?.offerLimit ?? null;
-  const usedOffers = usage.value?.offerCount ?? 0;
-  const remainingOffers = offerLimit == null ? null : Math.max(0, offerLimit - usedOffers);
-  const remainingOffersValue = remainingOffers == null ? '' : String(remainingOffers);
-  const periodEndValue = entitlement.value ? formatDate(locale, entitlement.value.periodEnd) : '';
-  const remainingOffersLabel =
-    entitlement.value && remainingOffers != null
-      ? formatTemplate(t(i18n, 'offersRemainingValue', '{remaining} remaining this month'), {
-          remaining: remainingOffersValue,
-          count: remainingOffersValue,
-        })
-      : '';
-  const periodEndsOnLabel = entitlement.value
-    ? formatTemplate(t(i18n, 'billingPeriodEndsOn', 'Period ends on {date}'), {
-        date: periodEndValue,
-      })
-    : '';
   const planOptions = billingPlans
     .filter((plan) => Boolean(plan.priceId))
     .map((plan) => ({
@@ -139,7 +145,7 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
         await startCheckout(selectedPlanPriceId.value);
         return;
       }
-      await changeSubscriptionPlan(selectedPlanPriceId.value);
+      managedSubscriptionState.value = await changeSubscriptionPlan(selectedPlanPriceId.value);
       statusTone.value = 'success';
       status.value = t(i18n, 'billingPlanChangeSuccess', 'Subscription plan updated.');
     } catch (error) {
@@ -158,7 +164,7 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
     status.value = '';
     try {
       const nextCancelState = !entitlement.value.cancelAtPeriodEnd;
-      await setSubscriptionCancellation(nextCancelState);
+      managedSubscriptionState.value = await setSubscriptionCancellation(nextCancelState);
       statusTone.value = 'success';
       status.value = nextCancelState
         ? t(i18n, 'billingCancelSuccess', 'Subscription will cancel at period end.')
@@ -193,36 +199,16 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
 
   return (
     <div class={rootClassName}>
-      <section class="ui-settings-card ui-settings-billing-card">
-        <h2 class="ui-settings-billing-title">{t(i18n, 'billingManageTitle', 'Manage subscription')}</h2>
-        {entitlement.value ? (
-          <p class="ui-settings-subtitle">
-            {t(i18n, 'subscriptionStatusLabel', 'Subscription status')}:{' '}
-            <strong
-              class={`ui-settings-billing-status-value ${resolveSubscriptionStatusToneClass(entitlement.value.status)}`}
-            >
-              {entitlement.value.status}
-            </strong>
-          </p>
-        ) : null}
-        {remainingOffersLabel ? (
-          <p class="ui-settings-subtitle">
-            {emphasizeFirstValue(remainingOffersLabel, remainingOffersValue)}
-          </p>
-        ) : null}
-        {periodEndsOnLabel ? (
-          <p class="ui-settings-subtitle">
-            {emphasizeFirstValue(periodEndsOnLabel, periodEndValue)}
-          </p>
-        ) : null}
-        {entitlement.value?.cancelAtPeriodEnd ? (
-          <p class="ui-settings-billing-alert">
-            {formatTemplate(t(i18n, 'subscriptionStatusCanceling', 'Cancels on {date}'), {
-              date: formatDate(locale, entitlement.value.periodEnd),
-            })}
-          </p>
-        ) : null}
-      </section>
+      <BillingSummaryCard entitlement={entitlement.value} usage={usage.value} />
+
+      {!isFreePlan ? (
+        <BillingOngoingSubscriptionsCard
+          primarySubscriptionId={
+            managedSubscriptionState.value?.primarySubscriptionId ?? entitlement.value?.stripeSubscriptionId ?? null
+          }
+          subscriptions={managedSubscriptionState.value?.managedSubscriptions ?? []}
+        />
+      ) : null}
 
       <section class="ui-settings-card ui-settings-billing-card">
         <p class="ui-settings-title">{t(i18n, 'billingPlanSelectionLabel', 'Plan')}</p>
@@ -263,26 +249,11 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
       ) : null}
 
       {!isFreePlan ? (
-        <section class="ui-settings-card ui-settings-billing-card">
-          <p class="ui-settings-title">{t(i18n, 'billingCancellationTitle', 'Cancellation')}</p>
-          <p class="ui-settings-subtitle">
-            {t(
-              i18n,
-              'billingCancellationSubtitle',
-              'Choose whether to keep renewing or stop at the end of this billing period.',
-            )}
-          </p>
-          <Button
-            variant={entitlement.value?.cancelAtPeriodEnd ? 'secondary' : 'destructive'}
-            class="ui-settings-billing-action"
-            disabled={actionLoading.value}
-            onClick$={toggleCancellation$}
-          >
-            {entitlement.value?.cancelAtPeriodEnd
-              ? t(i18n, 'billingResumeSubscriptionButton', 'Resume subscription')
-              : t(i18n, 'billingCancelAtPeriodEndButton', 'Cancel at period end')}
-          </Button>
-        </section>
+        <BillingCancellationCard
+          cancelAtPeriodEnd={Boolean(entitlement.value?.cancelAtPeriodEnd)}
+          disabled={actionLoading.value}
+          onToggle$={toggleCancellation$}
+        />
       ) : null}
 
       {status.value ? (

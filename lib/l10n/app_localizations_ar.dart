@@ -857,6 +857,17 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get billingOngoingSubscriptionsTitle => 'اشتراكات جارية';
+
+  @override
+  String billingOngoingSubscriptionsCount(Object count) {
+    return '$count اشتراكات نشطة حالياً.';
+  }
+
+  @override
+  String get billingPrimarySubscriptionLabel => 'الأساسي';
+
+  @override
   String get billingSuggestionsTitle => 'خطط مقترحة';
 
   @override

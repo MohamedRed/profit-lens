@@ -1,5 +1,5 @@
 import { billingPlans } from '../../../../lib/config/runtime-config';
-import type { Entitlement } from '../../../../lib/types/billing';
+import type { Entitlement, ManagedSubscriptionSnapshot } from '../../../../lib/types/billing';
 
 export const formatDate = (locale: string, date: Date): string => {
   return new Intl.DateTimeFormat(locale, {
@@ -34,4 +34,17 @@ export const resolveSelectedPriceId = (entitlement: Entitlement | null): string 
     return byOfferLimit.priceId;
   }
   return resolveDefaultPlanPriceId();
+};
+
+export const resolvePlanLabelFromSubscription = (subscription: ManagedSubscriptionSnapshot): string => {
+  const byPriceId = billingPlans.find((plan) => plan.priceId === subscription.currentPriceId);
+  if (byPriceId) {
+    return byPriceId.priceLabel;
+  }
+  const byPlanId = billingPlans.find((plan) => plan.id === subscription.currentPlanId);
+  if (byPlanId) {
+    return byPlanId.priceLabel;
+  }
+  const normalizedPlanId = subscription.currentPlanId.replace(/_/g, ' ').trim();
+  return normalizedPlanId.length > 0 ? normalizedPlanId : subscription.currentPriceId;
 };

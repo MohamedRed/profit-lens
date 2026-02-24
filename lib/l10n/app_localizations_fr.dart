@@ -871,6 +871,17 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get billingOngoingSubscriptionsTitle => 'Abonnements en cours';
+
+  @override
+  String billingOngoingSubscriptionsCount(Object count) {
+    return '$count abonnements sont actuellement actifs.';
+  }
+
+  @override
+  String get billingPrimarySubscriptionLabel => 'Principal';
+
+  @override
   String get billingSuggestionsTitle => 'Forfaits suggérés';
 
   @override

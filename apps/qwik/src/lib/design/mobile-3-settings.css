@@ -209,6 +209,37 @@
   color: var(--pl-color-text-primary);
 }
 
+.ui-settings-billing-subscriptions-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.ui-settings-billing-subscription-item {
+  border: 1px solid var(--pl-color-outline);
+  border-radius: var(--pl-radius-lg);
+  padding: 10px 12px;
+  display: grid;
+  gap: 4px;
+}
+
+.ui-settings-billing-subscription-row {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ui-settings-billing-primary-subscription {
+  margin: 2px 0 0;
+  color: var(--pl-color-purple);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
 .ui-settings-billing-feedback {
   margin: 0;
   border-radius: var(--pl-radius-lg);

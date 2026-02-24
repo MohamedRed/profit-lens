@@ -302,6 +302,14 @@
       "date": {}
     }
   },
+  "billingOngoingSubscriptionsTitle": "اشتراكات جارية",
+  "billingOngoingSubscriptionsCount": "{count} اشتراكات نشطة حالياً.",
+  "@billingOngoingSubscriptionsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "billingPrimarySubscriptionLabel": "الأساسي",
   "billingSuggestionsTitle": "خطط مقترحة",
   "billingSuggestionsEmpty": "لا توجد اقتراحات بديلة حالياً.",
   "billingStripePortalTitle": "فوترة Stripe",

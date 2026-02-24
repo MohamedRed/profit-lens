@@ -302,6 +302,14 @@
       "date": {}
     }
   },
+  "billingOngoingSubscriptionsTitle": "Abonnements en cours",
+  "billingOngoingSubscriptionsCount": "{count} abonnements sont actuellement actifs.",
+  "@billingOngoingSubscriptionsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "billingPrimarySubscriptionLabel": "Principal",
   "billingSuggestionsTitle": "Forfaits suggérés",
   "billingSuggestionsEmpty": "Aucune autre suggestion pour le moment.",
   "billingStripePortalTitle": "Facturation Stripe",

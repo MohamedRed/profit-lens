@@ -862,6 +862,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get billingOngoingSubscriptionsTitle => 'Ongoing subscriptions';
+
+  @override
+  String billingOngoingSubscriptionsCount(Object count) {
+    return '$count subscriptions are currently active.';
+  }
+
+  @override
+  String get billingPrimarySubscriptionLabel => 'Primary';
+
+  @override
   String get billingSuggestionsTitle => 'Suggested plans';
 
   @override

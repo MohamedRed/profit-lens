@@ -1,10 +1,16 @@
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import type { DocumentSnapshot } from 'firebase/firestore';
-import type { Entitlement, ManagedSubscriptionSnapshot, OfferUsage } from '../../types/billing';
+import type {
+  Entitlement,
+  ManagedSubscriptionSnapshot,
+  ManagedSubscriptionStateSnapshot,
+  OfferUsage,
+} from '../../types/billing';
 import {
   callChangeSubscriptionPlan,
   callCreateCustomerPortalSession,
   callCreateCheckoutSession,
+  callGetManagedSubscriptionState,
   callSetSubscriptionCancellation,
 } from '../../firebase/callables';
 import { getDb } from '../../firebase/firestore';
@@ -48,6 +54,7 @@ const mapEntitlement = (raw: Record<string, unknown> | undefined): Entitlement |
     periodKey,
     cancelAtPeriodEnd: Boolean(raw.cancelAtPeriodEnd ?? false),
     stripePriceId: (raw.stripePriceId as string | undefined) ?? null,
+    stripeSubscriptionId: (raw.stripeSubscriptionId as string | undefined) ?? null,
   };
 };
 
@@ -139,14 +146,52 @@ const mapManagedSubscription = (raw: Record<string, unknown>): ManagedSubscripti
   };
 };
 
-export const changeSubscriptionPlan = async (priceId: string): Promise<ManagedSubscriptionSnapshot> => {
+const mapManagedSubscriptionState = (
+  raw: Record<string, unknown>,
+): ManagedSubscriptionStateSnapshot => {
+  const primary = mapManagedSubscription(raw);
+  const managedSubscriptionsRaw = Array.isArray(raw.managedSubscriptions)
+    ? raw.managedSubscriptions
+    : [];
+  const deduped = new Map<string, ManagedSubscriptionSnapshot>();
+  for (const item of managedSubscriptionsRaw) {
+    if (!item || typeof item !== 'object') {
+      continue;
+    }
+    try {
+      const snapshot = mapManagedSubscription(item as Record<string, unknown>);
+      deduped.set(snapshot.subscriptionId, snapshot);
+    } catch {
+      // Ignore invalid entries and keep valid managed subscriptions.
+    }
+  }
+  if (!deduped.has(primary.subscriptionId)) {
+    deduped.set(primary.subscriptionId, primary);
+  }
+  return {
+    primarySubscriptionId: primary.subscriptionId,
+    managedSubscriptions: [
+      deduped.get(primary.subscriptionId)!,
+      ...Array.from(deduped.values()).filter(
+        (subscription) => subscription.subscriptionId !== primary.subscriptionId,
+      ),
+    ],
+  };
+};
+
+export const fetchManagedSubscriptionState = async (): Promise<ManagedSubscriptionStateSnapshot> => {
+  const payload = await callGetManagedSubscriptionState();
+  return mapManagedSubscriptionState(payload);
+};
+
+export const changeSubscriptionPlan = async (priceId: string): Promise<ManagedSubscriptionStateSnapshot> => {
   const payload = await callChangeSubscriptionPlan({ priceId });
-  return mapManagedSubscription(payload);
+  return mapManagedSubscriptionState(payload);
 };
 
 export const setSubscriptionCancellation = async (
   cancelAtPeriodEnd: boolean,
-): Promise<ManagedSubscriptionSnapshot> => {
+): Promise<ManagedSubscriptionStateSnapshot> => {
   const payload = await callSetSubscriptionCancellation({ cancelAtPeriodEnd });
-  return mapManagedSubscription(payload);
+  return mapManagedSubscriptionState(payload);
 };

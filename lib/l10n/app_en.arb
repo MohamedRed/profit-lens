@@ -302,6 +302,14 @@
       "date": {}
     }
   },
+  "billingOngoingSubscriptionsTitle": "Ongoing subscriptions",
+  "billingOngoingSubscriptionsCount": "{count} subscriptions are currently active.",
+  "@billingOngoingSubscriptionsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "billingPrimarySubscriptionLabel": "Primary",
   "billingSuggestionsTitle": "Suggested plans",
   "billingSuggestionsEmpty": "No alternative suggestions right now.",
   "billingStripePortalTitle": "Stripe billing",

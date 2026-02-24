@@ -8,6 +8,7 @@ export interface Entitlement {
   periodKey: string;
   cancelAtPeriodEnd: boolean;
   stripePriceId?: string | null;
+  stripeSubscriptionId?: string | null;
 }
 
 export interface OfferUsage {
@@ -30,4 +31,9 @@ export interface ManagedSubscriptionSnapshot {
   currentPeriodEndSec: number;
   currentPriceId: string;
   currentPlanId: string;
+}
+
+export interface ManagedSubscriptionStateSnapshot {
+  primarySubscriptionId: string;
+  managedSubscriptions: ManagedSubscriptionSnapshot[];
 }

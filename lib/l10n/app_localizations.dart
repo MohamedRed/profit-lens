@@ -1671,6 +1671,24 @@ abstract class AppLocalizations {
   /// **'Period ends on {date}'**
   String billingPeriodEndsOn(Object date);
 
+  /// No description provided for @billingOngoingSubscriptionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ongoing subscriptions'**
+  String get billingOngoingSubscriptionsTitle;
+
+  /// No description provided for @billingOngoingSubscriptionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} subscriptions are currently active.'**
+  String billingOngoingSubscriptionsCount(Object count);
+
+  /// No description provided for @billingPrimarySubscriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary'**
+  String get billingPrimarySubscriptionLabel;
+
   /// No description provided for @billingSuggestionsTitle.
   ///
   /// In en, this message translates to:
