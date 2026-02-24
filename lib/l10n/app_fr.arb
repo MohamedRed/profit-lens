@@ -259,7 +259,7 @@
   "noHistoryMessage": "Aucune offre enregistrée.",
   "profitabilityFailedMessage": "Impossible de calculer la rentabilité. Vérifiez votre profil.",
   "offersRemainingTitle": "Offres restantes",
-  "offersRemainingValue": "{remaining} restantes ce mois-ci",
+  "offersRemainingValue": "{remaining} offres restantes ce mois-ci",
   "@offersRemainingValue": {
     "placeholders": {
       "remaining": {}

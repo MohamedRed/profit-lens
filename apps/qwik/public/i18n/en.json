@@ -233,7 +233,7 @@
   "noHistoryMessage": "No offers saved yet.",
   "profitabilityFailedMessage": "Unable to compute profitability. Check your profile settings.",
   "offersRemainingTitle": "Offers remaining",
-  "offersRemainingValue": "{remaining} remaining this month",
+  "offersRemainingValue": "{remaining} offers remaining this month",
   "offersRemainingUnlimited": "Unlimited offers",
   "subscriptionStatusLabel": "Subscription status",
   "subscriptionStatusFree": "Free",

@@ -778,7 +778,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String offersRemainingValue(Object remaining) {
-    return '$remaining restantes ce mois-ci';
+    return '$remaining offres restantes ce mois-ci';
   }
 
   @override

@@ -259,7 +259,7 @@
   "noHistoryMessage": "لا توجد عروض محفوظة.",
   "profitabilityFailedMessage": "تعذر حساب الربحية. تحقق من إعدادات ملفك.",
   "offersRemainingTitle": "العروض المتبقية",
-  "offersRemainingValue": "{remaining} متبقية هذا الشهر",
+  "offersRemainingValue": "{remaining} عروض متبقية هذا الشهر",
   "@offersRemainingValue": {
     "placeholders": {
       "remaining": {}

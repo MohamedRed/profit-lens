@@ -1506,7 +1506,7 @@ abstract class AppLocalizations {
   /// No description provided for @offersRemainingValue.
   ///
   /// In en, this message translates to:
-  /// **'{remaining} remaining this month'**
+  /// **'{remaining} offers remaining this month'**
   String offersRemainingValue(Object remaining);
 
   /// No description provided for @offersRemainingUnlimited.
