@@ -232,6 +232,18 @@ export const watchOfferStats = (
   });
 };
 
+export const fetchOfferStats = async (uid: string): Promise<OfferStatsDay[]> => {
+  const statsQuery = query(
+    userCollection(uid, 'offerStats'),
+    orderBy('dayStart', 'desc'),
+    limit(90),
+  );
+  const snapshot = await getDocs(statsQuery);
+  return snapshot.docs
+    .map((doc) => mapStats(doc.data() as Record<string, unknown>))
+    .filter((value): value is OfferStatsDay => value !== null);
+};
+
 export const analyzeManualOffer = async (params: {
   deviceId: string;
   currentLocation: OfferCurrentLocation;

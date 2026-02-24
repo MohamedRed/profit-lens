@@ -1,5 +1,6 @@
 import { $, Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Link, useLocation, useNavigate } from '@builder.io/qwik-city';
+import { useAuth } from '../../lib/auth/auth-context';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
 import {
   installIosPwaBackSwipeBlocker,
@@ -35,6 +36,7 @@ const triggerTabHaptic = (): void => {
 
 export const AppShell = component$(() => {
   const i18n = useI18n();
+  const auth = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const nextTransitionIsPop = useSignal(false);
@@ -153,13 +155,15 @@ export const AppShell = component$(() => {
     });
   });
 
-  useVisibleTask$(({ cleanup }) => {
+  useVisibleTask$(({ track, cleanup }) => {
+    track(() => location.url.pathname);
+    const uid = track(() => auth.user.value?.uid ?? null);
     let cancelled = false;
     const runPrefetch = () => {
       if (cancelled) {
         return;
       }
-      void prefetchTabRoutes(location.url.pathname);
+      void prefetchTabRoutes(location.url.pathname, { uid });
     };
 
     let idleHandle: number | undefined;

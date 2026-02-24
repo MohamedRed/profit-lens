@@ -8,6 +8,7 @@ import {
 } from '../../../lib/features/offers/offers-service';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import type { OfferRecord, OfferStatsDay } from '../../../lib/types/offer';
+import { readPrefetchedHistoryStats, savePrefetchedHistoryStats } from './history-prefetch-cache';
 import { saveHistoryOfferCache, saveSelectedHistoryOfferId } from './history-offer-cache';
 import { HistoryChartPanel } from './history-chart-panel';
 import { HistoryListPanel } from './history-list-panel';
@@ -46,6 +47,7 @@ export default component$(() => {
 
     const unsubscribeStats = watchOfferStats(user.uid, (items) => {
       stats.value = items;
+      savePrefetchedHistoryStats(user.uid, items);
     });
 
     cleanup(() => {
@@ -68,6 +70,7 @@ export default component$(() => {
     let disposed = false;
     const uid = user.uid;
     const session = readHistoryTabSessionState(uid);
+    const prefetchedStats = readPrefetchedHistoryStats(uid);
     hasHydratedFromSession.value = session !== null;
 
     if (session) {
@@ -79,9 +82,15 @@ export default component$(() => {
       hasMore.value = session.hasMore;
       hasLoadMoreError.value = session.hasLoadMoreError;
       isLoadingInitial.value = false;
+      if (session.stats.length === 0 && prefetchedStats && prefetchedStats.length > 0) {
+        stats.value = prefetchedStats;
+      }
     } else {
       selectedTabIndex.value = historyChartsTabIndex;
       hasActivatedCharts.value = selectedTabIndex.value === historyChartsTabIndex;
+      if (prefetchedStats && prefetchedStats.length > 0) {
+        stats.value = prefetchedStats;
+      }
     }
 
     const loadInitial = async (): Promise<void> => {
