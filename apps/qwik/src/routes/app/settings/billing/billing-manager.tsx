@@ -286,9 +286,7 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
       ) : null}
 
       {status.value ? (
-        <p class={statusTone.value === 'error' ? 'ui-status ui-status-error' : 'ui-status ui-status-success'}>
-          {status.value}
-        </p>
+        <p class={`ui-settings-billing-feedback ui-settings-billing-feedback-${statusTone.value}`}>{status.value}</p>
       ) : null}
     </div>
   );

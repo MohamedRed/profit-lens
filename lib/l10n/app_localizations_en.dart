@@ -853,7 +853,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get billingCancelSuccess => 'Subscription will cancel at period end.';
 
   @override
-  String get billingResumeSuccess => 'Subscription resumed.';
+  String get billingResumeSuccess =>
+      'Automatic renewal re-enabled. Your subscription stays active.';
 
   @override
   String billingPeriodEndsOn(Object date) {

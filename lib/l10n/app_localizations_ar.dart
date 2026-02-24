@@ -848,7 +848,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get billingCancelSuccess => 'سيتم إلغاء الاشتراك عند نهاية الفترة.';
 
   @override
-  String get billingResumeSuccess => 'تم استئناف الاشتراك.';
+  String get billingResumeSuccess =>
+      'تمت إعادة تفعيل التجديد التلقائي. يظل الاشتراك نشطًا.';
 
   @override
   String billingPeriodEndsOn(Object date) {

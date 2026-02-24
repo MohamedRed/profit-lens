@@ -259,7 +259,7 @@
   "billingCancelAtPeriodEndButton": "Résilier en fin de période",
   "billingResumeSubscriptionButton": "Reprendre l’abonnement",
   "billingCancelSuccess": "L’abonnement sera résilié en fin de période.",
-  "billingResumeSuccess": "L’abonnement a repris.",
+  "billingResumeSuccess": "Renouvellement réactivé. L’abonnement reste actif.",
   "billingPeriodEndsOn": "La période se termine le {date}",
   "billingSuggestionsTitle": "Forfaits suggérés",
   "billingSuggestionsEmpty": "Aucune autre suggestion pour le moment.",

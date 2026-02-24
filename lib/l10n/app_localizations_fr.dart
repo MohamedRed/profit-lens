@@ -862,7 +862,8 @@ class AppLocalizationsFr extends AppLocalizations {
       'L’abonnement sera résilié en fin de période.';
 
   @override
-  String get billingResumeSuccess => 'L’abonnement a repris.';
+  String get billingResumeSuccess =>
+      'Renouvellement réactivé. L’abonnement reste actif.';
 
   @override
   String billingPeriodEndsOn(Object date) {

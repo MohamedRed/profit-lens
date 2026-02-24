@@ -1662,7 +1662,7 @@ abstract class AppLocalizations {
   /// No description provided for @billingResumeSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Subscription resumed.'**
+  /// **'Automatic renewal re-enabled. Your subscription stays active.'**
   String get billingResumeSuccess;
 
   /// No description provided for @billingPeriodEndsOn.

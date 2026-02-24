@@ -208,3 +208,25 @@
 .ui-settings-billing-status-value.is-neutral {
   color: var(--pl-color-text-primary);
 }
+
+.ui-settings-billing-feedback {
+  margin: 0;
+  border-radius: var(--pl-radius-lg);
+  border: 1px solid transparent;
+  padding: 10px 12px;
+  font-size: 0.87rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.ui-settings-billing-feedback-success {
+  color: #0f766e;
+  border-color: rgba(20, 184, 166, 0.24);
+  background: rgba(20, 184, 166, 0.1);
+}
+
+.ui-settings-billing-feedback-error {
+  color: #b91c1c;
+  border-color: rgba(239, 68, 68, 0.24);
+  background: rgba(254, 226, 226, 0.7);
+}

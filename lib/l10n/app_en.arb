@@ -295,7 +295,7 @@
   "billingCancelAtPeriodEndButton": "Cancel at period end",
   "billingResumeSubscriptionButton": "Resume subscription",
   "billingCancelSuccess": "Subscription will cancel at period end.",
-  "billingResumeSuccess": "Subscription resumed.",
+  "billingResumeSuccess": "Automatic renewal re-enabled. Your subscription stays active.",
   "billingPeriodEndsOn": "Period ends on {date}",
   "@billingPeriodEndsOn": {
     "placeholders": {

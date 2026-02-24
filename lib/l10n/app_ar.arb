@@ -295,7 +295,7 @@
   "billingCancelAtPeriodEndButton": "إلغاء عند نهاية الفترة",
   "billingResumeSubscriptionButton": "استئناف الاشتراك",
   "billingCancelSuccess": "سيتم إلغاء الاشتراك عند نهاية الفترة.",
-  "billingResumeSuccess": "تم استئناف الاشتراك.",
+  "billingResumeSuccess": "تمت إعادة تفعيل التجديد التلقائي. يظل الاشتراك نشطًا.",
   "billingPeriodEndsOn": "تنتهي الفترة في {date}",
   "@billingPeriodEndsOn": {
     "placeholders": {
