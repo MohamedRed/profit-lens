@@ -69,6 +69,14 @@ const isValidAppBackHref = (value: string | null | undefined): value is string =
   return value.startsWith('/next/app/');
 };
 
+const isVehicleEditorPath = (path: string): boolean => {
+  return path === '/app/settings/vehicles/edit' || path === '/app/settings/vehicles/new';
+};
+
+const isHelpTicketDetailsPath = (path: string): boolean => {
+  return path === '/app/help/tickets/details';
+};
+
 export const shouldPreferDeterministicBack = (
   path: string,
   explicitBackHref?: string | null,
@@ -76,10 +84,10 @@ export const shouldPreferDeterministicBack = (
   if (isValidAppBackHref(explicitBackHref)) {
     return true;
   }
-  if (path.startsWith('/app/settings/vehicles/')) {
+  if (isVehicleEditorPath(path)) {
     return true;
   }
-  if (path.startsWith('/app/help/tickets/')) {
+  if (isHelpTicketDetailsPath(path)) {
     return true;
   }
   return false;
@@ -90,7 +98,7 @@ export const resolveHeaderBackHref = (
   explicitBackHref?: string | null,
 ): string | null => {
   // Ticket details should always return to ticket list to avoid stale back targets.
-  if (path.startsWith('/app/help/tickets/')) {
+  if (isHelpTicketDetailsPath(path)) {
     return '/next/app/help/tickets';
   }
   if (isValidAppBackHref(explicitBackHref)) {
@@ -102,7 +110,7 @@ export const resolveHeaderBackHref = (
   if (path.startsWith('/app/history/')) {
     return '/next/app/history';
   }
-  if (path.startsWith('/app/settings/vehicles/')) {
+  if (isVehicleEditorPath(path)) {
     return '/next/app/settings';
   }
   if (path.startsWith('/app/settings/')) {
@@ -118,10 +126,7 @@ export const resolvePopStateRecoveryHref = (
   if (!fromPath) {
     return null;
   }
-  if (
-    fromPath.startsWith('/app/help/tickets/details') &&
-    !toPath.startsWith('/app/help/tickets')
-  ) {
+  if (isHelpTicketDetailsPath(fromPath) && !toPath.startsWith('/app/help/tickets')) {
     return '/next/app/help/tickets';
   }
   return null;

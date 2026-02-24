@@ -3,7 +3,7 @@ import { readVehicleEditorId } from './vehicle-editor-id';
 
 describe('vehicle-editor-id', () => {
   it('prefers route params when provided', () => {
-    expect(readVehicleEditorId('vehicle-123', '/next/app/settings/vehicles/other', '')).toBe('vehicle-123');
+    expect(readVehicleEditorId('vehicle-123', '/next/app/settings/vehicles/edit', '')).toBe('vehicle-123');
   });
 
   it('reads id from query string', () => {

@@ -28,15 +28,6 @@ const decodeTicketId = (raw: string | null | undefined): string | null => {
   return source;
 };
 
-const readFromPath = (path: string): string | null => {
-  const detailsMatch = path.match(/\/(?:next\/)?app\/help\/tickets\/details\/([^/?#]+)\/?$/);
-  if (detailsMatch) {
-    return decodeTicketId(detailsMatch[1]);
-  }
-
-  return null;
-};
-
 const readFromHash = (hash: string): string | null => {
   if (!hash) {
     return null;
@@ -70,11 +61,6 @@ const readFromRedirect = (raw: string | null, depth = 0): string | null => {
       return fromQuery;
     }
 
-    const fromPath = readFromPath(parsed.pathname);
-    if (fromPath) {
-      return fromPath;
-    }
-
     const fromHash = readFromHash(parsed.hash);
     if (fromHash) {
       return fromHash;
@@ -92,7 +78,7 @@ const readFromRedirect = (raw: string | null, depth = 0): string | null => {
 
 export const readHelpTicketId = (
   paramsTicketId: string | undefined,
-  path: string,
+  _path: string,
   search: string,
   hash: string,
 ): string | null => {
@@ -110,11 +96,6 @@ export const readHelpTicketId = (
   const fromHash = readFromHash(hash);
   if (fromHash) {
     return fromHash;
-  }
-
-  const fromPath = readFromPath(path);
-  if (fromPath) {
-    return fromPath;
   }
 
   const fromRedirect = readFromRedirect(

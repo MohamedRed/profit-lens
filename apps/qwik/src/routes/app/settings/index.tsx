@@ -126,7 +126,7 @@ export default component$(() => {
       <section class="ui-settings-card">
         <div class="ui-settings-vehicles-head">
           <p class="ui-settings-title">{t(i18n, 'vehiclesSectionTitle', 'Vehicles')}</p>
-          <Link class="ui-settings-link-button" href="/next/app/settings/vehicles/new">
+          <Link class="ui-settings-link-button" href="/next/app/settings/vehicles/new/">
             <span class="material-icons-outlined" aria-hidden="true">
               add
             </span>

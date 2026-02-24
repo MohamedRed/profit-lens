@@ -11,12 +11,12 @@ describe('shouldPreferDeterministicBack', () => {
   });
 
   it('returns true for settings vehicle editor routes', () => {
-    expect(shouldPreferDeterministicBack('/app/settings/vehicles/abc123')).toBe(true);
+    expect(shouldPreferDeterministicBack('/app/settings/vehicles/edit')).toBe(true);
+    expect(shouldPreferDeterministicBack('/app/settings/vehicles/new')).toBe(true);
   });
 
   it('returns true for help ticket details routes', () => {
     expect(shouldPreferDeterministicBack('/app/help/tickets/details')).toBe(true);
-    expect(shouldPreferDeterministicBack('/app/help/tickets/details/abc123')).toBe(true);
   });
 
   it('returns false for help tickets list route', () => {
@@ -40,9 +40,7 @@ describe('resolvePopStateRecoveryHref', () => {
   });
 
   it('recovers ticket list when popstate leaves ticket details to any non-ticket route', () => {
-    expect(resolvePopStateRecoveryHref('/app/help/tickets/details/abc123', '/app/offer')).toBe(
-      '/next/app/help/tickets',
-    );
+    expect(resolvePopStateRecoveryHref('/app/help/tickets/details', '/app/offer')).toBe('/next/app/help/tickets');
   });
 
   it('does not recover for normal popstate transitions', () => {
