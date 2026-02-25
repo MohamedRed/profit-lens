@@ -31,3 +31,14 @@ export const writeHistoryTabSessionState = (nextState: HistoryTabSessionState): 
     stats: [...nextState.stats],
   };
 };
+
+export const upsertHistoryTabSessionOffer = (uid: string, offer: OfferRecord): void => {
+  if (!offer.id || !historyTabSessionState || historyTabSessionState.uid !== uid) {
+    return;
+  }
+  const dedupedOffers = historyTabSessionState.offers.filter((item) => item.id !== offer.id);
+  historyTabSessionState = {
+    ...historyTabSessionState,
+    offers: [offer, ...dedupedOffers],
+  };
+};

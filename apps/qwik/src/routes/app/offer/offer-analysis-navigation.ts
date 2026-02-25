@@ -3,6 +3,7 @@ import { saveTabScrollY } from '../../../lib/navigation/tab-scroll-memory';
 import type { OfferRecord } from '../../../lib/types/offer';
 import type { OfferAnalysisRecord } from './offer-analysis-result';
 import { saveSelectedHistoryOfferId, upsertHistoryOfferCache } from '../history/history-offer-cache';
+import { upsertHistoryTabSessionOffer } from '../history/history-tab-session';
 
 const toOfferRecord = (record: OfferAnalysisRecord): OfferRecord => {
   const parsedCreatedAt = new Date(record.createdAt);
@@ -25,6 +26,22 @@ const toOfferRecord = (record: OfferAnalysisRecord): OfferRecord => {
     netProfitEuro: record.breakdown.netProfit,
     totalCostsEuro: record.breakdown.totalCosts,
   };
+};
+
+export const primeHistoryAfterAnalysis = (
+  uid: string | null | undefined,
+  record: OfferAnalysisRecord,
+): void => {
+  if (!uid) {
+    return;
+  }
+  try {
+    const offer = toOfferRecord(record);
+    upsertHistoryOfferCache(offer);
+    upsertHistoryTabSessionOffer(uid, offer);
+  } catch (error) {
+    void error;
+  }
 };
 
 export const primeOfferDetailsNavigation = (

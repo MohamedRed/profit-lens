@@ -19,7 +19,7 @@ import {
   parseOfferAnalysisRecord,
   type OfferAnalysisRecord,
 } from './offer-analysis-result';
-import { primeOfferDetailsNavigation } from './offer-analysis-navigation';
+import { primeHistoryAfterAnalysis, primeOfferDetailsNavigation } from './offer-analysis-navigation';
 import { takeOfferScreenshotFile } from './offer-file-transfer-store';
 import { OfferFlowContent } from './components/offer-flow-content';
 import { ensureWithinOfferLimit } from './offer-flow-limits';
@@ -107,6 +107,11 @@ export default component$(() => {
   });
 
   const analyzeManual$ = $(async () => {
+    const user = auth.user.value;
+    if (!user) {
+      status.value = resolveUserFacingErrorMessage(i18n, new Error('Missing authenticated user.'), 'offer');
+      return;
+    }
     if (!selectedVehicleId.value) {
       status.value = t(i18n, 'vehicleSelectLabel', 'Select vehicle');
       return;
@@ -136,6 +141,7 @@ export default component$(() => {
         throw new Error('Missing analysis record in response.');
       }
       analysisRecord.value = parsed;
+      primeHistoryAfterAnalysis(user.uid, parsed);
       status.value = 'Offer analyzed.';
     } catch (error) {
       analysisRecord.value = null;
@@ -203,6 +209,7 @@ export default component$(() => {
         throw new Error('Missing analysis record in response.');
       }
       analysisRecord.value = parsed;
+      primeHistoryAfterAnalysis(user.uid, parsed);
       status.value = 'Screenshot analyzed.';
     } catch (error) {
       analysisRecord.value = null;
