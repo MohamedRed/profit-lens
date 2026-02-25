@@ -4,16 +4,13 @@ import {
   type QRL,
   type Signal,
   useSignal,
-  useVisibleTask$,
 } from "@builder.io/qwik";
 import { Button } from "../../../../components/ui/button";
 import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
-import { shouldUseDirectGalleryImport } from "../offer-import-platform";
 import type { OfferAnalysisRecord } from "../offer-analysis-result";
 import { enableCaptureCta, enableManualEntry } from "../offer-feature-flags";
 import { OfferFlowStatus } from "./offer-flow-status";
-import { OfferImportSourceDialog } from "./offer-import-source-dialog";
 import { OfferManualDetailsSection } from "./offer-manual-details-section";
 import { OfferOverviewSections } from "./offer-overview-sections";
 import { OfferScreenshotPreview } from "./offer-screenshot-preview";
@@ -47,9 +44,8 @@ interface OfferFlowContentProps {
 
 export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
-  const sourceDialogOpen = useSignal(false);
   const settingsSheetOpen = useSignal(false);
-  const useDirectGalleryImport = useSignal(false);
+  const galleryInputRef = useSignal<HTMLInputElement>();
   const importScreenshotLabel = t(
     i18n,
     "importScreenshotButton",
@@ -57,23 +53,15 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   );
   const analyzingCtaLabel = t(i18n, "offerAnalyzingLabel", "Analysing...");
 
-  useVisibleTask$(() => {
-    useDirectGalleryImport.value = shouldUseDirectGalleryImport(window);
-  });
-
-  const closeSourceDialog$ = $(() => {
-    sourceDialogOpen.value = false;
-  });
-
   const openSettingsSheet$ = $(() => {
     settingsSheetOpen.value = true;
   });
 
-  const handleImportButtonClick$ = $(() => {
+  const openGalleryPicker$ = $(() => {
     if (props.loading.value || !props.vehicles.value.length) {
       return;
     }
-    sourceDialogOpen.value = true;
+    galleryInputRef.value?.click();
   });
 
   const onFileSelected$ = $(async (file: File) => {
@@ -140,60 +128,44 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 </span>
               </button>
 
-              {useDirectGalleryImport.value ? (
-                <label class="ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-trigger">
-                  {props.loading.value
-                    ? (
-                        <span class="ui-offer-cta-loading-content">
-                          <span
-                            class="material-icons-outlined ui-offer-cta-loading-icon"
-                            aria-hidden="true"
-                          >
-                            manage_search
-                          </span>
-                          <span>{analyzingCtaLabel}</span>
+              <Button
+                variant="default"
+                size="lg"
+                type="button"
+                class="ui-offer-primary-cta"
+                disabled={props.loading.value || !hasVehicles}
+                onClick$={openGalleryPicker$}
+              >
+                {props.loading.value
+                  ? (
+                      <span class="ui-offer-cta-loading-content">
+                        <span
+                          class="material-icons-outlined ui-offer-cta-loading-icon"
+                          aria-hidden="true"
+                        >
+                          manage_search
                         </span>
-                      )
-                    : importScreenshotLabel}
-                  <input
-                    class="ui-offer-file-input-hidden"
-                    type="file"
-                    accept="image/*"
-                    disabled={props.loading.value || !hasVehicles}
-                    onClick$={(_, element) => {
-                      element.value = "";
-                    }}
-                    onInput$={(_, element) => {
-                      void onFileInputEvent$(element);
-                    }}
-                    onChange$={(_, element) => {
-                      void onFileInputEvent$(element);
-                    }}
-                  />
-                </label>
-              ) : (
-                <Button
-                  variant="default"
-                  size="lg"
-                  class="ui-offer-primary-cta"
-                  disabled={props.loading.value || !hasVehicles}
-                  onClick$={handleImportButtonClick$}
-                >
-                  {props.loading.value
-                    ? (
-                        <span class="ui-offer-cta-loading-content">
-                          <span
-                            class="material-icons-outlined ui-offer-cta-loading-icon"
-                            aria-hidden="true"
-                          >
-                            manage_search
-                          </span>
-                          <span>{analyzingCtaLabel}</span>
-                        </span>
-                      )
-                    : importScreenshotLabel}
-                </Button>
-              )}
+                        <span>{analyzingCtaLabel}</span>
+                      </span>
+                    )
+                  : importScreenshotLabel}
+              </Button>
+              <input
+                ref={galleryInputRef}
+                class="ui-offer-file-input-hidden"
+                type="file"
+                accept="image/*"
+                disabled={props.loading.value || !hasVehicles}
+                onClick$={(_, element) => {
+                  element.value = "";
+                }}
+                onInput$={(_, element) => {
+                  void onFileInputEvent$(element);
+                }}
+                onChange$={(_, element) => {
+                  void onFileInputEvent$(element);
+                }}
+              />
             </div>
 
             {enableCaptureCta ? (
@@ -267,12 +239,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
           ) : null}
 
           <OfferFlowStatus status={props.status.value} />
-
-          <OfferImportSourceDialog
-            isOpen={sourceDialogOpen}
-            onClose$={closeSourceDialog$}
-            onSelectFile$={onFileSelected$}
-          />
 
           <OfferSetupModalStack
             isSettingsOpen={settingsSheetOpen}
