@@ -5,15 +5,8 @@ import { getDeviceId } from '../../../lib/config/device-id';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
-import { saveExplicitBackTarget } from '../../../lib/navigation/explicit-back-target';
-import { saveTabScrollY } from '../../../lib/navigation/tab-scroll-memory';
-import type { OfferRecord } from '../../../lib/types/offer';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
-import {
-  saveSelectedHistoryOfferId,
-  upsertHistoryOfferCache,
-} from '../history/history-offer-cache';
 import {
   analyzeManualOfferAction,
   analyzeScreenshotOfferAction,
@@ -27,6 +20,7 @@ import {
   parseOfferAnalysisRecord,
   type OfferAnalysisRecord,
 } from './offer-analysis-result';
+import { primeOfferDetailsNavigation } from './offer-analysis-navigation';
 import { takeOfferScreenshotFile } from './offer-file-transfer-store';
 import { OfferFlowContent } from './components/offer-flow-content';
 import { ensureWithinOfferLimit } from './offer-flow-limits';
@@ -40,29 +34,6 @@ const loadOffersService = () => {
     offersServicePromise = import('../../../lib/features/offers/offers-service');
   }
   return offersServicePromise;
-};
-
-const toOfferRecord = (record: OfferAnalysisRecord): OfferRecord => {
-  const parsedCreatedAt = new Date(record.createdAt);
-  const createdAt = Number.isNaN(parsedCreatedAt.getTime()) ? null : parsedCreatedAt;
-  const routeVerification = record.offer.routeVerification;
-
-  return {
-    id: record.id,
-    source: record.source,
-    createdAt,
-    payoutEuro: record.offer.payoutEuro,
-    distanceKm: routeVerification?.distanceKm ?? record.offer.distanceKm ?? 0,
-    durationMinutes: record.offer.durationMinutes ?? undefined,
-    routeVerifiedDistanceKm: routeVerification?.distanceKm,
-    routeVerifiedDurationMinutes: routeVerification?.durationMinutes,
-    pickupName: record.offer.pickupName ?? undefined,
-    pickupAddress: record.offer.pickupAddress ?? undefined,
-    dropoffName: record.offer.dropoffName ?? undefined,
-    dropoffAddress: record.offer.dropoffAddress ?? undefined,
-    netProfitEuro: record.breakdown.netProfit,
-    totalCostsEuro: record.breakdown.totalCosts,
-  };
 };
 
 export default component$(() => {
@@ -143,6 +114,7 @@ export default component$(() => {
       return;
     }
 
+    analysisRecord.value = null;
     loading.value = true;
     status.value = '';
 
@@ -161,9 +133,14 @@ export default component$(() => {
         vehicleId: selectedVehicleId.value,
         loadOffersService,
       });
-      analysisRecord.value = parseOfferAnalysisRecord(payload);
+      const parsed = parseOfferAnalysisRecord(payload);
+      if (!parsed) {
+        throw new Error('Missing analysis record in response.');
+      }
+      analysisRecord.value = parsed;
       status.value = 'Offer analyzed.';
     } catch (error) {
+      analysisRecord.value = null;
       if (isOfferLocationError(error)) {
         status.value = resolveOfferLocationErrorMessage(i18n, error.code);
       } else {
@@ -179,6 +156,7 @@ export default component$(() => {
       status.value = t(i18n, 'vehicleSelectLabel', 'Select vehicle');
       return;
     }
+    analysisRecord.value = null;
     const file = takeOfferScreenshotFile(fileToken);
     if (!file) {
       status.value = t(
@@ -222,9 +200,14 @@ export default component$(() => {
         vehicleId: selectedVehicleId.value,
         loadOffersService,
       });
-      analysisRecord.value = parseOfferAnalysisRecord(payload);
+      const parsed = parseOfferAnalysisRecord(payload);
+      if (!parsed) {
+        throw new Error('Missing analysis record in response.');
+      }
+      analysisRecord.value = parsed;
       status.value = 'Screenshot analyzed.';
     } catch (error) {
+      analysisRecord.value = null;
       if (isOfferLocationError(error)) {
         status.value = resolveOfferLocationErrorMessage(i18n, error.code);
       } else {
@@ -248,14 +231,16 @@ export default component$(() => {
   const viewDetails$ = $(async () => {
     const record = analysisRecord.value;
     if (!record?.id) {
+      analysisRecord.value = null;
+      status.value = t(
+        i18n,
+        'offerDetailsUnavailableMessage',
+        'Unable to open details for this analysis. Please run the analysis again.',
+      );
       return;
     }
-    if (typeof window !== 'undefined') {
-      saveTabScrollY('app/offer', window.scrollY);
-    }
-    saveSelectedHistoryOfferId(record.id);
-    upsertHistoryOfferCache(toOfferRecord(record));
-    saveExplicitBackTarget('history/details', '/next/app/offer');
+    const scrollY = typeof window !== 'undefined' ? window.scrollY : null;
+    primeOfferDetailsNavigation(record, scrollY);
     const search = new URLSearchParams({
       offerId: record.id,
       backTo: '/next/app/offer',

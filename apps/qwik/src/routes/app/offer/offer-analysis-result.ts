@@ -34,6 +34,11 @@ const asNumber = (value: unknown): number => {
   return typeof value === 'number' ? value : Number(value ?? 0);
 };
 
+const asNonEmptyString = (value: unknown): string | null => {
+  const normalized = String(value ?? '').trim();
+  return normalized.length > 0 ? normalized : null;
+};
+
 export const parseOfferAnalysisRecord = (
   payload: Record<string, unknown>,
 ): OfferAnalysisRecord | null => {
@@ -47,11 +52,15 @@ export const parseOfferAnalysisRecord = (
   if (!offer || !breakdown) {
     return null;
   }
+  const id = asNonEmptyString(record.id);
+  if (!id) {
+    return null;
+  }
 
   const routeVerification = asObject(offer.routeVerification);
 
   return {
-    id: String(record.id ?? ''),
+    id,
     source: String(record.source ?? 'manual'),
     createdAt: String(record.createdAt ?? ''),
     offer: {
