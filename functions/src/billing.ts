@@ -8,9 +8,13 @@ import {
   ensureEntitlement,
   getPlanByPriceId,
   syncStripeEntitlement,
-  syncStripeEntitlementForUid,
 } from "./entitlements";
 import { getOrCreateCustomerId, getStripe, stripeSecretKey } from "./billing_core";
+import { syncEntitlementFromSubscription } from "./billing_entitlement_sync";
+import {
+  enforceSingleManagedSubscription,
+  listManagedSubscriptionsForCustomer,
+} from "./billing_subscription_ops";
 
 const stripeWebhookSecret = defineSecret("STRIPE_WEBHOOK_SECRET");
 
@@ -55,7 +59,31 @@ export const createCheckoutSession = onCall(
     }
     const stripe = getStripe();
     const customerId = await getOrCreateCustomerId(uid, stripe);
-    await ensureEntitlement(uid);
+    const entitlement = await ensureEntitlement(uid);
+    const existingSubscriptions = await listManagedSubscriptionsForCustomer({
+      uid,
+      stripe,
+      customerId,
+      preferredSubscriptionId: entitlement.stripeSubscriptionId ?? null,
+    });
+    if (existingSubscriptions.length > 0) {
+      const normalized = await enforceSingleManagedSubscription({
+        uid,
+        stripe,
+        subscriptions: existingSubscriptions,
+        preferredSubscriptionId: entitlement.stripeSubscriptionId ?? null,
+      });
+      await syncEntitlementFromSubscription(uid, normalized.primarySubscription);
+      const session = await stripe.billingPortal.sessions.create({
+        customer: customerId,
+        return_url: buildQwikBillingReturnUrl(origin, "portal"),
+      });
+      return {
+        url: session.url,
+        redirectMode: "manage",
+        duplicateCleanupScheduledCount: normalized.duplicateCleanupScheduledCount,
+      };
+    }
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer: customerId,
@@ -78,7 +106,11 @@ export const createCheckoutSession = onCall(
     if (!session.url) {
       throw new HttpsError("internal", "Missing checkout URL.");
     }
-    return { url: session.url };
+    return {
+      url: session.url,
+      redirectMode: "checkout",
+      duplicateCleanupScheduledCount: 0,
+    };
   }
 );
 
@@ -181,17 +213,7 @@ async function syncSubscription(subscription: Stripe.Subscription) {
     return;
   }
   if (uid) {
-    await syncStripeEntitlementForUid({
-      uid,
-      customerId,
-      subscriptionId: subscription.id,
-      priceId,
-      status: subscription.status,
-      periodStartSec: subscription.current_period_start,
-      periodEndSec: subscription.current_period_end,
-      cancelAtPeriodEnd: subscription.cancel_at_period_end,
-      canceledAtSec: subscription.canceled_at,
-    });
+    await syncEntitlementFromSubscription(uid, subscription);
     return;
   }
   await syncStripeEntitlement({
@@ -240,15 +262,5 @@ async function syncCheckoutSession(
     });
     return;
   }
-  await syncStripeEntitlementForUid({
-    uid,
-    customerId: session.customer,
-    subscriptionId: subscription.id,
-    priceId,
-    status: subscription.status,
-    periodStartSec: subscription.current_period_start,
-    periodEndSec: subscription.current_period_end,
-    cancelAtPeriodEnd: subscription.cancel_at_period_end,
-    canceledAtSec: subscription.canceled_at,
-  });
+  await syncEntitlementFromSubscription(uid, subscription);
 }

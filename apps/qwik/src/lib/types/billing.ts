@@ -36,5 +36,13 @@ export interface ManagedSubscriptionSnapshot {
 
 export interface ManagedSubscriptionStateSnapshot {
   primarySubscriptionId: string;
+  duplicateCleanupScheduledCount: number;
   managedSubscriptions: ManagedSubscriptionSnapshot[];
+}
+
+export interface SubscriptionCheckoutEligibility {
+  eligibleForCheckout: boolean;
+  manageableSubscriptionCount: number;
+  duplicateSubscriptionCount: number;
+  primarySubscriptionId: string | null;
 }

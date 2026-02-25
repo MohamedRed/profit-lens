@@ -5,8 +5,10 @@ import type {
   ManagedSubscriptionSnapshot,
   ManagedSubscriptionStateSnapshot,
   OfferUsage,
+  SubscriptionCheckoutEligibility,
 } from '../../types/billing';
 import {
+  callCheckSubscriptionEligibility,
   callChangeSubscriptionPlan,
   callCreateCustomerPortalSession,
   callCreateCheckoutSession,
@@ -110,20 +112,41 @@ export const fetchUsage = async (uid: string, periodKey: string): Promise<OfferU
   return mapUsage(snapshot.data() as Record<string, unknown> | undefined);
 };
 
-export const startCheckout = async (priceId: string) => {
-  const payload = await callCreateCheckoutSession({ priceId, origin: window.location.origin });
-  const url = payload.url as string | undefined;
-  if (!url) {
-    throw new Error('Missing checkout URL.');
-  }
-  window.location.assign(url);
-};
-
 export const openStripeBillingPortal = async () => {
   const payload = await callCreateCustomerPortalSession({ origin: window.location.origin });
   const url = payload.url as string | undefined;
   if (!url) {
     throw new Error('Missing Stripe billing URL.');
+  }
+  window.location.assign(url);
+};
+
+const mapSubscriptionCheckoutEligibility = (
+  raw: Record<string, unknown>,
+): SubscriptionCheckoutEligibility => {
+  return {
+    eligibleForCheckout: Boolean(raw.eligibleForCheckout),
+    manageableSubscriptionCount: Math.max(0, Number(raw.manageableSubscriptionCount ?? 0) || 0),
+    duplicateSubscriptionCount: Math.max(0, Number(raw.duplicateSubscriptionCount ?? 0) || 0),
+    primarySubscriptionId: (raw.primarySubscriptionId as string | undefined) ?? null,
+  };
+};
+
+export const checkSubscriptionEligibility = async (): Promise<SubscriptionCheckoutEligibility> => {
+  const payload = await callCheckSubscriptionEligibility();
+  return mapSubscriptionCheckoutEligibility(payload);
+};
+
+export const startCheckout = async (priceId: string) => {
+  const eligibility = await checkSubscriptionEligibility();
+  if (!eligibility.eligibleForCheckout) {
+    await openStripeBillingPortal();
+    return;
+  }
+  const payload = await callCreateCheckoutSession({ priceId, origin: window.location.origin });
+  const url = payload.url as string | undefined;
+  if (!url) {
+    throw new Error('Missing checkout URL.');
   }
   window.location.assign(url);
 };
@@ -150,6 +173,10 @@ const mapManagedSubscription = (raw: Record<string, unknown>): ManagedSubscripti
 const mapManagedSubscriptionState = (
   raw: Record<string, unknown>,
 ): ManagedSubscriptionStateSnapshot => {
+  const duplicateCleanupScheduledCount = Math.max(
+    0,
+    Number(raw.duplicateCleanupScheduledCount ?? 0) || 0,
+  );
   const primary = mapManagedSubscription(raw);
   const managedSubscriptionsRaw = Array.isArray(raw.managedSubscriptions)
     ? raw.managedSubscriptions
@@ -171,6 +198,7 @@ const mapManagedSubscriptionState = (
   }
   return {
     primarySubscriptionId: primary.subscriptionId,
+    duplicateCleanupScheduledCount,
     managedSubscriptions: [
       deduped.get(primary.subscriptionId)!,
       ...Array.from(deduped.values()).filter(

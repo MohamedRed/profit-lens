@@ -58,6 +58,12 @@ export const callGetManagedSubscriptionState = async (payload: Record<string, un
   return result.data as Record<string, unknown>;
 };
 
+export const callCheckSubscriptionEligibility = async (payload: Record<string, unknown> = {}) => {
+  const callable = httpsCallable(getFn(), 'checkSubscriptionEligibility');
+  const result = await callable(payload);
+  return result.data as Record<string, unknown>;
+};
+
 export const callRegisterDevice = async (payload: Record<string, unknown>) => {
   const callable = httpsCallable(getFn(), 'registerDevice');
   const result = await callable(payload);

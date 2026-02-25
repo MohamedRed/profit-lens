@@ -1,12 +1,15 @@
 import { HttpsError, onCall } from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
-import Stripe from "stripe";
-import {
-  ensureEntitlement,
-  getPlanByPriceId,
-  syncStripeEntitlementForUid,
-} from "./entitlements";
+import { ensureEntitlement, getPlanByPriceId } from "./entitlements";
 import { getStripe, stripeSecretKey } from "./billing_core";
+import { syncEntitlementFromSubscription } from "./billing_entitlement_sync";
+import {
+  buildManagedStateResponse,
+  enforceSingleManagedSubscription,
+  listManagedSubscriptionsForCustomer,
+  readPrimarySubscriptionItem,
+  resolveManagedSubscriptionsForBillingAction,
+  selectPrimarySubscription,
+} from "./billing_subscription_ops";
 
 const billingCallableConfig = {
   cors: true,
@@ -17,199 +20,108 @@ const billingCallableConfig = {
   region: "europe-west1",
 };
 
-const MANAGEABLE_STATUSES = new Set([
-  "active",
-  "trialing",
-  "past_due",
-  "unpaid",
-  "incomplete",
-]);
-
-type ManagedSubscriptionResponse = {
-  subscriptionId: string;
-  status: string;
-  cancelAtPeriodEnd: boolean;
-  currentPeriodEndSec: number;
-  currentPriceId: string;
-  currentPlanId: string;
-};
-
-type ManagedSubscriptionStateResponse = ManagedSubscriptionResponse & {
-  managedSubscriptions: ManagedSubscriptionResponse[];
-};
-
-const readCustomerId = (customer: string | Stripe.Customer | Stripe.DeletedCustomer): string => {
-  if (typeof customer === "string") {
-    return customer;
-  }
-  return customer.id;
-};
-
-const readPrimarySubscriptionItem = (subscription: Stripe.Subscription): Stripe.SubscriptionItem => {
-  const item = subscription.items.data[0];
-  if (!item?.id || !item.price?.id) {
-    throw new HttpsError("failed-precondition", "Subscription is missing an active price item.");
-  }
-  return item;
-};
-
-const toManagedResponse = (subscription: Stripe.Subscription): ManagedSubscriptionResponse => {
-  const item = readPrimarySubscriptionItem(subscription);
-  const priceId = item.price.id;
-  const plan = getPlanByPriceId(priceId);
-  return {
-    subscriptionId: subscription.id,
-    status: subscription.status,
-    cancelAtPeriodEnd: subscription.cancel_at_period_end,
-    currentPeriodEndSec: subscription.current_period_end,
-    currentPriceId: priceId,
-    currentPlanId: plan?.planId ?? "unknown",
-  };
-};
-
-const toManagedResponseSafe = (
-  subscription: Stripe.Subscription
-): ManagedSubscriptionResponse | null => {
-  try {
-    return toManagedResponse(subscription);
-  } catch (error) {
-    logger.warn("Skipping invalid Stripe subscription while building managed list.", {
-      subscriptionId: subscription.id,
-      error: error instanceof Error ? error.message : String(error),
-    });
-    return null;
-  }
-};
-
-const reorderWithPrimaryFirst = (
-  subscriptions: Stripe.Subscription[],
-  primarySubscriptionId: string | null
-): Stripe.Subscription[] => {
-  if (!primarySubscriptionId) {
-    return subscriptions;
-  }
-  return [...subscriptions].sort((left, right) => {
-    const leftPrimary = left.id === primarySubscriptionId;
-    const rightPrimary = right.id === primarySubscriptionId;
-    if (leftPrimary === rightPrimary) {
-      return 0;
-    }
-    return leftPrimary ? -1 : 1;
-  });
-};
-
-const buildManagedStateResponse = (
-  primary: Stripe.Subscription,
-  subscriptions: Stripe.Subscription[]
-): ManagedSubscriptionStateResponse => {
-  const primarySnapshot = toManagedResponse(primary);
-  const snapshots = subscriptions
-    .map((subscription) => toManagedResponseSafe(subscription))
-    .filter((snapshot): snapshot is ManagedSubscriptionResponse => Boolean(snapshot));
-  const deduped = new Map<string, ManagedSubscriptionResponse>();
-  snapshots.forEach((snapshot) => {
-    deduped.set(snapshot.subscriptionId, snapshot);
-  });
-  if (!deduped.has(primarySnapshot.subscriptionId)) {
-    deduped.set(primarySnapshot.subscriptionId, primarySnapshot);
-  }
-  const managedSubscriptions = [
-    deduped.get(primarySnapshot.subscriptionId)!,
-    ...Array.from(deduped.values()).filter(
-      (snapshot) => snapshot.subscriptionId !== primarySnapshot.subscriptionId
-    ),
-  ];
-  return {
-    ...primarySnapshot,
-    managedSubscriptions,
-  };
-};
-
-const syncEntitlementFromSubscription = async (uid: string, subscription: Stripe.Subscription) => {
-  const item = readPrimarySubscriptionItem(subscription);
-  await syncStripeEntitlementForUid({
-    uid,
-    customerId: readCustomerId(subscription.customer),
-    subscriptionId: subscription.id,
-    priceId: item.price.id,
-    status: subscription.status,
-    periodStartSec: subscription.current_period_start,
-    periodEndSec: subscription.current_period_end,
-    cancelAtPeriodEnd: subscription.cancel_at_period_end,
-    canceledAtSec: subscription.canceled_at,
-  });
-};
-
-const listManagedSubscriptionsForCustomer = async (
-  uid: string,
-  stripe: Stripe,
-  customerId: string,
-  primarySubscriptionId: string | null
-): Promise<Stripe.Subscription[]> => {
-  const listed = await stripe.subscriptions.list({
-    customer: customerId,
-    status: "all",
-    limit: 20,
-  });
-  const manageable = listed.data.filter((subscription) =>
-    MANAGEABLE_STATUSES.has(subscription.status)
-  );
-  const managedForUid = manageable.filter(
-    (subscription) => subscription.metadata?.uid === uid
-  );
-  const subscriptions = managedForUid.length > 0 ? managedForUid : manageable;
-  return reorderWithPrimaryFirst(subscriptions, primarySubscriptionId);
-};
-
-const resolveManagedSubscriptions = async (
-  uid: string,
-  stripe: Stripe
-): Promise<{
+const loadManagedStateWithCleanup = async (params: {
+  uid: string;
   customerId: string;
-  subscriptions: Stripe.Subscription[];
-}> => {
-  const entitlement = await ensureEntitlement(uid);
-  const customerId = entitlement.stripeCustomerId;
-  if (!customerId) {
-    throw new HttpsError("failed-precondition", "No Stripe customer is linked to this account.");
-  }
-  const preferredSubscriptionId = entitlement.stripeSubscriptionId ?? null;
-  const subscriptions = await listManagedSubscriptionsForCustomer(
-    uid,
+  preferredSubscriptionId: string | null;
+}) => {
+  const stripe = getStripe();
+  const listed = await listManagedSubscriptionsForCustomer({
+    uid: params.uid,
     stripe,
-    customerId,
-    preferredSubscriptionId
-  );
-  if (subscriptions.length === 0) {
+    customerId: params.customerId,
+    preferredSubscriptionId: params.preferredSubscriptionId,
+  });
+  if (listed.length === 0) {
     throw new HttpsError(
       "failed-precondition",
       "No active subscription is available to manage."
     );
   }
-  return {
-    customerId,
-    subscriptions,
-  };
+  const normalized = await enforceSingleManagedSubscription({
+    uid: params.uid,
+    stripe,
+    subscriptions: listed,
+    preferredSubscriptionId: params.preferredSubscriptionId,
+  });
+  await syncEntitlementFromSubscription(params.uid, normalized.primarySubscription);
+  return buildManagedStateResponse({
+    primarySubscription: normalized.primarySubscription,
+    subscriptions: normalized.subscriptions,
+    duplicateCleanupScheduledCount: normalized.duplicateCleanupScheduledCount,
+  });
 };
 
-export const getManagedSubscriptionState = onCall(
+export const checkSubscriptionEligibility = onCall(
   billingCallableConfig,
-  async (request): Promise<ManagedSubscriptionStateResponse> => {
+  async (request) => {
     const uid = request.auth?.uid;
     if (!uid) {
       throw new HttpsError("unauthenticated", "Authentication required.");
     }
     const stripe = getStripe();
-    const { subscriptions } = await resolveManagedSubscriptions(uid, stripe);
-    const currentSubscription = subscriptions[0];
-    await syncEntitlementFromSubscription(uid, currentSubscription);
-    return buildManagedStateResponse(currentSubscription, subscriptions);
+    const entitlement = await ensureEntitlement(uid);
+    const customerId = entitlement.stripeCustomerId;
+    if (!customerId) {
+      return {
+        eligibleForCheckout: true,
+        manageableSubscriptionCount: 0,
+        duplicateSubscriptionCount: 0,
+        primarySubscriptionId: null,
+      };
+    }
+    const subscriptions = await listManagedSubscriptionsForCustomer({
+      uid,
+      stripe,
+      customerId,
+      preferredSubscriptionId: entitlement.stripeSubscriptionId ?? null,
+    });
+    const primarySubscription =
+      subscriptions.length > 0
+        ? selectPrimarySubscription(
+            subscriptions,
+            entitlement.stripeSubscriptionId ?? null
+          )
+        : null;
+    return {
+      eligibleForCheckout: subscriptions.length === 0,
+      manageableSubscriptionCount: subscriptions.length,
+      duplicateSubscriptionCount: Math.max(0, subscriptions.length - 1),
+      primarySubscriptionId: primarySubscription?.id ?? null,
+    };
+  }
+);
+
+export const getManagedSubscriptionState = onCall(
+  billingCallableConfig,
+  async (request) => {
+    const uid = request.auth?.uid;
+    if (!uid) {
+      throw new HttpsError("unauthenticated", "Authentication required.");
+    }
+    const stripe = getStripe();
+    const resolved = await resolveManagedSubscriptionsForBillingAction({
+      uid,
+      stripe,
+    });
+    const normalized = await enforceSingleManagedSubscription({
+      uid,
+      stripe,
+      subscriptions: resolved.subscriptions,
+      preferredSubscriptionId: resolved.preferredSubscriptionId,
+    });
+    await syncEntitlementFromSubscription(uid, normalized.primarySubscription);
+    return buildManagedStateResponse({
+      primarySubscription: normalized.primarySubscription,
+      subscriptions: normalized.subscriptions,
+      duplicateCleanupScheduledCount: normalized.duplicateCleanupScheduledCount,
+    });
   }
 );
 
 export const changeSubscriptionPlan = onCall(
   billingCallableConfig,
-  async (request): Promise<ManagedSubscriptionStateResponse> => {
+  async (request) => {
     const uid = request.auth?.uid;
     if (!uid) {
       throw new HttpsError("unauthenticated", "Authentication required.");
@@ -225,50 +137,44 @@ export const changeSubscriptionPlan = onCall(
     }
 
     const stripe = getStripe();
-    const { customerId, subscriptions } = await resolveManagedSubscriptions(uid, stripe);
-    const currentSubscription = subscriptions[0];
-    const currentItem = readPrimarySubscriptionItem(currentSubscription);
-    const samePrice = currentItem.price.id === priceId;
-    if (samePrice && currentSubscription.cancel_at_period_end === false) {
-      return buildManagedStateResponse(currentSubscription, subscriptions);
-    }
-
-    const updatePayload: Stripe.SubscriptionUpdateParams = samePrice
-      ? {
-          cancel_at_period_end: false,
-        }
-      : {
-          items: [
-            {
-              id: currentItem.id,
-              price: priceId,
-            },
-          ],
-          proration_behavior: "create_prorations",
-          cancel_at_period_end: false,
-        };
-
-    const updated = await stripe.subscriptions.update(
-      currentSubscription.id,
-      updatePayload
-    );
-    await syncEntitlementFromSubscription(uid, updated);
-    const subscriptionsAfterUpdate = await listManagedSubscriptionsForCustomer(
+    const resolved = await resolveManagedSubscriptionsForBillingAction({
       uid,
       stripe,
-      customerId,
-      updated.id
+    });
+    const currentSubscription = selectPrimarySubscription(
+      resolved.subscriptions,
+      resolved.preferredSubscriptionId
     );
-    return buildManagedStateResponse(
-      updated,
-      subscriptionsAfterUpdate.length > 0 ? subscriptionsAfterUpdate : [updated]
-    );
+    const currentItem = readPrimarySubscriptionItem(currentSubscription);
+    const samePrice = currentItem.price.id === priceId;
+    if (!samePrice || currentSubscription.cancel_at_period_end) {
+      const updatePayload = samePrice
+        ? {
+            cancel_at_period_end: false,
+          }
+        : {
+            items: [
+              {
+                id: currentItem.id,
+                price: priceId,
+              },
+            ],
+            proration_behavior: "create_prorations" as const,
+            cancel_at_period_end: false,
+          };
+      await stripe.subscriptions.update(currentSubscription.id, updatePayload);
+    }
+    return await loadManagedStateWithCleanup({
+      uid,
+      customerId: resolved.customerId,
+      preferredSubscriptionId: currentSubscription.id,
+    });
   }
 );
 
 export const setSubscriptionCancellation = onCall(
   billingCallableConfig,
-  async (request): Promise<ManagedSubscriptionStateResponse> => {
+  async (request) => {
     const uid = request.auth?.uid;
     if (!uid) {
       throw new HttpsError("unauthenticated", "Authentication required.");
@@ -279,25 +185,23 @@ export const setSubscriptionCancellation = onCall(
     }
 
     const stripe = getStripe();
-    const { customerId, subscriptions } = await resolveManagedSubscriptions(uid, stripe);
-    const currentSubscription = subscriptions[0];
-    if (currentSubscription.cancel_at_period_end === data.cancelAtPeriodEnd) {
-      return buildManagedStateResponse(currentSubscription, subscriptions);
-    }
-
-    const updated = await stripe.subscriptions.update(currentSubscription.id, {
-      cancel_at_period_end: data.cancelAtPeriodEnd,
-    });
-    await syncEntitlementFromSubscription(uid, updated);
-    const subscriptionsAfterUpdate = await listManagedSubscriptionsForCustomer(
+    const resolved = await resolveManagedSubscriptionsForBillingAction({
       uid,
       stripe,
-      customerId,
-      updated.id
+    });
+    const currentSubscription = selectPrimarySubscription(
+      resolved.subscriptions,
+      resolved.preferredSubscriptionId
     );
-    return buildManagedStateResponse(
-      updated,
-      subscriptionsAfterUpdate.length > 0 ? subscriptionsAfterUpdate : [updated]
-    );
+    if (currentSubscription.cancel_at_period_end !== data.cancelAtPeriodEnd) {
+      await stripe.subscriptions.update(currentSubscription.id, {
+        cancel_at_period_end: data.cancelAtPeriodEnd,
+      });
+    }
+    return await loadManagedStateWithCleanup({
+      uid,
+      customerId: resolved.customerId,
+      preferredSubscriptionId: currentSubscription.id,
+    });
   }
 );

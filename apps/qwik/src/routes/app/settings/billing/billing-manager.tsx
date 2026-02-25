@@ -15,6 +15,7 @@ import {
 import { shouldAttemptStripeEntitlementRepair } from '../../../../lib/features/billing/entitlement-repair';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { Entitlement, ManagedSubscriptionStateSnapshot, OfferUsage } from '../../../../lib/types/billing';
+import { appendDuplicateCleanupNotice, buildDuplicateCleanupNotice } from './billing-status-message';
 import { resolveDefaultPlanPriceId, resolveSelectedPriceId } from './billing-manager-helpers';
 import { BillingCancellationCard } from './billing-cancellation-card';
 import { BillingOngoingSubscriptionsCard } from './billing-ongoing-subscriptions-card';
@@ -85,7 +86,12 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
         return;
       }
       try {
-        managedSubscriptionState.value = await fetchManagedSubscriptionState();
+        const nextState = await fetchManagedSubscriptionState();
+        managedSubscriptionState.value = nextState;
+        if (nextState.duplicateCleanupScheduledCount > 0) {
+          statusTone.value = 'success';
+          status.value = buildDuplicateCleanupNotice(i18n, nextState.duplicateCleanupScheduledCount);
+        }
       } catch {
         managedSubscriptionState.value = null;
       }
@@ -156,9 +162,14 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
         await startCheckout(selectedPlanPriceId.value);
         return;
       }
-      managedSubscriptionState.value = await changeSubscriptionPlan(selectedPlanPriceId.value);
+      const nextState = await changeSubscriptionPlan(selectedPlanPriceId.value);
+      managedSubscriptionState.value = nextState;
       statusTone.value = 'success';
-      status.value = t(i18n, 'billingPlanChangeSuccess', 'Subscription plan updated.');
+      status.value = appendDuplicateCleanupNotice(
+        i18n,
+        t(i18n, 'billingPlanChangeSuccess', 'Subscription plan updated.'),
+        nextState.duplicateCleanupScheduledCount,
+      );
     } catch (error) {
       statusTone.value = 'error';
       status.value = resolveUserFacingErrorMessage(i18n, error, 'billing');
@@ -175,11 +186,16 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
     status.value = '';
     try {
       const nextCancelState = !entitlement.value.cancelAtPeriodEnd;
-      managedSubscriptionState.value = await setSubscriptionCancellation(nextCancelState);
+      const nextState = await setSubscriptionCancellation(nextCancelState);
+      managedSubscriptionState.value = nextState;
       statusTone.value = 'success';
-      status.value = nextCancelState
-        ? t(i18n, 'billingCancelSuccess', 'Subscription will cancel at period end.')
-        : t(i18n, 'billingResumeSuccess', 'Subscription resumed.');
+      status.value = appendDuplicateCleanupNotice(
+        i18n,
+        nextCancelState
+          ? t(i18n, 'billingCancelSuccess', 'Subscription will cancel at period end.')
+          : t(i18n, 'billingResumeSuccess', 'Subscription resumed.'),
+        nextState.duplicateCleanupScheduledCount,
+      );
     } catch (error) {
       statusTone.value = 'error';
       status.value = resolveUserFacingErrorMessage(i18n, error, 'billing');
