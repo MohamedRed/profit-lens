@@ -16,6 +16,7 @@ import { shouldAttemptStripeEntitlementRepair } from '../../../../lib/features/b
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { Entitlement, ManagedSubscriptionStateSnapshot, OfferUsage } from '../../../../lib/types/billing';
 import { appendDuplicateCleanupNotice, buildDuplicateCleanupNotice } from './billing-status-message';
+import { BillingFeedbackBanner } from './billing-feedback-banner';
 import { resolveDefaultPlanPriceId, resolveSelectedPriceId } from './billing-manager-helpers';
 import { BillingCancellationCard } from './billing-cancellation-card';
 import { BillingOngoingSubscriptionsCard } from './billing-ongoing-subscriptions-card';
@@ -291,9 +292,7 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
         />
       ) : null}
 
-      {status.value ? (
-        <p class={`ui-settings-billing-feedback ui-settings-billing-feedback-${statusTone.value}`}>{status.value}</p>
-      ) : null}
+      <BillingFeedbackBanner message={status.value} tone={statusTone.value} />
     </div>
   );
 });
