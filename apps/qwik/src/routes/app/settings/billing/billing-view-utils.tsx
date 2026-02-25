@@ -26,6 +26,9 @@ export const emphasizeFirstValue = (copy: string, value: string): JSXOutput => {
 
 export const resolveSubscriptionStatusToneClass = (statusRaw: string | null | undefined): string => {
   const normalized = String(statusRaw ?? '').trim().toLowerCase();
+  if (normalized === 'canceling') {
+    return 'is-warning';
+  }
   if (normalized === 'free') {
     return 'is-info';
   }
@@ -39,4 +42,21 @@ export const resolveSubscriptionStatusToneClass = (statusRaw: string | null | un
     return 'is-danger';
   }
   return 'is-neutral';
+};
+
+export const isSubscriptionCanceling = (
+  statusRaw: string | null | undefined,
+  cancelAtPeriodEnd: boolean,
+): boolean => {
+  if (!cancelAtPeriodEnd) {
+    return false;
+  }
+  const normalized = String(statusRaw ?? '').trim().toLowerCase();
+  return (
+    normalized === 'active' ||
+    normalized === 'trialing' ||
+    normalized === 'past_due' ||
+    normalized === 'unpaid' ||
+    normalized === 'incomplete'
+  );
 };
