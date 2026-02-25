@@ -12,6 +12,7 @@ import {
   watchEntitlement,
   watchUsage,
 } from '../../../../lib/features/billing/billing-service';
+import { shouldAttemptStripeEntitlementRepair } from '../../../../lib/features/billing/entitlement-repair';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { Entitlement, ManagedSubscriptionStateSnapshot, OfferUsage } from '../../../../lib/types/billing';
 import { resolveDefaultPlanPriceId, resolveSelectedPriceId } from './billing-manager-helpers';
@@ -69,12 +70,17 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
 
     let unsubscribeUsage: (() => void) | null = null;
     let isActive = true;
+    let entitlementRepairAttempted = false;
 
-    const loadManagedSubscriptions = async (nextEntitlement: Entitlement | null) => {
+    const loadManagedSubscriptions = async (
+      nextEntitlement: Entitlement | null,
+      options: { allowFreeRepair: boolean },
+    ) => {
       if (!isActive) {
         return;
       }
-      if (!nextEntitlement || nextEntitlement.planId.toLowerCase() === 'free') {
+      const isFreeEntitlement = !nextEntitlement || nextEntitlement.planId.toLowerCase() === 'free';
+      if (isFreeEntitlement && !options.allowFreeRepair) {
         managedSubscriptionState.value = null;
         return;
       }
@@ -90,7 +96,12 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
       const resolved = resolveSelectedPriceId(nextEntitlement);
       const isKnownPlan = billingPlans.some((plan) => plan.priceId === resolved);
       selectedPlanPriceId.value = isKnownPlan ? resolved : resolveDefaultPlanPriceId();
-      void loadManagedSubscriptions(nextEntitlement);
+      const allowFreeRepair =
+        !entitlementRepairAttempted && shouldAttemptStripeEntitlementRepair(nextEntitlement);
+      if (allowFreeRepair) {
+        entitlementRepairAttempted = true;
+      }
+      void loadManagedSubscriptions(nextEntitlement, { allowFreeRepair });
       usage.value = null;
       if (unsubscribeUsage) {
         unsubscribeUsage();

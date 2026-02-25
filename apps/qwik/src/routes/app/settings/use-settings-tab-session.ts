@@ -1,7 +1,12 @@
 import { useVisibleTask$, type Signal } from '@builder.io/qwik';
 import type { AuthStore } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
-import { watchEntitlement, watchUsage } from '../../../lib/features/billing/billing-service';
+import {
+  fetchManagedSubscriptionState,
+  watchEntitlement,
+  watchUsage,
+} from '../../../lib/features/billing/billing-service';
+import { shouldAttemptStripeEntitlementRepair } from '../../../lib/features/billing/entitlement-repair';
 import { watchDevices } from '../../../lib/features/devices/devices-service';
 import { watchUserProfile } from '../../../lib/features/profile/profile-service';
 import { watchVehicles } from '../../../lib/features/vehicles/vehicles-service';
@@ -46,6 +51,7 @@ export const useSettingsTabSession = (params: UseSettingsTabSessionParams): void
     }
 
     let unsubscribeUsage: (() => void) | null = null;
+    let entitlementRepairAttempted = false;
     const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (nextProfile) => {
       profile.value = nextProfile;
       selectedLanguage.value = (nextProfile.preferredLocale || 'fr') as 'fr' | 'en' | 'ar';
@@ -55,6 +61,12 @@ export const useSettingsTabSession = (params: UseSettingsTabSessionParams): void
     });
     const unsubscribeEntitlement = watchEntitlement(user.uid, (nextEntitlement) => {
       entitlement.value = nextEntitlement;
+      if (!entitlementRepairAttempted && shouldAttemptStripeEntitlementRepair(nextEntitlement)) {
+        entitlementRepairAttempted = true;
+        void fetchManagedSubscriptionState().catch(() => {
+          // Ignore recovery failures and keep existing entitlement data.
+        });
+      }
       usage.value = null;
       if (unsubscribeUsage) {
         unsubscribeUsage();

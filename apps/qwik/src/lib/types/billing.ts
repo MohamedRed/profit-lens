@@ -7,6 +7,7 @@ export interface Entitlement {
   periodEnd: Date;
   periodKey: string;
   cancelAtPeriodEnd: boolean;
+  stripeCustomerId?: string | null;
   stripePriceId?: string | null;
   stripeSubscriptionId?: string | null;
 }

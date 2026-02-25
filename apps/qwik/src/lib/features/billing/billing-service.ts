@@ -53,6 +53,7 @@ const mapEntitlement = (raw: Record<string, unknown> | undefined): Entitlement |
     periodEnd,
     periodKey,
     cancelAtPeriodEnd: Boolean(raw.cancelAtPeriodEnd ?? false),
+    stripeCustomerId: (raw.stripeCustomerId as string | undefined) ?? null,
     stripePriceId: (raw.stripePriceId as string | undefined) ?? null,
     stripeSubscriptionId: (raw.stripeSubscriptionId as string | undefined) ?? null,
   };

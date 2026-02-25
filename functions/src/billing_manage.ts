@@ -202,6 +202,7 @@ export const getManagedSubscriptionState = onCall(
     const stripe = getStripe();
     const { subscriptions } = await resolveManagedSubscriptions(uid, stripe);
     const currentSubscription = subscriptions[0];
+    await syncEntitlementFromSubscription(uid, currentSubscription);
     return buildManagedStateResponse(currentSubscription, subscriptions);
   }
 );
