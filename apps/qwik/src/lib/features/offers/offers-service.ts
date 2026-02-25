@@ -19,6 +19,7 @@ import type {
 } from '../../types/offer';
 import { userCollection } from '../../firebase/firestore';
 import { callAnalyzeOffer, callVerifyOfferRoute } from '../../firebase/callables';
+import { encodeScreenshotForAnalyze } from './offer-screenshot-encoder';
 
 const asDate = (value: unknown): Date | null => {
   if (value instanceof Timestamp) {
@@ -269,15 +270,10 @@ export const analyzeScreenshotOffer = async (params: {
   file: File;
   vehicleId?: string;
 }): Promise<Record<string, unknown>> => {
-  const bytes = await params.file.arrayBuffer();
-  const uint8 = new Uint8Array(bytes);
-  let binary = '';
-  for (let index = 0; index < uint8.length; index += 1) {
-    binary += String.fromCharCode(uint8[index]);
-  }
+  const { imageBase64, mimeType } = await encodeScreenshotForAnalyze(params.file);
   const payload: Record<string, unknown> = {
-    imageBase64: btoa(binary),
-    mimeType: params.file.type,
+    imageBase64,
+    mimeType,
     source: 'screenshot',
     deviceId: params.deviceId,
     currentLocation: params.currentLocation,

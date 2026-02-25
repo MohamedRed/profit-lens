@@ -63,6 +63,10 @@ const OFFER_SCREENSHOT_FAILURE_PATTERNS = [
   'failed to extract offer',
   'missing image payload',
   'invalid image payload',
+  'invalid screenshot image file',
+  'unable to process screenshot file',
+  'unable to read screenshot image',
+  'screenshot file is too large',
 ];
 
 const OFFER_GEMINI_QUOTA_PATTERNS = [
