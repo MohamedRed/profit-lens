@@ -36,7 +36,7 @@ interface OfferSettingsSheetProps {
 
 export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) => {
   const i18n = useI18n();
-  const { dialogRef, isClosing } = useOfferDialogTransition({
+  const { dialogRef, isClosing, isOpened } = useOfferDialogTransition({
     isOpen: props.isOpen,
   });
   const activeView = useSignal<OfferSettingsView>("menu");
@@ -140,7 +140,7 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
   return (
     <dialog
       ref={dialogRef}
-      class={{ "ui-offer-settings-dialog": true, "is-closing": isClosing.value }}
+      class={{ "ui-offer-settings-dialog": true, "is-closing": isClosing.value, "is-opened": isOpened.value }}
       aria-label={t(i18n, "offerSetupTitle", "Offer settings")}
       onCancel$={(event) => {
         event.preventDefault();

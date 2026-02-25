@@ -114,76 +114,6 @@
   white-space: nowrap;
 }
 
-@keyframes ui-offer-dialog-fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes ui-offer-dialog-fade-out {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes ui-offer-dialog-backdrop-in {
-  from {
-    background: rgba(15, 23, 42, 0);
-  }
-
-  to {
-    background: rgba(15, 23, 42, 0.42);
-  }
-}
-
-@keyframes ui-offer-dialog-backdrop-out {
-  from {
-    background: rgba(15, 23, 42, 0.42);
-  }
-
-  to {
-    background: rgba(15, 23, 42, 0);
-  }
-}
-
-@keyframes ui-offer-settings-panel-enter {
-  from {
-    transform: translate3d(0, 100svh, 0);
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes ui-offer-settings-panel-exit {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    transform: translate3d(0, 100svh, 0);
-  }
-}
-
-@keyframes ui-offer-settings-view-fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
 .ui-offer-setup-panel-body {
   display: grid;
   gap: 12px;
@@ -221,30 +151,23 @@
   overflow: hidden;
   overscroll-behavior: none;
   background: transparent;
-  opacity: 0;
+  opacity: 1;
   display: flex;
   align-items: flex-end;
   justify-content: center;
 }
 
-.ui-offer-settings-dialog[open]:not(.is-closing) {
-  animation: ui-offer-dialog-fade-in 220ms ease forwards;
-}
-
-.ui-offer-settings-dialog.is-closing {
-  animation: ui-offer-dialog-fade-out 260ms ease forwards;
+.ui-offer-settings-dialog[open] {
+  opacity: 1;
 }
 
 .ui-offer-settings-dialog::backdrop {
-  background: rgba(15, 23, 42, 0);
-}
-
-.ui-offer-settings-dialog[open]:not(.is-closing)::backdrop {
-  animation: ui-offer-dialog-backdrop-in 220ms ease forwards;
+  background: rgba(15, 23, 42, 0.42);
+  transition: background 220ms ease;
 }
 
 .ui-offer-settings-dialog.is-closing::backdrop {
-  animation: ui-offer-dialog-backdrop-out 260ms ease forwards;
+  background: rgba(15, 23, 42, 0);
 }
 
 .ui-offer-settings-panel {
@@ -258,17 +181,19 @@
   padding: 18px 18px calc(14px + env(safe-area-inset-bottom, 0px));
   display: grid;
   gap: 14px;
-  transform: translate3d(0, 0, 0);
-  transition: none;
+  transform: translate3d(0, 100%, 0);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
-.ui-offer-settings-dialog[open]:not(.is-closing) .ui-offer-settings-panel {
-  animation: ui-offer-settings-panel-enter 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+.ui-offer-settings-dialog.is-opened:not(.is-closing) .ui-offer-settings-panel {
+  transform: translate3d(0, 0, 0);
 }
 
 .ui-offer-settings-dialog.is-closing .ui-offer-settings-panel {
-  animation: ui-offer-settings-panel-exit 280ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  transform: translate3d(0, 100%, 0);
+  transition-duration: 220ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
 }
 
 .ui-offer-settings-panel-header {
@@ -366,7 +291,6 @@
 .ui-offer-settings-view {
   display: grid;
   gap: 14px;
-  animation: ui-offer-settings-view-fade-in 160ms ease-out;
 }
 
 .ui-offer-settings-view-scroll {
