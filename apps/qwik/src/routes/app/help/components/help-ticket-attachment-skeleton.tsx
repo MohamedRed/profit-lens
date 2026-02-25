@@ -9,7 +9,6 @@ export const HelpTicketAttachmentSkeleton = component$(() => {
         <SkeletonBlock class="ui-help-ticket-attachment-thumb-skeleton" height="72px" width="72px" />
         <SkeletonBlock class="ui-help-ticket-attachment-thumb-skeleton" height="72px" width="72px" />
       </div>
-      <SkeletonBlock height="12px" width="52%" />
     </div>
   );
 });
