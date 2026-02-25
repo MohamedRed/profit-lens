@@ -19,31 +19,21 @@ export const useOfferDialogTransition = (
   const hasScrollLock = useSignal(false);
   const closeTimeoutId = useSignal<number>();
 
-  const clearCloseTimeout = (): void => {
-    if (closeTimeoutId.value === undefined) {
-      return;
-    }
-    window.clearTimeout(closeTimeoutId.value);
-    closeTimeoutId.value = undefined;
-  };
-
-  const releaseScrollLock = (): void => {
-    if (!hasScrollLock.value) {
-      return;
-    }
-    unlockPageScroll();
-    hasScrollLock.value = false;
-  };
-
   useVisibleTask$(({ cleanup }) => {
     cleanup(() => {
-      clearCloseTimeout();
+      if (closeTimeoutId.value !== undefined) {
+        window.clearTimeout(closeTimeoutId.value);
+        closeTimeoutId.value = undefined;
+      }
       const dialog = dialogRef.value;
       if (dialog?.open) {
         dialog.classList.remove(dialogClosingClass);
         dialog.close();
       }
-      releaseScrollLock();
+      if (hasScrollLock.value) {
+        unlockPageScroll();
+        hasScrollLock.value = false;
+      }
     });
   });
 
@@ -52,13 +42,22 @@ export const useOfferDialogTransition = (
     const dialog = track(() => dialogRef.value);
 
     if (!dialog) {
-      clearCloseTimeout();
-      releaseScrollLock();
+      if (closeTimeoutId.value !== undefined) {
+        window.clearTimeout(closeTimeoutId.value);
+        closeTimeoutId.value = undefined;
+      }
+      if (hasScrollLock.value) {
+        unlockPageScroll();
+        hasScrollLock.value = false;
+      }
       return;
     }
 
     if (open) {
-      clearCloseTimeout();
+      if (closeTimeoutId.value !== undefined) {
+        window.clearTimeout(closeTimeoutId.value);
+        closeTimeoutId.value = undefined;
+      }
       dialog.classList.remove(dialogClosingClass);
       if (!hasScrollLock.value) {
         lockPageScroll({ disableTouchAction: false });
@@ -71,8 +70,14 @@ export const useOfferDialogTransition = (
     }
 
     if (!dialog.open) {
-      clearCloseTimeout();
-      releaseScrollLock();
+      if (closeTimeoutId.value !== undefined) {
+        window.clearTimeout(closeTimeoutId.value);
+        closeTimeoutId.value = undefined;
+      }
+      if (hasScrollLock.value) {
+        unlockPageScroll();
+        hasScrollLock.value = false;
+      }
       return;
     }
 
@@ -86,7 +91,10 @@ export const useOfferDialogTransition = (
       if (dialog.open) {
         dialog.close();
       }
-      releaseScrollLock();
+      if (hasScrollLock.value) {
+        unlockPageScroll();
+        hasScrollLock.value = false;
+      }
       closeTimeoutId.value = undefined;
     }, closeTransitionMs);
   });
