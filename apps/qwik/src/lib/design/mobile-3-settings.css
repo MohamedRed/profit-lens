@@ -244,6 +244,14 @@
   font-weight: 600;
 }
 
+.ui-settings-billing-subscription-actions {
+  margin-top: 6px;
+}
+
+.ui-settings-billing-subscription-action {
+  min-height: 34px;
+}
+
 .ui-settings-billing-feedback {
   margin: 0;
   border-radius: var(--pl-radius-lg);

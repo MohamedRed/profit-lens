@@ -1,10 +1,13 @@
-import { component$ } from '@builder.io/qwik';
+import { component$, type QRL } from '@builder.io/qwik';
+import { Button } from '../../../../components/ui/button';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { ManagedSubscriptionSnapshot } from '../../../../lib/types/billing';
 import { formatDate, resolvePlanLabelFromSubscription } from './billing-manager-helpers';
 import { resolveSubscriptionStatusToneClass } from './billing-view-utils';
 
 interface BillingOngoingSubscriptionsCardProps {
+  disabled: boolean;
+  onManageInStripe$: QRL<() => void>;
   primarySubscriptionId: string | null;
   subscriptions: ManagedSubscriptionSnapshot[];
 }
@@ -51,7 +54,20 @@ export const BillingOngoingSubscriptionsCard = component$<BillingOngoingSubscrip
               <p class="ui-settings-billing-primary-subscription">
                 {t(i18n, 'billingPrimarySubscriptionLabel', 'Primary')}
               </p>
-            ) : null}
+            ) : (
+              <div class="ui-settings-billing-subscription-actions">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  class="ui-settings-billing-subscription-action"
+                  disabled={props.disabled}
+                  onClick$={props.onManageInStripe$}
+                >
+                  {t(i18n, 'billingManageInStripeButton', 'Manage in Stripe')}
+                </Button>
+              </div>
+            )}
           </li>
         ))}
       </ul>

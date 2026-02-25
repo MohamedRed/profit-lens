@@ -214,6 +214,8 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
 
       {!isFreePlan ? (
         <BillingOngoingSubscriptionsCard
+          disabled={actionLoading.value}
+          onManageInStripe$={openStripePortal$}
           primarySubscriptionId={
             managedSubscriptionState.value?.primarySubscriptionId ?? entitlement.value?.stripeSubscriptionId ?? null
           }
