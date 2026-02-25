@@ -29,20 +29,18 @@ interface BillingManagerProps {
 
 export const BillingManager = component$<BillingManagerProps>((props) => {
   const i18n = useI18n();
-
   const entitlement = useSignal<Entitlement | null>(null);
   const usage = useSignal<OfferUsage | null>(null);
   const selectedPlanPriceId = useSignal(resolveDefaultPlanPriceId());
+  const planSelectionDirty = useSignal(false);
   const managedSubscriptionState = useSignal<ManagedSubscriptionStateSnapshot | null>(null);
   const actionLoading = useSignal(false);
   const status = useSignal('');
   const statusTone = useSignal<'success' | 'error'>('success');
-
   useVisibleTask$(({ cleanup }) => {
     const resetLoadingState = () => {
       actionLoading.value = false;
     };
-
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         resetLoadingState();
@@ -65,6 +63,7 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
       entitlement.value = null;
       usage.value = null;
       managedSubscriptionState.value = null;
+      planSelectionDirty.value = false;
       selectedPlanPriceId.value = resolveDefaultPlanPriceId();
       return;
     }
@@ -101,7 +100,12 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
       entitlement.value = nextEntitlement;
       const resolved = resolveSelectedPriceId(nextEntitlement);
       const isKnownPlan = billingPlans.some((plan) => plan.priceId === resolved);
-      selectedPlanPriceId.value = isKnownPlan ? resolved : resolveDefaultPlanPriceId();
+      const shouldSyncSelectedPlan =
+        !planSelectionDirty.value || selectedPlanPriceId.value === resolved;
+      if (shouldSyncSelectedPlan) {
+        selectedPlanPriceId.value = isKnownPlan ? resolved : resolveDefaultPlanPriceId();
+        planSelectionDirty.value = false;
+      }
       const allowFreeRepair =
         !entitlementRepairAttempted && shouldAttemptStripeEntitlementRepair(nextEntitlement);
       if (allowFreeRepair) {
@@ -164,6 +168,7 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
       }
       const nextState = await changeSubscriptionPlan(selectedPlanPriceId.value);
       managedSubscriptionState.value = nextState;
+      planSelectionDirty.value = false;
       statusTone.value = 'success';
       status.value = appendDuplicateCleanupNotice(
         i18n,
@@ -249,6 +254,7 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
           disabled={planOptions.length === 0 || actionLoading.value}
           onChange$={(next) => {
             selectedPlanPriceId.value = String(next);
+            planSelectionDirty.value = true;
           }}
         />
         <Button
