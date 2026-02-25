@@ -45,7 +45,6 @@ interface OfferFlowContentProps {
 export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
   const settingsSheetOpen = useSignal(false);
-  const galleryInputRef = useSignal<HTMLInputElement>();
   const importScreenshotLabel = t(
     i18n,
     "importScreenshotButton",
@@ -55,13 +54,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
 
   const openSettingsSheet$ = $(() => {
     settingsSheetOpen.value = true;
-  });
-
-  const openGalleryPicker$ = $(() => {
-    if (props.loading.value || !props.vehicles.value.length) {
-      return;
-    }
-    galleryInputRef.value?.click();
   });
 
   const onFileSelected$ = $(async (file: File) => {
@@ -128,13 +120,17 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 </span>
               </button>
 
-              <Button
-                variant="default"
-                size="lg"
-                type="button"
-                class="ui-offer-primary-cta"
-                disabled={props.loading.value || !hasVehicles}
-                onClick$={openGalleryPicker$}
+              <label
+                class={{
+                  "ui-button": true,
+                  "ui-button-default": true,
+                  "ui-button-lg": true,
+                  "ui-offer-primary-cta": true,
+                  "ui-offer-file-trigger": true,
+                }}
+                aria-disabled={
+                  props.loading.value || !hasVehicles ? "true" : "false"
+                }
               >
                 {props.loading.value
                   ? (
@@ -149,23 +145,22 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                       </span>
                     )
                   : importScreenshotLabel}
-              </Button>
-              <input
-                ref={galleryInputRef}
-                class="ui-offer-file-input-hidden"
-                type="file"
-                accept="image/*"
-                disabled={props.loading.value || !hasVehicles}
-                onClick$={(_, element) => {
-                  element.value = "";
-                }}
-                onInput$={(_, element) => {
-                  void onFileInputEvent$(element);
-                }}
-                onChange$={(_, element) => {
-                  void onFileInputEvent$(element);
-                }}
-              />
+                <input
+                  class="ui-offer-file-input-hidden"
+                  type="file"
+                  accept="image/*"
+                  disabled={props.loading.value || !hasVehicles}
+                  onClick$={(_, element) => {
+                    element.value = "";
+                  }}
+                  onInput$={(_, element) => {
+                    void onFileInputEvent$(element);
+                  }}
+                  onChange$={(_, element) => {
+                    void onFileInputEvent$(element);
+                  }}
+                />
+              </label>
             </div>
 
             {enableCaptureCta ? (
