@@ -1,7 +1,7 @@
 import { useSignal, useVisibleTask$, type Signal } from '@builder.io/qwik';
 import { lockPageScroll, unlockPageScroll } from '../../../../lib/ui/page-scroll-lock';
 
-const DEFAULT_CLOSE_DURATION_MS = 220;
+const DEFAULT_CLOSE_DURATION_MS = 380;
 
 interface UseOfferDialogTransitionOptions {
   closeDurationMs?: number;
