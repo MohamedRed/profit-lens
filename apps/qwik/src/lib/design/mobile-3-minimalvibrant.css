@@ -114,16 +114,6 @@
   white-space: nowrap;
 }
 
-@keyframes ui-offer-dialog-fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
 @keyframes ui-offer-dialog-fade-out {
   from {
     opacity: 1;
@@ -131,16 +121,6 @@
 
   to {
     opacity: 0;
-  }
-}
-
-@keyframes ui-offer-dialog-backdrop-in {
-  from {
-    background: rgba(15, 23, 42, 0);
-  }
-
-  to {
-    background: rgba(15, 23, 42, 0.42);
   }
 }
 
@@ -163,18 +143,6 @@
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes ui-offer-modal-drop-out {
-  from {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    opacity: 0;
-    transform: translate3d(0, 24px, 0);
   }
 }
 
@@ -219,7 +187,7 @@
 }
 
 .ui-offer-settings-dialog[open]:not(.is-closing) {
-  animation: ui-offer-dialog-fade-in 260ms ease forwards;
+  opacity: 1;
 }
 
 .ui-offer-settings-dialog.is-closing {
@@ -231,7 +199,7 @@
 }
 
 .ui-offer-settings-dialog[open]:not(.is-closing)::backdrop {
-  animation: ui-offer-dialog-backdrop-in 260ms ease forwards;
+  background: rgba(15, 23, 42, 0.42);
 }
 
 .ui-offer-settings-dialog.is-closing::backdrop {
@@ -249,19 +217,14 @@
   padding: 18px 18px calc(14px + env(safe-area-inset-bottom, 0px));
   display: grid;
   gap: 14px;
-  transform: translate3d(0, 100%, 0);
-  transition: transform 380ms cubic-bezier(0.32, 0.72, 0, 1);
-  will-change: transform;
-}
-
-.ui-offer-settings-dialog.is-opened:not(.is-closing) .ui-offer-settings-panel {
   transform: translate3d(0, 0, 0);
+  transition: none;
+  will-change: transform;
 }
 
 .ui-offer-settings-dialog.is-closing .ui-offer-settings-panel {
   transform: translate3d(0, 100%, 0);
-  transition-duration: 280ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ui-offer-settings-panel-header {
