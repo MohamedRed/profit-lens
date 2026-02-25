@@ -151,14 +151,13 @@
   overflow: hidden;
   overscroll-behavior: none;
   background: transparent;
-  opacity: 1;
-  display: flex;
+  display: none;
   align-items: flex-end;
   justify-content: center;
 }
 
 .ui-offer-settings-dialog[open] {
-  opacity: 1;
+  display: flex;
 }
 
 .ui-offer-settings-dialog::backdrop {
