@@ -11,12 +11,24 @@ export const AppSplash = component$<AppSplashProps>(({ status, subline }) => {
 
   return (
     <div class="ui-splash-viewport" role="status" aria-live="polite" aria-label={resolvedStatus}>
-      <div class="ui-splash-shape ui-splash-shape-top" aria-hidden="true" />
-      <div class="ui-splash-shape ui-splash-shape-bottom" aria-hidden="true" />
+      <div class="ui-splash-cinema-glow ui-splash-cinema-glow-top" aria-hidden="true" />
+      <div class="ui-splash-cinema-glow ui-splash-cinema-glow-bottom" aria-hidden="true" />
 
       <div class="ui-splash-shell">
         <div class="ui-splash-brand-row">
-          <span class="ui-splash-brand-glyph" aria-hidden="true" />
+          <div class="ui-splash-logo-wrap" aria-hidden="true">
+            <svg class="ui-splash-logo" viewBox="0 0 1024 1024" focusable="false">
+              <rect width="1024" height="1024" fill="#ff1f2d" />
+              <ellipse cx="512" cy="820" rx="324" ry="90" fill="none" stroke="#ffffff" stroke-width="48" />
+              <path
+                d="M512 196c-130 0-236 106-236 236 0 78 32 134 89 210 42 56 95 116 147 173 52-57 105-117 147-173 57-76 89-132 89-210 0-130-106-236-236-236z"
+                fill="#ffffff"
+              />
+              <circle cx="512" cy="392" r="88" fill="#ff1f2d" />
+              <circle cx="512" cy="392" r="40" fill="#ffffff" />
+            </svg>
+            <span class="ui-splash-logo-sheen" />
+          </div>
           <div class="ui-splash-brand-copy">
             <p class="ui-splash-brand-title">Liive Profit</p>
             <p class="ui-splash-brand-subline">{resolvedSubline}</p>

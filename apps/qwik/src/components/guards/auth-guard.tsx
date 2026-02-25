@@ -2,6 +2,7 @@ import { Slot, component$, useVisibleTask$ } from '@builder.io/qwik';
 import { useLocation, useNavigate } from '@builder.io/qwik-city';
 import { AppSplash } from '../ui/app-splash';
 import { useAuth } from '../../lib/auth/auth-context';
+import { useLaunchSplashWindow } from '../../lib/ui/launch-splash-window';
 
 interface AuthGuardProps {
   requireAuth: boolean;
@@ -22,12 +23,14 @@ export const AuthGuard = component$<AuthGuardProps>(({ requireAuth }) => {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const splashWindowElapsed = useLaunchSplashWindow();
 
   useVisibleTask$(({ track }) => {
     const ready = track(() => auth.ready.value);
     const user = track(() => auth.user.value);
+    const splashReady = track(() => splashWindowElapsed.value);
 
-    if (!ready) {
+    if (!ready || !splashReady) {
       return;
     }
 
@@ -42,7 +45,7 @@ export const AuthGuard = component$<AuthGuardProps>(({ requireAuth }) => {
     }
   });
 
-  if (!auth.ready.value) {
+  if (!auth.ready.value || !splashWindowElapsed.value) {
     return <AppSplash status="Checking secure session..." />;
   }
 

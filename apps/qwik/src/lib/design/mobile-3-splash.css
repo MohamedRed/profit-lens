@@ -10,22 +10,22 @@
     18px
     max(28px, calc(20px + env(safe-area-inset-bottom, 0px)));
   background:
-    radial-gradient(120% 120% at 12% 0%, rgba(139, 92, 246, 0.25) 0%, rgba(139, 92, 246, 0) 52%),
-    radial-gradient(100% 100% at 88% 100%, rgba(20, 184, 166, 0.2) 0%, rgba(20, 184, 166, 0) 54%),
-    linear-gradient(180deg, #111318 0%, #161a21 100%);
+    radial-gradient(120% 140% at 16% -10%, rgba(255, 31, 45, 0.4) 0%, rgba(255, 31, 45, 0) 58%),
+    radial-gradient(100% 110% at 90% 120%, rgba(247, 70, 85, 0.2) 0%, rgba(247, 70, 85, 0) 62%),
+    linear-gradient(180deg, #08090d 0%, #111419 100%);
   overflow: hidden;
   position: relative;
 }
 
 .ui-splash-shell {
   width: 100%;
-  max-width: 360px;
+  max-width: 370px;
   border-radius: 30px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(10, 12, 17, 0.58);
+  background: linear-gradient(180deg, rgba(14, 16, 22, 0.9) 0%, rgba(8, 10, 14, 0.78) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  padding: 24px 20px 18px;
+  padding: 24px 20px 20px;
   display: grid;
   gap: 16px;
   box-shadow:
@@ -33,6 +33,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   position: relative;
   z-index: 2;
+  animation: ui-splash-card-enter 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .ui-splash-brand-row {
@@ -41,20 +42,39 @@
   gap: 12px;
 }
 
-.ui-splash-brand-glyph {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--pl-color-purple) 0%, #6d28d9 100%);
+.ui-splash-logo-wrap {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow:
-    0 0 0 6px rgba(139, 92, 246, 0.22),
-    0 0 28px rgba(109, 40, 217, 0.45);
+    0 12px 22px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  transform-origin: 50% 50%;
+  animation: ui-splash-logo-enter 480ms cubic-bezier(0.2, 0.9, 0.3, 1) 90ms both;
+}
+
+.ui-splash-logo {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.ui-splash-logo-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 0%, rgba(255, 255, 255, 0.45) 46%, transparent 68%);
+  transform: translateX(-130%);
+  animation: ui-splash-logo-sheen 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 440ms 1 forwards;
 }
 
 .ui-splash-brand-copy {
   min-width: 0;
   display: grid;
-  gap: 3px;
+  gap: 4px;
+  animation: ui-splash-copy-enter 360ms ease-out 200ms both;
 }
 
 .ui-splash-brand-title {
@@ -67,7 +87,7 @@
 
 .ui-splash-brand-subline {
   margin: 0;
-  color: rgba(255, 255, 255, 0.68);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.78rem;
   line-height: 1.35;
   text-wrap: balance;
@@ -77,71 +97,125 @@
   width: 100%;
   height: 4px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.18);
   overflow: hidden;
 }
 
 .ui-splash-progress-indicator {
   display: block;
-  width: 42%;
+  width: 100%;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #8b5cf6 0%, #14b8a6 100%);
-  animation: ui-splash-progress 1.15s ease-in-out infinite;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, #ff3645 0%, #ff6570 100%);
+  animation: ui-splash-progress-fill 1180ms cubic-bezier(0.22, 1, 0.36, 1) 220ms 1 forwards;
 }
 
 .ui-splash-status {
   margin: 0;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.86);
   font-size: 0.84rem;
   letter-spacing: 0.01em;
+  opacity: 0;
+  animation: ui-splash-status-enter 320ms ease-out 560ms both;
 }
 
-.ui-splash-shape {
+.ui-splash-cinema-glow {
   position: absolute;
   border-radius: 999px;
-  filter: blur(20px);
+  filter: blur(26px);
   pointer-events: none;
   opacity: 0.5;
   z-index: 1;
 }
 
-.ui-splash-shape-top {
-  width: 150px;
-  height: 150px;
-  top: -68px;
-  right: -30px;
-  background: rgba(139, 92, 246, 0.5);
-  animation: ui-splash-float 6s ease-in-out infinite;
+.ui-splash-cinema-glow-top {
+  width: 180px;
+  height: 180px;
+  top: -74px;
+  right: -34px;
+  background: rgba(255, 31, 45, 0.52);
+  animation: ui-splash-glow-pulse 4s ease-in-out infinite;
 }
 
-.ui-splash-shape-bottom {
-  width: 170px;
-  height: 170px;
-  bottom: -84px;
-  left: -45px;
-  background: rgba(20, 184, 166, 0.36);
-  animation: ui-splash-float 5.6s ease-in-out infinite reverse;
+.ui-splash-cinema-glow-bottom {
+  width: 200px;
+  height: 200px;
+  bottom: -92px;
+  left: -55px;
+  background: rgba(255, 73, 88, 0.35);
+  animation: ui-splash-glow-pulse 4.4s ease-in-out infinite reverse;
 }
 
-@keyframes ui-splash-progress {
+@keyframes ui-splash-card-enter {
   0% {
-    transform: translateX(-100%);
+    transform: translateY(8px) scale(0.985);
+    opacity: 0;
   }
 
   100% {
-    transform: translateX(250%);
+    transform: translateY(0) scale(1);
+    opacity: 1;
   }
 }
 
-@keyframes ui-splash-float {
-  0%,
+@keyframes ui-splash-logo-enter {
+  0% {
+    transform: translateY(4px) scale(0.78);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ui-splash-logo-sheen {
+  100% {
+    transform: translateX(140%);
+  }
+}
+
+@keyframes ui-splash-copy-enter {
+  0% {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+
   100% {
     transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ui-splash-progress-fill {
+  0% {
+    transform: scaleX(0);
+  }
+
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes ui-splash-status-enter {
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes ui-splash-glow-pulse {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.44;
   }
 
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-8px) scale(1.04);
+    opacity: 0.58;
   }
 }
 
@@ -152,9 +226,22 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ui-splash-shell,
+  .ui-splash-logo-wrap,
+  .ui-splash-logo-sheen,
+  .ui-splash-brand-copy,
+  .ui-splash-status,
   .ui-splash-progress-indicator,
-  .ui-splash-shape-top,
-  .ui-splash-shape-bottom {
+  .ui-splash-cinema-glow-top,
+  .ui-splash-cinema-glow-bottom {
     animation: none;
+  }
+
+  .ui-splash-status {
+    opacity: 1;
+  }
+
+  .ui-splash-progress-indicator {
+    transform: scaleX(1);
   }
 }
