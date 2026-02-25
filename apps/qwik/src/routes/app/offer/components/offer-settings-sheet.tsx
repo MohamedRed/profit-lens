@@ -16,6 +16,7 @@ import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import { resolveVehicleTypeIcon } from "../../shared/vehicle-visuals";
 import { BillingManager } from "../../settings/billing/billing-manager";
+import { resolveOfferSettingsPanelChromeHeight, resolveOfferSettingsViewportHeight } from "./offer-settings-height";
 import { OfferSetupSummary } from "./offer-setup-summary";
 import { useOfferDialogTransition } from "./use-offer-dialog-transition";
 
@@ -72,16 +73,18 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
     const updateHeight = () => {
       const viewportHeight =
         window.innerHeight || document.documentElement.clientHeight || 0;
-      const maxHeightRatio = view === "billing" ? 0.96 : 0.72;
-      const maxHeight = Math.max(220, Math.floor(viewportHeight * maxHeightRatio));
       const measuredHeight = Math.ceil(activeElement.scrollHeight);
-      if (view === "billing") {
-        const minHeight = Math.max(360, Math.floor(viewportHeight * 0.84));
-        const boundedHeight = Math.min(measuredHeight, maxHeight);
-        viewHeightPx.value = Math.max(boundedHeight, minHeight);
-        return;
-      }
-      viewHeightPx.value = Math.min(measuredHeight, maxHeight);
+      const panelElement = activeElement.closest(".ui-offer-settings-panel");
+      const panelChromeHeight =
+        panelElement instanceof HTMLElement
+          ? resolveOfferSettingsPanelChromeHeight(panelElement)
+          : 0;
+      viewHeightPx.value = resolveOfferSettingsViewportHeight({
+        view,
+        viewportHeight,
+        contentHeight: measuredHeight,
+        panelChromeHeight,
+      });
     };
 
     updateHeight();
@@ -107,10 +110,6 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
   });
 
   const openBilling$ = $(() => {
-    if (typeof window !== "undefined") {
-      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-      viewHeightPx.value = Math.max(360, Math.floor(viewportHeight * 0.84));
-    }
     activeView.value = "billing";
   });
 
