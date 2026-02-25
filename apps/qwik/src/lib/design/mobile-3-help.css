@@ -261,6 +261,11 @@
   gap: 10px;
 }
 
+.ui-help-ticket-attachment-gallery-stage {
+  position: relative;
+  min-height: 72px;
+}
+
 .ui-help-ticket-attachment-gallery,
 .ui-help-ticket-attachment-gallery-skeleton {
   list-style: none;
@@ -268,6 +273,13 @@
   padding: 0;
   display: flex;
   gap: 10px;
+}
+
+.ui-help-ticket-attachment-gallery.is-preloading {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .ui-help-ticket-attachment-gallery {
@@ -285,7 +297,6 @@
 }
 
 .ui-help-ticket-attachment-thumb {
-  position: relative;
   width: 72px;
   height: 72px;
   border-radius: 14px;
@@ -293,29 +304,6 @@
   overflow: hidden;
   display: block;
   background: var(--pl-color-surface-elevated);
-}
-
-.ui-help-ticket-attachment-thumb-placeholder {
-  position: absolute;
-  inset: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(244, 244, 245, 0.92);
-  transition: opacity 180ms ease;
-  opacity: 1;
-  z-index: 1;
-}
-
-.ui-help-ticket-attachment-thumb-placeholder.is-hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.ui-help-ticket-attachment-thumb-spinner {
-  width: 20px;
-  height: 20px;
-  border-width: 2px;
 }
 
 .ui-help-ticket-attachment-thumb:focus-visible {
@@ -343,12 +331,6 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  opacity: 0;
-  transition: opacity 180ms ease;
-}
-
-.ui-help-ticket-attachment-image.is-loaded {
-  opacity: 1;
 }
 
 .ui-help-ticket-attachment-thumb-skeleton {
