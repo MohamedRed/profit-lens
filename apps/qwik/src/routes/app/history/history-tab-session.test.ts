@@ -69,4 +69,22 @@ describe('history-tab-session', () => {
     const next = readHistoryTabSessionState('uid_3');
     expect(next?.offers.map((offer) => offer.id)).toEqual(['offer_1']);
   });
+
+  it('drops malformed offer entries while reading session', () => {
+    writeHistoryTabSessionState({
+      uid: 'uid_4',
+      offers: [
+        createOffer('offer_1', '2026-02-25T10:00:00.000Z'),
+        null as unknown as OfferRecord,
+      ],
+      offersCursor: null,
+      stats: [],
+      hasMore: true,
+      hasLoadMoreError: false,
+      selectedTabIndex: 1,
+    });
+
+    const next = readHistoryTabSessionState('uid_4');
+    expect(next?.offers.map((offer) => offer.id)).toEqual(['offer_1']);
+  });
 });
