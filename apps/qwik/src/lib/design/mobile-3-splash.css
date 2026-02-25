@@ -15,6 +15,31 @@
     linear-gradient(180deg, #08090d 0%, #111419 100%);
   overflow: hidden;
   position: relative;
+  isolation: isolate;
+}
+
+.ui-splash-backdrop-noise {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.1;
+  background:
+    radial-gradient(circle at 22% 12%, rgba(255, 255, 255, 0.18) 0, transparent 35%),
+    radial-gradient(circle at 82% 72%, rgba(255, 255, 255, 0.14) 0, transparent 30%),
+    radial-gradient(circle at 58% 42%, rgba(255, 255, 255, 0.08) 0, transparent 28%);
+  animation: ui-splash-noise-shift 6.6s steps(12) infinite;
+}
+
+.ui-splash-cinema-beam {
+  position: absolute;
+  inset: -20% -40%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(110deg, transparent 24%, rgba(255, 70, 84, 0.3) 46%, transparent 70%);
+  transform: translateX(-30%) rotate(-2.5deg);
+  animation: ui-splash-beam-pass 1.2s cubic-bezier(0.2, 0.9, 0.2, 1) 120ms 1 forwards;
 }
 
 .ui-splash-shell {
@@ -33,7 +58,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   position: relative;
   z-index: 2;
-  animation: ui-splash-card-enter 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: ui-splash-card-enter 460ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .ui-splash-brand-row {
@@ -53,7 +78,7 @@
     0 12px 22px rgba(0, 0, 0, 0.42),
     0 0 0 1px rgba(255, 255, 255, 0.08) inset;
   transform-origin: 50% 50%;
-  animation: ui-splash-logo-enter 480ms cubic-bezier(0.2, 0.9, 0.3, 1) 90ms both;
+  animation: ui-splash-logo-enter 620ms cubic-bezier(0.2, 0.9, 0.3, 1) 80ms both;
 }
 
 .ui-splash-logo {
@@ -62,12 +87,24 @@
   display: block;
 }
 
+.ui-splash-logo-bloom {
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.16),
+    0 0 34px rgba(255, 54, 69, 0.5);
+  opacity: 0;
+  animation: ui-splash-logo-bloom 640ms ease-out 120ms both;
+}
+
 .ui-splash-logo-sheen {
   position: absolute;
   inset: 0;
   background: linear-gradient(115deg, transparent 0%, rgba(255, 255, 255, 0.45) 46%, transparent 68%);
   transform: translateX(-130%);
-  animation: ui-splash-logo-sheen 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 440ms 1 forwards;
+  animation: ui-splash-logo-sheen 860ms cubic-bezier(0.2, 0.7, 0.2, 1) 350ms 1 forwards;
 }
 
 .ui-splash-brand-copy {
@@ -109,7 +146,7 @@
   transform-origin: left center;
   transform: scaleX(0);
   background: linear-gradient(90deg, #ff3645 0%, #ff6570 100%);
-  animation: ui-splash-progress-fill 1180ms cubic-bezier(0.22, 1, 0.36, 1) 220ms 1 forwards;
+  animation: ui-splash-progress-fill 1180ms cubic-bezier(0.22, 1, 0.36, 1) 280ms 1 forwards;
 }
 
 .ui-splash-status {
@@ -148,100 +185,8 @@
   animation: ui-splash-glow-pulse 4.4s ease-in-out infinite reverse;
 }
 
-@keyframes ui-splash-card-enter {
-  0% {
-    transform: translateY(8px) scale(0.985);
-    opacity: 0;
-  }
-
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes ui-splash-logo-enter {
-  0% {
-    transform: translateY(4px) scale(0.78);
-    opacity: 0;
-  }
-
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes ui-splash-logo-sheen {
-  100% {
-    transform: translateX(140%);
-  }
-}
-
-@keyframes ui-splash-copy-enter {
-  0% {
-    transform: translateY(6px);
-    opacity: 0;
-  }
-
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes ui-splash-progress-fill {
-  0% {
-    transform: scaleX(0);
-  }
-
-  100% {
-    transform: scaleX(1);
-  }
-}
-
-@keyframes ui-splash-status-enter {
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes ui-splash-glow-pulse {
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 0.44;
-  }
-
-  50% {
-    transform: translateY(-8px) scale(1.04);
-    opacity: 0.58;
-  }
-}
-
 @media (max-width: 400px) {
   .ui-splash-shell {
     padding: 22px 16px 16px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ui-splash-shell,
-  .ui-splash-logo-wrap,
-  .ui-splash-logo-sheen,
-  .ui-splash-brand-copy,
-  .ui-splash-status,
-  .ui-splash-progress-indicator,
-  .ui-splash-cinema-glow-top,
-  .ui-splash-cinema-glow-bottom {
-    animation: none;
-  }
-
-  .ui-splash-status {
-    opacity: 1;
-  }
-
-  .ui-splash-progress-indicator {
-    transform: scaleX(1);
   }
 }

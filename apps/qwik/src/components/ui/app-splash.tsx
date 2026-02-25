@@ -1,16 +1,55 @@
-import { component$ } from '@builder.io/qwik';
+import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import {
+  consumeSplashLaunchEffects,
+  playSplashSting,
+  shouldReduceSplashMotion,
+  triggerSplashHaptic,
+} from '../../lib/ui/launch-splash-effects';
 
 interface AppSplashProps {
+  exiting?: boolean;
   status?: string;
   subline?: string;
 }
 
-export const AppSplash = component$<AppSplashProps>(({ status, subline }) => {
+export const AppSplash = component$<AppSplashProps>(({ exiting, status, subline }) => {
   const resolvedStatus = status ?? 'Preparing your workspace...';
   const resolvedSubline = subline ?? 'Offer intelligence for professional drivers';
+  const hasPlayedExitHaptic = useSignal(false);
+
+  useVisibleTask$(({ cleanup }) => {
+    if (shouldReduceSplashMotion() || !consumeSplashLaunchEffects()) {
+      return;
+    }
+
+    const timerId = window.setTimeout(() => {
+      triggerSplashHaptic([8, 22, 12]);
+      void playSplashSting();
+    }, 220);
+
+    cleanup(() => {
+      window.clearTimeout(timerId);
+    });
+  });
+
+  useVisibleTask$(({ track }) => {
+    const isExiting = track(() => Boolean(exiting));
+    if (!isExiting || hasPlayedExitHaptic.value || shouldReduceSplashMotion()) {
+      return;
+    }
+    hasPlayedExitHaptic.value = true;
+    triggerSplashHaptic(8);
+  });
 
   return (
-    <div class="ui-splash-viewport" role="status" aria-live="polite" aria-label={resolvedStatus}>
+    <div
+      class={{ 'ui-splash-viewport': true, 'is-exiting': Boolean(exiting) }}
+      role="status"
+      aria-live="polite"
+      aria-label={resolvedStatus}
+    >
+      <div class="ui-splash-backdrop-noise" aria-hidden="true" />
+      <div class="ui-splash-cinema-beam" aria-hidden="true" />
       <div class="ui-splash-cinema-glow ui-splash-cinema-glow-top" aria-hidden="true" />
       <div class="ui-splash-cinema-glow ui-splash-cinema-glow-bottom" aria-hidden="true" />
 
@@ -27,6 +66,7 @@ export const AppSplash = component$<AppSplashProps>(({ status, subline }) => {
               <circle cx="512" cy="392" r="88" fill="#ff1f2d" />
               <circle cx="512" cy="392" r="40" fill="#ffffff" />
             </svg>
+            <span class="ui-splash-logo-bloom" />
             <span class="ui-splash-logo-sheen" />
           </div>
           <div class="ui-splash-brand-copy">
