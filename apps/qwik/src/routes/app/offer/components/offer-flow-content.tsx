@@ -9,6 +9,7 @@ import { Button } from "../../../../components/ui/button";
 import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import type { OfferAnalysisRecord } from "../offer-analysis-result";
+import { stageOfferScreenshotFile } from "../offer-file-transfer-store";
 import { enableCaptureCta, enableManualEntry } from "../offer-feature-flags";
 import { OfferFlowStatus } from "./offer-flow-status";
 import { OfferManualDetailsSection } from "./offer-manual-details-section";
@@ -27,7 +28,7 @@ interface OfferFlowContentProps {
   minProfitabilityEuro: Signal<number>;
   onAnalyzeManual$: QRL<() => Promise<void>>;
   onClearScreenshotPreview$: QRL<() => void>;
-  onImportScreenshotFile$: QRL<(file: File) => Promise<void>>;
+  onImportScreenshotFile$: QRL<(fileToken: string) => Promise<void>>;
   onSaveProfitabilityTarget$: QRL<(value: string) => Promise<void>>;
   onViewDetails$: QRL<() => void | Promise<void>>;
   payout: Signal<string>;
@@ -57,7 +58,8 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   });
 
   const onFileSelected$ = $(async (file: File) => {
-    await props.onImportScreenshotFile$(file);
+    const token = stageOfferScreenshotFile(file);
+    await props.onImportScreenshotFile$(token);
   });
 
   const onFileInputEvent$ = $(async (element: HTMLInputElement) => {
@@ -65,8 +67,11 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     if (!file) {
       return;
     }
-    void onFileSelected$(file);
-    element.value = "";
+    try {
+      await onFileSelected$(file);
+    } finally {
+      element.value = "";
+    }
   });
 
   const showOverview =
