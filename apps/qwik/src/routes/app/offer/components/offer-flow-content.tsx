@@ -120,35 +120,33 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 </span>
               </button>
 
-              <label
-                class={{
-                  "ui-button": true,
-                  "ui-button-default": true,
-                  "ui-button-lg": true,
-                  "ui-offer-primary-cta": true,
-                  "ui-offer-file-trigger": true,
-                }}
-                aria-disabled={
-                  props.loading.value || !hasVehicles ? "true" : "false"
-                }
-              >
-                {props.loading.value
-                  ? (
-                      <span class="ui-offer-cta-loading-content">
-                        <span
-                          class="material-icons-outlined ui-offer-cta-loading-icon"
-                          aria-hidden="true"
-                        >
-                          manage_search
+              <div class="ui-offer-file-cta-shell">
+                <Button
+                  variant="default"
+                  size="lg"
+                  type="button"
+                  class="ui-offer-primary-cta"
+                  disabled={props.loading.value || !hasVehicles}
+                >
+                  {props.loading.value
+                    ? (
+                        <span class="ui-offer-cta-loading-content">
+                          <span
+                            class="material-icons-outlined ui-offer-cta-loading-icon"
+                            aria-hidden="true"
+                          >
+                            manage_search
+                          </span>
+                          <span>{analyzingCtaLabel}</span>
                         </span>
-                        <span>{analyzingCtaLabel}</span>
-                      </span>
-                    )
-                  : importScreenshotLabel}
+                      )
+                    : importScreenshotLabel}
+                </Button>
                 <input
-                  class="ui-offer-file-input-hidden"
+                  class="ui-offer-file-input-overlay"
                   type="file"
                   accept="image/*"
+                  aria-label={importScreenshotLabel}
                   disabled={props.loading.value || !hasVehicles}
                   onClick$={(_, element) => {
                     element.value = "";
@@ -160,7 +158,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                     void onFileInputEvent$(element);
                   }}
                 />
-              </label>
+              </div>
             </div>
 
             {enableCaptureCta ? (
