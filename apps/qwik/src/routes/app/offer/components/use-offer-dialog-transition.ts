@@ -9,18 +9,41 @@ interface OfferDialogTransitionState {
   dialogRef: Signal<HTMLDialogElement | undefined>;
 }
 
+const dialogClosingClass = 'is-closing';
+const closeTransitionMs = 320;
+
 export const useOfferDialogTransition = (
   options: UseOfferDialogTransitionOptions,
 ): OfferDialogTransitionState => {
   const dialogRef = useSignal<HTMLDialogElement>();
   const hasScrollLock = useSignal(false);
+  const closeTimeoutId = useSignal<number>();
+
+  const clearCloseTimeout = (): void => {
+    if (closeTimeoutId.value === undefined) {
+      return;
+    }
+    window.clearTimeout(closeTimeoutId.value);
+    closeTimeoutId.value = undefined;
+  };
+
+  const releaseScrollLock = (): void => {
+    if (!hasScrollLock.value) {
+      return;
+    }
+    unlockPageScroll();
+    hasScrollLock.value = false;
+  };
 
   useVisibleTask$(({ cleanup }) => {
     cleanup(() => {
-      if (hasScrollLock.value) {
-        unlockPageScroll();
-        hasScrollLock.value = false;
+      clearCloseTimeout();
+      const dialog = dialogRef.value;
+      if (dialog?.open) {
+        dialog.classList.remove(dialogClosingClass);
+        dialog.close();
       }
+      releaseScrollLock();
     });
   });
 
@@ -29,14 +52,14 @@ export const useOfferDialogTransition = (
     const dialog = track(() => dialogRef.value);
 
     if (!dialog) {
-      if (hasScrollLock.value) {
-        unlockPageScroll();
-        hasScrollLock.value = false;
-      }
+      clearCloseTimeout();
+      releaseScrollLock();
       return;
     }
 
     if (open) {
+      clearCloseTimeout();
+      dialog.classList.remove(dialogClosingClass);
       if (!hasScrollLock.value) {
         lockPageScroll({ disableTouchAction: false });
         hasScrollLock.value = true;
@@ -47,13 +70,25 @@ export const useOfferDialogTransition = (
       return;
     }
 
-    if (dialog.open) {
-      dialog.close();
+    if (!dialog.open) {
+      clearCloseTimeout();
+      releaseScrollLock();
+      return;
     }
-    if (hasScrollLock.value) {
-      unlockPageScroll();
-      hasScrollLock.value = false;
+
+    if (dialog.classList.contains(dialogClosingClass)) {
+      return;
     }
+
+    dialog.classList.add(dialogClosingClass);
+    closeTimeoutId.value = window.setTimeout(() => {
+      dialog.classList.remove(dialogClosingClass);
+      if (dialog.open) {
+        dialog.close();
+      }
+      releaseScrollLock();
+      closeTimeoutId.value = undefined;
+    }, closeTransitionMs);
   });
 
   return {
