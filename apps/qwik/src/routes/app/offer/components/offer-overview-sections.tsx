@@ -1,10 +1,11 @@
 import { component$, type QRL } from '@builder.io/qwik';
-import { Button } from '../../../../components/ui/button';
+import { Link } from '@builder.io/qwik-city';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { OfferAnalysisRecord } from '../offer-analysis-result';
 import { OfferSectionCard } from './offer-section-card';
 
 interface OfferOverviewSectionsProps {
+  detailsHref: string;
   minProfitabilityEuro: number;
   onViewDetails$: QRL<() => void | Promise<void>>;
   record: OfferAnalysisRecord;
@@ -38,7 +39,7 @@ const resolveAnalysisDistanceKm = (record: OfferAnalysisRecord): number => {
 
 export const OfferOverviewSections = component$<OfferOverviewSectionsProps>((props) => {
   const i18n = useI18n();
-  const { minProfitabilityEuro, onViewDetails$, record } = props;
+  const { detailsHref, minProfitabilityEuro, onViewDetails$, record } = props;
   const distanceKm = resolveAnalysisDistanceKm(record);
   const minimumTargetEuro = minProfitabilityEuro * distanceKm;
   const targetDelta = record.breakdown.netProfit - minimumTargetEuro;
@@ -94,9 +95,9 @@ export const OfferOverviewSections = component$<OfferOverviewSectionsProps>((pro
               <span>{formatCurrency(record.breakdown.totalCosts)}</span>
             </div>
           </div>
-          <Button variant="default" onClick$={onViewDetails$}>
+          <Link class="ui-button ui-button-default ui-button-md" href={detailsHref} onClick$={onViewDetails$}>
             {t(i18n, 'viewProfitabilityDetailsButton', 'View profitability details')}
-          </Button>
+          </Link>
         </div>
       </OfferSectionCard>
     </>

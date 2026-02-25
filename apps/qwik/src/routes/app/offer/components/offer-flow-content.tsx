@@ -203,6 +203,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             <OfferOverviewSections
               record={props.analysisRecord.value}
               minProfitabilityEuro={props.minProfitabilityEuro.value}
+              detailsHref={`/next/app/history/details?offerId=${encodeURIComponent(props.analysisRecord.value.id)}&backTo=${encodeURIComponent('/next/app/offer')}`}
               onViewDetails$={props.onViewDetails$}
             />
           ) : null}

@@ -1,5 +1,4 @@
 import { $, component$, useSignal } from '@builder.io/qwik';
-import { useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
@@ -38,7 +37,6 @@ const loadOffersService = () => {
 
 export default component$(() => {
   const auth = useAuth();
-  const navigate = useNavigate();
   const i18n = useI18n();
 
   const payout = useSignal('');
@@ -241,11 +239,6 @@ export default component$(() => {
     }
     const scrollY = typeof window !== 'undefined' ? window.scrollY : null;
     primeOfferDetailsNavigation(record, scrollY);
-    const search = new URLSearchParams({
-      offerId: record.id,
-      backTo: '/next/app/offer',
-    });
-    await navigate(`/next/app/history/details?${search.toString()}`);
   });
 
   const user = auth.user.value;
