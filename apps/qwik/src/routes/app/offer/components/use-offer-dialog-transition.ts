@@ -21,7 +21,8 @@ export const useOfferDialogTransition = (
   const isClosing = useSignal(false);
   const isOpened = useSignal(false);
   const closeTimerId = useSignal<number | null>(null);
-  const openFrameId = useSignal<number | null>(null);
+  const openPrepareFrameId = useSignal<number | null>(null);
+  const openCommitFrameId = useSignal<number | null>(null);
   const hasScrollLock = useSignal(false);
   const closeDurationMs = options.closeDurationMs ?? DEFAULT_CLOSE_DURATION_MS;
 
@@ -31,9 +32,13 @@ export const useOfferDialogTransition = (
         window.clearTimeout(closeTimerId.value);
         closeTimerId.value = null;
       }
-      if (openFrameId.value !== null) {
-        window.cancelAnimationFrame(openFrameId.value);
-        openFrameId.value = null;
+      if (openPrepareFrameId.value !== null) {
+        window.cancelAnimationFrame(openPrepareFrameId.value);
+        openPrepareFrameId.value = null;
+      }
+      if (openCommitFrameId.value !== null) {
+        window.cancelAnimationFrame(openCommitFrameId.value);
+        openCommitFrameId.value = null;
       }
       if (hasScrollLock.value) {
         unlockPageScroll();
@@ -52,9 +57,13 @@ export const useOfferDialogTransition = (
         window.clearTimeout(closeTimerId.value);
         closeTimerId.value = null;
       }
-      if (openFrameId.value !== null) {
-        window.cancelAnimationFrame(openFrameId.value);
-        openFrameId.value = null;
+      if (openPrepareFrameId.value !== null) {
+        window.cancelAnimationFrame(openPrepareFrameId.value);
+        openPrepareFrameId.value = null;
+      }
+      if (openCommitFrameId.value !== null) {
+        window.cancelAnimationFrame(openCommitFrameId.value);
+        openCommitFrameId.value = null;
       }
     });
 
@@ -72,9 +81,13 @@ export const useOfferDialogTransition = (
         window.clearTimeout(closeTimerId.value);
         closeTimerId.value = null;
       }
-      if (openFrameId.value !== null) {
-        window.cancelAnimationFrame(openFrameId.value);
-        openFrameId.value = null;
+      if (openPrepareFrameId.value !== null) {
+        window.cancelAnimationFrame(openPrepareFrameId.value);
+        openPrepareFrameId.value = null;
+      }
+      if (openCommitFrameId.value !== null) {
+        window.cancelAnimationFrame(openCommitFrameId.value);
+        openCommitFrameId.value = null;
       }
       isClosing.value = false;
       isOpened.value = false;
@@ -86,9 +99,16 @@ export const useOfferDialogTransition = (
       if (!dialog.open) {
         dialog.showModal();
       }
-      openFrameId.value = window.requestAnimationFrame(() => {
-        openFrameId.value = null;
-        isOpened.value = true;
+      // Keep one paint with the hidden off-screen state before toggling the opened class.
+      openPrepareFrameId.value = window.requestAnimationFrame(() => {
+        openPrepareFrameId.value = null;
+        openCommitFrameId.value = window.requestAnimationFrame(() => {
+          openCommitFrameId.value = null;
+          if (!options.isOpen.value || !dialogRef.value?.open || isClosing.value) {
+            return;
+          }
+          isOpened.value = true;
+        });
       });
       return;
     }
@@ -104,9 +124,13 @@ export const useOfferDialogTransition = (
       return;
     }
 
-    if (openFrameId.value !== null) {
-      window.cancelAnimationFrame(openFrameId.value);
-      openFrameId.value = null;
+    if (openPrepareFrameId.value !== null) {
+      window.cancelAnimationFrame(openPrepareFrameId.value);
+      openPrepareFrameId.value = null;
+    }
+    if (openCommitFrameId.value !== null) {
+      window.cancelAnimationFrame(openCommitFrameId.value);
+      openCommitFrameId.value = null;
     }
     isOpened.value = false;
     isClosing.value = true;
