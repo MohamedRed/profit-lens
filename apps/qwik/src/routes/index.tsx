@@ -1,5 +1,6 @@
 import { component$, useVisibleTask$ } from '@builder.io/qwik';
 import { useNavigate } from '@builder.io/qwik-city';
+import { AppSplash } from '../components/ui/app-splash';
 import { useAuth } from '../lib/auth/auth-context';
 
 export default component$(() => {
@@ -23,11 +24,6 @@ export default component$(() => {
   });
 
   return (
-    <div class="ui-gate-viewport">
-      <div class="ui-card ui-stack ui-gate-loading-card">
-        <div class="ui-spinner" />
-        <div class="ui-status">Loading...</div>
-      </div>
-    </div>
+    <AppSplash status="Launching Liive Profit..." />
   );
 });

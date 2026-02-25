@@ -14,6 +14,7 @@
 @import './lib/design/mobile-3-offer-status.css';
 @import './lib/design/mobile-3-skeleton.css';
 @import './lib/design/mobile-3-auth.css';
+@import './lib/design/mobile-3-splash.css';
 
 * {
   box-sizing: border-box;

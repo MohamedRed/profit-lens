@@ -1,5 +1,6 @@
 import { Slot, component$, useVisibleTask$ } from '@builder.io/qwik';
 import { useLocation, useNavigate } from '@builder.io/qwik-city';
+import { AppSplash } from '../ui/app-splash';
 import { useAuth } from '../../lib/auth/auth-context';
 
 interface AuthGuardProps {
@@ -41,22 +42,15 @@ export const AuthGuard = component$<AuthGuardProps>(({ requireAuth }) => {
     }
   });
 
+  if (!auth.ready.value) {
+    return <AppSplash status="Checking secure session..." />;
+  }
+
   if (requireAuth) {
-    if (auth.ready.value && !auth.user.value) {
+    if (!auth.user.value) {
       return null;
     }
     return <Slot />;
-  }
-
-  if (!auth.ready.value) {
-    return (
-      <div class="ui-gate-viewport">
-        <div class="ui-card ui-stack ui-gate-loading-card">
-          <div class="ui-spinner" />
-          <div class="ui-status">Checking session...</div>
-        </div>
-      </div>
-    );
   }
 
   if (!requireAuth && auth.user.value) {
