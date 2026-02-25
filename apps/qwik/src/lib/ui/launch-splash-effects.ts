@@ -2,6 +2,14 @@ const SPLASH_SOUND_STORAGE_KEY = 'pl-splash-sound-enabled';
 
 let hasPlayedLaunchEffects = false;
 
+const hasUserActivation = (): boolean => {
+  const navigatorWithActivation = navigator as Navigator & {
+    userActivation?: { isActive: boolean; hasBeenActive: boolean };
+  };
+  const activation = navigatorWithActivation.userActivation;
+  return Boolean(activation?.isActive || activation?.hasBeenActive);
+};
+
 const isSplashSoundEnabled = (): boolean => {
   try {
     const value = window.localStorage.getItem(SPLASH_SOUND_STORAGE_KEY);
@@ -27,14 +35,14 @@ export const consumeSplashLaunchEffects = (): boolean => {
 };
 
 export const triggerSplashHaptic = (pattern: number | number[] = 10): void => {
-  if (!('vibrate' in navigator)) {
+  if (!('vibrate' in navigator) || !hasUserActivation()) {
     return;
   }
   navigator.vibrate(pattern);
 };
 
 export const playSplashSting = async (): Promise<void> => {
-  if (!isSplashSoundEnabled()) {
+  if (!isSplashSoundEnabled() || !hasUserActivation()) {
     return;
   }
 
