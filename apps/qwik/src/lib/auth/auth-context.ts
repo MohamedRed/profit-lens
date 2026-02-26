@@ -6,7 +6,7 @@ import {
   useVisibleTask$,
   type Signal,
 } from '@builder.io/qwik';
-import { authStateListener } from '../firebase/auth';
+import { authStateListener, readCurrentAuthUser } from '../firebase/auth';
 import type { AuthUser } from '../types/auth';
 
 export interface AuthStore {
@@ -29,13 +29,18 @@ export const setupAuthProvider = () => {
 
   useVisibleTask$(({ cleanup }) => {
     let initialStateResolved = false;
+    const syncUserFromAuthClient = () => {
+      store.user.value = readCurrentAuthUser();
+    };
+
     const readyTimeout = window.setTimeout(() => {
       if (initialStateResolved) {
         return;
       }
       initialStateResolved = true;
+      syncUserFromAuthClient();
       store.ready.value = true;
-      console.warn('[auth] auth state listener timed out; continuing as signed-out');
+      console.warn('[auth] auth state listener timed out; using current auth snapshot');
     }, 6000);
 
     const resolveInitialReady = () => {
@@ -58,11 +63,26 @@ export const setupAuthProvider = () => {
       },
       (error) => {
         console.error('[auth] auth state listener failed', error);
+        syncUserFromAuthClient();
         resolveInitialReady();
       },
     );
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        syncUserFromAuthClient();
+      }
+    };
+    const onFocus = () => {
+      syncUserFromAuthClient();
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    window.addEventListener('focus', onFocus);
+
     cleanup(() => {
       window.clearTimeout(readyTimeout);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('focus', onFocus);
       unsubscribe();
     });
   });

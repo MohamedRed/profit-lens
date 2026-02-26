@@ -37,6 +37,11 @@ const mapUser = (user: User | null): AuthUser | null => {
   };
 };
 
+export const readCurrentAuthUser = (): AuthUser | null => {
+  const auth = getAuthClient();
+  return mapUser(auth.currentUser);
+};
+
 export const authStateListener = (
   callback: (user: AuthUser | null) => void,
   onError?: (error: unknown) => void,
