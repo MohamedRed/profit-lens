@@ -25,7 +25,7 @@ export const registerDevice = onCall(
     memory: "256MiB",
     cpu: 1,
     minInstances: 1,
-    maxInstances: 20,
+    maxInstances: 200,
     concurrency: 20,
     region: "europe-west1",
   },
