@@ -8,14 +8,17 @@ import {
 
 interface AppSplashProps {
   exiting?: boolean;
+  progress?: number;
   status?: string;
   subline?: string;
 }
 
-export const AppSplash = component$<AppSplashProps>(({ exiting, status, subline }) => {
+export const AppSplash = component$<AppSplashProps>(({ exiting, progress, status, subline }) => {
   const resolvedStatus = status ?? 'Preparing your workspace...';
   const resolvedSubline = subline ?? 'Offer intelligence for professional drivers';
   const hasPlayedExitHaptic = useSignal(false);
+  const normalizedProgress = Math.min(1, Math.max(0, progress ?? 0));
+  const progressLabel = `${Math.round(normalizedProgress * 100)}%`;
 
   useVisibleTask$(({ cleanup }) => {
     if (shouldReduceSplashMotion() || !consumeSplashLaunchEffects()) {
@@ -76,7 +79,14 @@ export const AppSplash = component$<AppSplashProps>(({ exiting, status, subline 
         </div>
 
         <div class="ui-splash-progress-track" aria-hidden="true">
-          <span class="ui-splash-progress-indicator" />
+          <span
+            class="ui-splash-progress-indicator"
+            style={{ '--ui-splash-progress': normalizedProgress.toFixed(4) }}
+          />
+        </div>
+        <div class="ui-splash-progress-meta" aria-hidden="true">
+          <span class="ui-splash-progress-tag">Boot sequence</span>
+          <span class="ui-splash-progress-value">{progressLabel}</span>
         </div>
         <p class="ui-splash-status">{resolvedStatus}</p>
       </div>

@@ -62,19 +62,15 @@
   }
 }
 
-@keyframes ui-splash-progress-fill {
-  0% {
-    transform: scaleX(0);
-  }
-
-  100% {
-    transform: scaleX(1);
-  }
-}
-
 @keyframes ui-splash-status-enter {
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes ui-splash-progress-sheen {
+  100% {
+    transform: translateX(160%);
   }
 }
 
@@ -126,6 +122,7 @@
 }
 
 .ui-splash-viewport.is-exiting .ui-splash-brand-copy,
+.ui-splash-viewport.is-exiting .ui-splash-progress-meta,
 .ui-splash-viewport.is-exiting .ui-splash-status {
   animation: ui-splash-fade-exit 240ms ease-out both;
 }
@@ -179,7 +176,12 @@
     opacity: 1;
   }
 
+  .ui-splash-progress-indicator,
+  .ui-splash-progress-indicator::after {
+    animation: none;
+  }
+
   .ui-splash-progress-indicator {
-    transform: scaleX(1);
+    transition: none;
   }
 }

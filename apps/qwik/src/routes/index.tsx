@@ -28,7 +28,8 @@ export default component$(() => {
 
   return (
     <AppSplash
-      status="Launching Liive Profit..."
+      status={splashTransition.status.value}
+      progress={splashTransition.progress.value}
       exiting={auth.ready.value && splashTransition.exiting.value}
     />
   );
