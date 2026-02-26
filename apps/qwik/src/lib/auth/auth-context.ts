@@ -28,34 +28,37 @@ export const setupAuthProvider = () => {
   useContextProvider(AuthContext, store);
 
   useVisibleTask$(({ cleanup }) => {
-    let isResolved = false;
+    let initialStateResolved = false;
     const readyTimeout = window.setTimeout(() => {
-      if (isResolved) {
+      if (initialStateResolved) {
         return;
       }
-      isResolved = true;
-      store.user.value = null;
+      initialStateResolved = true;
       store.ready.value = true;
       console.warn('[auth] auth state listener timed out; continuing as signed-out');
     }, 6000);
 
-    const resolveReady = (currentUser: AuthUser | null) => {
-      if (isResolved) {
+    const resolveInitialReady = () => {
+      if (initialStateResolved) {
         return;
       }
-      isResolved = true;
+      initialStateResolved = true;
       window.clearTimeout(readyTimeout);
-      store.user.value = currentUser;
       store.ready.value = true;
+    };
+
+    const applyAuthState = (currentUser: AuthUser | null) => {
+      store.user.value = currentUser;
+      resolveInitialReady();
     };
 
     const unsubscribe = authStateListener(
       (currentUser) => {
-        resolveReady(currentUser);
+        applyAuthState(currentUser);
       },
       (error) => {
         console.error('[auth] auth state listener failed', error);
-        resolveReady(null);
+        resolveInitialReady();
       },
     );
     cleanup(() => {
