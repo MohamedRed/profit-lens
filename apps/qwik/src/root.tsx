@@ -33,6 +33,50 @@ const buildRefreshGuard = (basePath: string): string => `
           ),
         ),
       ]);
+    const chunkReloadSessionKeyPrefix = 'pl-next-chunk-load-reload';
+    const shouldRecoverFromChunkFailure = (reason) => {
+      const message =
+        typeof reason === 'string'
+          ? reason
+          : reason && typeof reason === 'object' && typeof reason.message === 'string'
+            ? reason.message
+            : String(reason || '');
+      if (!message) return false;
+      const normalized = message.toLowerCase();
+      return (
+        normalized.includes('failed to fetch dynamically imported module') ||
+        normalized.includes('expected a javascript-or-wasm module script but the server responded with a mime type of "text/html"') ||
+        normalized.includes('/next/build/')
+      );
+    };
+    const attemptChunkFailureRecovery = (reason) => {
+      if (!shouldRecoverFromChunkFailure(reason)) return;
+      const chunkReloadSessionKey = \`\${chunkReloadSessionKeyPrefix}:\${hash || 'no-hash'}\`;
+      if (sessionStorage.getItem(chunkReloadSessionKey) === '1') return;
+      sessionStorage.setItem(chunkReloadSessionKey, '1');
+      clearNextRuntime().finally(() => {
+        window.location.reload();
+      });
+    };
+
+    window.addEventListener(
+      'error',
+      (event) => {
+        const target = event && event.target;
+        if (target && typeof target === 'object' && 'tagName' in target && target.tagName === 'SCRIPT') {
+          const scriptSource = typeof target.src === 'string' ? target.src : '';
+          if (scriptSource.includes('/next/build/')) {
+            attemptChunkFailureRecovery(scriptSource);
+            return;
+          }
+        }
+        attemptChunkFailureRecovery(event.error || event.message);
+      },
+      true,
+    );
+    window.addEventListener('unhandledrejection', (event) => {
+      attemptChunkFailureRecovery(event.reason);
+    });
 
     if (isAuthRoute) {
       const authResetKey = 'pl-next-auth-sw-reset-hash';
