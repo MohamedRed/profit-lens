@@ -12,6 +12,7 @@ import {
   clearDeviceRegistrationCache,
   isDeviceRegistrationFresh,
   markDeviceRegistrationFresh,
+  wasDeviceRegistrationSeen,
 } from '../../lib/features/devices/device-registration-cache';
 import { registerDeviceWithBackoff } from '../../lib/features/devices/register-device-with-backoff';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
@@ -21,6 +22,14 @@ type RegisterCurrentDeviceOptions = {
   replaceDeviceId?: string;
   allowCached?: boolean;
 };
+
+const transientRegistrationCodes = new Set([
+  'resource-exhausted',
+  'unavailable',
+  'deadline-exceeded',
+  'internal',
+  'unknown',
+]);
 
 const formatLastSeen = (locale: string, value: Date | null): string | null => {
   if (!value) {
@@ -94,15 +103,32 @@ export const DeviceAccessGuard = component$(() => {
       if (registrationSeq.value !== seq) {
         return;
       }
-      clearDeviceRegistrationCache();
+      const knownLocalRegistration = wasDeviceRegistrationSeen({
+        uid: user.uid,
+        deviceId,
+      });
       const code = normalizeCallableErrorCode(error);
       if (code === 'resource-exhausted') {
-        blockedDevices.value = parseActiveDevicesFromDetails(
+        const activeDevices = parseActiveDevicesFromDetails(
           (error as { details?: unknown }).details,
         );
-        gateState.value = 'limit';
+        if (activeDevices.length > 0) {
+          clearDeviceRegistrationCache();
+          blockedDevices.value = activeDevices;
+          gateState.value = 'limit';
+          return;
+        }
+      }
+      if (knownLocalRegistration && code && transientRegistrationCodes.has(code)) {
+        console.warn('[devices] transient registration failure; allowing known device to continue', {
+          code,
+          uid: user.uid,
+          deviceId,
+        });
+        gateState.value = 'ready';
         return;
       }
+      clearDeviceRegistrationCache();
       errorMessage.value = resolveUserFacingErrorMessage(i18n, error, 'devices');
       gateState.value = 'error';
     } finally {

@@ -44,6 +44,14 @@ export const isDeviceRegistrationFresh = (params: { uid: string; deviceId: strin
   return Date.now() - snapshot.registeredAtMs < deviceRegistrationTtlMs;
 };
 
+export const wasDeviceRegistrationSeen = (params: { uid: string; deviceId: string }): boolean => {
+  const snapshot = readDeviceRegistrationCache();
+  if (!snapshot) {
+    return false;
+  }
+  return snapshot.uid === params.uid && snapshot.deviceId === params.deviceId;
+};
+
 export const markDeviceRegistrationFresh = (params: { uid: string; deviceId: string }): void => {
   const payload: DeviceRegistrationCache = {
     uid: params.uid,
