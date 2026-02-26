@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { Timestamp } from "firebase-admin/firestore";
 import { createFakeDb, getStoreValue } from "./helpers/fake_firestore";
 
 describe("device registry", () => {
@@ -100,5 +101,54 @@ describe("device registry", () => {
     const oldDevice = getStoreValue(store, oldRef);
     expect(oldDevice?.active).toBe(false);
     expect(oldDevice?.deviceId).toBe("device-old");
+  });
+
+  it("prunes stale inactive devices after registration", async () => {
+    const now = new Date("2026-02-26T10:00:00.000Z");
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(now);
+
+      const store = new Map<string, Record<string, any>>();
+      store.set("users/user-4/devices/stale-device", {
+        deviceId: "stale-device",
+        active: false,
+        updatedAt: Timestamp.fromDate(new Date("2025-12-01T10:00:00.000Z")),
+      });
+      store.set("users/user-4/devices/recent-device", {
+        deviceId: "recent-device",
+        active: false,
+        updatedAt: Timestamp.fromDate(new Date("2026-02-20T10:00:00.000Z")),
+      });
+
+      const fakeDb = createFakeDb(store);
+      vi.resetModules();
+      vi.doMock("../src/firebase_admin", () => ({ db: fakeDb }));
+      vi.doMock("../src/entitlements", () => ({
+        ensureEntitlement: async () => ({ deviceLimit: 1 }),
+      }));
+
+      const { registerDeviceCore } = await import("../src/device_registry");
+
+      await registerDeviceCore({
+        uid: "user-4",
+        payload: {
+          deviceId: "active-device",
+          platform: "web",
+          userAgent: "UA",
+        },
+      });
+
+      const devicesRef = fakeDb.collection("users").doc("user-4").collection("devices");
+      const staleDevice = getStoreValue(store, devicesRef.doc("stale-device"));
+      const recentDevice = getStoreValue(store, devicesRef.doc("recent-device"));
+      const activeDevice = getStoreValue(store, devicesRef.doc("active-device"));
+
+      expect(staleDevice).toBeUndefined();
+      expect(recentDevice?.active).toBe(false);
+      expect(activeDevice?.active).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

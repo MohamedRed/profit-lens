@@ -5,6 +5,7 @@ type DocRef = {
   id: string;
   path: string;
   collection: (name: string) => CollectionRef;
+  delete: () => Promise<void>;
 };
 
 type QueryRef = {
@@ -91,6 +92,9 @@ function createDocRef(pathSegments: string[], store: Store): DocRef {
     id: pathSegments[pathSegments.length - 1],
     path: pathSegments.join("/"),
     collection: (name: string) => createCollectionRef([...pathSegments, name], store),
+    delete: async () => {
+      store.delete(pathSegments.join("/"));
+    },
   };
 }
 

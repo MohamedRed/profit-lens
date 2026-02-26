@@ -35,6 +35,21 @@ const mapDevice = (
   };
 };
 
+const isActiveDeviceRecord = (data: Record<string, unknown>): boolean => {
+  return data.active !== false;
+};
+
+const toTimestampMs = (value: Date | null | undefined): number => {
+  if (!value) {
+    return 0;
+  }
+  return value.getTime();
+};
+
+const sortDevicesByLastSeenDesc = (left: DeviceEntry, right: DeviceEntry): number => {
+  return toTimestampMs(right.lastSeenAt) - toTimestampMs(left.lastSeenAt);
+};
+
 export const watchDevices = (
   uid: string,
   callback: (devices: DeviceEntry[]) => void,
@@ -42,9 +57,14 @@ export const watchDevices = (
 ): (() => void) => {
   const devicesQuery = query(userCollection(uid, 'devices'), orderBy('lastSeen', 'desc'));
   return onSnapshot(devicesQuery, (snapshot: QuerySnapshot) => {
-    const devices = snapshot.docs.map((item) =>
-      mapDevice(item.id, item.data() as Record<string, unknown>, currentDeviceId ?? null),
-    );
+    const devices = snapshot.docs
+      .map((item) => {
+        const data = item.data() as Record<string, unknown>;
+        return { id: item.id, data };
+      })
+      .filter((item) => isActiveDeviceRecord(item.data))
+      .map((item) => mapDevice(item.id, item.data, currentDeviceId ?? null))
+      .sort(sortDevicesByLastSeenDesc);
     callback(devices);
   });
 };

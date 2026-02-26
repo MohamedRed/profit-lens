@@ -1,7 +1,9 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
+import * as logger from "firebase-functions/logger";
 import { QueryDocumentSnapshot, Timestamp } from "firebase-admin/firestore";
 import { db } from "./firebase_admin";
 import { ensureEntitlement } from "./entitlements";
+import { pruneInactiveDevices } from "./device_cleanup";
 
 type DevicePayload = {
   deviceId?: string;
@@ -125,6 +127,17 @@ export async function registerDeviceCore(params: {
   });
 
   const updatedSnapshot = await activeQuery.get();
+  try {
+    await pruneInactiveDevices({
+      devicesRef,
+      now,
+    });
+  } catch (error) {
+    logger.warn("Inactive device cleanup failed after register.", {
+      uid: params.uid,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
   return {
     deviceLimit,
     activeDevices: updatedSnapshot.docs.map((doc) => serializeDevice(doc)),
@@ -161,6 +174,16 @@ export const revokeDevice = onCall(
       },
       { merge: true }
     );
+    try {
+      await pruneInactiveDevices({
+        devicesRef: db.collection("users").doc(uid).collection("devices"),
+      });
+    } catch (error) {
+      logger.warn("Inactive device cleanup failed after revoke.", {
+        uid,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
     return { status: "revoked" };
   }
 );
