@@ -263,6 +263,8 @@
   "billingPeriodEndsOn": "Period ends on {date}",
   "billingOngoingSubscriptionsTitle": "Ongoing subscriptions",
   "billingOngoingSubscriptionsCount": "{count} subscriptions are currently active.",
+  "billingOngoingSubscriptionsPreviewSubtitle": "{count} subscriptions are currently active. Open details to manage each subscription.",
+  "billingOngoingSubscriptionsViewButton": "View ongoing subscriptions",
   "billingPrimarySubscriptionLabel": "Primary",
   "billingSuggestionsTitle": "Suggested plans",
   "billingSuggestionsEmpty": "No alternative suggestions right now.",

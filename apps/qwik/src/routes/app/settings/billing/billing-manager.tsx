@@ -19,7 +19,7 @@ import { appendDuplicateCleanupNotice, buildDuplicateCleanupNotice } from './bil
 import { BillingFeedbackBanner } from './billing-feedback-banner';
 import { resolveDefaultPlanPriceId, resolveSelectedPriceId } from './billing-manager-helpers';
 import { BillingCancellationCard } from './billing-cancellation-card';
-import { BillingOngoingSubscriptionsCard } from './billing-ongoing-subscriptions-card';
+import { BillingOngoingSubscriptionsEntryCard } from './billing-ongoing-subscriptions-entry-card';
 import { BillingStripePortalCard } from './billing-sections';
 import { BillingSummaryCard } from './billing-summary-card';
 
@@ -235,13 +235,9 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
       <BillingSummaryCard entitlement={entitlement.value} usage={usage.value} />
 
       {!isFreePlan ? (
-        <BillingOngoingSubscriptionsCard
-          disabled={actionLoading.value}
-          onManageInStripe$={openStripePortal$}
-          primarySubscriptionId={
-            managedSubscriptionState.value?.primarySubscriptionId ?? entitlement.value?.stripeSubscriptionId ?? null
-          }
-          subscriptions={managedSubscriptionState.value?.managedSubscriptions ?? []}
+        <BillingOngoingSubscriptionsEntryCard
+          managedSubscriptionCount={managedSubscriptionState.value?.managedSubscriptions.length ?? 0}
+          href="/next/app/settings/billing/subscriptions?backTo=/next/app/settings/billing"
         />
       ) : null}
 

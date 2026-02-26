@@ -263,6 +263,8 @@
   "billingPeriodEndsOn": "La période se termine le {date}",
   "billingOngoingSubscriptionsTitle": "Abonnements en cours",
   "billingOngoingSubscriptionsCount": "{count} abonnements sont actuellement actifs.",
+  "billingOngoingSubscriptionsPreviewSubtitle": "{count} abonnements sont actuellement actifs. Ouvrez le détail pour gérer chaque abonnement.",
+  "billingOngoingSubscriptionsViewButton": "Voir les abonnements en cours",
   "billingPrimarySubscriptionLabel": "Principal",
   "billingSuggestionsTitle": "Forfaits suggérés",
   "billingSuggestionsEmpty": "Aucune autre suggestion pour le moment.",

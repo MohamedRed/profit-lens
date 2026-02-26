@@ -263,6 +263,8 @@
   "billingPeriodEndsOn": "تنتهي الفترة في {date}",
   "billingOngoingSubscriptionsTitle": "اشتراكات جارية",
   "billingOngoingSubscriptionsCount": "{count} اشتراكات نشطة حالياً.",
+  "billingOngoingSubscriptionsPreviewSubtitle": "{count} اشتراكات نشطة حالياً. افتح التفاصيل لإدارة كل اشتراك.",
+  "billingOngoingSubscriptionsViewButton": "عرض الاشتراكات الجارية",
   "billingPrimarySubscriptionLabel": "الأساسي",
   "billingSuggestionsTitle": "خطط مقترحة",
   "billingSuggestionsEmpty": "لا توجد اقتراحات بديلة حالياً.",
