@@ -36,6 +36,15 @@ export const resolveActiveTabIndex = (path: string): number => {
   return index === -1 ? 0 : index;
 };
 
+export const resolveVisualTabIndex = (
+  activeTabIndex: number,
+  direction: "ltr" | "rtl",
+): number => {
+  const maxIndex = navItems.length - 1;
+  const normalizedIndex = Math.min(Math.max(activeTabIndex, 0), maxIndex);
+  return direction === "rtl" ? maxIndex - normalizedIndex : normalizedIndex;
+};
+
 export const resolveSectionKey = (path: string): string => {
   const segments = toPathSegments(path);
   if (segments.length >= 2) {

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   resolveHeaderBackHref,
   resolvePopStateRecoveryHref,
+  resolveVisualTabIndex,
   shouldPreferDeterministicBack,
 } from './app-shell-routing';
 
@@ -46,5 +47,24 @@ describe('resolvePopStateRecoveryHref', () => {
   it('does not recover for normal popstate transitions', () => {
     expect(resolvePopStateRecoveryHref('/app/help/tickets/details', '/app/help/tickets')).toBeNull();
     expect(resolvePopStateRecoveryHref('/app/history/details', '/app/history')).toBeNull();
+  });
+});
+
+describe('resolveVisualTabIndex', () => {
+  it('keeps ltr index unchanged', () => {
+    expect(resolveVisualTabIndex(0, 'ltr')).toBe(0);
+    expect(resolveVisualTabIndex(2, 'ltr')).toBe(2);
+  });
+
+  it('mirrors index for rtl tab order', () => {
+    expect(resolveVisualTabIndex(0, 'rtl')).toBe(3);
+    expect(resolveVisualTabIndex(1, 'rtl')).toBe(2);
+    expect(resolveVisualTabIndex(2, 'rtl')).toBe(1);
+    expect(resolveVisualTabIndex(3, 'rtl')).toBe(0);
+  });
+
+  it('clamps out-of-range indexes before mirroring', () => {
+    expect(resolveVisualTabIndex(-2, 'ltr')).toBe(0);
+    expect(resolveVisualTabIndex(50, 'rtl')).toBe(0);
   });
 });

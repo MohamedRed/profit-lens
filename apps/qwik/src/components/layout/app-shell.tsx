@@ -13,6 +13,7 @@ import {
   isTabRootPath,
   navItems,
   resolveActiveTabIndex,
+  resolveVisualTabIndex,
   resolveHeaderBackHref,
   resolvePopStateRecoveryHref,
   resolveRouteDepth,
@@ -51,6 +52,7 @@ export const AppShell = component$(() => {
   const headerBackHref = resolveHeaderBackHref(appPath, explicitBackHref);
   const preferDeterministicBack = shouldPreferDeterministicBack(appPath, explicitBackHref);
   const activeTabIndex = resolveActiveTabIndex(appPath);
+  const activeTabVisualIndex = resolveVisualTabIndex(activeTabIndex, i18n.direction.value);
   const showHeader = Boolean(headerBackHref) || showHelpTicketsAction;
 
   const onHeaderBack$ = $(async () => {
@@ -226,7 +228,10 @@ export const AppShell = component$(() => {
 
       <footer class="ui-mobile-tab-shell">
         <div class="ui-mobile-tab-nav" role="tablist" aria-label="Main navigation">
-          <div class="ui-mobile-tab-inner" style={{ '--ui-mobile-active-tab-index': String(activeTabIndex) }}>
+          <div
+            class="ui-mobile-tab-inner"
+            style={{ '--ui-mobile-active-tab-index': String(activeTabVisualIndex) }}
+          >
             <span class="ui-mobile-tab-indicator" aria-hidden="true" />
             {navItems.map((item, index) => {
               const active = index === activeTabIndex;
