@@ -74,8 +74,12 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     }
   });
 
+  const analysisRecord = props.analysisRecord.value;
   const showOverview =
-    !props.loading.value && props.analysisRecord.value !== null;
+    !props.loading.value && analysisRecord !== null;
+  const detailsHref = analysisRecord
+    ? `/next/app/history/details?offerId=${encodeURIComponent(analysisRecord.id)}&backTo=${encodeURIComponent("/next/app/offer")}`
+    : null;
   const showDetailsSection =
     !showOverview && enableManualEntry && props.manualEntryRequested.value;
   const showManualEntryCta =
@@ -199,11 +203,11 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             ) : null}
           </section>
 
-          {showOverview && props.analysisRecord.value ? (
+          {showOverview && analysisRecord && detailsHref ? (
             <OfferOverviewSections
-              record={props.analysisRecord.value}
+              record={analysisRecord}
               minProfitabilityEuro={props.minProfitabilityEuro.value}
-              detailsHref={`/next/app/history/details?offerId=${encodeURIComponent(props.analysisRecord.value.id)}&backTo=${encodeURIComponent('/next/app/offer')}`}
+              detailsHref={detailsHref}
               onViewDetails$={props.onViewDetails$}
             />
           ) : null}
