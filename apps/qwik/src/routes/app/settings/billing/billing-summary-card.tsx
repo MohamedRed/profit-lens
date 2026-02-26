@@ -1,7 +1,13 @@
 import { component$ } from '@builder.io/qwik';
+import { resolvePlanLabelFromEntitlement } from '../../../../lib/features/billing/plan-resolution';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
-import type { Entitlement, OfferUsage } from '../../../../lib/types/billing';
-import { formatDate } from './billing-manager-helpers';
+import type {
+  Entitlement,
+  ManagedSubscriptionSnapshot,
+  ManagedSubscriptionStateSnapshot,
+  OfferUsage,
+} from '../../../../lib/types/billing';
+import { formatDate, resolvePlanLabelFromSubscription } from './billing-manager-helpers';
 import {
   emphasizeFirstValue,
   isSubscriptionCanceling,
@@ -10,8 +16,26 @@ import {
 
 interface BillingSummaryCardProps {
   entitlement: Entitlement | null;
+  managedState: ManagedSubscriptionStateSnapshot | null;
   usage: OfferUsage | null;
 }
+
+const normalize = (value: string | null | undefined): string => {
+  return String(value ?? '').trim().toLowerCase();
+};
+
+const resolvePrimaryManagedSubscription = (
+  managedState: ManagedSubscriptionStateSnapshot | null,
+): ManagedSubscriptionSnapshot | null => {
+  if (!managedState || managedState.managedSubscriptions.length === 0) {
+    return null;
+  }
+  return (
+    managedState.managedSubscriptions.find(
+      (subscription) => subscription.subscriptionId === managedState.primarySubscriptionId,
+    ) ?? managedState.managedSubscriptions[0]
+  );
+};
 
 export const BillingSummaryCard = component$<BillingSummaryCardProps>((props) => {
   const i18n = useI18n();
@@ -42,6 +66,18 @@ export const BillingSummaryCard = component$<BillingSummaryCardProps>((props) =>
   const statusToneClass = resolveSubscriptionStatusToneClass(
     canceling ? 'canceling' : props.entitlement?.status,
   );
+  const isFreeEntitlement =
+    normalize(props.entitlement?.planId) === 'free' || normalize(props.entitlement?.status) === 'free';
+  const primaryManagedSubscription = resolvePrimaryManagedSubscription(props.managedState);
+  const currentPlanLabel = primaryManagedSubscription
+    ? resolvePlanLabelFromSubscription(primaryManagedSubscription)
+    : resolvePlanLabelFromEntitlement(props.entitlement);
+  const currentPlanCopy =
+    props.entitlement && !isFreeEntitlement && currentPlanLabel
+      ? formatTemplate(t(i18n, 'subscriptionActivePlan', 'Current plan: {price}'), {
+          price: currentPlanLabel,
+        })
+      : '';
 
   return (
     <section class="ui-settings-card ui-settings-billing-card">
@@ -50,6 +86,11 @@ export const BillingSummaryCard = component$<BillingSummaryCardProps>((props) =>
         <p class="ui-settings-subtitle">
           {t(i18n, 'subscriptionStatusLabel', 'Subscription status')}:{' '}
           <strong class={`ui-settings-billing-status-value ${statusToneClass}`}>{statusDisplay}</strong>
+        </p>
+      ) : null}
+      {currentPlanCopy ? (
+        <p class="ui-settings-subtitle">
+          {emphasizeFirstValue(currentPlanCopy, currentPlanLabel ?? '')}
         </p>
       ) : null}
       {remainingOffersLabel ? (

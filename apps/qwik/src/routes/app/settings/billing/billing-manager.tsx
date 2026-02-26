@@ -232,7 +232,11 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
 
   return (
     <div class={rootClassName}>
-      <BillingSummaryCard entitlement={entitlement.value} usage={usage.value} />
+      <BillingSummaryCard
+        entitlement={entitlement.value}
+        managedState={managedSubscriptionState.value}
+        usage={usage.value}
+      />
 
       {!isFreePlan ? (
         <BillingOngoingSubscriptionsEntryCard
