@@ -10,11 +10,6 @@ const buildRefreshGuard = (basePath: string): string => `
   try {
     if (!('serviceWorker' in navigator) || !('caches' in window)) return;
     const basePath = ${JSON.stringify(basePath)};
-    const loginPath = basePath.endsWith('/') ? \`\${basePath}login\` : \`\${basePath}/login\`;
-    const registerPath = basePath.endsWith('/') ? \`\${basePath}register\` : \`\${basePath}/register\`;
-    const normalizePath = (value) => value.endsWith('/') ? value.slice(0, -1) : value;
-    const currentPath = normalizePath(window.location.pathname);
-    const isAuthRoute = currentPath === normalizePath(loginPath) || currentPath === normalizePath(registerPath);
     const hash = document.documentElement.getAttribute('q:manifest-hash');
     const clearNextRuntime = () =>
       Promise.all([
@@ -77,19 +72,6 @@ const buildRefreshGuard = (basePath: string): string => `
     window.addEventListener('unhandledrejection', (event) => {
       attemptChunkFailureRecovery(event.reason);
     });
-
-    if (isAuthRoute) {
-      const authResetKey = 'pl-next-auth-sw-reset-hash';
-      const authResetHash = hash || 'no-hash';
-      const lastAuthResetHash = localStorage.getItem(authResetKey);
-      if (lastAuthResetHash !== authResetHash) {
-        localStorage.setItem(authResetKey, authResetHash);
-        clearNextRuntime().finally(() => {
-          window.location.reload();
-        });
-        return;
-      }
-    }
 
     if (!hash) return;
     const hashKey = 'pl-next-manifest-hash';
