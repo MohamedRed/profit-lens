@@ -142,17 +142,6 @@ export default component$(() => {
 
   return (
     <div class="ui-settings-billing-root">
-      <BillingOngoingSubscriptionsCard
-        disabled={actionLoading.value}
-        onManageInStripe$={openStripePortal$}
-        primarySubscriptionId={
-          managedSubscriptionState.value?.primarySubscriptionId ??
-          entitlement.value?.stripeSubscriptionId ??
-          null
-        }
-        subscriptions={managedSubscriptionState.value?.managedSubscriptions ?? []}
-      />
-
       <BillingStripePortalCard
         title={t(i18n, 'billingStripePortalTitle', 'Stripe billing')}
         subtitle={t(
@@ -163,6 +152,17 @@ export default component$(() => {
         buttonLabel={t(i18n, 'billingStripePortalButton', 'Open Stripe billing')}
         disabled={actionLoading.value}
         onOpen$={openStripePortal$}
+      />
+
+      <BillingOngoingSubscriptionsCard
+        disabled={actionLoading.value}
+        onManageInStripe$={openStripePortal$}
+        primarySubscriptionId={
+          managedSubscriptionState.value?.primarySubscriptionId ??
+          entitlement.value?.stripeSubscriptionId ??
+          null
+        }
+        subscriptions={managedSubscriptionState.value?.managedSubscriptions ?? []}
       />
 
       <BillingFeedbackBanner message={status.value} tone={statusTone.value} />

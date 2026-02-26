@@ -238,13 +238,6 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
         usage={usage.value}
       />
 
-      {!isFreePlan ? (
-        <BillingOngoingSubscriptionsEntryCard
-          managedSubscriptionCount={managedSubscriptionState.value?.managedSubscriptions.length ?? 0}
-          href="/next/app/settings/billing/subscriptions?backTo=/next/app/settings/billing"
-        />
-      ) : null}
-
       <section class="ui-settings-card ui-settings-billing-card">
         <p class="ui-settings-title">{t(i18n, 'billingPlanSelectionLabel', 'Plan')}</p>
         <VisualOptionPicker
@@ -289,6 +282,13 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
           cancelAtPeriodEnd={Boolean(entitlement.value?.cancelAtPeriodEnd)}
           disabled={actionLoading.value}
           onToggle$={toggleCancellation$}
+        />
+      ) : null}
+
+      {!isFreePlan ? (
+        <BillingOngoingSubscriptionsEntryCard
+          managedSubscriptionCount={managedSubscriptionState.value?.managedSubscriptions.length ?? 0}
+          href="/next/app/settings/billing/subscriptions?backTo=/next/app/settings/billing"
         />
       ) : null}
 
