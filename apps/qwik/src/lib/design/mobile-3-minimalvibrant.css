@@ -676,6 +676,14 @@
   width: 100%;
 }
 
+.ui-offer-file-label {
+  position: relative;
+}
+
+.ui-offer-file-label.is-disabled {
+  cursor: not-allowed;
+}
+
 .ui-offer-file-input-control {
   position: absolute;
   width: 1px;

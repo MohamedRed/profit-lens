@@ -46,7 +46,6 @@ interface OfferFlowContentProps {
 export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
   const settingsSheetOpen = useSignal(false);
-  const screenshotInputRef = useSignal<HTMLInputElement>();
   const importScreenshotLabel = t(
     i18n,
     "importScreenshotButton",
@@ -75,15 +74,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     }
   });
 
-  const openScreenshotPicker$ = $(() => {
-    const element = screenshotInputRef.value;
-    if (!element) {
-      return;
-    }
-    element.value = "";
-    element.click();
-  });
-
   const analysisRecord = props.analysisRecord.value;
   const showOverview =
     !props.loading.value && analysisRecord !== null;
@@ -95,6 +85,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const showManualEntryCta =
     enableManualEntry && !showOverview && !showDetailsSection;
   const hasVehicles = props.vehicles.value.length > 0;
+  const importDisabled = props.loading.value || !hasVehicles;
   const showEmptyState = !props.vehiclesLoading.value && !hasVehicles;
   const onVehicleChange$ = $((nextVehicleId: string) => {
     props.selectedVehicleId.value = nextVehicleId;
@@ -140,13 +131,10 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               </button>
 
               <div class="ui-offer-file-cta-shell">
-                <Button
-                  variant="default"
-                  size="lg"
-                  type="button"
-                  class="ui-offer-primary-cta"
-                  disabled={props.loading.value || !hasVehicles}
-                  onClick$={openScreenshotPicker$}
+                <label
+                  class={`ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-label${importDisabled ? " is-disabled" : ""}`}
+                  aria-label={importScreenshotLabel}
+                  aria-disabled={importDisabled ? "true" : "false"}
                 >
                   {props.loading.value
                     ? (
@@ -161,24 +149,23 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                         </span>
                       )
                     : importScreenshotLabel}
-                </Button>
+                  <input
+                    class="ui-offer-file-input-control"
+                    type="file"
+                    accept="image/*"
+                    aria-label={importScreenshotLabel}
+                    disabled={importDisabled}
+                    tabIndex={-1}
+                    onInput$={(_, element) => {
+                      void onFileInputEvent$(element);
+                    }}
+                    onChange$={(_, element) => {
+                      void onFileInputEvent$(element);
+                    }}
+                  />
+                </label>
               </div>
             </div>
-            <input
-              ref={screenshotInputRef}
-              class="ui-offer-file-input-control"
-              type="file"
-              accept="image/*"
-              aria-label={importScreenshotLabel}
-              disabled={props.loading.value || !hasVehicles}
-              tabIndex={-1}
-              onInput$={(_, element) => {
-                void onFileInputEvent$(element);
-              }}
-              onChange$={(_, element) => {
-                void onFileInputEvent$(element);
-              }}
-            />
 
             {enableCaptureCta ? (
               <label class="ui-button ui-button-secondary ui-button-lg ui-offer-file-trigger">
