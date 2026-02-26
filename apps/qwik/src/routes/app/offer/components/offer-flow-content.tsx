@@ -9,6 +9,7 @@ import { Button } from "../../../../components/ui/button";
 import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import type { OfferAnalysisRecord } from "../offer-analysis-result";
+import { stageOfferScreenshotFile } from "../offer-file-transfer-store";
 import { enableCaptureCta, enableManualEntry } from "../offer-feature-flags";
 import { OfferFlowStatus } from "./offer-flow-status";
 import { OfferManualDetailsSection } from "./offer-manual-details-section";
@@ -27,7 +28,7 @@ interface OfferFlowContentProps {
   minProfitabilityEuro: Signal<number>;
   onAnalyzeManual$: QRL<() => Promise<void>>;
   onClearScreenshotPreview$: QRL<() => void>;
-  onImportScreenshotFile$: QRL<(file: File) => Promise<void>>;
+  onImportScreenshotFile$: QRL<(fileToken: string) => Promise<void>>;
   onSaveProfitabilityTarget$: QRL<(value: string) => Promise<void>>;
   onViewDetails$: QRL<() => void | Promise<void>>;
   payout: Signal<string>;
@@ -45,6 +46,7 @@ interface OfferFlowContentProps {
 export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
   const settingsSheetOpen = useSignal(false);
+  const fileImportInFlight = useSignal(false);
   const importScreenshotLabel = t(
     i18n,
     "importScreenshotButton",
@@ -57,18 +59,24 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   });
 
   const onFileSelected$ = $(async (file: File) => {
-    await props.onImportScreenshotFile$(file);
+    const token = stageOfferScreenshotFile(file);
+    await props.onImportScreenshotFile$(token);
   });
 
   const onFileInputEvent$ = $(async (element: HTMLInputElement) => {
-    const file = element.files?.[0];
+    if (fileImportInFlight.value) {
+      return;
+    }
+    const file = element.files?.[0] ?? null;
+    element.value = "";
     if (!file) {
       return;
     }
+    fileImportInFlight.value = true;
     try {
       await onFileSelected$(file);
     } finally {
-      element.value = "";
+      fileImportInFlight.value = false;
     }
   });
 
@@ -84,7 +92,8 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     enableManualEntry && !showOverview && !showDetailsSection;
   const hasVehicles = props.vehicles.value.length > 0;
   const hasSelectedVehicle = props.selectedVehicleId.value.length > 0;
-  const importDisabled = props.loading.value || !hasVehicles || !hasSelectedVehicle;
+  const importBusy = props.loading.value || fileImportInFlight.value;
+  const importDisabled = importBusy || !hasVehicles || !hasSelectedVehicle;
   const showEmptyState = !props.vehiclesLoading.value && !hasVehicles;
   const onVehicleChange$ = $((nextVehicleId: string) => {
     props.selectedVehicleId.value = nextVehicleId;
@@ -130,14 +139,12 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               </button>
 
               <div class="ui-offer-file-cta-shell">
-                <Button
-                  variant="default"
-                  size="lg"
-                  type="button"
-                  class="ui-offer-primary-cta"
-                  disabled={importDisabled}
+                <label
+                  class={`ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-label${importDisabled ? " is-disabled" : ""}`}
+                  aria-label={importScreenshotLabel}
+                  aria-disabled={importDisabled ? "true" : "false"}
                 >
-                  {props.loading.value
+                  {importBusy
                     ? (
                         <span class="ui-offer-cta-loading-content">
                           <span
@@ -150,20 +157,18 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                         </span>
                       )
                     : importScreenshotLabel}
-                </Button>
-                <input
-                  class="ui-offer-file-input-overlay"
-                  type="file"
-                  accept="image/*"
-                  aria-label={importScreenshotLabel}
-                  disabled={importDisabled}
-                  onInput$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
-                  onChange$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
-                />
+                  <input
+                    class="ui-offer-file-input-control"
+                    type="file"
+                    accept="image/*"
+                    aria-label={importScreenshotLabel}
+                    disabled={importDisabled}
+                    tabIndex={-1}
+                    onChange$={(_, element) => {
+                      void onFileInputEvent$(element);
+                    }}
+                  />
+                </label>
               </div>
             </div>
 
@@ -176,9 +181,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                   accept="image/*"
                   capture="environment"
                   disabled={importDisabled}
-                  onInput$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
                   onChange$={(_, element) => {
                     void onFileInputEvent$(element);
                   }}

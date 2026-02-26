@@ -20,6 +20,7 @@ import {
   type OfferAnalysisRecord,
 } from './offer-analysis-result';
 import { primeHistoryAfterAnalysis, primeOfferDetailsNavigation } from './offer-analysis-navigation';
+import { takeOfferScreenshotFile } from './offer-file-transfer-store';
 import { OfferFlowContent } from './components/offer-flow-content';
 import { ensureWithinOfferLimit } from './offer-flow-limits';
 import { useOfferTabSession } from './use-offer-tab-session';
@@ -154,12 +155,21 @@ export default component$(() => {
     }
   });
 
-  const importScreenshotFile$ = $(async (file: File) => {
+  const importScreenshotFile$ = $(async (fileToken: string) => {
     if (!selectedVehicleId.value) {
       status.value = t(i18n, 'vehicleSelectLabel', 'Select vehicle');
       return;
     }
     analysisRecord.value = null;
+    const file = takeOfferScreenshotFile(fileToken);
+    if (!file) {
+      status.value = t(
+        i18n,
+        'offerActionFailedMessage',
+        'Unable to complete this action right now. Please try again.',
+      );
+      return;
+    }
 
     const user = auth.user.value;
     if (!user) {
