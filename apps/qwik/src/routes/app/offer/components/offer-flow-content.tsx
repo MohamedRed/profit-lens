@@ -68,7 +68,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
       return;
     }
     const file = element.files?.[0] ?? null;
-    element.value = "";
     if (!file) {
       return;
     }
@@ -76,6 +75,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     try {
       await onFileSelected$(file);
     } finally {
+      element.value = "";
       fileImportInFlight.value = false;
     }
   });
