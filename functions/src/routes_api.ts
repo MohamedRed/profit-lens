@@ -1,4 +1,5 @@
 import { HttpsError } from "firebase-functions/v2/https";
+import { fetchWithTimeout } from "./http_fetch_timeout";
 
 type LatLngInput = {
   lat: number;
@@ -27,6 +28,7 @@ type ComputeRouteResponse = {
 
 const ROUTES_API_URL =
   "https://routes.googleapis.com/directions/v2:computeRoutes";
+const ROUTES_API_TIMEOUT_MS = 7000;
 
 export async function computeRoute(
   request: ComputeRouteRequest
@@ -41,14 +43,20 @@ export async function computeRoute(
         : undefined,
   };
 
-  const response = await fetch(ROUTES_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Goog-Api-Key": request.apiKey,
-      "X-Goog-FieldMask": "routes.distanceMeters,routes.duration",
+  const response = await fetchWithTimeout({
+    url: ROUTES_API_URL,
+    init: {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": request.apiKey,
+        "X-Goog-FieldMask": "routes.distanceMeters,routes.duration",
+      },
+      body: JSON.stringify(body),
     },
-    body: JSON.stringify(body),
+    timeoutMs: ROUTES_API_TIMEOUT_MS,
+    timeoutMessage: "Routes API request timed out.",
+    unavailableMessage: "Routes API request failed",
   });
 
   if (!response.ok) {

@@ -1,4 +1,5 @@
 import { HttpsError } from "firebase-functions/v2/https";
+import { fetchWithTimeout } from "./http_fetch_timeout";
 
 type GeocodedLocation = {
   lat: number;
@@ -19,6 +20,7 @@ type GeocodingResponse = {
 };
 
 const GEOCODING_API_URL = "https://maps.googleapis.com/maps/api/geocode/json";
+const GEOCODING_API_TIMEOUT_MS = 5000;
 
 type GeocodeRequest = {
   apiKey: string;
@@ -32,7 +34,12 @@ export async function geocodeAddress(
   url.searchParams.set("key", request.apiKey);
   url.searchParams.set("address", request.address);
 
-  const response = await fetch(url.toString());
+  const response = await fetchWithTimeout({
+    url: url.toString(),
+    timeoutMs: GEOCODING_API_TIMEOUT_MS,
+    timeoutMessage: "Geocoding API request timed out.",
+    unavailableMessage: "Geocoding API request failed",
+  });
   if (!response.ok) {
     throw new HttpsError(
       "internal",

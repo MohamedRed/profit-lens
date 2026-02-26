@@ -28,11 +28,10 @@ type RouteLegMetrics = {
 export async function verifyRoute(
   params: VerifyRouteParams
 ): Promise<RouteVerification> {
-  const origin = await resolveLocation(params.origin, params.geocodingKey);
-  const destination = await resolveLocation(
-    params.destination,
-    params.geocodingKey
-  );
+  const [origin, destination] = await Promise.all([
+    resolveLocation(params.origin, params.geocodingKey),
+    resolveLocation(params.destination, params.geocodingKey),
+  ]);
   const route = await computeRoute({
     apiKey: params.apiKey,
     origin,
@@ -52,8 +51,10 @@ export async function verifyRoute(
 export async function verifyRouteLegs(
   params: VerifyRouteLegsParams
 ): Promise<{ approach: RouteLegMetrics; delivery: RouteLegMetrics }> {
-  const pickup = await resolveLocation(params.pickup, params.geocodingKey);
-  const dropoff = await resolveLocation(params.dropoff, params.geocodingKey);
+  const [pickup, dropoff] = await Promise.all([
+    resolveLocation(params.pickup, params.geocodingKey),
+    resolveLocation(params.dropoff, params.geocodingKey),
+  ]);
   const currentLocation: RouteLocationInput = { latLng: params.currentLocation };
 
   const [approachRoute, deliveryRoute] = await Promise.all([

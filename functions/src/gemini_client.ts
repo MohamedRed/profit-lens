@@ -3,6 +3,7 @@ import * as logger from "firebase-functions/logger";
 import { GoogleAuth } from "google-auth-library";
 import { offerExtractionPrompt } from "./gemini_prompt";
 import { buildGeminiHttpError } from "./gemini_http_error";
+import { fetchWithTimeout } from "./http_fetch_timeout";
 
 type GeminiRequest = {
   model: string;
@@ -49,6 +50,7 @@ const offerExtractionSchema = {
 } as const;
 
 const VERTEX_AUTH_SCOPE = "https://www.googleapis.com/auth/cloud-platform";
+const GEMINI_API_TIMEOUT_MS = 25000;
 const vertexAuth = new GoogleAuth({
   scopes: [VERTEX_AUTH_SCOPE],
 });
@@ -165,13 +167,19 @@ async function requestGeminiContent(request: {
 }) {
   const endpoint = buildVertexEndpoint(request.model);
   const accessToken = await getVertexAccessToken();
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+  const response = await fetchWithTimeout({
+    url: endpoint,
+    init: {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request.body),
     },
-    body: JSON.stringify(request.body),
+    timeoutMs: GEMINI_API_TIMEOUT_MS,
+    timeoutMessage: "Gemini API request timed out. Please try again.",
+    unavailableMessage: "Gemini API request failed",
   });
   if (!response.ok) {
     const errorText = await response.text();
