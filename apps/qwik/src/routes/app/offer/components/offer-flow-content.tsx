@@ -46,6 +46,7 @@ interface OfferFlowContentProps {
 export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
   const settingsSheetOpen = useSignal(false);
+  const screenshotInputRef = useSignal<HTMLInputElement>();
   const importScreenshotLabel = t(
     i18n,
     "importScreenshotButton",
@@ -72,6 +73,15 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     } finally {
       element.value = "";
     }
+  });
+
+  const openScreenshotPicker$ = $(() => {
+    const element = screenshotInputRef.value;
+    if (!element) {
+      return;
+    }
+    element.value = "";
+    element.click();
   });
 
   const analysisRecord = props.analysisRecord.value;
@@ -136,6 +146,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                   type="button"
                   class="ui-offer-primary-cta"
                   disabled={props.loading.value || !hasVehicles}
+                  onClick$={openScreenshotPicker$}
                 >
                   {props.loading.value
                     ? (
@@ -151,24 +162,23 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                       )
                     : importScreenshotLabel}
                 </Button>
-                <input
-                  class="ui-offer-file-input-overlay"
-                  type="file"
-                  accept="image/*"
-                  aria-label={importScreenshotLabel}
-                  disabled={props.loading.value || !hasVehicles}
-                  onClick$={(_, element) => {
-                    element.value = "";
-                  }}
-                  onInput$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
-                  onChange$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
-                />
               </div>
             </div>
+            <input
+              ref={screenshotInputRef}
+              class="ui-offer-file-input-control"
+              type="file"
+              accept="image/*"
+              aria-label={importScreenshotLabel}
+              disabled={props.loading.value || !hasVehicles}
+              tabIndex={-1}
+              onInput$={(_, element) => {
+                void onFileInputEvent$(element);
+              }}
+              onChange$={(_, element) => {
+                void onFileInputEvent$(element);
+              }}
+            />
 
             {enableCaptureCta ? (
               <label class="ui-button ui-button-secondary ui-button-lg ui-offer-file-trigger">
