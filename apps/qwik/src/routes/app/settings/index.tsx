@@ -5,6 +5,7 @@ import { signOutCurrentUser } from '../../../lib/firebase/auth';
 import { billingPlans } from '../../../lib/config/runtime-config';
 import { applyLocale, formatTemplate, t, useI18n } from '../../../lib/i18n/i18n-context';
 import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
+import { resolvePlanLabelFromEntitlement } from '../../../lib/features/billing/plan-resolution';
 import { startCheckout } from '../../../lib/features/billing/billing-service';
 import { isRunningAsInstalledPwa } from '../../../lib/features/pwa/pwa-install-state';
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
@@ -52,6 +53,7 @@ export default component$(() => {
   const currentEntitlement = entitlement.value;
   const currentDevice = devices.value.find((entry) => entry.isCurrent);
   const paidPlan = billingPlans.find((plan) => plan.offerLimit !== null && Boolean(plan.priceId));
+  const currentPlanLabel = resolvePlanLabelFromEntitlement(currentEntitlement);
   const subscriptionTitle = currentEntitlement?.planId.toLowerCase() === 'free'
     ? t(i18n, 'subscriptionFreeTitle', 'Free plan')
     : t(i18n, 'subscriptionActiveTitle', 'Subscription active');
@@ -59,7 +61,7 @@ export default component$(() => {
     ? t(i18n, 'subscriptionFreeSubtitle', '10 offers per month')
     : t(i18n, 'subscriptionActivePlan', 'Current plan: {price}').replace(
         '{price}',
-        paidPlan?.priceLabel ?? '',
+        currentPlanLabel ?? '—',
       );
 
   const languageOptions = [
