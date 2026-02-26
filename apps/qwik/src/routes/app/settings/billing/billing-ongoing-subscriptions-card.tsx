@@ -20,7 +20,7 @@ export const BillingOngoingSubscriptionsCard = component$<BillingOngoingSubscrip
   }
 
   return (
-    <section class="ui-settings-card ui-settings-billing-card">
+    <section class="ui-settings-card ui-settings-billing-card ui-settings-billing-ongoing-card">
       <p class="ui-settings-title">
         {t(i18n, 'billingOngoingSubscriptionsTitle', 'Ongoing subscriptions')}
       </p>
