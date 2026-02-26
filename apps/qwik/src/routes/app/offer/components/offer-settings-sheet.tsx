@@ -18,6 +18,7 @@ import { resolveVehicleTypeIcon } from "../../shared/vehicle-visuals";
 import { BillingManager } from "../../settings/billing/billing-manager";
 import { resolveOfferSettingsPanelChromeHeight, resolveOfferSettingsViewportHeight } from "./offer-settings-height";
 import { OfferSetupSummary } from "./offer-setup-summary";
+import { OfferSubscriptionLink } from "./offer-subscription-link";
 import { useOfferDialogTransition } from "./use-offer-dialog-transition";
 
 type OfferSettingsView = "menu" | "setup" | "billing";
@@ -195,26 +196,7 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
                   vehicles={props.vehicles}
                 />
 
-                <button type="button" class="ui-offer-settings-link" onClick$={openBilling$}>
-                  <div class="ui-offer-settings-link-copy">
-                    <p class="ui-offer-settings-link-title">
-                      {t(i18n, "billingManageTitle", "Manage subscription")}
-                    </p>
-                    <p class="ui-offer-settings-link-subtitle">
-                      {t(
-                        i18n,
-                        "offerSubscriptionSettingsHint",
-                        "Open your current plan and billing options.",
-                      )}
-                    </p>
-                  </div>
-                  <span
-                    class="material-icons-outlined ui-offer-settings-link-chevron"
-                    aria-hidden="true"
-                  >
-                    chevron_right
-                  </span>
-                </button>
+                <OfferSubscriptionLink onOpenBilling$={openBilling$} uid={props.uid} />
               </div>
             </section>
           ) : null}
