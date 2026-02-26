@@ -7,8 +7,13 @@ interface OfferFlowStatusProps {
 }
 
 const isSuccessStatus = (value: string): boolean => {
-  const lower = value.toLowerCase();
-  return lower.includes('import') || lower.includes('analy');
+  const normalized = value.trim().toLowerCase();
+  return (
+    normalized === 'offer analyzed.' ||
+    normalized === 'offer analyzed' ||
+    normalized === 'screenshot analyzed.' ||
+    normalized === 'screenshot analyzed'
+  );
 };
 
 const isScreenshotFailureStatus = (status: string, screenshotFailureMessage: string): boolean => {

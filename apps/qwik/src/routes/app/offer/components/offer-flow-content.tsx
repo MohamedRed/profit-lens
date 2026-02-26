@@ -1,6 +1,7 @@
 import {
   $,
   component$,
+  noSerialize,
   type QRL,
   type Signal,
   useSignal,
@@ -58,7 +59,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   });
 
   const onFileSelected$ = $(async (file: File) => {
-    await props.onImportScreenshotFile$(file);
+    await props.onImportScreenshotFile$(noSerialize(file));
   });
 
   const onFileInputEvent$ = $(async (element: HTMLInputElement) => {
