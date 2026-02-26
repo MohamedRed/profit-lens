@@ -26,7 +26,7 @@ export const registerDevice = onCall(
     cpu: 0.5,
     minInstances: 1,
     maxInstances: 40,
-    concurrency: 20,
+    concurrency: 1,
     region: "europe-west1",
   },
   async (request) => {
