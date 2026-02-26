@@ -64,17 +64,22 @@ export const OfferSubscriptionLink = component$<OfferSubscriptionLinkProps>((pro
     }
 
     let unsubscribeUsage: (() => void) | null = null;
+    let usagePeriodKey: string | null = null;
     const unsubscribeEntitlement = watchEntitlement(uid, (nextEntitlement) => {
       entitlement.value = nextEntitlement;
-      usage.value = null;
-      if (unsubscribeUsage) {
-        unsubscribeUsage();
-        unsubscribeUsage = null;
-      }
-      if (nextEntitlement?.periodKey) {
-        unsubscribeUsage = watchUsage(uid, nextEntitlement.periodKey, (nextUsage) => {
-          usage.value = nextUsage;
-        });
+      const nextUsagePeriodKey = nextEntitlement?.periodKey ?? null;
+      if (nextUsagePeriodKey !== usagePeriodKey) {
+        usagePeriodKey = nextUsagePeriodKey;
+        usage.value = null;
+        if (unsubscribeUsage) {
+          unsubscribeUsage();
+          unsubscribeUsage = null;
+        }
+        if (nextUsagePeriodKey) {
+          unsubscribeUsage = watchUsage(uid, nextUsagePeriodKey, (nextUsage) => {
+            usage.value = nextUsage;
+          });
+        }
       }
     });
 

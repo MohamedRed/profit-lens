@@ -70,6 +70,7 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
     }
 
     let unsubscribeUsage: (() => void) | null = null;
+    let usagePeriodKey: string | null = null;
     let isActive = true;
     let entitlementRepairAttempted = false;
 
@@ -113,15 +114,19 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
         entitlementRepairAttempted = true;
       }
       void loadManagedSubscriptions(nextEntitlement, { allowFreeRepair });
-      usage.value = null;
-      if (unsubscribeUsage) {
-        unsubscribeUsage();
-        unsubscribeUsage = null;
-      }
-      if (nextEntitlement?.periodKey) {
-        unsubscribeUsage = watchUsage(uid, nextEntitlement.periodKey, (nextUsage) => {
-          usage.value = nextUsage;
-        });
+      const nextUsagePeriodKey = nextEntitlement?.periodKey ?? null;
+      if (nextUsagePeriodKey !== usagePeriodKey) {
+        usagePeriodKey = nextUsagePeriodKey;
+        usage.value = null;
+        if (unsubscribeUsage) {
+          unsubscribeUsage();
+          unsubscribeUsage = null;
+        }
+        if (nextUsagePeriodKey) {
+          unsubscribeUsage = watchUsage(uid, nextUsagePeriodKey, (nextUsage) => {
+            usage.value = nextUsage;
+          });
+        }
       }
     });
 
@@ -226,17 +231,11 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
     }
   });
 
-  const rootClassName = props.rootClass
-    ? `ui-settings-billing-root ${props.rootClass}`
-    : 'ui-settings-billing-root';
+  const rootClassName = props.rootClass ? `ui-settings-billing-root ${props.rootClass}` : 'ui-settings-billing-root';
 
   return (
     <div class={rootClassName}>
-      <BillingSummaryCard
-        entitlement={entitlement.value}
-        managedState={managedSubscriptionState.value}
-        usage={usage.value}
-      />
+      <BillingSummaryCard entitlement={entitlement.value} managedState={managedSubscriptionState.value} usage={usage.value} />
 
       <section class="ui-settings-card ui-settings-billing-card">
         <p class="ui-settings-title">{t(i18n, 'billingPlanSelectionLabel', 'Plan')}</p>

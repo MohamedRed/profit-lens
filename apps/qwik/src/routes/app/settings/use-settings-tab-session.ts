@@ -51,6 +51,7 @@ export const useSettingsTabSession = (params: UseSettingsTabSessionParams): void
     }
 
     let unsubscribeUsage: (() => void) | null = null;
+    let usagePeriodKey: string | null = entitlement.value?.periodKey ?? null;
     let entitlementRepairAttempted = false;
     const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (nextProfile) => {
       profile.value = nextProfile;
@@ -67,15 +68,19 @@ export const useSettingsTabSession = (params: UseSettingsTabSessionParams): void
           // Ignore recovery failures and keep existing entitlement data.
         });
       }
-      usage.value = null;
-      if (unsubscribeUsage) {
-        unsubscribeUsage();
-        unsubscribeUsage = null;
-      }
-      if (nextEntitlement?.periodKey) {
-        unsubscribeUsage = watchUsage(user.uid, nextEntitlement.periodKey, (nextUsage) => {
-          usage.value = nextUsage;
-        });
+      const nextUsagePeriodKey = nextEntitlement?.periodKey ?? null;
+      if (nextUsagePeriodKey !== usagePeriodKey) {
+        usagePeriodKey = nextUsagePeriodKey;
+        usage.value = null;
+        if (unsubscribeUsage) {
+          unsubscribeUsage();
+          unsubscribeUsage = null;
+        }
+        if (nextUsagePeriodKey) {
+          unsubscribeUsage = watchUsage(user.uid, nextUsagePeriodKey, (nextUsage) => {
+            usage.value = nextUsage;
+          });
+        }
       }
     });
     const unsubscribeDevices = watchDevices(user.uid, (items) => {
