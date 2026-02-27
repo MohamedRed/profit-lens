@@ -5,7 +5,6 @@ import {
   type Signal,
   useSignal,
   useTask$,
-  useVisibleTask$,
 } from "@builder.io/qwik";
 import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
@@ -16,12 +15,13 @@ import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import { resolveVehicleTypeIcon } from "../../shared/vehicle-visuals";
 import { BillingManager } from "../../settings/billing/billing-manager";
-import { resolveOfferSettingsPanelChromeHeight, resolveOfferSettingsViewportHeight } from "./offer-settings-height";
 import { OfferSetupSummary } from "./offer-setup-summary";
 import { OfferSubscriptionLink } from "./offer-subscription-link";
 import { useOfferDialogTransition } from "./use-offer-dialog-transition";
-
-type OfferSettingsView = "menu" | "setup" | "billing";
+import {
+  type OfferSettingsView,
+  useOfferSettingsViewportHeight,
+} from "./use-offer-settings-viewport-height";
 
 interface OfferSettingsSheetProps {
   isOpen: Signal<boolean>;
@@ -57,67 +57,11 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
     }
   });
 
-  useVisibleTask$(({ track, cleanup }) => {
-    const isOpen = track(() => props.isOpen.value);
-    const view = track(() => activeView.value);
-    const dialogElement = track(() => dialogRef.value);
-    if (!isOpen || !dialogElement) {
-      viewHeightPx.value = null;
-      return;
-    }
-
-    const resolveActiveElement = (): HTMLElement | null => {
-      return dialogElement.querySelector<HTMLElement>(
-        `[data-offer-settings-view="${view}"]`,
-      );
-    };
-
-    const updateHeight = () => {
-      const activeElement = resolveActiveElement();
-      if (!activeElement) {
-        return;
-      }
-      const viewportHeight =
-        window.innerHeight || document.documentElement.clientHeight || 0;
-      const measuredHeight = Math.ceil(activeElement.scrollHeight);
-      const panelElement = activeElement.closest(".ui-offer-settings-panel");
-      const panelChromeHeight =
-        panelElement instanceof HTMLElement
-          ? resolveOfferSettingsPanelChromeHeight(panelElement)
-          : 0;
-      const nextHeight = resolveOfferSettingsViewportHeight({
-        view,
-        viewportHeight,
-        contentHeight: measuredHeight,
-        panelChromeHeight,
-      });
-      if (
-        viewHeightPx.value !== null &&
-        Math.abs(viewHeightPx.value - nextHeight) < 2
-      ) {
-        return;
-      }
-      viewHeightPx.value = nextHeight;
-    };
-
-    updateHeight();
-    const animationFrameId = window.requestAnimationFrame(updateHeight);
-    const activeElement = resolveActiveElement();
-    const resizeObserver =
-      typeof ResizeObserver === "function" ? new ResizeObserver(updateHeight) : null;
-    if (activeElement) {
-      resizeObserver?.observe(activeElement);
-    }
-    const onResize = () => {
-      updateHeight();
-    };
-    window.addEventListener("resize", onResize, { passive: true });
-
-    cleanup(() => {
-      window.cancelAnimationFrame(animationFrameId);
-      resizeObserver?.disconnect();
-      window.removeEventListener("resize", onResize);
-    });
+  useOfferSettingsViewportHeight({
+    isOpen: props.isOpen,
+    activeView,
+    dialogRef,
+    viewHeightPx,
   });
 
   const openSetup$ = $(() => {
