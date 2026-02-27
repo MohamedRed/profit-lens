@@ -62,10 +62,6 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
     const isOpen = track(() => props.isOpen.value);
     const view = track(() => activeView.value);
     const activeElement = track(() => activeViewRef.value);
-    if (view === "menu") {
-      viewHeightPx.value = null;
-      return;
-    }
     if (!isOpen || !activeElement) {
       viewHeightPx.value = null;
       return;
@@ -80,12 +76,19 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
         panelElement instanceof HTMLElement
           ? resolveOfferSettingsPanelChromeHeight(panelElement)
           : 0;
-      viewHeightPx.value = resolveOfferSettingsViewportHeight({
+      const nextHeight = resolveOfferSettingsViewportHeight({
         view,
         viewportHeight,
         contentHeight: measuredHeight,
         panelChromeHeight,
       });
+      if (
+        viewHeightPx.value !== null &&
+        Math.abs(viewHeightPx.value - nextHeight) < 2
+      ) {
+        return;
+      }
+      viewHeightPx.value = nextHeight;
     };
 
     updateHeight();
@@ -115,7 +118,6 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
   });
 
   const goBackToMenu$ = $(() => {
-    viewHeightPx.value = null;
     activeView.value = "menu";
   });
 
@@ -131,11 +133,8 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
         ? t(i18n, "editOfferDetailsButton", "Edit details")
         : t(i18n, "billingManageTitle", "Manage subscription");
 
-  const isMenuView = activeView.value === "menu";
   const bodyViewportStyle =
-    isMenuView || viewHeightPx.value === null
-      ? undefined
-      : { height: `${viewHeightPx.value}px` };
+    viewHeightPx.value === null ? undefined : { height: `${viewHeightPx.value}px` };
 
   return (
     <dialog
@@ -182,8 +181,7 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
         </header>
 
         <div
-          key={`offer-settings-viewport-${activeView.value}`}
-          class={{ "ui-offer-settings-view-viewport": true, "is-menu": isMenuView }}
+          class="ui-offer-settings-view-viewport"
           style={bodyViewportStyle}
         >
           {activeView.value === "menu" ? (

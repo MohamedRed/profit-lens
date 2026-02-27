@@ -287,14 +287,10 @@
 }
 
 .ui-offer-settings-view-viewport {
-  overflow: hidden;
+  overflow: clip;
   height: auto;
-  transition: height 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: height 340ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: height;
-}
-
-.ui-offer-settings-view-viewport.is-menu {
-  height: auto !important;
 }
 
 .ui-offer-settings-view {
