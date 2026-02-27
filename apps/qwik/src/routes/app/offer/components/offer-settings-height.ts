@@ -1,8 +1,8 @@
 type OfferSettingsView = "menu" | "setup" | "billing";
 
 const MIN_VIEWPORT_HEIGHT_PX = 220;
-const BILLING_MIN_HEIGHT_PX = 300;
-const BILLING_MAX_RATIO = 0.86;
+const BILLING_MIN_HEIGHT_PX = 280;
+const BILLING_MAX_RATIO = 0.78;
 const SETUP_MAX_RATIO = 0.72;
 
 const parseCssPx = (value: string | null | undefined): number => {
