@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
   <title id="title">Liive Profit logo</title>
-  <desc id="desc">White location pin on red background with ring</desc>
-  <rect width="1024" height="1024" fill="#ff1f2d" />
+  <desc id="desc">White location pin on purple background with ring</desc>
+  <rect width="1024" height="1024" fill="#8b5cf6" />
   <ellipse cx="512" cy="820" rx="324" ry="90" fill="none" stroke="#ffffff" stroke-width="48" />
   <path
     d="M512 196c-130 0-236 106-236 236 0 78 32 134 89 210 42 56 95 116 147 173 52-57 105-117 147-173 57-76 89-132 89-210 0-130-106-236-236-236z"
     fill="#ffffff"
   />
-  <circle cx="512" cy="392" r="88" fill="#ff1f2d" />
+  <circle cx="512" cy="392" r="88" fill="#8b5cf6" />
   <circle cx="512" cy="392" r="40" fill="#ffffff" />
 </svg>
