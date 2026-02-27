@@ -45,7 +45,7 @@ export const AuthGuard = component$<AuthGuardProps>(({ requireAuth }) => {
     }
   });
 
-  if (!auth.ready.value || !splashTransition.canContinue.value) {
+  if (!splashTransition.canContinue.value) {
     return (
       <AppSplash
         status={splashTransition.status.value}
@@ -53,6 +53,10 @@ export const AuthGuard = component$<AuthGuardProps>(({ requireAuth }) => {
         exiting={auth.ready.value && splashTransition.exiting.value}
       />
     );
+  }
+
+  if (!auth.ready.value) {
+    return null;
   }
 
   if (requireAuth) {
