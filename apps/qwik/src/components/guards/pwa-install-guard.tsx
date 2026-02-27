@@ -189,7 +189,7 @@ export const PwaInstallGuard = component$(() => {
     });
   });
 
-  if (gateState.value === 'installed') {
+  if (gateState.value === 'installed' || gateState.value === 'checking') {
     return <Slot />;
   }
 
