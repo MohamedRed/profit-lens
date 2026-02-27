@@ -1,9 +1,8 @@
 type OfferSettingsView = "menu" | "setup" | "billing";
 
 const MIN_VIEWPORT_HEIGHT_PX = 220;
-const BILLING_MIN_HEIGHT_PX = 360;
-const BILLING_MIN_RATIO = 0.84;
-const BILLING_MAX_RATIO = 0.96;
+const BILLING_MIN_HEIGHT_PX = 300;
+const BILLING_MAX_RATIO = 0.86;
 const SETUP_MAX_RATIO = 0.72;
 
 const parseCssPx = (value: string | null | undefined): number => {
@@ -52,11 +51,7 @@ export const resolveOfferSettingsViewportHeight = (
     Math.min(ratioBoundedMaxHeight, screenBoundedMaxHeight),
   );
   if (params.view === "billing") {
-    const desiredMinHeight = Math.max(
-      BILLING_MIN_HEIGHT_PX,
-      Math.floor(safeViewportHeight * BILLING_MIN_RATIO),
-    );
-    const minHeight = Math.min(desiredMinHeight, maxHeight);
+    const minHeight = Math.min(BILLING_MIN_HEIGHT_PX, maxHeight);
     const boundedContentHeight = Math.min(safeContentHeight, maxHeight);
     return Math.max(boundedContentHeight, minHeight);
   }
