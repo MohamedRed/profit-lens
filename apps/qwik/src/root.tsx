@@ -109,6 +109,7 @@ export default component$(() => {
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Liive Profit" />
+        <meta name="application-name" content="Liive Profit" />
         <meta name="format-detection" content="telephone=no" />
         <meta
           name="description"
@@ -119,6 +120,9 @@ export default component$(() => {
         <link rel="preconnect" href="https://www.googleapis.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://billing.stripe.com" crossOrigin="anonymous" />
         <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+        <link rel="icon" type="image/png" sizes="192x192" href={`${base}icons/Icon-192-v2.png`} />
+        <link rel="shortcut icon" href={`${base}icons/Icon-192-v2.png`} />
+        <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-touch-icon-v2.png`} />
         {!isDev && <script dangerouslySetInnerHTML={buildRefreshGuard(base)}></script>}
         <script src={`${base}firebase-web-config.js`} defer></script>
         {!isDev && <link rel="manifest" href={`${base}manifest.webmanifest`} />}

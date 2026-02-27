@@ -154,7 +154,7 @@ export const PwaInstallGuard = component$(() => {
         dialog.setAttribute('disable-close', '');
         dialog.setAttribute('manual-apple', '');
         dialog.setAttribute('manifest-url', '/next/manifest.webmanifest');
-        dialog.setAttribute('icon', '/next/icons/Icon-192.png');
+        dialog.setAttribute('icon', '/next/icons/Icon-192-v2.png');
         dialog.setAttribute('name', 'Liive Profit');
         dialog.setAttribute('description', 'Progressive web application');
 

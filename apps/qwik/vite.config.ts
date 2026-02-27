@@ -34,17 +34,17 @@ export default defineConfig(({ mode }): UserConfig => {
           theme_color: '#ffffff',
           icons: [
             {
-              src: 'icons/Icon-192.png',
+              src: 'icons/Icon-192-v2.png',
               sizes: '192x192',
               type: 'image/png',
             },
             {
-              src: 'icons/Icon-512.png',
+              src: 'icons/Icon-512-v2.png',
               sizes: '512x512',
               type: 'image/png',
             },
             {
-              src: 'icons/Icon-maskable-512.png',
+              src: 'icons/Icon-maskable-512-v2.png',
               sizes: '512x512',
               type: 'image/png',
               purpose: 'maskable',

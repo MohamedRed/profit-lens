@@ -8,10 +8,11 @@ export const RouterHead = component$(() => {
   const head = useDocumentHead();
   const loc = useLocation();
   const base = import.meta.env.BASE_URL;
+  const resolvedTitle = head.title?.trim() || 'Liive Profit';
 
   return (
     <>
-      <title>{head.title}</title>
+      <title>{resolvedTitle}</title>
 
       <link rel="canonical" href={loc.url.href} />
       <meta
@@ -19,6 +20,9 @@ export const RouterHead = component$(() => {
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
       />
       <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+      <link rel="icon" type="image/png" sizes="192x192" href={`${base}icons/Icon-192-v2.png`} />
+      <link rel="shortcut icon" href={`${base}icons/Icon-192-v2.png`} />
+      <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-touch-icon-v2.png`} />
 
       {head.meta.map((m) => (
         <meta key={m.key} {...m} />
