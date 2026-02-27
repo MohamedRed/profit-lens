@@ -20,7 +20,8 @@ const chartLayout = {
   plotTop: 20,
   plotRight: 18,
   plotBottom: 56,
-  plotLeft: 36,
+  // Keep enough gutter so full currency labels (including minus sign and thousands) never clip.
+  plotLeft: 132,
 } as const;
 
 export const buildProfitSeriesValues = (stats: OfferStatsDay[]): number[] => {
