@@ -3,6 +3,7 @@ import { useLaunchSplashWindow } from './launch-splash-window';
 
 const SPLASH_EXIT_MS = 240;
 const SPLASH_PROGRESS_SMOOTHING = 0.14;
+let splashTransitionCompleted = false;
 
 const resolveProgressTarget = (
   elapsedMs: number,
@@ -58,13 +59,19 @@ export interface LaunchSplashTransition {
 
 export const useLaunchSplashTransition = (ready: Signal<boolean>): LaunchSplashTransition => {
   const splashWindowElapsed = useLaunchSplashWindow();
-  const canContinue = useSignal(false);
+  const canContinue = useSignal(splashTransitionCompleted);
   const exiting = useSignal(false);
-  const progress = useSignal(0.08);
-  const status = useSignal('Securing session...');
+  const progress = useSignal(splashTransitionCompleted ? 1 : 0.08);
+  const status = useSignal(
+    splashTransitionCompleted ? 'Launching Liive Profit...' : 'Securing session...',
+  );
   const splashMountedAt = useSignal<number>(0);
 
   useVisibleTask$(({ track, cleanup }) => {
+    if (canContinue.value) {
+      return;
+    }
+
     const isReady = track(() => ready.value);
     const windowReady = track(() => splashWindowElapsed.value);
     const isExiting = track(() => exiting.value);
@@ -104,6 +111,10 @@ export const useLaunchSplashTransition = (ready: Signal<boolean>): LaunchSplashT
   });
 
   useVisibleTask$(({ track, cleanup }) => {
+    if (canContinue.value) {
+      return;
+    }
+
     const isReady = track(() => ready.value);
     const windowReady = track(() => splashWindowElapsed.value);
 
@@ -116,6 +127,7 @@ export const useLaunchSplashTransition = (ready: Signal<boolean>): LaunchSplashT
     const timerId = window.setTimeout(() => {
       progress.value = 1;
       status.value = 'Launching Liive Profit...';
+      splashTransitionCompleted = true;
       canContinue.value = true;
     }, SPLASH_EXIT_MS);
 
