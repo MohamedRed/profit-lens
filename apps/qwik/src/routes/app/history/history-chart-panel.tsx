@@ -76,7 +76,12 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
           {t(i18n, 'historyChartEmptyMessage', 'Add at least 2 offers to see the chart.')}
         </p>
       ) : (
-        <div class={{ 'ui-history-yearly-chart-wrap': true, 'is-intro': showIntro }}>
+        <div class={{ 'ui-history-chart-shell': true, 'is-intro': showIntro }}>
+          <div class="ui-history-chart-axis">
+            {chart.tickValues.map((value, index) => (
+              <span key={`axis-${index}`}>{formatChartCurrency(locale, value)}</span>
+            ))}
+          </div>
           <svg class="ui-history-yearly-chart" viewBox={`0 0 ${chart.width} ${chart.height}`} aria-label="history chart">
             <defs>
               <linearGradient id="ui-history-profit-gradient" x1="0" y1="0" x2="0" y2="1">
@@ -94,18 +99,6 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
                 y2={String(y)}
                 class="ui-history-yearly-grid"
               />
-            ))}
-
-            {chart.tickValues.map((value, index) => (
-              <text
-                key={`tick-${index}`}
-                x={String(chart.plotLeft - 8)}
-                y={String(chart.gridLinesY[index] + 5)}
-                text-anchor="end"
-                class="ui-history-yearly-axis-label"
-              >
-                {formatChartCurrency(locale, value)}
-              </text>
             ))}
 
             <path
