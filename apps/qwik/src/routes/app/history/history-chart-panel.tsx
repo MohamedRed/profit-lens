@@ -1,7 +1,7 @@
 import { component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import type { OfferStatsDay } from '../../../lib/types/offer';
-import { formatCurrency } from './history-helpers';
+import { averageProfit, buildSummaryHeadline, formatCurrency } from './history-helpers';
 import {
   buildProfitChartGeometry,
   buildProfitYearSeries,
@@ -25,12 +25,21 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
   const selectedYear = useSignal(new Date().getUTCFullYear());
 
   const availableYears = extractProfitYears(stats);
+  const sortedStats = [...stats].sort((a, b) => a.dayStart.getTime() - b.dayStart.getTime());
   const activeYear = availableYears.includes(selectedYear.value)
     ? selectedYear.value
     : availableYears[0];
   const yearlySeries = buildProfitYearSeries(stats, activeYear, locale);
   const hasChartData = yearlySeries.months.some((month) => Math.abs(month.averageProfitEuro) > 0.001);
   const chart = buildProfitChartGeometry(yearlySeries.months);
+  const latestStatsEntry = sortedStats.length > 0 ? sortedStats[sortedStats.length - 1] : null;
+  const latestProfit =
+    latestStatsEntry && latestStatsEntry.offerCount > 0
+      ? latestStatsEntry.netProfitEuro / latestStatsEntry.offerCount
+      : 0;
+  const summaryHeadline = buildSummaryHeadline(i18n, sortedStats, locale);
+  const averageTemplate = t(i18n, 'historySummaryAverageProfit', 'Average profit: {amount}');
+  const averageText = averageTemplate.replace('{amount}', formatCurrency(locale, averageProfit(sortedStats)));
 
   const growth = yearlySeries.growthPercent;
   const growthValue =
@@ -125,6 +134,13 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
         </div>
       </div>
 
+      <div class="ui-history-insight-strip">
+        <p class="ui-history-insight-pill">
+          <span class="ui-history-insight-label">{t(i18n, 'latestProfitLabel', 'Latest profit')}</span>
+          <span class="ui-history-insight-value">{formatCurrency(locale, latestProfit)}</span>
+        </p>
+      </div>
+
       {!hasChartData ? (
         <p class="ui-history-empty">
           {t(i18n, 'historyChartEmptyMessage', 'Add at least 2 offers to see the chart.')}
@@ -196,6 +212,18 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
           </svg>
         </div>
       )}
+
+      <div class="ui-history-chart-meta">
+        <p class="ui-history-summary-headline">{summaryHeadline}</p>
+        <p class="ui-history-summary-subtitle">{averageText}</p>
+        <p class="ui-history-chart-hint">
+          {t(
+            i18n,
+            'historyChartHintMessage',
+            'Use this chart to compare profits above/below the break-even line.',
+          )}
+        </p>
+      </div>
     </div>
   );
 });
