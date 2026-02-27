@@ -124,15 +124,19 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
         </div>
       )}
 
-      <div class="ui-history-chart-meta">
-        <p class="ui-history-summary-headline">{summaryHeadline}</p>
-        <p class="ui-history-chart-hint">
-          {t(
-            i18n,
-            'historyChartHintMessage',
-            'Use this chart to compare profits above/below the break-even line.',
-          )}
-        </p>
+      <div class="ui-history-insight-cards">
+        <article class="ui-history-insight-card">
+          <p class="ui-history-summary-headline">{summaryHeadline}</p>
+        </article>
+        <article class="ui-history-insight-card">
+          <p class="ui-history-chart-hint">
+            {t(
+              i18n,
+              'historyChartHintMessage',
+              'Use this chart to compare profits above/below the break-even line.',
+            )}
+          </p>
+        </article>
       </div>
     </div>
   );

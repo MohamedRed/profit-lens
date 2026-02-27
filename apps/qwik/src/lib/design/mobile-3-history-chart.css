@@ -130,16 +130,24 @@
   animation: ui-history-line-draw 760ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.ui-history-chart-meta {
+.ui-history-insight-cards {
   display: grid;
-  gap: 5px;
+  gap: 8px;
+}
+
+.ui-history-insight-card {
+  border: 1px solid rgba(203, 213, 225, 0.85);
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 14px;
+  padding: 10px 12px;
 }
 
 .ui-history-summary-headline,
 .ui-history-chart-hint {
   margin: 0;
-  color: var(--pl-color-text-secondary);
+  color: var(--pl-color-text-primary);
   font-size: 0.94rem;
+  line-height: 1.35;
 }
 
 @keyframes ui-history-line-shell-intro {
@@ -192,6 +200,11 @@
 
   .ui-history-chart-axis {
     font-size: 0.72rem;
+  }
+
+  .ui-history-insight-card {
+    border-radius: 12px;
+    padding: 9px 10px;
   }
 }
 
