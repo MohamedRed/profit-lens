@@ -1,13 +1,8 @@
 import { component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import type { OfferStatsDay } from '../../../lib/types/offer';
-import { averageProfit, buildSummaryHeadline, formatCurrency } from './history-helpers';
-import {
-  buildProfitChartGeometry,
-  buildProfitYearSeries,
-  extractProfitYears,
-  formatAxisValue,
-} from './history-profit-chart';
+import { averageProfit, buildSummaryHeadline, formatChartCurrency, formatCurrency } from './history-helpers';
+import { buildProfitChartGeometry, buildProfitSeriesValues } from './history-profit-chart';
 
 interface HistoryChartPanelProps {
   stats: OfferStatsDay[];
@@ -22,40 +17,15 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
   const i18n = useI18n();
   const introActive = useSignal(false);
   const introCompleted = useSignal(false);
-  const selectedYear = useSignal(new Date().getUTCFullYear());
 
-  const availableYears = extractProfitYears(stats);
   const sortedStats = [...stats].sort((a, b) => a.dayStart.getTime() - b.dayStart.getTime());
-  const activeYear = availableYears.includes(selectedYear.value)
-    ? selectedYear.value
-    : availableYears[0];
-  const yearlySeries = buildProfitYearSeries(stats, activeYear, locale);
-  const hasChartData = yearlySeries.months.some((month) => Math.abs(month.averageProfitEuro) > 0.001);
-  const chart = buildProfitChartGeometry(yearlySeries.months);
-  const latestStatsEntry = sortedStats.length > 0 ? sortedStats[sortedStats.length - 1] : null;
-  const latestProfit =
-    latestStatsEntry && latestStatsEntry.offerCount > 0
-      ? latestStatsEntry.netProfitEuro / latestStatsEntry.offerCount
-      : 0;
-  const summaryHeadline = buildSummaryHeadline(i18n, sortedStats, locale);
-  const averageTemplate = t(i18n, 'historySummaryAverageProfit', 'Average profit: {amount}');
-  const averageText = averageTemplate.replace('{amount}', formatCurrency(locale, averageProfit(sortedStats)));
+  const chartValues = buildProfitSeriesValues(sortedStats);
+  const hasChartData = chartValues.length > 0;
+  const chart = buildProfitChartGeometry(chartValues);
 
-  const growth = yearlySeries.growthPercent;
-  const growthValue =
-    growth === null
-      ? null
-      : new Intl.NumberFormat(locale, {
-          maximumFractionDigits: 0,
-        }).format(Math.abs(growth));
-  const growthPrefix = growth === null ? '' : growth >= 0 ? '+' : '-';
-  const growthText =
-    growthValue === null
-      ? t(i18n, 'historyChartGrowthUnavailable', 'No previous-year data yet.')
-      : t(i18n, 'historyChartGrowthTemplate', '({change}%) than last year').replace(
-          '{change}',
-          `${growthPrefix}${growthValue}`,
-        );
+  const latestValue = chartValues.length > 0 ? chartValues[chartValues.length - 1] : 0;
+  const summaryHeadline = buildSummaryHeadline(i18n, sortedStats, locale);
+  const averageValue = averageProfit(sortedStats);
 
   const isPanelActive = isActive ?? true;
   const isPreload = preload ?? false;
@@ -76,13 +46,6 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
     });
   });
 
-  useTask$(({ track }) => {
-    track(() => stats.map((entry) => entry.dayStart.getTime()).join(','));
-    if (!availableYears.includes(selectedYear.value)) {
-      selectedYear.value = availableYears[0];
-    }
-  });
-
   const showIntro = introActive.value && !isPreload;
 
   return (
@@ -90,55 +53,22 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
       <div class="ui-history-chart-head">
         <div class="ui-history-chart-heading">
           <h2 class="ui-history-chart-title">{t(i18n, 'historyChartTitle', 'Profit over time')}</h2>
-          <p class="ui-history-chart-subtitle">{growthText}</p>
+          <p class="ui-history-chart-subtitle">
+            {t(i18n, 'latestProfitLabel', 'Latest profit')}: {formatCurrency(locale, latestValue)}
+          </p>
         </div>
-
-        <label class="ui-history-year-select-wrap">
-          <span class="sr-only">{t(i18n, 'historyChartYearLabel', 'Year')}</span>
-          <select
-            class="ui-history-year-select"
-            value={String(activeYear)}
-            onChange$={(event) => {
-              const nextYear = Number((event.target as HTMLSelectElement).value);
-              if (!Number.isNaN(nextYear)) {
-                selectedYear.value = nextYear;
-              }
-            }}
-          >
-            {availableYears.map((year) => (
-              <option key={year} value={String(year)}>
-                {String(year)}
-              </option>
-            ))}
-          </select>
-          <span class="material-icons-outlined ui-history-year-select-icon" aria-hidden="true">
-            expand_more
-          </span>
-        </label>
       </div>
 
       <div class="ui-history-kpi-grid">
         <div class="ui-history-kpi-card">
           <p class="ui-history-kpi-label">
             <span class="ui-history-dot is-profit" />
-            {t(i18n, 'historyChartProfitLabel', 'Profit')}
+            {t(i18n, 'historySummaryAverageProfit', 'Average profit: {amount}').replace(
+              '{amount}',
+              formatCurrency(locale, averageValue),
+            )}
           </p>
-          <p class="ui-history-kpi-value">{formatCurrency(locale, yearlySeries.averageProfitEuro)}</p>
         </div>
-        <div class="ui-history-kpi-card">
-          <p class="ui-history-kpi-label">
-            <span class="ui-history-dot is-threshold" />
-            {t(i18n, 'profitThresholdLabel', 'Break-even')}
-          </p>
-          <p class="ui-history-kpi-value">{formatCurrency(locale, 0)}</p>
-        </div>
-      </div>
-
-      <div class="ui-history-insight-strip">
-        <p class="ui-history-insight-pill">
-          <span class="ui-history-insight-label">{t(i18n, 'latestProfitLabel', 'Latest profit')}</span>
-          <span class="ui-history-insight-value">{formatCurrency(locale, latestProfit)}</span>
-        </p>
       </div>
 
       {!hasChartData ? (
@@ -166,7 +96,7 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
               />
             ))}
 
-            {chart.yTicks.map((tick, index) => (
+            {chart.tickValues.map((value, index) => (
               <text
                 key={`tick-${index}`}
                 x={String(chart.plotLeft - 8)}
@@ -174,7 +104,7 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
                 text-anchor="end"
                 class="ui-history-yearly-axis-label"
               >
-                {formatAxisValue(locale, tick)}
+                {formatChartCurrency(locale, value)}
               </text>
             ))}
 
@@ -192,30 +122,17 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
             />
             <path
               class={{ 'ui-history-yearly-line': true, 'is-intro': showIntro }}
-              d={chart.profitLinePath}
+              d={chart.linePath}
               fill="none"
               stroke-width="4"
               pathLength={100}
             />
-
-            {yearlySeries.months.map((month, index) => (
-              <text
-                key={`month-${month.monthIndex}`}
-                x={String(chart.monthLineX[index])}
-                y={String(chart.height - 14)}
-                text-anchor="middle"
-                class="ui-history-yearly-month-label"
-              >
-                {month.label}
-              </text>
-            ))}
           </svg>
         </div>
       )}
 
       <div class="ui-history-chart-meta">
         <p class="ui-history-summary-headline">{summaryHeadline}</p>
-        <p class="ui-history-summary-subtitle">{averageText}</p>
         <p class="ui-history-chart-hint">
           {t(
             i18n,
