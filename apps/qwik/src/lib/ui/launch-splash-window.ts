@@ -1,21 +1,21 @@
 import { useSignal, useVisibleTask$, type Signal } from '@builder.io/qwik';
+import { getLaunchSplashRuntimeState } from './launch-splash-runtime-state';
 
 const FIRST_LAUNCH_SPLASH_MS = 1180;
 const REPEAT_LAUNCH_SPLASH_MS = 760;
 const REDUCED_MOTION_SPLASH_MS = 520;
 const SPLASH_SESSION_FLAG = 'pl-splash-session-seen';
 
-let launchSplashStartAt: number | null = null;
-let minSplashWindowMs: number | null = null;
-
 const resolveMinSplashWindowMs = (): number => {
-  if (minSplashWindowMs !== null) {
-    return minSplashWindowMs;
+  const runtimeState = getLaunchSplashRuntimeState();
+
+  if (runtimeState.minimumWindowMs !== null) {
+    return runtimeState.minimumWindowMs;
   }
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    minSplashWindowMs = REDUCED_MOTION_SPLASH_MS;
-    return minSplashWindowMs;
+    runtimeState.minimumWindowMs = REDUCED_MOTION_SPLASH_MS;
+    return runtimeState.minimumWindowMs;
   }
 
   let hasSeenSplashInSession = false;
@@ -27,16 +27,18 @@ const resolveMinSplashWindowMs = (): number => {
     hasSeenSplashInSession = false;
   }
 
-  minSplashWindowMs = hasSeenSplashInSession ? REPEAT_LAUNCH_SPLASH_MS : FIRST_LAUNCH_SPLASH_MS;
-  return minSplashWindowMs;
+  runtimeState.minimumWindowMs = hasSeenSplashInSession ? REPEAT_LAUNCH_SPLASH_MS : FIRST_LAUNCH_SPLASH_MS;
+  return runtimeState.minimumWindowMs;
 };
 
 const resolveRemainingSplashMs = (now: number): number => {
-  if (launchSplashStartAt === null) {
-    launchSplashStartAt = now;
+  const runtimeState = getLaunchSplashRuntimeState();
+
+  if (runtimeState.launchStartedAt === null) {
+    runtimeState.launchStartedAt = now;
   }
   const minimumWindowMs = resolveMinSplashWindowMs();
-  const elapsed = now - launchSplashStartAt;
+  const elapsed = now - runtimeState.launchStartedAt;
   return Math.max(0, minimumWindowMs - elapsed);
 };
 

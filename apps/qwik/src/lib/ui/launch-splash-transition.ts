@@ -1,9 +1,9 @@
 import { useSignal, useVisibleTask$, type Signal } from '@builder.io/qwik';
 import { useLaunchSplashWindow } from './launch-splash-window';
+import { getLaunchSplashRuntimeState } from './launch-splash-runtime-state';
 
 const SPLASH_EXIT_MS = 240;
 const SPLASH_PROGRESS_SMOOTHING = 0.14;
-let splashTransitionCompleted = false;
 
 const resolveProgressTarget = (
   elapsedMs: number,
@@ -58,12 +58,13 @@ export interface LaunchSplashTransition {
 }
 
 export const useLaunchSplashTransition = (ready: Signal<boolean>): LaunchSplashTransition => {
+  const runtimeState = getLaunchSplashRuntimeState();
   const splashWindowElapsed = useLaunchSplashWindow();
-  const canContinue = useSignal(splashTransitionCompleted);
+  const canContinue = useSignal(runtimeState.transitionCompleted);
   const exiting = useSignal(false);
-  const progress = useSignal(splashTransitionCompleted ? 1 : 0.08);
+  const progress = useSignal(runtimeState.transitionCompleted ? 1 : 0.08);
   const status = useSignal(
-    splashTransitionCompleted ? 'Launching Liive Profit...' : 'Securing session...',
+    runtimeState.transitionCompleted ? 'Launching Liive Profit...' : 'Securing session...',
   );
   const splashMountedAt = useSignal<number>(0);
 
@@ -127,7 +128,7 @@ export const useLaunchSplashTransition = (ready: Signal<boolean>): LaunchSplashT
     const timerId = window.setTimeout(() => {
       progress.value = 1;
       status.value = 'Launching Liive Profit...';
-      splashTransitionCompleted = true;
+      runtimeState.transitionCompleted = true;
       canContinue.value = true;
     }, SPLASH_EXIT_MS);
 

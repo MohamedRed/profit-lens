@@ -1,6 +1,6 @@
-const SPLASH_SOUND_STORAGE_KEY = 'pl-splash-sound-enabled';
+import { getLaunchSplashRuntimeState } from './launch-splash-runtime-state';
 
-let hasPlayedLaunchEffects = false;
+const SPLASH_SOUND_STORAGE_KEY = 'pl-splash-sound-enabled';
 
 const hasUserActivation = (): boolean => {
   const navigatorWithActivation = navigator as Navigator & {
@@ -27,10 +27,11 @@ export const shouldReduceSplashMotion = (): boolean => {
 };
 
 export const consumeSplashLaunchEffects = (): boolean => {
-  if (hasPlayedLaunchEffects) {
+  const runtimeState = getLaunchSplashRuntimeState();
+  if (runtimeState.launchEffectsConsumed) {
     return false;
   }
-  hasPlayedLaunchEffects = true;
+  runtimeState.launchEffectsConsumed = true;
   return true;
 };
 
