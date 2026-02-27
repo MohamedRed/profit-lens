@@ -42,7 +42,6 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
     isOpen: props.isOpen,
   });
   const activeView = useSignal<OfferSettingsView>("menu");
-  const activeViewRef = useSignal<HTMLElement>();
   const viewHeightPx = useSignal<number | null>(null);
   const draftMinProfitability = useSignal(props.minProfitabilityEuro.toFixed(2));
 
@@ -61,13 +60,23 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
   useVisibleTask$(({ track, cleanup }) => {
     const isOpen = track(() => props.isOpen.value);
     const view = track(() => activeView.value);
-    const activeElement = track(() => activeViewRef.value);
-    if (!isOpen || !activeElement) {
+    const dialogElement = track(() => dialogRef.value);
+    if (!isOpen || !dialogElement) {
       viewHeightPx.value = null;
       return;
     }
 
+    const resolveActiveElement = (): HTMLElement | null => {
+      return dialogElement.querySelector<HTMLElement>(
+        `[data-offer-settings-view="${view}"]`,
+      );
+    };
+
     const updateHeight = () => {
+      const activeElement = resolveActiveElement();
+      if (!activeElement) {
+        return;
+      }
       const viewportHeight =
         window.innerHeight || document.documentElement.clientHeight || 0;
       const measuredHeight = Math.ceil(activeElement.scrollHeight);
@@ -93,9 +102,12 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
 
     updateHeight();
     const animationFrameId = window.requestAnimationFrame(updateHeight);
+    const activeElement = resolveActiveElement();
     const resizeObserver =
       typeof ResizeObserver === "function" ? new ResizeObserver(updateHeight) : null;
-    resizeObserver?.observe(activeElement);
+    if (activeElement) {
+      resizeObserver?.observe(activeElement);
+    }
     const onResize = () => {
       updateHeight();
     };
@@ -185,7 +197,11 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
           style={bodyViewportStyle}
         >
           {activeView.value === "menu" ? (
-            <section key="offer-settings-menu" ref={activeViewRef} class="ui-offer-settings-view">
+            <section
+              key="offer-settings-menu"
+              data-offer-settings-view="menu"
+              class="ui-offer-settings-view"
+            >
               <div class="ui-offer-settings-panel-body">
                 <OfferSetupSummary
                   minProfitabilityEuro={props.minProfitabilityEuro}
@@ -200,7 +216,11 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
           ) : null}
 
           {activeView.value === "setup" ? (
-            <section key="offer-settings-setup" ref={activeViewRef} class="ui-offer-settings-view">
+            <section
+              key="offer-settings-setup"
+              data-offer-settings-view="setup"
+              class="ui-offer-settings-view"
+            >
               <div class="ui-offer-setup-panel-body">
                 {props.vehiclesLoading ? (
                   <div class="ui-skeleton-stack-sm ui-offer-setup-vehicle-skeleton" aria-hidden="true">
@@ -265,7 +285,7 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
           {activeView.value === "billing" ? (
             <section
               key="offer-settings-billing"
-              ref={activeViewRef}
+              data-offer-settings-view="billing"
               class="ui-offer-settings-view ui-offer-settings-view-scroll"
             >
               <BillingManager uid={props.uid} rootClass="ui-offer-billing-manager" />
