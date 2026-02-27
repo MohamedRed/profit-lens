@@ -1,6 +1,6 @@
 import { useSignal, useVisibleTask$, type Signal } from '@builder.io/qwik';
 import { useLaunchSplashWindow } from './launch-splash-window';
-import { getLaunchSplashRuntimeState } from './launch-splash-runtime-state';
+import { getLaunchSplashRuntimeState, markLaunchSplashTransitionCompleted } from './launch-splash-runtime-state';
 
 const SPLASH_EXIT_MS = 240;
 const SPLASH_PROGRESS_SMOOTHING = 0.14;
@@ -128,7 +128,7 @@ export const useLaunchSplashTransition = (ready: Signal<boolean>): LaunchSplashT
     const timerId = window.setTimeout(() => {
       progress.value = 1;
       status.value = 'Launching Liive Profit...';
-      runtimeState.transitionCompleted = true;
+      markLaunchSplashTransitionCompleted();
       canContinue.value = true;
     }, SPLASH_EXIT_MS);
 

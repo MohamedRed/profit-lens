@@ -60,14 +60,22 @@ export const AppSplash = component$<AppSplashProps>(({ exiting, progress, status
         <div class="ui-splash-brand-row">
           <div class="ui-splash-logo-wrap" aria-hidden="true">
             <svg class="ui-splash-logo" viewBox="0 0 1024 1024" focusable="false">
-              <rect width="1024" height="1024" fill="#ff1f2d" />
-              <ellipse cx="512" cy="820" rx="324" ry="90" fill="none" stroke="#ffffff" stroke-width="48" />
+              <rect width="1024" height="1024" fill="var(--pl-color-purple)" />
+              <ellipse
+                cx="512"
+                cy="820"
+                rx="324"
+                ry="90"
+                fill="none"
+                stroke="var(--pl-color-on-accent)"
+                stroke-width="48"
+              />
               <path
                 d="M512 196c-130 0-236 106-236 236 0 78 32 134 89 210 42 56 95 116 147 173 52-57 105-117 147-173 57-76 89-132 89-210 0-130-106-236-236-236z"
-                fill="#ffffff"
+                fill="var(--pl-color-on-accent)"
               />
-              <circle cx="512" cy="392" r="88" fill="#ff1f2d" />
-              <circle cx="512" cy="392" r="40" fill="#ffffff" />
+              <circle cx="512" cy="392" r="88" fill="var(--pl-color-purple)" />
+              <circle cx="512" cy="392" r="40" fill="var(--pl-color-on-accent)" />
             </svg>
             <span class="ui-splash-logo-bloom" />
             <span class="ui-splash-logo-sheen" />
