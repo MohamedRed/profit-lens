@@ -57,6 +57,18 @@ export const averageProfit = (entries: OfferStatsDay[]): number => {
   return totalNet / totalCount;
 };
 
+export const profitDeltaTodayVsEarlier = (stats: OfferStatsDay[]): number | null => {
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const todayStats = stats.filter((entry) => !isBeforeLocalDay(entry.dayStart, startOfToday));
+  const earlierStats = stats.filter((entry) => isBeforeLocalDay(entry.dayStart, startOfToday));
+
+  if (todayStats.length === 0 || earlierStats.length === 0) {
+    return null;
+  }
+  return averageProfit(todayStats) - averageProfit(earlierStats);
+};
+
 export const buildSummaryHeadline = (
   i18n: I18nStore,
   stats: OfferStatsDay[],

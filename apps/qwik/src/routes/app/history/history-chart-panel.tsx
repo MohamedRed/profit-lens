@@ -1,7 +1,13 @@
 import { component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import type { OfferStatsDay } from '../../../lib/types/offer';
-import { averageProfit, buildSummaryHeadline, formatChartCurrency, formatCurrency } from './history-helpers';
+import {
+  averageProfit,
+  buildSummaryHeadline,
+  formatChartCurrency,
+  formatCurrency,
+  profitDeltaTodayVsEarlier,
+} from './history-helpers';
 import { buildProfitChartGeometry, buildProfitSeriesValues } from './history-profit-chart';
 
 interface HistoryChartPanelProps {
@@ -26,6 +32,10 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
   const latestValue = chartValues.length > 0 ? chartValues[chartValues.length - 1] : 0;
   const summaryHeadline = buildSummaryHeadline(i18n, sortedStats, locale);
   const averageValue = averageProfit(sortedStats);
+  const trendDelta = profitDeltaTodayVsEarlier(sortedStats);
+  const isTrendPositive = trendDelta !== null && trendDelta > 0.01;
+  const isTrendNegative = trendDelta !== null && trendDelta < -0.01;
+  const trendIcon = isTrendPositive ? 'trending_up' : isTrendNegative ? 'trending_down' : 'trending_flat';
 
   const isPanelActive = isActive ?? true;
   const isPreload = preload ?? false;
@@ -125,17 +135,42 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
       )}
 
       <div class="ui-history-insight-cards">
-        <article class="ui-history-insight-card">
-          <p class="ui-history-summary-headline">{summaryHeadline}</p>
+        <article
+          class={{
+            'ui-history-insight-card': true,
+            'is-positive': isTrendPositive,
+            'is-negative': isTrendNegative,
+            'is-neutral': !isTrendPositive && !isTrendNegative,
+          }}
+        >
+          <div class="ui-history-insight-row">
+            <span
+              class={{
+                'ui-history-insight-icon': true,
+                'is-positive': isTrendPositive,
+                'is-negative': isTrendNegative,
+                'is-neutral': !isTrendPositive && !isTrendNegative,
+              }}
+              aria-hidden="true"
+            >
+              <span class="material-icons-outlined">{trendIcon}</span>
+            </span>
+            <p class="ui-history-summary-headline">{summaryHeadline}</p>
+          </div>
         </article>
-        <article class="ui-history-insight-card">
-          <p class="ui-history-chart-hint">
-            {t(
-              i18n,
-              'historyChartHintMessage',
-              'Use this chart to compare profits above/below the break-even line.',
-            )}
-          </p>
+        <article class="ui-history-insight-card is-info">
+          <div class="ui-history-insight-row">
+            <span class="ui-history-insight-icon is-info" aria-hidden="true">
+              <span class="material-icons-outlined">info</span>
+            </span>
+            <p class="ui-history-chart-hint">
+              {t(
+                i18n,
+                'historyChartHintMessage',
+                'Use this chart to compare profits above/below the break-even line.',
+              )}
+            </p>
+          </div>
         </article>
       </div>
     </div>
