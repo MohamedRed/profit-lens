@@ -274,6 +274,7 @@ export const useVehicleEditorState = (props: VehicleEditorProps): VehicleEditorS
     saving,
     deleting,
     existingVehicle,
+    onSaved$: props.onSaved$,
   });
 
   return {

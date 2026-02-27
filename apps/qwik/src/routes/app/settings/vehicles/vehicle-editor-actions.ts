@@ -148,6 +148,7 @@ interface VehicleSubmitActionsParams {
   saving: Signal<boolean>;
   deleting: Signal<boolean>;
   existingVehicle: Signal<VehicleProfile | null>;
+  onSaved$?: QRL<() => void | Promise<void>>;
 }
 
 export const createVehicleSubmitActions = (
@@ -216,7 +217,11 @@ export const createVehicleSubmitActions = (
         maintenancePerKm,
         depreciationPerKm,
       });
-      await params.navigateTo('/next/app/settings');
+      if (params.onSaved$) {
+        await params.onSaved$();
+      } else {
+        await params.navigateTo('/next/app/settings');
+      }
     } catch (error) {
       params.status.value = resolveUserFacingErrorMessage(params.i18n, error, 'vehicle');
     } finally {

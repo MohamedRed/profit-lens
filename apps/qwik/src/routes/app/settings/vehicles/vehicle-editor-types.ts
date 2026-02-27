@@ -1,3 +1,4 @@
+import { type QRL } from '@builder.io/qwik';
 import {
   defaultEnergyTypeForVehicle,
   defaultFuelTypeForVehicle,
@@ -15,6 +16,7 @@ export interface VehicleEditorProps {
   mode: EditorMode;
   vehicleId?: string | null;
   returnToHref?: string | null;
+  onSaved$?: QRL<() => void | Promise<void>>;
 }
 
 export const createVehicleId = (): string => {

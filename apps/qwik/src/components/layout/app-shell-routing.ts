@@ -71,6 +71,10 @@ const tabRootPaths = navItems.map((item) => toAppPath(item.href));
 
 export const isTabRootPath = (path: string): boolean => tabRootPaths.includes(path);
 
+export const shouldHideTabNav = (path: string): boolean => {
+  return path.startsWith('/app/onboarding');
+};
+
 const isValidAppBackHref = (value: string | null | undefined): value is string => {
   if (!value) {
     return false;

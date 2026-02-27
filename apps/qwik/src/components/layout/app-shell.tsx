@@ -18,6 +18,7 @@ import {
   resolvePopStateRecoveryHref,
   resolveRouteDepth,
   resolveSectionKey,
+  shouldHideTabNav,
   shouldPreferDeterministicBack,
   toAppPath,
 } from './app-shell-routing';
@@ -54,6 +55,7 @@ export const AppShell = component$(() => {
   const activeTabIndex = resolveActiveTabIndex(appPath);
   const activeTabVisualIndex = resolveVisualTabIndex(activeTabIndex, i18n.direction.value);
   const showHeader = Boolean(headerBackHref) || showHelpTicketsAction;
+  const hideTabNav = shouldHideTabNav(appPath);
 
   const onHeaderBack$ = $(async () => {
     if (!headerBackHref) {
@@ -226,43 +228,45 @@ export const AppShell = component$(() => {
         </section>
       </main>
 
-      <footer class="ui-mobile-tab-shell">
-        <div class="ui-mobile-tab-nav" role="tablist" aria-label="Main navigation">
-          <div
-            class="ui-mobile-tab-inner"
-            style={{ '--ui-mobile-active-tab-index': String(activeTabVisualIndex) }}
-          >
-            <span class="ui-mobile-tab-indicator" aria-hidden="true" />
-            {navItems.map((item, index) => {
-              const active = index === activeTabIndex;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  prefetch={true}
-                  class={{
-                    'ui-mobile-tab-link': true,
-                    'is-active': active,
-                  }}
-                  role="tab"
-                  aria-selected={active ? 'true' : 'false'}
-                  aria-current={active ? 'page' : undefined}
-                  onClick$={() => {
-                    if (!active) {
-                      triggerTabHaptic();
-                    }
-                  }}
-                >
-                  <span class="material-icons-outlined ui-mobile-tab-icon" aria-hidden="true">
-                    {item.icon}
-                  </span>
-                  <span class="ui-mobile-tab-label">{t(i18n, item.labelKey, item.fallback)}</span>
-                </Link>
-              );
-            })}
+      {hideTabNav ? null : (
+        <footer class="ui-mobile-tab-shell">
+          <div class="ui-mobile-tab-nav" role="tablist" aria-label="Main navigation">
+            <div
+              class="ui-mobile-tab-inner"
+              style={{ '--ui-mobile-active-tab-index': String(activeTabVisualIndex) }}
+            >
+              <span class="ui-mobile-tab-indicator" aria-hidden="true" />
+              {navItems.map((item, index) => {
+                const active = index === activeTabIndex;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    prefetch={true}
+                    class={{
+                      'ui-mobile-tab-link': true,
+                      'is-active': active,
+                    }}
+                    role="tab"
+                    aria-selected={active ? 'true' : 'false'}
+                    aria-current={active ? 'page' : undefined}
+                    onClick$={() => {
+                      if (!active) {
+                        triggerTabHaptic();
+                      }
+                    }}
+                  >
+                    <span class="material-icons-outlined ui-mobile-tab-icon" aria-hidden="true">
+                      {item.icon}
+                    </span>
+                    <span class="ui-mobile-tab-label">{t(i18n, item.labelKey, item.fallback)}</span>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 });

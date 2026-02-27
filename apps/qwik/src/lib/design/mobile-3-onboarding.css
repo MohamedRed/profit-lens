@@ -1,0 +1,97 @@
+.ui-onboarding-root {
+  display: grid;
+  gap: 12px;
+}
+
+.ui-onboarding-stepper {
+  display: grid;
+  gap: 10px;
+}
+
+.ui-onboarding-stepper-header {
+  display: grid;
+  gap: 6px;
+}
+
+.ui-onboarding-step-count {
+  margin: 0;
+  color: var(--pl-color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.ui-onboarding-progress {
+  height: 6px;
+  background: var(--pl-color-surface-elevated);
+  border-radius: var(--pl-radius-pill);
+  overflow: hidden;
+}
+
+.ui-onboarding-progress-bar {
+  display: block;
+  height: 100%;
+  background: var(--pl-color-purple);
+  transition: width 200ms ease;
+}
+
+.ui-onboarding-step-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.ui-onboarding-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--pl-color-text-secondary);
+  font-size: 0.88rem;
+}
+
+.ui-onboarding-step-index {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--pl-color-surface-elevated);
+  color: var(--pl-color-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.ui-onboarding-step.is-active {
+  color: var(--pl-color-text-primary);
+  font-weight: 600;
+}
+
+.ui-onboarding-step.is-active .ui-onboarding-step-index {
+  background: var(--pl-color-purple);
+  color: var(--pl-color-on-accent);
+}
+
+.ui-onboarding-step.is-complete .ui-onboarding-step-index {
+  background: var(--pl-color-teal);
+  color: var(--pl-color-on-accent);
+}
+
+.ui-onboarding-step-title {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.ui-onboarding-step-content {
+  margin-top: 6px;
+}
+
+.ui-onboarding-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ui-onboarding-actions .ui-settings-action-button {
+  flex: 1 1 0;
+}
