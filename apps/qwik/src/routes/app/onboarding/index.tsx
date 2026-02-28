@@ -16,6 +16,7 @@ import { VehicleCostsSection } from '../settings/vehicles/components/vehicle-cos
 import { VehicleDetailsSection } from '../settings/vehicles/components/vehicle-details-section';
 import { VehicleEnergySection } from '../settings/vehicles/components/vehicle-energy-section';
 import { useVehicleEditorState } from '../settings/vehicles/vehicle-editor-state';
+import { OnboardingPager } from './components/onboarding-pager';
 
 export default component$(() => {
   const auth = useAuth();
@@ -149,6 +150,8 @@ export default component$(() => {
   return (
     <div class="ui-onboarding-root">
       <section class="ui-onboarding-screen">
+        <OnboardingPager currentStep={safeStep} steps={steps} onSelectStep$={goToStep$} />
+
         <div class="ui-onboarding-slide-frame" onTouchStart$={onTouchStart$} onTouchEnd$={onTouchEnd$}>
           <div
             key={`onboarding-slide-${safeStep}`}
