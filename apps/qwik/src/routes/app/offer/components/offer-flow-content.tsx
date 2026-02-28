@@ -58,16 +58,18 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     settingsSheetOpen.value = true;
   });
 
-  const onFileSelected$ = $(async (file: File) => {
-    const token = stageOfferScreenshotFile(file);
-    await props.onImportScreenshotFile$(token);
-  });
-
   const onFileInputEvent$ = $(async (element: HTMLInputElement) => {
     if (fileImportInFlight.value) {
       return;
     }
-    const file = element.files?.[0] ?? null;
+    let file = element.files?.item(0) ?? null;
+    if (!file) {
+      // iOS PWA can briefly report an empty FileList before settling.
+      await new Promise((resolve) => {
+        window.setTimeout(resolve, 90);
+      });
+      file = element.files?.item(0) ?? null;
+    }
     if (!file) {
       return;
     }
@@ -78,7 +80,8 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
       "Screenshot selected. Preparing analysis...",
     );
     try {
-      await onFileSelected$(file);
+      const token = stageOfferScreenshotFile(file);
+      await props.onImportScreenshotFile$(token);
     } catch {
       props.status.value = t(
         i18n,
@@ -150,10 +153,13 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               </button>
 
               <div class="ui-offer-file-cta-shell">
-                <label
-                  class={`ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-label${importDisabled ? " is-disabled" : ""}`}
+                <Button
+                  variant="default"
+                  size="lg"
+                  type="button"
+                  class="ui-offer-primary-cta"
+                  disabled={importDisabled}
                   aria-label={importScreenshotLabel}
-                  aria-disabled={importDisabled ? "true" : "false"}
                 >
                   {importBusy
                     ? (
@@ -168,22 +174,20 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                         </span>
                       )
                     : importScreenshotLabel}
-                  <input
-                    class="ui-offer-file-input-control"
-                    type="file"
-                    accept="image/*"
-                    aria-label={importScreenshotLabel}
-                    disabled={importDisabled}
-                    tabIndex={-1}
-                    style="display:none"
-                    onInput$={(_, element) => {
-                      void onFileInputEvent$(element);
-                    }}
-                    onChange$={(_, element) => {
-                      void onFileInputEvent$(element);
-                    }}
-                  />
-                </label>
+                </Button>
+                <input
+                  class="ui-offer-file-input-overlay"
+                  type="file"
+                  accept="image/*"
+                  aria-label={importScreenshotLabel}
+                  disabled={importDisabled}
+                  onInput$={(_, element) => {
+                    void onFileInputEvent$(element);
+                  }}
+                  onChange$={(_, element) => {
+                    void onFileInputEvent$(element);
+                  }}
+                />
               </div>
             </div>
 

@@ -672,12 +672,18 @@
   width: 100%;
 }
 
-.ui-offer-file-label {
-  position: relative;
+.ui-offer-file-input-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
 }
 
-.ui-offer-file-label.is-disabled {
-  opacity: 0.55;
+.ui-offer-file-input-overlay:disabled {
   cursor: not-allowed;
 }
 
