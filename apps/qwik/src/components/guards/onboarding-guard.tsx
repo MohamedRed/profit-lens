@@ -9,6 +9,7 @@ export const OnboardingGuard = component$(() => {
   const location = useLocation();
   const navigate = useNavigate();
   const hasVehicles = useSignal<boolean | null>(null);
+  const currentPath = toAppPath(location.url.pathname);
 
   useVisibleTask$(({ track, cleanup }) => {
     const ready = track(() => auth.ready.value);
@@ -41,6 +42,11 @@ export const OnboardingGuard = component$(() => {
       return;
     }
 
+    if (currentPath === '/app') {
+      void navigate(vehicleState ? '/next/app/offer' : '/next/app/onboarding');
+      return;
+    }
+
     const isOnboarding = currentPath.startsWith('/app/onboarding');
     if (!vehicleState && !isOnboarding) {
       void navigate('/next/app/onboarding');
@@ -50,6 +56,13 @@ export const OnboardingGuard = component$(() => {
       void navigate('/next/app/offer');
     }
   });
+
+  const shouldHoldRootShell =
+    auth.ready.value && Boolean(auth.user.value?.uid) && currentPath === '/app';
+
+  if (shouldHoldRootShell) {
+    return null;
+  }
 
   return <Slot />;
 });

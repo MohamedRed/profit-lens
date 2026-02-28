@@ -1,12 +1,5 @@
-import { component$, useVisibleTask$ } from '@builder.io/qwik';
-import { useNavigate } from '@builder.io/qwik-city';
+import { component$ } from '@builder.io/qwik';
 
 export default component$(() => {
-  const navigate = useNavigate();
-
-  useVisibleTask$(() => {
-    navigate('/next/app/offer');
-  });
-
   return null;
 });

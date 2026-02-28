@@ -19,7 +19,7 @@ export default component$(() => {
     }
 
     if (user) {
-      navigate('/next/app/offer');
+      navigate('/next/app');
       return;
     }
 
