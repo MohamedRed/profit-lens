@@ -8,27 +8,47 @@ import './global.css';
 const buildRefreshGuard = (basePath: string): string => `
 (() => {
   try {
-    if (!('serviceWorker' in navigator) || !('caches' in window)) return;
     const basePath = ${JSON.stringify(basePath)};
     const hash = document.documentElement.getAttribute('q:manifest-hash');
-    const clearNextRuntime = () =>
-      Promise.all([
-        navigator.serviceWorker.getRegistrations().then((regs) =>
-          Promise.all(
-            regs
-              .filter((reg) => new URL(reg.scope).pathname.startsWith(basePath))
-              .map((reg) => reg.unregister()),
+    const hasServiceWorker = 'serviceWorker' in navigator;
+    const hasCacheStorage = 'caches' in window;
+    const clearNextRuntime = (aggressive = false) => {
+      const tasks = [];
+
+      if (hasServiceWorker) {
+        tasks.push(
+          navigator.serviceWorker.getRegistrations().then((regs) =>
+            Promise.all(
+              regs
+                .filter((reg) => {
+                  if (aggressive) return true;
+                  try {
+                    return new URL(reg.scope).pathname.startsWith(basePath);
+                  } catch (_) {
+                    return false;
+                  }
+                })
+                .map((reg) => reg.unregister()),
+            ),
           ),
-        ),
-        caches.keys().then((keys) =>
-          Promise.all(
-            keys
-              .filter((key) => key.includes('workbox') || key.includes('/next/'))
-              .map((key) => caches.delete(key)),
+        );
+      }
+
+      if (hasCacheStorage) {
+        tasks.push(
+          caches.keys().then((keys) =>
+            Promise.all(
+              keys
+                .filter((key) => aggressive || key.includes('workbox') || key.includes('/next/'))
+                .map((key) => caches.delete(key)),
+            ),
           ),
-        ),
-      ]);
-    const chunkReloadSessionKeyPrefix = 'pl-next-chunk-load-reload';
+        );
+      }
+
+      return Promise.all(tasks);
+    };
+    const chunkReloadAttemptKeyPrefix = 'pl-next-chunk-reload-attempt';
     const shouldRecoverFromChunkFailure = (reason) => {
       const message =
         typeof reason === 'string'
@@ -46,11 +66,17 @@ const buildRefreshGuard = (basePath: string): string => `
     };
     const attemptChunkFailureRecovery = (reason) => {
       if (!shouldRecoverFromChunkFailure(reason)) return;
-      const chunkReloadSessionKey = \`\${chunkReloadSessionKeyPrefix}:\${hash || 'no-hash'}\`;
-      if (sessionStorage.getItem(chunkReloadSessionKey) === '1') return;
-      sessionStorage.setItem(chunkReloadSessionKey, '1');
-      clearNextRuntime().finally(() => {
-        window.location.reload();
+      const chunkReloadAttemptKey = \`\${chunkReloadAttemptKeyPrefix}:\${hash || 'no-hash'}\`;
+      const attempts = Number(sessionStorage.getItem(chunkReloadAttemptKey) || '0');
+      if (!Number.isFinite(attempts) || attempts >= 2) return;
+      const nextAttempt = attempts + 1;
+      sessionStorage.setItem(chunkReloadAttemptKey, String(nextAttempt));
+
+      const refreshUrl = new URL(window.location.href);
+      refreshUrl.searchParams.set('__pl_refresh', String(Date.now()));
+
+      clearNextRuntime(nextAttempt > 1).finally(() => {
+        window.location.replace(refreshUrl.toString());
       });
     };
 
