@@ -60,8 +60,7 @@ export const OnboardingGuard = component$(() => {
     }
   });
 
-  const shouldHoldRootShell =
-    auth.ready.value && Boolean(auth.user.value?.uid) && currentPath === '/app';
+  const shouldHoldRootShell = currentPath === '/app';
 
   if (shouldHoldRootShell) {
     return (
