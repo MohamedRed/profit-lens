@@ -2,10 +2,10 @@ import { t, type I18nStore } from '../../../../lib/i18n/i18n-context';
 
 export const buildVehicleTypeOptions = (i18n: I18nStore) => {
   return [
-    { value: 'bike', label: t(i18n, 'vehicleTypeBike', 'Bike') },
-    { value: 'ebike', label: t(i18n, 'vehicleTypeEBike', 'E-bike') },
-    { value: 'scooter', label: t(i18n, 'vehicleTypeScooter', 'Scooter') },
     { value: 'car', label: t(i18n, 'vehicleTypeCar', 'Car') },
+    { value: 'scooter', label: t(i18n, 'vehicleTypeScooter', 'Scooter') },
+    { value: 'ebike', label: t(i18n, 'vehicleTypeEBike', 'E-bike') },
+    { value: 'bike', label: t(i18n, 'vehicleTypeBike', 'Bike') },
   ];
 };
 
