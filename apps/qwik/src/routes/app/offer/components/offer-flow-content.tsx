@@ -4,11 +4,13 @@ import {
   type QRL,
   type Signal,
   useSignal,
+  useVisibleTask$,
 } from "@builder.io/qwik";
 import { Button } from "../../../../components/ui/button";
 import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import type { OfferAnalysisRecord } from "../offer-analysis-result";
+import { stageOfferScreenshotFile } from "../offer-file-transfer-store";
 import { enableCaptureCta, enableManualEntry } from "../offer-feature-flags";
 import { OfferFlowStatus } from "./offer-flow-status";
 import { OfferManualDetailsSection } from "./offer-manual-details-section";
@@ -27,7 +29,7 @@ interface OfferFlowContentProps {
   minProfitabilityEuro: Signal<number>;
   onAnalyzeManual$: QRL<() => Promise<void>>;
   onClearScreenshotPreview$: QRL<() => void>;
-  onImportScreenshotFile$: QRL<(file: File) => Promise<void>>;
+  onImportScreenshotFile$: QRL<(fileToken: string) => Promise<void>>;
   onSaveProfitabilityTarget$: QRL<(value: string) => Promise<void>>;
   onViewDetails$: QRL<() => void | Promise<void>>;
   payout: Signal<string>;
@@ -46,6 +48,8 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const i18n = useI18n();
   const settingsSheetOpen = useSignal(false);
   const fileImportInFlight = useSignal(false);
+  const importFileInputRef = useSignal<HTMLInputElement>();
+  const captureFileInputRef = useSignal<HTMLInputElement>();
   const importScreenshotLabel = t(
     i18n,
     "importScreenshotButton",
@@ -57,39 +61,85 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     settingsSheetOpen.value = true;
   });
 
-  const onFileInputEvent$ = $(async (element: HTMLInputElement) => {
-    if (fileImportInFlight.value) {
-      return;
-    }
-    let file = element.files?.item(0) ?? null;
-    if (!file) {
-      // iOS PWA can briefly report an empty FileList before settling.
-      await new Promise((resolve) => {
-        window.setTimeout(resolve, 90);
-      });
-      file = element.files?.item(0) ?? null;
-    }
-    if (!file) {
-      return;
-    }
-    fileImportInFlight.value = true;
-    props.status.value = t(
-      i18n,
-      "offerScreenshotSelectedMessage",
-      "Screenshot selected. Preparing analysis...",
-    );
-    try {
-      await props.onImportScreenshotFile$(file);
-    } catch {
+  useVisibleTask$(({ track, cleanup }) => {
+    track(() => props.loading.value);
+    track(() => props.selectedVehicleId.value);
+    track(() => props.vehicles.value.length);
+    track(() => fileImportInFlight.value);
+
+    const readSelectedFileWithRetry = async (
+      element: HTMLInputElement,
+    ): Promise<File | null> => {
+      let file = element.files?.item(0) ?? null;
+      let attempt = 0;
+      while (!file && attempt < 4) {
+        await new Promise<void>((resolve) => {
+          window.setTimeout(resolve, 120);
+        });
+        file = element.files?.item(0) ?? null;
+        attempt += 1;
+      }
+      return file;
+    };
+
+    const handleFileInputElement = async (
+      element: HTMLInputElement,
+    ): Promise<void> => {
+      if (fileImportInFlight.value) {
+        return;
+      }
+      const file = await readSelectedFileWithRetry(element);
+      if (!file) {
+        return;
+      }
+      fileImportInFlight.value = true;
       props.status.value = t(
         i18n,
-        "offerActionFailedMessage",
-        "Unable to complete this action right now. Please try again.",
+        "offerScreenshotSelectedMessage",
+        "Screenshot selected. Preparing analysis...",
       );
-    } finally {
-      element.value = "";
-      fileImportInFlight.value = false;
-    }
+      try {
+        const fileToken = stageOfferScreenshotFile(file);
+        await props.onImportScreenshotFile$(fileToken);
+      } catch {
+        props.status.value = t(
+          i18n,
+          "offerActionFailedMessage",
+          "Unable to complete this action right now. Please try again.",
+        );
+      } finally {
+        element.value = "";
+        fileImportInFlight.value = false;
+      }
+    };
+
+    const cleanups: Array<() => void> = [];
+    const register = (element: HTMLInputElement | undefined) => {
+      if (!element) {
+        return;
+      }
+      const onInput = () => {
+        void handleFileInputElement(element);
+      };
+      const onChange = () => {
+        void handleFileInputElement(element);
+      };
+      element.addEventListener("input", onInput);
+      element.addEventListener("change", onChange);
+      cleanups.push(() => {
+        element.removeEventListener("input", onInput);
+        element.removeEventListener("change", onChange);
+      });
+    };
+
+    register(importFileInputRef.value);
+    register(captureFileInputRef.value);
+
+    cleanup(() => {
+      cleanups.forEach((runCleanup) => {
+        runCleanup();
+      });
+    });
   });
 
   const analysisRecord = props.analysisRecord.value;
@@ -179,12 +229,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                   accept="image/*"
                   aria-label={importScreenshotLabel}
                   disabled={importDisabled}
-                  onInput$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
-                  onChange$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
+                  ref={importFileInputRef}
                 />
               </div>
             </div>
@@ -198,12 +243,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                   accept="image/*"
                   capture="environment"
                   disabled={importDisabled}
-                  onInput$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
-                  onChange$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
+                  ref={captureFileInputRef}
                 />
               </label>
             ) : null}
