@@ -12,7 +12,7 @@ const clamp = (value: number, min: number, max: number): number => {
   return value;
 };
 
-export const OnboardingStepper = component$<OnboardingStepperProps>(({ currentStep, steps }) => {
+export const OnboardingStepper = component$<OnboardingStepperProps>(({ currentStep, stepCountLabel, steps }) => {
   const safeIndex = clamp(currentStep, 0, Math.max(steps.length - 1, 0));
   const progress = steps.length > 0 ? ((safeIndex + 1) / steps.length) * 100 : 0;
 
