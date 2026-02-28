@@ -172,9 +172,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                   accept="image/*"
                   aria-label={importScreenshotLabel}
                   disabled={importDisabled}
-                  onInput$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
                   onChange$={(_, element) => {
                     void onFileInputEvent$(element);
                   }}
@@ -191,9 +188,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                   accept="image/*"
                   capture="environment"
                   disabled={importDisabled}
-                  onInput$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
                   onChange$={(_, element) => {
                     void onFileInputEvent$(element);
                   }}
