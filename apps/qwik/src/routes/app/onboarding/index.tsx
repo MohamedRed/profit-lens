@@ -7,7 +7,7 @@ import {
 import { useAuth } from '../../../lib/auth/auth-context';
 import { franceDefaultSources } from '../../../lib/features/profile/profile-form-utils';
 import { vehiclePresetSources } from '../../../lib/features/vehicles/vehicle-form-utils';
-import { formatTemplate, t, useI18n } from '../../../lib/i18n/i18n-context';
+import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import { ProfileMonthlyCostsSection } from '../settings/profile/components/profile-monthly-costs-section';
 import { ProfileTaxesSection } from '../settings/profile/components/profile-taxes-section';
 import { useProfileFormState } from '../settings/profile/profile-form-state';
@@ -16,7 +16,6 @@ import { VehicleCostsSection } from '../settings/vehicles/components/vehicle-cos
 import { VehicleDetailsSection } from '../settings/vehicles/components/vehicle-details-section';
 import { VehicleEnergySection } from '../settings/vehicles/components/vehicle-energy-section';
 import { useVehicleEditorState } from '../settings/vehicles/vehicle-editor-state';
-import { OnboardingPager } from './components/onboarding-pager';
 
 export default component$(() => {
   const auth = useAuth();
@@ -42,13 +41,6 @@ export default component$(() => {
     t(i18n, 'monthlyCostsSectionTitle', 'Monthly costs'),
   ];
   const safeStep = Math.min(Math.max(currentStep.value, 0), steps.length - 1);
-  const stepCountLabel = formatTemplate(
-    t(i18n, 'onboardingStepCountLabel', 'Step {current} of {total}'),
-    {
-      current: safeStep + 1,
-      total: steps.length,
-    },
-  );
   const isLastStep = safeStep === steps.length - 1;
   const isBusy = vehicleState.saving.value || profileState.saving.value;
   const activeStatus = safeStep <= 2 ? vehicleState.status.value : profileState.status.value;
@@ -157,29 +149,6 @@ export default component$(() => {
   return (
     <div class="ui-onboarding-root">
       <section class="ui-onboarding-screen">
-        <header class="ui-onboarding-intro">
-          <h1 class="ui-onboarding-title">
-            {t(i18n, 'profileSetupTitle', 'Complete your profile')}
-          </h1>
-          <p class="ui-onboarding-subtitle">
-            {t(
-              i18n,
-              'onboardingSubtitle',
-              'Set up your vehicle and taxes to start analyzing offers.',
-            )}
-          </p>
-        </header>
-
-        <OnboardingPager
-          currentStep={safeStep}
-          stepCountLabel={stepCountLabel}
-          steps={steps}
-          onSelectStep$={goToStep$}
-        />
-        <p class="ui-onboarding-swipe-hint">
-          {t(i18n, 'onboardingSwipeHint', 'Swipe left or right to navigate steps.')}
-        </p>
-
         <div class="ui-onboarding-slide-frame" onTouchStart$={onTouchStart$} onTouchEnd$={onTouchEnd$}>
           <div
             key={`onboarding-slide-${safeStep}`}

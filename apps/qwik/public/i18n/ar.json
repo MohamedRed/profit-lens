@@ -182,8 +182,6 @@
   "signOutButton": "تسجيل الخروج",
   "profileSetupTitle": "أكمل ملفك",
   "onboardingSubtitle": "قم بإعداد مركبتك وضرائبك لبدء تحليل العروض.",
-  "onboardingStepCountLabel": "الخطوة {current} من {total}",
-  "onboardingSwipeHint": "اسحب يمينًا أو يسارًا للتنقل بين الخطوات.",
   "onboardingFinishButton": "إنهاء الإعداد",
   "activityLabel": "النشاط",
   "activityDelivery": "خدمات التوصيل",

@@ -182,8 +182,6 @@
   "signOutButton": "Sign out",
   "profileSetupTitle": "Complete your profile",
   "onboardingSubtitle": "Set up your vehicle and taxes to start analyzing offers.",
-  "onboardingStepCountLabel": "Step {current} of {total}",
-  "onboardingSwipeHint": "Swipe left or right to navigate steps.",
   "onboardingFinishButton": "Finish setup",
   "activityLabel": "Business activity",
   "activityDelivery": "Delivery services",
