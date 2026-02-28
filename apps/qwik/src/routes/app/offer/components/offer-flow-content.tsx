@@ -72,6 +72,11 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
       return;
     }
     fileImportInFlight.value = true;
+    props.status.value = t(
+      i18n,
+      "offerScreenshotSelectedMessage",
+      "Screenshot selected. Preparing analysis...",
+    );
     try {
       await onFileSelected$(file);
     } catch {
@@ -145,12 +150,10 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               </button>
 
               <div class="ui-offer-file-cta-shell">
-                <Button
-                  variant="default"
-                  size="lg"
-                  type="button"
-                  class="ui-offer-primary-cta"
-                  disabled={importDisabled}
+                <label
+                  class={`ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-label${importDisabled ? " is-disabled" : ""}`}
+                  aria-label={importScreenshotLabel}
+                  aria-disabled={importDisabled ? "true" : "false"}
                 >
                   {importBusy
                     ? (
@@ -165,17 +168,22 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                         </span>
                       )
                     : importScreenshotLabel}
-                </Button>
-                <input
-                  class="ui-offer-file-input-overlay"
-                  type="file"
-                  accept="image/*"
-                  aria-label={importScreenshotLabel}
-                  disabled={importDisabled}
-                  onChange$={(_, element) => {
-                    void onFileInputEvent$(element);
-                  }}
-                />
+                  <input
+                    class="ui-offer-file-input-control"
+                    type="file"
+                    accept="image/*"
+                    aria-label={importScreenshotLabel}
+                    disabled={importDisabled}
+                    tabIndex={-1}
+                    style="display:none"
+                    onInput$={(_, element) => {
+                      void onFileInputEvent$(element);
+                    }}
+                    onChange$={(_, element) => {
+                      void onFileInputEvent$(element);
+                    }}
+                  />
+                </label>
               </div>
             </div>
 
