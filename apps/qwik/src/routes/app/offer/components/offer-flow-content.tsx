@@ -139,10 +139,12 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               </button>
 
               <div class="ui-offer-file-cta-shell">
-                <label
-                  class={`ui-button ui-button-default ui-button-lg ui-offer-primary-cta ui-offer-file-label${importDisabled ? " is-disabled" : ""}`}
-                  aria-label={importScreenshotLabel}
-                  aria-disabled={importDisabled ? "true" : "false"}
+                <Button
+                  variant="default"
+                  size="lg"
+                  type="button"
+                  class="ui-offer-primary-cta"
+                  disabled={importDisabled}
                 >
                   {importBusy
                     ? (
@@ -157,21 +159,23 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                         </span>
                       )
                     : importScreenshotLabel}
-                  <input
-                    class="ui-offer-file-input-control"
-                    type="file"
-                    accept="image/*"
-                    aria-label={importScreenshotLabel}
-                    disabled={importDisabled}
-                    tabIndex={-1}
-                    onInput$={(_, element) => {
-                      void onFileInputEvent$(element);
-                    }}
-                    onChange$={(_, element) => {
-                      void onFileInputEvent$(element);
-                    }}
-                  />
-                </label>
+                </Button>
+                <input
+                  class="ui-offer-file-input-overlay"
+                  type="file"
+                  accept="image/*"
+                  aria-label={importScreenshotLabel}
+                  disabled={importDisabled}
+                  onClick$={(_, element) => {
+                    element.value = "";
+                  }}
+                  onInput$={(_, element) => {
+                    void onFileInputEvent$(element);
+                  }}
+                  onChange$={(_, element) => {
+                    void onFileInputEvent$(element);
+                  }}
+                />
               </div>
             </div>
 
@@ -184,6 +188,9 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                   accept="image/*"
                   capture="environment"
                   disabled={importDisabled}
+                  onClick$={(_, element) => {
+                    element.value = "";
+                  }}
                   onInput$={(_, element) => {
                     void onFileInputEvent$(element);
                   }}
