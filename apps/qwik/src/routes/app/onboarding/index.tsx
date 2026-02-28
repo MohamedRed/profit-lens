@@ -16,13 +16,16 @@ import { VehicleCostsSection } from '../settings/vehicles/components/vehicle-cos
 import { VehicleDetailsSection } from '../settings/vehicles/components/vehicle-details-section';
 import { VehicleEnergySection } from '../settings/vehicles/components/vehicle-energy-section';
 import { useVehicleEditorState } from '../settings/vehicles/vehicle-editor-state';
-import { OnboardingStepper } from './components/onboarding-stepper';
+import { OnboardingPager } from './components/onboarding-pager';
 
 export default component$(() => {
   const auth = useAuth();
   const i18n = useI18n();
   const navigate = useNavigate();
   const currentStep = useSignal(0);
+  const transitionDirection = useSignal<'forward' | 'backward'>('forward');
+  const touchStartX = useSignal<number | null>(null);
+  const touchStartY = useSignal<number | null>(null);
 
   const onVehicleSaved$ = $(async () => {});
   const vehicleState = useVehicleEditorState({
@@ -50,16 +53,68 @@ export default component$(() => {
   const isBusy = vehicleState.saving.value || profileState.saving.value;
   const activeStatus = safeStep <= 2 ? vehicleState.status.value : profileState.status.value;
 
-  const goNext$ = $(() => {
-    if (currentStep.value < steps.length - 1) {
-      currentStep.value += 1;
+  const goToStep$ = $((targetStep: number) => {
+    if (isBusy) {
+      return;
     }
+    const nextStep = Math.min(Math.max(targetStep, 0), steps.length - 1);
+    if (nextStep === currentStep.value) {
+      return;
+    }
+    transitionDirection.value = nextStep > currentStep.value ? 'forward' : 'backward';
+    currentStep.value = nextStep;
+  });
+
+  const goNext$ = $(() => {
+    void goToStep$(currentStep.value + 1);
   });
 
   const goBack$ = $(() => {
-    if (currentStep.value > 0) {
-      currentStep.value -= 1;
+    void goToStep$(currentStep.value - 1);
+  });
+
+  const onTouchStart$ = $((event: TouchEvent) => {
+    if (event.touches.length !== 1) {
+      touchStartX.value = null;
+      touchStartY.value = null;
+      return;
     }
+    touchStartX.value = event.touches[0].clientX;
+    touchStartY.value = event.touches[0].clientY;
+  });
+
+  const onTouchEnd$ = $((event: TouchEvent) => {
+    if (isBusy || touchStartX.value === null || touchStartY.value === null) {
+      touchStartX.value = null;
+      touchStartY.value = null;
+      return;
+    }
+    if (event.changedTouches.length < 1) {
+      touchStartX.value = null;
+      touchStartY.value = null;
+      return;
+    }
+
+    const endX = event.changedTouches[0].clientX;
+    const endY = event.changedTouches[0].clientY;
+    const deltaX = endX - touchStartX.value;
+    const deltaY = endY - touchStartY.value;
+
+    touchStartX.value = null;
+    touchStartY.value = null;
+
+    if (Math.abs(deltaX) < 52) {
+      return;
+    }
+    if (Math.abs(deltaX) <= Math.abs(deltaY) * 1.15) {
+      return;
+    }
+
+    if (deltaX < 0) {
+      void goToStep$(currentStep.value + 1);
+      return;
+    }
+    void goToStep$(currentStep.value - 1);
   });
 
   const finish$ = $(async () => {
@@ -113,26 +168,45 @@ export default component$(() => {
           )}
         </p>
 
-        <OnboardingStepper currentStep={safeStep} stepCountLabel={stepCountLabel} steps={steps} />
+        <OnboardingPager
+          currentStep={safeStep}
+          stepCountLabel={stepCountLabel}
+          steps={steps}
+          onSelectStep$={goToStep$}
+        />
+        <p class="ui-onboarding-swipe-hint">
+          {t(i18n, 'onboardingSwipeHint', 'Swipe left or right to navigate steps.')}
+        </p>
 
-        <div class="ui-settings-form-grid ui-onboarding-step-content">
-          <h3 class="ui-onboarding-step-title">{steps[safeStep]}</h3>
+        <div class="ui-onboarding-slide-frame" onTouchStart$={onTouchStart$} onTouchEnd$={onTouchEnd$}>
+          <div
+            key={`onboarding-slide-${safeStep}`}
+            class={{
+              'ui-onboarding-slide': true,
+              'is-forward': transitionDirection.value === 'forward',
+              'is-backward': transitionDirection.value === 'backward',
+            }}
+          >
+            <div class="ui-settings-form-grid ui-onboarding-step-content">
+              <h3 class="ui-onboarding-step-title">{steps[safeStep]}</h3>
 
-          {safeStep === 0 ? (
-            <VehicleDetailsSection state={vehicleState} showHeading={false} />
-          ) : null}
-          {safeStep === 1 ? (
-            <VehicleEnergySection state={vehicleState} showHeading={false} />
-          ) : null}
-          {safeStep === 2 ? (
-            <VehicleCostsSection state={vehicleState} showHeading={false} />
-          ) : null}
-          {safeStep === 3 ? (
-            <ProfileTaxesSection state={profileState} showHeading={false} />
-          ) : null}
-          {safeStep === 4 ? (
-            <ProfileMonthlyCostsSection state={profileState} showHeading={false} />
-          ) : null}
+              {safeStep === 0 ? (
+                <VehicleDetailsSection state={vehicleState} showHeading={false} />
+              ) : null}
+              {safeStep === 1 ? (
+                <VehicleEnergySection state={vehicleState} showHeading={false} />
+              ) : null}
+              {safeStep === 2 ? (
+                <VehicleCostsSection state={vehicleState} showHeading={false} />
+              ) : null}
+              {safeStep === 3 ? (
+                <ProfileTaxesSection state={profileState} showHeading={false} />
+              ) : null}
+              {safeStep === 4 ? (
+                <ProfileMonthlyCostsSection state={profileState} showHeading={false} />
+              ) : null}
+            </div>
+          </div>
         </div>
 
         {activeStatus ? <p class="ui-status ui-status-error">{activeStatus}</p> : null}

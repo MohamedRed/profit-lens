@@ -183,6 +183,7 @@
   "profileSetupTitle": "Complétez votre profil",
   "onboardingSubtitle": "Configurez votre véhicule et vos taxes pour commencer à analyser les offres.",
   "onboardingStepCountLabel": "Étape {current} sur {total}",
+  "onboardingSwipeHint": "Glissez vers la gauche ou la droite pour changer d’étape.",
   "onboardingFinishButton": "Terminer la configuration",
   "activityLabel": "Activité",
   "activityDelivery": "Livraison",
