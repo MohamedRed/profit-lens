@@ -177,6 +177,13 @@ export default component$(() => {
       return;
     }
 
+    if (screenshotPreviewUrl.value) {
+      URL.revokeObjectURL(screenshotPreviewUrl.value);
+    }
+    screenshotPreviewUrl.value = URL.createObjectURL(file);
+    loading.value = true;
+    status.value = '';
+
     const withinLimit = await ensureWithinOfferLimit(user.uid);
     if (!withinLimit) {
       status.value = t(
@@ -184,16 +191,9 @@ export default component$(() => {
         'offerLimitReachedMessage',
         'You have reached your monthly offer limit. Upgrade to continue.',
       );
+      loading.value = false;
       return;
     }
-
-    if (screenshotPreviewUrl.value) {
-      URL.revokeObjectURL(screenshotPreviewUrl.value);
-    }
-    screenshotPreviewUrl.value = URL.createObjectURL(file);
-
-    loading.value = true;
-    status.value = '';
 
     try {
       const currentLocation = await readRequiredCurrentLocation();

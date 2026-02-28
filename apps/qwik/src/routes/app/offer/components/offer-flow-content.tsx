@@ -74,6 +74,12 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     fileImportInFlight.value = true;
     try {
       await onFileSelected$(file);
+    } catch {
+      props.status.value = t(
+        i18n,
+        "offerActionFailedMessage",
+        "Unable to complete this action right now. Please try again.",
+      );
     } finally {
       element.value = "";
       fileImportInFlight.value = false;
@@ -166,9 +172,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                   accept="image/*"
                   aria-label={importScreenshotLabel}
                   disabled={importDisabled}
-                  onClick$={(_, element) => {
-                    element.value = "";
-                  }}
                   onInput$={(_, element) => {
                     void onFileInputEvent$(element);
                   }}
@@ -188,9 +191,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                   accept="image/*"
                   capture="environment"
                   disabled={importDisabled}
-                  onClick$={(_, element) => {
-                    element.value = "";
-                  }}
                   onInput$={(_, element) => {
                     void onFileInputEvent$(element);
                   }}
@@ -211,6 +211,8 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               />
             ) : null}
           </section>
+
+          <OfferFlowStatus status={props.status.value} />
 
           {showOverview && analysisRecord && detailsHref ? (
             <OfferOverviewSections
@@ -249,8 +251,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
               {t(i18n, "manualEntryButton", "Enter manually")}
             </Button>
           ) : null}
-
-          <OfferFlowStatus status={props.status.value} />
 
           <OfferSetupModalStack
             isSettingsOpen={settingsSheetOpen}
