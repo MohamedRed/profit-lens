@@ -8,7 +8,11 @@ import {
   formatCurrency,
   profitDeltaTodayVsEarlier,
 } from './history-helpers';
-import { buildProfitChartGeometry, buildProfitSeriesValues } from './history-profit-chart';
+import {
+  buildProfitChartGeometry,
+  buildProfitSeriesValues,
+  buildProfitSparklineGeometry,
+} from './history-profit-chart';
 
 interface HistoryChartPanelProps {
   stats: OfferStatsDay[];
@@ -36,6 +40,15 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
   const isTrendPositive = trendDelta !== null && trendDelta > 0.01;
   const isTrendNegative = trendDelta !== null && trendDelta < -0.01;
   const trendIcon = isTrendPositive ? 'trending_up' : isTrendNegative ? 'trending_down' : 'trending_flat';
+  const sparklineValues = chartValues.slice(-12);
+  const averageSparklineValues = sparklineValues.map((_, index, values) => {
+    const start = Math.max(index - 2, 0);
+    const window = values.slice(start, index + 1);
+    const total = window.reduce((sum, value) => sum + value, 0);
+    return window.length > 0 ? total / window.length : 0;
+  });
+  const latestSparkline = buildProfitSparklineGeometry(sparklineValues);
+  const averageSparkline = buildProfitSparklineGeometry(averageSparklineValues);
 
   const isPanelActive = isActive ?? true;
   const isPreload = preload ?? false;
@@ -143,7 +156,18 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
             'is-neutral': !isTrendPositive && !isTrendNegative,
           }}
         >
-          <div class="ui-history-insight-row">
+          <p class="ui-history-insight-card-title">{t(i18n, 'latestProfitLabel', 'Latest profit')}</p>
+          <div class="ui-history-insight-card-main">
+            <p class="ui-history-insight-card-value">{formatCurrency(locale, latestValue)}</p>
+            <svg
+              class="ui-history-insight-sparkline is-latest"
+              viewBox={`0 0 ${latestSparkline.width} ${latestSparkline.height}`}
+              aria-hidden="true"
+            >
+              <path d={latestSparkline.path} fill="none" />
+            </svg>
+          </div>
+          <p class="ui-history-insight-card-trend">
             <span
               class={{
                 'ui-history-insight-icon': true,
@@ -155,22 +179,33 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
             >
               <span class="material-icons-outlined">{trendIcon}</span>
             </span>
-            <p class="ui-history-summary-headline">{summaryHeadline}</p>
-          </div>
+            <span class="ui-history-summary-headline">{summaryHeadline}</span>
+          </p>
         </article>
         <article class="ui-history-insight-card is-info">
-          <div class="ui-history-insight-row">
+          <p class="ui-history-insight-card-title">{t(i18n, 'historySummaryAverageTitle', 'Average profit')}</p>
+          <div class="ui-history-insight-card-main">
+            <p class="ui-history-insight-card-value">{formatCurrency(locale, averageValue)}</p>
+            <svg
+              class="ui-history-insight-sparkline is-average"
+              viewBox={`0 0 ${averageSparkline.width} ${averageSparkline.height}`}
+              aria-hidden="true"
+            >
+              <path d={averageSparkline.path} fill="none" />
+            </svg>
+          </div>
+          <p class="ui-history-insight-card-trend">
             <span class="ui-history-insight-icon is-info" aria-hidden="true">
               <span class="material-icons-outlined">info</span>
             </span>
-            <p class="ui-history-chart-hint">
+            <span class="ui-history-chart-hint">
               {t(
                 i18n,
                 'historyChartHintMessage',
                 'Use this chart to compare profits above/below the break-even line.',
               )}
-            </p>
-          </div>
+            </span>
+          </p>
         </article>
       </div>
     </div>

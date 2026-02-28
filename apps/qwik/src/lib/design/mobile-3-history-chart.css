@@ -132,15 +132,16 @@
 
 .ui-history-insight-cards {
   display: grid;
-  gap: 8px;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 .ui-history-insight-card {
   border: 1px solid rgba(226, 232, 240, 0.95);
   background: #fff;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-  border-radius: 16px;
-  padding: 12px 14px;
+  border-radius: 18px;
+  padding: 14px 16px;
 }
 
 .ui-history-insight-card.is-positive {
@@ -151,15 +152,62 @@
   border-color: rgba(252, 165, 165, 0.9);
 }
 
-.ui-history-insight-row {
+.ui-history-insight-card-title {
+  margin: 0;
+  color: #1f2937;
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.ui-history-insight-card-main {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ui-history-insight-card-value {
+  margin: 0;
+  color: #111827;
+  font-family: var(--pl-font-display);
+  font-size: clamp(1.42rem, 2.8vw, 1.92rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.ui-history-insight-sparkline {
+  width: clamp(106px, 36vw, 142px);
+  height: auto;
+  display: block;
+}
+
+.ui-history-insight-sparkline path {
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ui-history-insight-sparkline.is-latest path {
+  stroke: #7c5cf5;
+}
+
+.ui-history-insight-sparkline.is-average path {
+  stroke: #f59e0b;
+}
+
+.ui-history-insight-card-trend {
+  margin: 12px 0 0;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 .ui-history-insight-icon {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
@@ -196,13 +244,12 @@
 .ui-history-chart-hint {
   margin: 0;
   color: var(--pl-color-text-primary);
-  font-size: 1.02rem;
+  font-size: 0.98rem;
   font-weight: 600;
   line-height: 1.35;
 }
 
 .ui-history-chart-hint {
-  font-size: 0.95rem;
   font-weight: 500;
 }
 
@@ -260,17 +307,26 @@
 
   .ui-history-insight-card {
     border-radius: 12px;
-    padding: 10px 11px;
+    padding: 11px 12px;
+  }
+
+  .ui-history-insight-card-main {
+    margin-top: 8px;
+    gap: 10px;
+  }
+
+  .ui-history-insight-sparkline {
+    width: clamp(86px, 35vw, 120px);
   }
 
   .ui-history-insight-icon {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
   }
 
   .ui-history-summary-headline,
   .ui-history-chart-hint {
-    font-size: 0.91rem;
+    font-size: 0.89rem;
   }
 }
 
