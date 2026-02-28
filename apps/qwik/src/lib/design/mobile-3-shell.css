@@ -75,6 +75,11 @@
   padding-bottom: calc(112px + env(safe-area-inset-bottom));
 }
 
+.ui-mobile-page.is-tab-nav-hidden {
+  padding-bottom: 0;
+  min-height: 100dvh;
+}
+
 .ui-mobile-header {
   padding: calc(16px + env(safe-area-inset-top)) 24px 8px;
   display: flex;
@@ -121,6 +126,12 @@
 
 .ui-mobile-header + .ui-mobile-content {
   padding-top: 16px;
+}
+
+.ui-mobile-content.is-onboarding-route {
+  padding: 0;
+  gap: 0;
+  min-height: 100dvh;
 }
 
 .ui-mobile-content-transition {

@@ -56,6 +56,7 @@ export const AppShell = component$(() => {
   const activeTabVisualIndex = resolveVisualTabIndex(activeTabIndex, i18n.direction.value);
   const showHeader = Boolean(headerBackHref) || showHelpTicketsAction;
   const hideTabNav = shouldHideTabNav(appPath);
+  const isOnboardingRoute = appPath.startsWith('/app/onboarding');
 
   const onHeaderBack$ = $(async () => {
     if (!headerBackHref) {
@@ -191,7 +192,12 @@ export const AppShell = component$(() => {
 
   return (
     <div class="ui-mobile-app" id="qwik-app-root-marker">
-      <main class="ui-mobile-page">
+      <main
+        class={{
+          'ui-mobile-page': true,
+          'is-tab-nav-hidden': hideTabNav,
+        }}
+      >
         {showHeader ? (
           <header class="ui-mobile-header">
             {headerBackHref ? (
@@ -222,7 +228,12 @@ export const AppShell = component$(() => {
 
         <section
           key={location.url.pathname}
-          class={`ui-mobile-content ui-mobile-content-transition ${transitionClass.value}`}
+          class={{
+            'ui-mobile-content': true,
+            'ui-mobile-content-transition': true,
+            [transitionClass.value]: true,
+            'is-onboarding-route': isOnboardingRoute,
+          }}
         >
           <Slot />
         </section>

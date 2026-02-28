@@ -155,18 +155,20 @@ export default component$(() => {
   }
 
   return (
-    <div class="ui-settings-detail-root ui-onboarding-root">
-      <section class="ui-settings-detail-card ui-onboarding-card">
-        <h2 class="ui-settings-detail-title">
-          {t(i18n, 'profileSetupTitle', 'Complete your profile')}
-        </h2>
-        <p class="ui-settings-detail-subtitle">
-          {t(
-            i18n,
-            'onboardingSubtitle',
-            'Set up your vehicle and taxes to start analyzing offers.',
-          )}
-        </p>
+    <div class="ui-onboarding-root">
+      <section class="ui-onboarding-screen">
+        <header class="ui-onboarding-intro">
+          <h1 class="ui-onboarding-title">
+            {t(i18n, 'profileSetupTitle', 'Complete your profile')}
+          </h1>
+          <p class="ui-onboarding-subtitle">
+            {t(
+              i18n,
+              'onboardingSubtitle',
+              'Set up your vehicle and taxes to start analyzing offers.',
+            )}
+          </p>
+        </header>
 
         <OnboardingPager
           currentStep={safeStep}
@@ -237,7 +239,9 @@ export default component$(() => {
         </div>
       </section>
 
-      <PresetSourcesSection sources={[...vehiclePresetSources, ...franceDefaultSources]} />
+      <div class="ui-onboarding-sources">
+        <PresetSourcesSection sources={[...vehiclePresetSources, ...franceDefaultSources]} />
+      </div>
     </div>
   );
 });
