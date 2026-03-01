@@ -9,6 +9,7 @@ interface OfferDialogTransitionState {
   dialogRef: Signal<HTMLDialogElement | undefined>;
 }
 
+const dialogOpeningClass = 'is-opening';
 const dialogClosingClass = 'is-closing';
 const closeTransitionMs = 320;
 
@@ -18,15 +19,21 @@ export const useOfferDialogTransition = (
   const dialogRef = useSignal<HTMLDialogElement>();
   const hasScrollLock = useSignal(false);
   const closeTimeoutId = useSignal<number>();
+  const openingRafId = useSignal<number>();
 
   useVisibleTask$(({ cleanup }) => {
     cleanup(() => {
+      if (openingRafId.value !== undefined) {
+        window.cancelAnimationFrame(openingRafId.value);
+        openingRafId.value = undefined;
+      }
       if (closeTimeoutId.value !== undefined) {
         window.clearTimeout(closeTimeoutId.value);
         closeTimeoutId.value = undefined;
       }
       const dialog = dialogRef.value;
       if (dialog?.open) {
+        dialog.classList.remove(dialogOpeningClass);
         dialog.classList.remove(dialogClosingClass);
         dialog.close();
       }
@@ -42,6 +49,10 @@ export const useOfferDialogTransition = (
     const dialog = track(() => dialogRef.value);
 
     if (!dialog) {
+      if (openingRafId.value !== undefined) {
+        window.cancelAnimationFrame(openingRafId.value);
+        openingRafId.value = undefined;
+      }
       if (closeTimeoutId.value !== undefined) {
         window.clearTimeout(closeTimeoutId.value);
         closeTimeoutId.value = undefined;
@@ -54,10 +65,15 @@ export const useOfferDialogTransition = (
     }
 
     if (open) {
+      if (openingRafId.value !== undefined) {
+        window.cancelAnimationFrame(openingRafId.value);
+        openingRafId.value = undefined;
+      }
       if (closeTimeoutId.value !== undefined) {
         window.clearTimeout(closeTimeoutId.value);
         closeTimeoutId.value = undefined;
       }
+      dialog.classList.remove(dialogOpeningClass);
       dialog.classList.remove(dialogClosingClass);
       if (!hasScrollLock.value) {
         lockPageScroll({ disableTouchAction: false });
@@ -65,6 +81,11 @@ export const useOfferDialogTransition = (
       }
       if (!dialog.open) {
         dialog.showModal();
+        dialog.classList.add(dialogOpeningClass);
+        openingRafId.value = window.requestAnimationFrame(() => {
+          dialog.classList.remove(dialogOpeningClass);
+          openingRafId.value = undefined;
+        });
       }
       return;
     }
@@ -85,8 +106,14 @@ export const useOfferDialogTransition = (
       return;
     }
 
+    if (openingRafId.value !== undefined) {
+      window.cancelAnimationFrame(openingRafId.value);
+      openingRafId.value = undefined;
+    }
+    dialog.classList.remove(dialogOpeningClass);
     dialog.classList.add(dialogClosingClass);
     closeTimeoutId.value = window.setTimeout(() => {
+      dialog.classList.remove(dialogOpeningClass);
       dialog.classList.remove(dialogClosingClass);
       if (dialog.open) {
         dialog.close();
