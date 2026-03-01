@@ -84,7 +84,8 @@ export default component$(() => {
 
   const saveProfitabilityTarget$ = $(async (rawValue: string) => {
     const userProfile = profile.value;
-    const parsed = Number(rawValue);
+    const normalizedValue = rawValue.trim().replace(',', '.');
+    const parsed = Number(normalizedValue);
     if (!userProfile || !Number.isFinite(parsed) || parsed <= 0) {
       return;
     }

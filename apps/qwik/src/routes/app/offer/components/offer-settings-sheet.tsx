@@ -196,9 +196,11 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
                   <div class="ui-offer-target-input-wrap">
                     <Input
                       id="offer-min-profitability-sheet"
-                      type="number"
-                      step="0.01"
-                      min="0"
+                      type="text"
+                      inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
+                      autoComplete="off"
+                      spellcheck={false}
                       value={draftMinProfitability.value}
                       onInput$={(_, element) => {
                         draftMinProfitability.value = element.value;
