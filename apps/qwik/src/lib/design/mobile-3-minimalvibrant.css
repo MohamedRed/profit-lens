@@ -442,6 +442,12 @@
   font-variant-numeric: tabular-nums;
 }
 
+.ui-offer-target-input-wrap .ui-input:focus {
+  box-shadow:
+    inset 0 1px 1px rgba(24, 24, 27, 0.02),
+    inset 0 0 0 2px rgba(139, 92, 246, 0.28);
+}
+
 .ui-offer-target-suffix {
   position: absolute;
   right: 12px;
