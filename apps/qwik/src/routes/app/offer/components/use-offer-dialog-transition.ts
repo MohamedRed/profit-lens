@@ -11,7 +11,7 @@ interface OfferDialogTransitionState {
 
 const dialogOpeningClass = 'is-opening';
 const dialogClosingClass = 'is-closing';
-const closeTransitionMs = 320;
+export const offerDialogTransitionMs = 320;
 
 export const useOfferDialogTransition = (
   options: UseOfferDialogTransitionOptions,
@@ -123,7 +123,7 @@ export const useOfferDialogTransition = (
         hasScrollLock.value = false;
       }
       closeTimeoutId.value = undefined;
-    }, closeTransitionMs);
+    }, offerDialogTransitionMs);
   });
 
   return {

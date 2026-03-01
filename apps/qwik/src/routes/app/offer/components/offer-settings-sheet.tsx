@@ -4,7 +4,7 @@ import {
   type QRL,
   type Signal,
   useSignal,
-  useTask$,
+  useVisibleTask$,
 } from "@builder.io/qwik";
 import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
@@ -17,7 +17,10 @@ import { resolveVehicleTypeIcon } from "../../shared/vehicle-visuals";
 import { BillingManager } from "../../settings/billing/billing-manager";
 import { OfferSetupSummary } from "./offer-setup-summary";
 import { OfferSubscriptionLink } from "./offer-subscription-link";
-import { useOfferDialogTransition } from "./use-offer-dialog-transition";
+import {
+  offerDialogTransitionMs,
+  useOfferDialogTransition,
+} from "./use-offer-dialog-transition";
 import {
   type OfferSettingsView,
   useOfferSettingsViewportHeight,
@@ -44,12 +47,26 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
   const activeView = useSignal<OfferSettingsView>("menu");
   const viewHeightPx = useSignal<number | null>(null);
   const draftMinProfitability = useSignal(props.minProfitabilityEuro.toFixed(2));
+  const closeResetTimeoutId = useSignal<number>();
 
-  useTask$(({ track }) => {
+  useVisibleTask$(({ track, cleanup }) => {
     const isOpen = track(() => props.isOpen.value);
+    cleanup(() => {
+      if (closeResetTimeoutId.value !== undefined) {
+        window.clearTimeout(closeResetTimeoutId.value);
+        closeResetTimeoutId.value = undefined;
+      }
+    });
+    if (closeResetTimeoutId.value !== undefined) {
+      window.clearTimeout(closeResetTimeoutId.value);
+      closeResetTimeoutId.value = undefined;
+    }
     if (!isOpen) {
-      activeView.value = "menu";
-      viewHeightPx.value = null;
+      closeResetTimeoutId.value = window.setTimeout(() => {
+        activeView.value = "menu";
+        viewHeightPx.value = null;
+        closeResetTimeoutId.value = undefined;
+      }, offerDialogTransitionMs);
       return;
     }
     if (activeView.value === "menu") {
