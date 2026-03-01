@@ -28,6 +28,11 @@
   width: 100%;
 }
 
+.ui-offer-overview-transition {
+  display: grid;
+  gap: var(--pl-space-lg);
+}
+
 .ui-offer-analysis-progress-card {
   width: 100%;
 }
