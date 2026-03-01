@@ -10,35 +10,25 @@ import {
   analyzeManualOfferAction,
   analyzeScreenshotOfferAction,
 } from './offer-actions';
-import {
-  isOfferLocationError,
-  readRequiredCurrentLocation,
-  resolveOfferLocationErrorMessage,
-} from './offer-current-location';
+import { readRequiredCurrentLocation } from './offer-current-location';
 import {
   parseOfferAnalysisRecord,
   type OfferAnalysisRecord,
 } from './offer-analysis-result';
+import {
+  setOfferAnalysisErrorStatus,
+  startOfferAnalysisProgress,
+} from './offer-analysis-runtime';
 import { primeHistoryAfterAnalysis, primeOfferDetailsNavigation } from './offer-analysis-navigation';
 import { takeOfferScreenshotFile } from './offer-file-transfer-store';
 import { OfferFlowContent } from './components/offer-flow-content';
 import { ensureWithinOfferLimit } from './offer-flow-limits';
+import { loadOffersService } from './offer-service-loader';
 import { useOfferTabSession } from './use-offer-tab-session';
-
-type OffersServiceModule = typeof import('../../../lib/features/offers/offers-service');
-let offersServicePromise: Promise<OffersServiceModule> | null = null;
-
-const loadOffersService = () => {
-  if (!offersServicePromise) {
-    offersServicePromise = import('../../../lib/features/offers/offers-service');
-  }
-  return offersServicePromise;
-};
 
 export default component$(() => {
   const auth = useAuth();
   const i18n = useI18n();
-
   const payout = useSignal('');
   const distance = useSignal('');
   const duration = useSignal('');
@@ -46,21 +36,18 @@ export default component$(() => {
   const pickupAddress = useSignal('');
   const dropoffName = useSignal('');
   const dropoffAddress = useSignal('');
-
   const profile = useSignal<UserProfile | null>(null);
   const minProfitabilityEuro = useSignal(2);
   const savingProfitTarget = useSignal(false);
-
   const selectedVehicleId = useSignal('');
   const vehicles = useSignal<VehicleProfile[]>([]);
   const vehiclesLoading = useSignal(true);
-
   const manualEntryRequested = useSignal(false);
   const loading = useSignal(false);
   const status = useSignal('');
   const analysisRecord = useSignal<OfferAnalysisRecord | null>(null);
+  const analysisRunId = useSignal(0);
   const screenshotPreviewUrl = useSignal<string | null>(null);
-
   useOfferTabSession({
     auth,
     payout,
@@ -81,7 +68,6 @@ export default component$(() => {
     analysisRecord,
     screenshotPreviewUrl,
   });
-
   const saveProfitabilityTarget$ = $(async (rawValue: string) => {
     const userProfile = profile.value;
     const normalizedValue = rawValue.trim().replace(',', '.');
@@ -92,7 +78,6 @@ export default component$(() => {
     if (parsed === userProfile.minProfitabilityEuro) {
       return;
     }
-
     const nextProfile = { ...userProfile, minProfitabilityEuro: parsed };
     minProfitabilityEuro.value = parsed;
     profile.value = nextProfile;
@@ -106,8 +91,10 @@ export default component$(() => {
       savingProfitTarget.value = false;
     }
   });
-
   const analyzeManual$ = $(async () => {
+    if (loading.value) {
+      return;
+    }
     const user = auth.user.value;
     if (!user) {
       status.value = resolveUserFacingErrorMessage(i18n, new Error('Missing authenticated user.'), 'offer');
@@ -117,11 +104,13 @@ export default component$(() => {
       status.value = t(i18n, 'vehicleSelectLabel', 'Select vehicle');
       return;
     }
-
     analysisRecord.value = null;
     loading.value = true;
-    status.value = '';
-
+    const { progressDriver, runId } = startOfferAnalysisProgress({
+      analysisRunId,
+      loading,
+      status,
+    });
     try {
       const currentLocation = await readRequiredCurrentLocation();
       const payload = await analyzeManualOfferAction({
@@ -141,22 +130,35 @@ export default component$(() => {
       if (!parsed) {
         throw new Error('Missing analysis record in response.');
       }
+      if (analysisRunId.value !== runId) {
+        return;
+      }
       analysisRecord.value = parsed;
       primeHistoryAfterAnalysis(user.uid, parsed);
-      status.value = 'Offer analyzed.';
+      await progressDriver.waitForMinimumDuration();
+      if (analysisRunId.value === runId) {
+        status.value = 'Offer analyzed.';
+      }
     } catch (error) {
-      analysisRecord.value = null;
-      if (isOfferLocationError(error)) {
-        status.value = resolveOfferLocationErrorMessage(i18n, error.code);
-      } else {
-        status.value = resolveUserFacingErrorMessage(i18n, error, 'offer');
+      if (analysisRunId.value === runId) {
+        setOfferAnalysisErrorStatus({
+          analysisRecord,
+          error,
+          i18n,
+          status,
+        });
       }
     } finally {
-      loading.value = false;
+      progressDriver.cancel();
+      if (analysisRunId.value === runId) {
+        loading.value = false;
+      }
     }
   });
-
   const importScreenshotFile$ = $(async (fileToken: string) => {
+    if (loading.value) {
+      return;
+    }
     if (!selectedVehicleId.value) {
       status.value = t(i18n, 'vehicleSelectLabel', 'Select vehicle');
       return;
@@ -171,20 +173,17 @@ export default component$(() => {
       );
       return;
     }
-
     const user = auth.user.value;
     if (!user) {
       status.value = resolveUserFacingErrorMessage(i18n, new Error('Missing authenticated user.'), 'offer');
       return;
     }
-
     if (screenshotPreviewUrl.value) {
       URL.revokeObjectURL(screenshotPreviewUrl.value);
     }
     screenshotPreviewUrl.value = URL.createObjectURL(file);
     loading.value = true;
     status.value = '';
-
     const withinLimit = await ensureWithinOfferLimit(user.uid);
     if (!withinLimit) {
       status.value = t(
@@ -195,7 +194,11 @@ export default component$(() => {
       loading.value = false;
       return;
     }
-
+    const { progressDriver, runId } = startOfferAnalysisProgress({
+      analysisRunId,
+      loading,
+      status,
+    });
     try {
       const currentLocation = await readRequiredCurrentLocation();
       const payload = await analyzeScreenshotOfferAction({
@@ -209,21 +212,31 @@ export default component$(() => {
       if (!parsed) {
         throw new Error('Missing analysis record in response.');
       }
+      if (analysisRunId.value !== runId) {
+        return;
+      }
       analysisRecord.value = parsed;
       primeHistoryAfterAnalysis(user.uid, parsed);
-      status.value = 'Screenshot analyzed.';
+      await progressDriver.waitForMinimumDuration();
+      if (analysisRunId.value === runId) {
+        status.value = 'Screenshot analyzed.';
+      }
     } catch (error) {
-      analysisRecord.value = null;
-      if (isOfferLocationError(error)) {
-        status.value = resolveOfferLocationErrorMessage(i18n, error.code);
-      } else {
-        status.value = resolveUserFacingErrorMessage(i18n, error, 'offer');
+      if (analysisRunId.value === runId) {
+        setOfferAnalysisErrorStatus({
+          analysisRecord,
+          error,
+          i18n,
+          status,
+        });
       }
     } finally {
-      loading.value = false;
+      progressDriver.cancel();
+      if (analysisRunId.value === runId) {
+        loading.value = false;
+      }
     }
   });
-
   const clearScreenshotPreview$ = $(() => {
     if (loading.value) {
       return;
@@ -233,7 +246,6 @@ export default component$(() => {
     }
     screenshotPreviewUrl.value = null;
   });
-
   const viewDetails$ = $(async () => {
     const record = analysisRecord.value;
     if (!record?.id) {
@@ -248,12 +260,10 @@ export default component$(() => {
     const scrollY = typeof window !== 'undefined' ? window.scrollY : null;
     primeOfferDetailsNavigation(record, scrollY);
   });
-
   const user = auth.user.value;
   if (!user) {
     return null;
   }
-
   return (
     <OfferFlowContent
       userId={user.uid}

@@ -1,3 +1,86 @@
+.ui-offer-analysis-progress {
+  width: 100%;
+  border: 1px solid rgba(37, 99, 235, 0.24);
+  border-radius: var(--pl-radius-lg);
+  background: rgba(219, 234, 254, 0.42);
+  padding: 12px 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.ui-offer-analysis-progress-title {
+  margin: 0;
+  color: var(--pl-color-text-primary);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.ui-offer-analysis-progress-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.ui-offer-analysis-progress-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--pl-color-text-secondary);
+}
+
+.ui-offer-analysis-progress-indicator {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 18px;
+}
+
+.ui-offer-analysis-progress-indicator .material-icons-outlined {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.ui-offer-analysis-progress-step.is-done .ui-offer-analysis-progress-indicator {
+  color: var(--pl-color-primary);
+}
+
+.ui-offer-analysis-progress-step.is-pending .ui-offer-analysis-progress-indicator {
+  color: var(--pl-color-outline);
+}
+
+.ui-offer-analysis-progress-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.4px solid rgba(37, 99, 235, 0.2);
+  border-top-color: var(--pl-color-primary);
+  border-radius: 50%;
+  animation: ui-offer-analysis-progress-spin 900ms linear infinite;
+}
+
+.ui-offer-analysis-progress-step.is-active .ui-offer-analysis-progress-label {
+  color: var(--pl-color-text-primary);
+  font-weight: 600;
+}
+
+.ui-offer-analysis-progress-step.is-done .ui-offer-analysis-progress-label {
+  color: var(--pl-color-text-primary);
+}
+
+.ui-offer-analysis-progress-label {
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+@keyframes ui-offer-analysis-progress-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .ui-offer-error-notice {
   width: 100%;
   border: 1px solid rgba(239, 68, 68, 0.28);

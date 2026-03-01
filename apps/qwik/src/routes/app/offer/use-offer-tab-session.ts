@@ -5,6 +5,7 @@ import { watchVehicles } from '../../../lib/features/vehicles/vehicles-service';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
 import type { OfferAnalysisRecord } from './offer-analysis-result';
+import { parseOfferAnalysisProgressStep } from './offer-analysis-progress';
 import { readOfferTabSessionState, writeOfferTabSessionState } from './offer-tab-session';
 
 interface UseOfferTabSessionParams {
@@ -90,7 +91,9 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
       vehicles.value = session.vehicles;
       vehiclesLoading.value = session.vehiclesLoading;
       manualEntryRequested.value = session.manualEntryRequested;
-      status.value = session.status;
+      status.value = parseOfferAnalysisProgressStep(session.status)
+        ? ''
+        : session.status;
       analysisRecord.value = session.analysisRecord;
       screenshotPreviewUrl.value = session.screenshotPreviewUrl;
       loading.value = false;

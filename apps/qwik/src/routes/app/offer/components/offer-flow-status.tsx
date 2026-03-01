@@ -1,5 +1,7 @@
 import { component$ } from '@builder.io/qwik';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
+import { parseOfferAnalysisProgressStep } from '../offer-analysis-progress';
+import { OfferAnalysisProgressStepper } from './offer-analysis-progress-stepper';
 import { OfferErrorNotice } from './offer-error-notice';
 
 interface OfferFlowStatusProps {
@@ -34,6 +36,11 @@ export const OfferFlowStatus = component$<OfferFlowStatusProps>(({ status }) => 
   const currentStatus = status.trim();
   if (!currentStatus || isSuccessStatus(currentStatus)) {
     return null;
+  }
+
+  const analysisStep = parseOfferAnalysisProgressStep(currentStatus);
+  if (analysisStep) {
+    return <OfferAnalysisProgressStepper activeStep={analysisStep} />;
   }
 
   const selectVehicleMessage = t(i18n, 'vehicleSelectLabel', 'Select vehicle');
