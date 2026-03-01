@@ -3,8 +3,11 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 QWIK_DIR="$ROOT_DIR/apps/qwik"
+ADMIN_DIR="$ROOT_DIR/apps/admin"
 CONFIG_SRC="$QWIK_DIR/public/firebase-web-config.js"
 QWIK_TS_CONFIG="$QWIK_DIR/src/lib/config/firebase-web-config.ts"
+ADMIN_TS_CONFIG="$ADMIN_DIR/src/lib/config/firebase-web-config.ts"
+ADMIN_PUBLIC_CONFIG="$ADMIN_DIR/public/firebase-web-config.js"
 DEFINES_FILE="${DEFINES_FILE:-$ROOT_DIR/tool/dev_runtime_defines.json}"
 
 if [[ ! -f "$CONFIG_SRC" ]]; then
@@ -13,6 +16,8 @@ if [[ ! -f "$CONFIG_SRC" ]]; then
 fi
 
 mkdir -p "$(dirname "$QWIK_TS_CONFIG")"
+mkdir -p "$(dirname "$ADMIN_TS_CONFIG")"
+mkdir -p "$(dirname "$ADMIN_PUBLIC_CONFIG")"
 
 node <<'NODE'
 const fs = require('fs');
@@ -21,6 +26,8 @@ const path = require('path');
 const root = process.cwd();
 const configPath = path.join(root, 'apps', 'qwik', 'public', 'firebase-web-config.js');
 const qwikTsConfigPath = path.join(root, 'apps', 'qwik', 'src', 'lib', 'config', 'firebase-web-config.ts');
+const adminTsConfigPath = path.join(root, 'apps', 'admin', 'src', 'lib', 'config', 'firebase-web-config.ts');
+const adminPublicConfigPath = path.join(root, 'apps', 'admin', 'public', 'firebase-web-config.js');
 const qwikBillingConfigPath = path.join(root, 'apps', 'qwik', 'src', 'lib', 'config', 'billing-defines.ts');
 const definesPath = process.env.DEFINES_FILE || path.join(root, 'tool', 'dev_runtime_defines.json');
 
@@ -37,6 +44,8 @@ const tsBody = [
   '',
 ].join('\n');
 fs.writeFileSync(qwikTsConfigPath, tsBody, 'utf8');
+fs.writeFileSync(adminTsConfigPath, tsBody, 'utf8');
+fs.writeFileSync(adminPublicConfigPath, configSource, 'utf8');
 
 if (!fs.existsSync(definesPath)) {
   throw new Error(`Missing ${definesPath}`);
@@ -54,4 +63,4 @@ const billingBody = [
 fs.writeFileSync(qwikBillingConfigPath, billingBody, 'utf8');
 NODE
 
-echo "Synced Firebase and billing runtime config for Qwik."
+echo "Synced Firebase runtime config for Qwik + admin and billing defines for Qwik."

@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "profit-lens-prod-2e417"
+  },
+  "targets": {
+    "profit-lens-prod-2e417": {
+      "hosting": {
+        "app": [
+          "profit-lens-prod-2e417"
+        ],
+        "admin": [
+          "profit-lens-prod-2e417-admin"
+        ]
+      }
+    }
   }
 }

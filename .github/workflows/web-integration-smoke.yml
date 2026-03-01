@@ -39,14 +39,26 @@ jobs:
       - name: Build web bundle
         run: ./tool/build_web.sh
 
+      - name: Build admin web bundle
+        run: ./tool/build_admin_web.sh
+
       - name: Run Qwik unit tests
         run: npm --prefix apps/qwik run test
+
+      - name: Run admin unit tests
+        run: npm --prefix apps/admin run test
 
       - name: Run Qwik lint
         run: npm --prefix apps/qwik run lint
 
+      - name: Run admin lint
+        run: npm --prefix apps/admin run lint
+
       - name: Verify web bundle layout
         run: ./tool/verify_web_bundle_layout.sh
+
+      - name: Verify admin bundle layout
+        run: ./tool/verify_admin_bundle_layout.sh
 
       - name: Install functions dependencies
         run: npm --prefix functions ci
