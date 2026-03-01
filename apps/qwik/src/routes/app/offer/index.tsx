@@ -10,7 +10,9 @@ import {
   analyzeManualOfferAction,
   analyzeScreenshotOfferAction,
 } from './offer-actions';
-import { readRequiredCurrentLocation } from './offer-current-location';
+import {
+  readRequiredCurrentLocation,
+} from './offer-current-location';
 import {
   parseOfferAnalysisRecord,
   type OfferAnalysisRecord,
@@ -24,6 +26,7 @@ import { takeOfferScreenshotFile } from './offer-file-transfer-store';
 import { OfferFlowContent } from './components/offer-flow-content';
 import { ensureWithinOfferLimit } from './offer-flow-limits';
 import { loadOffersService } from './offer-service-loader';
+import { useOfferLocationPrefetch } from './use-offer-location-prefetch';
 import { useOfferTabSession } from './use-offer-tab-session';
 
 export default component$(() => {
@@ -48,6 +51,8 @@ export default component$(() => {
   const analysisRecord = useSignal<OfferAnalysisRecord | null>(null);
   const analysisRunId = useSignal(0);
   const screenshotPreviewUrl = useSignal<string | null>(null);
+  useOfferLocationPrefetch();
+
   useOfferTabSession({
     auth,
     payout,

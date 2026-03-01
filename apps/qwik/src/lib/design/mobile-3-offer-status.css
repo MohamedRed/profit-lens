@@ -1,3 +1,33 @@
+.ui-offer-presence-transition {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 220ms ease,
+    transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.ui-offer-presence-transition.is-entering {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.ui-offer-presence-transition.is-entered {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ui-offer-presence-transition.is-exiting {
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+.ui-offer-stepper-transition,
+.ui-offer-overview-transition {
+  width: 100%;
+}
+
 .ui-offer-analysis-progress-card {
   width: 100%;
 }
@@ -66,6 +96,12 @@
 @keyframes ui-offer-analysis-progress-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-offer-presence-transition {
+    transition: none;
   }
 }
 

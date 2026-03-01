@@ -1,5 +1,5 @@
 import { HttpsError } from "firebase-functions/v2/https";
-import { geocodeAddress } from "./geocoding_api";
+import { resolveGeocodedLocationWithCache } from "./geocoding_cache";
 import { computeRoute, RouteLocationInput, RouteTravelMode } from "./routes_api";
 import { GeoPoint, RouteVerification } from "./profitability_types";
 
@@ -95,7 +95,10 @@ async function resolveLocation(
       "GEOCODING_API_KEY is not set."
     );
   }
-  const coords = await geocodeAddress({ apiKey: geocodingKey, address });
+  const coords = await resolveGeocodedLocationWithCache({
+    apiKey: geocodingKey,
+    address,
+  });
   return { latLng: coords };
 }
 

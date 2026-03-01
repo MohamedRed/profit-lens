@@ -1,7 +1,9 @@
 import { t, type I18nStore } from '../../../lib/i18n/i18n-context';
 import type { OfferCurrentLocation } from '../../../lib/types/offer';
-
-const GEOLOCATION_TIMEOUT_MS = 12000;
+import {
+  prefetchOfferCurrentLocationWithPolicy,
+  readOfferCurrentLocationWithPolicy,
+} from './offer-location-policy';
 
 export type OfferLocationErrorCode =
   | 'unsupported'
@@ -9,6 +11,10 @@ export type OfferLocationErrorCode =
   | 'position-unavailable'
   | 'timeout'
   | 'unknown';
+
+interface ReadCurrentLocationOptions {
+  preferCachedWithinMs?: number;
+}
 
 export class OfferLocationError extends Error {
   readonly code: OfferLocationErrorCode;
@@ -37,7 +43,9 @@ const mapGeolocationErrorCode = (code: number): OfferLocationErrorCode => {
   }
 };
 
-export const readRequiredCurrentLocation = async (): Promise<OfferCurrentLocation> => {
+const readCurrentLocationFromBrowser = async (
+  options: PositionOptions,
+): Promise<OfferCurrentLocation> => {
   if (typeof navigator === 'undefined' || !navigator.geolocation) {
     throw new OfferLocationError('unsupported');
   }
@@ -56,12 +64,23 @@ export const readRequiredCurrentLocation = async (): Promise<OfferCurrentLocatio
       (error) => {
         reject(new OfferLocationError(mapGeolocationErrorCode(error.code)));
       },
-      {
-        enableHighAccuracy: true,
-        timeout: GEOLOCATION_TIMEOUT_MS,
-        maximumAge: 0,
-      },
+      options,
     );
+  });
+};
+
+export const readRequiredCurrentLocation = async (
+  options?: ReadCurrentLocationOptions,
+): Promise<OfferCurrentLocation> => {
+  return await readOfferCurrentLocationWithPolicy({
+    readCurrentLocation: readCurrentLocationFromBrowser,
+    preferCachedWithinMs: options?.preferCachedWithinMs,
+  });
+};
+
+export const prefetchOfferCurrentLocation = (): void => {
+  void prefetchOfferCurrentLocationWithPolicy({
+    readCurrentLocation: readCurrentLocationFromBrowser,
   });
 };
 
