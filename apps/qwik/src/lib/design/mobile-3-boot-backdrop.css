@@ -1,0 +1,55 @@
+.ui-boot-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 140% at 16% -10%, rgba(139, 92, 246, 0.34) 0%, rgba(139, 92, 246, 0) 58%),
+    radial-gradient(100% 110% at 90% 120%, rgba(124, 58, 237, 0.2) 0%, rgba(124, 58, 237, 0) 62%),
+    linear-gradient(180deg, #faf9ff 0%, #f2efff 58%, #ece8ff 100%);
+}
+
+.ui-boot-backdrop-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.09;
+  background:
+    radial-gradient(circle at 22% 12%, rgba(255, 255, 255, 0.18) 0, transparent 35%),
+    radial-gradient(circle at 82% 72%, rgba(255, 255, 255, 0.14) 0, transparent 30%),
+    radial-gradient(circle at 58% 42%, rgba(255, 255, 255, 0.08) 0, transparent 28%);
+  animation: ui-splash-noise-shift 7s steps(12) infinite;
+}
+
+.ui-boot-backdrop-glow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(30px);
+  opacity: 0.42;
+}
+
+.ui-boot-backdrop-glow-top {
+  width: 190px;
+  height: 190px;
+  top: -80px;
+  right: -42px;
+  background: rgba(139, 92, 246, 0.3);
+  animation: ui-splash-glow-pulse 4s ease-in-out infinite;
+}
+
+.ui-boot-backdrop-glow-bottom {
+  width: 220px;
+  height: 220px;
+  bottom: -102px;
+  left: -58px;
+  background: rgba(124, 58, 237, 0.22);
+  animation: ui-splash-glow-pulse 4.4s ease-in-out infinite reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-boot-backdrop-noise,
+  .ui-boot-backdrop-glow-top,
+  .ui-boot-backdrop-glow-bottom {
+    animation: none;
+  }
+}

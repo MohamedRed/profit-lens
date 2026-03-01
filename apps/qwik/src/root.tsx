@@ -126,11 +126,12 @@ const buildRefreshGuard = (basePath: string): string => `
 
 export default component$(() => {
   const base = import.meta.env.BASE_URL;
+  const bootThemeColor = '#ece8ff';
   return (
     <QwikCityProvider>
       <head>
         <meta charSet="utf-8" />
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content={bootThemeColor} />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -149,6 +150,7 @@ export default component$(() => {
         <link rel="icon" type="image/png" sizes="192x192" href={`${base}icons/Icon-192-v2.png`} />
         <link rel="shortcut icon" href={`${base}icons/Icon-192-v2.png`} />
         <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-touch-icon-v2.png`} />
+        <style dangerouslySetInnerHTML={`html, body { background: ${bootThemeColor}; }`} />
         {!isDev && <script dangerouslySetInnerHTML={buildRefreshGuard(base)}></script>}
         <script src={`${base}firebase-web-config.js`} defer></script>
         {!isDev && <link rel="manifest" href={`${base}manifest.webmanifest`} />}

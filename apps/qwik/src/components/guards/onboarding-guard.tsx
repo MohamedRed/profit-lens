@@ -2,12 +2,10 @@ import { Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useLocation, useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../../lib/auth/auth-context';
 import { watchVehicles } from '../../lib/features/vehicles/vehicles-service';
-import { t, useI18n } from '../../lib/i18n/i18n-context';
-import { AppSplash } from '../ui/app-splash';
+import { AppBootBackdrop } from '../ui/app-boot-backdrop';
 import { toAppPath } from '../layout/app-shell-routing';
 
 export const OnboardingGuard = component$(() => {
-  const i18n = useI18n();
   const auth = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -63,13 +61,7 @@ export const OnboardingGuard = component$(() => {
   const shouldHoldRootShell = currentPath === '/app';
 
   if (shouldHoldRootShell) {
-    return (
-      <AppSplash
-        status={t(i18n, 'loadingLabel', 'Loading...')}
-        progress={1}
-        exiting={false}
-      />
-    );
+    return <AppBootBackdrop status="Preparing your workspace..." />;
   }
 
   return <Slot />;

@@ -18,6 +18,7 @@
 @import './lib/design/mobile-3-auth.css';
 @import './lib/design/mobile-3-splash.css';
 @import './lib/design/mobile-3-splash-motion.css';
+@import './lib/design/mobile-3-boot-backdrop.css';
 
 * {
   box-sizing: border-box;

@@ -1,6 +1,7 @@
 import { Slot, component$, useVisibleTask$ } from '@builder.io/qwik';
 import { useLocation, useNavigate } from '@builder.io/qwik-city';
 import { AppSplash } from '../ui/app-splash';
+import { AppBootBackdrop } from '../ui/app-boot-backdrop';
 import { useAuth } from '../../lib/auth/auth-context';
 import { useLaunchSplashTransition } from '../../lib/ui/launch-splash-transition';
 
@@ -56,18 +57,18 @@ export const AuthGuard = component$<AuthGuardProps>(({ requireAuth }) => {
   }
 
   if (!auth.ready.value) {
-    return null;
+    return <AppBootBackdrop status="Preparing secure session..." />;
   }
 
   if (requireAuth) {
     if (!auth.user.value) {
-      return null;
+      return <AppBootBackdrop status="Redirecting to sign in..." />;
     }
     return <Slot />;
   }
 
   if (!requireAuth && auth.user.value) {
-    return null;
+    return <AppBootBackdrop status="Loading your workspace..." />;
   }
 
   return <Slot />;

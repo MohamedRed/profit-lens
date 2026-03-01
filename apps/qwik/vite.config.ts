@@ -30,8 +30,8 @@ export default defineConfig(({ mode }): UserConfig => {
           start_url: '/next/',
           scope: '/next/',
           display: 'standalone',
-          background_color: '#ffffff',
-          theme_color: '#ffffff',
+          background_color: '#ece8ff',
+          theme_color: '#ece8ff',
           icons: [
             {
               src: 'icons/Icon-192-v2.png',
