@@ -1,18 +1,5 @@
-.ui-offer-analysis-progress {
+.ui-offer-analysis-progress-card {
   width: 100%;
-  border: 1px solid rgba(37, 99, 235, 0.24);
-  border-radius: var(--pl-radius-lg);
-  background: rgba(219, 234, 254, 0.42);
-  padding: 12px 14px;
-  display: grid;
-  gap: 10px;
-}
-
-.ui-offer-analysis-progress-title {
-  margin: 0;
-  color: var(--pl-color-text-primary);
-  font-size: 0.92rem;
-  font-weight: 600;
 }
 
 .ui-offer-analysis-progress-list {
@@ -28,6 +15,7 @@
   align-items: center;
   gap: 8px;
   color: var(--pl-color-text-secondary);
+  min-height: 22px;
 }
 
 .ui-offer-analysis-progress-indicator {
@@ -45,7 +33,7 @@
 }
 
 .ui-offer-analysis-progress-step.is-done .ui-offer-analysis-progress-indicator {
-  color: var(--pl-color-primary);
+  color: var(--pl-color-purple);
 }
 
 .ui-offer-analysis-progress-step.is-pending .ui-offer-analysis-progress-indicator {
@@ -55,10 +43,10 @@
 .ui-offer-analysis-progress-spinner {
   width: 18px;
   height: 18px;
-  border: 2.4px solid rgba(37, 99, 235, 0.2);
-  border-top-color: var(--pl-color-primary);
+  border: 2.4px solid rgba(139, 92, 246, 0.2);
+  border-top-color: var(--pl-color-purple);
   border-radius: 50%;
-  animation: ui-offer-analysis-progress-spin 900ms linear infinite;
+  animation: ui-offer-analysis-progress-spin 920ms linear infinite;
 }
 
 .ui-offer-analysis-progress-step.is-active .ui-offer-analysis-progress-label {

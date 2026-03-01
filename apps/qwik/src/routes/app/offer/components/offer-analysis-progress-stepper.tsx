@@ -1,5 +1,6 @@
 import { component$ } from '@builder.io/qwik';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
+import { OfferSectionCard } from './offer-section-card';
 import {
   offerAnalysisProgressSteps,
   resolveOfferAnalysisProgressStepState,
@@ -36,15 +37,16 @@ export const OfferAnalysisProgressStepper =
     const i18n = useI18n();
 
     return (
-      <section
-        class="ui-offer-analysis-progress"
-        aria-live="polite"
-        aria-atomic="true"
+      <OfferSectionCard
+        title={t(i18n, 'analysisProgressTitle', 'Analyzing offer')}
+        showBorder={true}
+        class="ui-offer-analysis-progress-card"
       >
-        <p class="ui-offer-analysis-progress-title">
-          {t(i18n, 'analysisProgressTitle', 'Analyzing offer')}
-        </p>
-        <ol class="ui-offer-analysis-progress-list">
+        <ol
+          class="ui-offer-analysis-progress-list"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           {offerAnalysisProgressSteps.map((step) => {
             const state = resolveOfferAnalysisProgressStepState(
               activeStep,
@@ -71,6 +73,6 @@ export const OfferAnalysisProgressStepper =
             );
           })}
         </ol>
-      </section>
+      </OfferSectionCard>
     );
   });

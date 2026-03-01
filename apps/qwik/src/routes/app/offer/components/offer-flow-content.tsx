@@ -88,11 +88,12 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
       if (fileImportInFlight.value) {
         return;
       }
+      fileImportInFlight.value = true;
       const file = await readSelectedFileWithRetry(element);
       if (!file) {
+        fileImportInFlight.value = false;
         return;
       }
-      fileImportInFlight.value = true;
       props.status.value = t(
         i18n,
         "offerScreenshotSelectedMessage",
