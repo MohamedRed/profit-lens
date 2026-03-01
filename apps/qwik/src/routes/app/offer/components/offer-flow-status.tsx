@@ -1,8 +1,9 @@
-import { component$ } from '@builder.io/qwik';
+import { component$, useSignal } from '@builder.io/qwik';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import { parseOfferAnalysisProgressStep } from '../offer-analysis-progress';
 import { OfferAnalysisProgressStepper } from './offer-analysis-progress-stepper';
 import { OfferErrorNotice } from './offer-error-notice';
+import { OfferPresenceTransition } from './offer-presence-transition';
 
 interface OfferFlowStatusProps {
   status: string;
@@ -34,13 +35,24 @@ const isScreenshotFailureStatus = (status: string, screenshotFailureMessage: str
 export const OfferFlowStatus = component$<OfferFlowStatusProps>(({ status }) => {
   const i18n = useI18n();
   const currentStatus = status.trim();
-  if (!currentStatus || isSuccessStatus(currentStatus)) {
-    return null;
+  const activeAnalysisStep = parseOfferAnalysisProgressStep(currentStatus);
+  const displayedAnalysisStep = useSignal(activeAnalysisStep);
+  if (activeAnalysisStep) {
+    displayedAnalysisStep.value = activeAnalysisStep;
+  }
+  if (displayedAnalysisStep.value) {
+    return (
+      <OfferPresenceTransition
+        class="ui-offer-stepper-transition"
+        show={activeAnalysisStep !== null}
+      >
+        <OfferAnalysisProgressStepper activeStep={displayedAnalysisStep.value} />
+      </OfferPresenceTransition>
+    );
   }
 
-  const analysisStep = parseOfferAnalysisProgressStep(currentStatus);
-  if (analysisStep) {
-    return <OfferAnalysisProgressStepper activeStep={analysisStep} />;
+  if (!currentStatus || isSuccessStatus(currentStatus)) {
+    return null;
   }
 
   const selectVehicleMessage = t(i18n, 'vehicleSelectLabel', 'Select vehicle');

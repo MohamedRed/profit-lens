@@ -4,19 +4,19 @@ import {
   type QRL,
   type Signal,
   useSignal,
-  useVisibleTask$,
 } from "@builder.io/qwik";
 import { Button } from "../../../../components/ui/button";
 import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import type { OfferAnalysisRecord } from "../offer-analysis-result";
-import { stageOfferScreenshotFile } from "../offer-file-transfer-store";
 import { enableCaptureCta, enableManualEntry } from "../offer-feature-flags";
+import { OfferPresenceTransition } from "./offer-presence-transition";
 import { OfferFlowStatus } from "./offer-flow-status";
 import { OfferManualDetailsSection } from "./offer-manual-details-section";
 import { OfferOverviewSections } from "./offer-overview-sections";
 import { OfferScreenshotPreview } from "./offer-screenshot-preview";
 import { OfferSetupModalStack } from "./offer-setup-modal-stack";
+import { useOfferFileImport } from "./use-offer-file-import";
 
 interface OfferFlowContentProps {
   analysisRecord: Signal<OfferAnalysisRecord | null>;
@@ -50,6 +50,9 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
   const fileImportInFlight = useSignal(false);
   const importFileInputRef = useSignal<HTMLInputElement>();
   const captureFileInputRef = useSignal<HTMLInputElement>();
+  const displayedOverviewRecord = useSignal<OfferAnalysisRecord | null>(
+    props.analysisRecord.value,
+  );
   const importScreenshotLabel = t(
     i18n,
     "importScreenshotButton",
@@ -61,93 +64,26 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
     settingsSheetOpen.value = true;
   });
 
-  useVisibleTask$(({ track, cleanup }) => {
-    track(() => props.loading.value);
-    track(() => props.selectedVehicleId.value);
-    track(() => props.vehicles.value.length);
-    track(() => fileImportInFlight.value);
-
-    const readSelectedFileWithRetry = async (
-      element: HTMLInputElement,
-    ): Promise<File | null> => {
-      let file = element.files?.item(0) ?? null;
-      let attempt = 0;
-      while (!file && attempt < 4) {
-        await new Promise<void>((resolve) => {
-          window.setTimeout(resolve, 120);
-        });
-        file = element.files?.item(0) ?? null;
-        attempt += 1;
-      }
-      return file;
-    };
-
-    const handleFileInputElement = async (
-      element: HTMLInputElement,
-    ): Promise<void> => {
-      if (fileImportInFlight.value) {
-        return;
-      }
-      fileImportInFlight.value = true;
-      const file = await readSelectedFileWithRetry(element);
-      if (!file) {
-        fileImportInFlight.value = false;
-        return;
-      }
-      props.status.value = t(
-        i18n,
-        "offerScreenshotSelectedMessage",
-        "Screenshot selected. Preparing analysis...",
-      );
-      try {
-        const fileToken = stageOfferScreenshotFile(file);
-        await props.onImportScreenshotFile$(fileToken);
-      } catch {
-        props.status.value = t(
-          i18n,
-          "offerActionFailedMessage",
-          "Unable to complete this action right now. Please try again.",
-        );
-      } finally {
-        element.value = "";
-        fileImportInFlight.value = false;
-      }
-    };
-
-    const cleanups: Array<() => void> = [];
-    const register = (element: HTMLInputElement | undefined) => {
-      if (!element) {
-        return;
-      }
-      const onInput = () => {
-        void handleFileInputElement(element);
-      };
-      const onChange = () => {
-        void handleFileInputElement(element);
-      };
-      element.addEventListener("input", onInput);
-      element.addEventListener("change", onChange);
-      cleanups.push(() => {
-        element.removeEventListener("input", onInput);
-        element.removeEventListener("change", onChange);
-      });
-    };
-
-    register(importFileInputRef.value);
-    register(captureFileInputRef.value);
-
-    cleanup(() => {
-      cleanups.forEach((runCleanup) => {
-        runCleanup();
-      });
-    });
+  useOfferFileImport({
+    captureFileInputRef,
+    fileImportInFlight,
+    i18n,
+    importFileInputRef,
+    loading: props.loading,
+    onImportScreenshotFile$: props.onImportScreenshotFile$,
+    selectedVehicleId: props.selectedVehicleId,
+    status: props.status,
+    vehicles: props.vehicles,
   });
 
   const analysisRecord = props.analysisRecord.value;
-  const showOverview =
-    !props.loading.value && analysisRecord !== null;
-  const detailsHref = analysisRecord
-    ? `/next/app/history/details?offerId=${encodeURIComponent(analysisRecord.id)}&backTo=${encodeURIComponent("/next/app/offer")}`
+  const showOverview = !props.loading.value && analysisRecord !== null;
+  if (analysisRecord) {
+    displayedOverviewRecord.value = analysisRecord;
+  }
+  const currentOverviewRecord = displayedOverviewRecord.value;
+  const detailsHref = currentOverviewRecord
+    ? `/next/app/history/details?offerId=${encodeURIComponent(currentOverviewRecord.id)}&backTo=${encodeURIComponent("/next/app/offer")}`
     : null;
   const showDetailsSection =
     !showOverview && enableManualEntry && props.manualEntryRequested.value;
@@ -262,14 +198,19 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
 
           <OfferFlowStatus status={props.status.value} />
 
-          {showOverview && analysisRecord && detailsHref ? (
-            <OfferOverviewSections
-              record={analysisRecord}
-              minProfitabilityEuro={props.minProfitabilityEuro.value}
-              detailsHref={detailsHref}
-              onViewDetails$={props.onViewDetails$}
-            />
-          ) : null}
+          <OfferPresenceTransition
+            class="ui-offer-overview-transition"
+            show={showOverview}
+          >
+            {currentOverviewRecord && detailsHref ? (
+              <OfferOverviewSections
+                record={currentOverviewRecord}
+                minProfitabilityEuro={props.minProfitabilityEuro.value}
+                detailsHref={detailsHref}
+                onViewDetails$={props.onViewDetails$}
+              />
+            ) : null}
+          </OfferPresenceTransition>
 
           {showDetailsSection ? (
             <OfferManualDetailsSection
