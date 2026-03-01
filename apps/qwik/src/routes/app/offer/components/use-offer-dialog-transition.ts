@@ -113,11 +113,11 @@ export const useOfferDialogTransition = (
     dialog.classList.remove(dialogOpeningClass);
     dialog.classList.add(dialogClosingClass);
     closeTimeoutId.value = window.setTimeout(() => {
-      dialog.classList.remove(dialogOpeningClass);
-      dialog.classList.remove(dialogClosingClass);
       if (dialog.open) {
         dialog.close();
       }
+      dialog.classList.remove(dialogOpeningClass);
+      dialog.classList.remove(dialogClosingClass);
       if (hasScrollLock.value) {
         unlockPageScroll();
         hasScrollLock.value = false;
