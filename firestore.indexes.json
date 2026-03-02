@@ -13,89 +13,52 @@
           "order": "ASCENDING"
         }
       ]
-    },
+    }
+  ],
+  "fieldOverrides": [
     {
       "collectionGroup": "offers",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
+      "fieldPath": "createdAt",
+      "indexes": [
         {
-          "fieldPath": "createdAt",
+          "queryScope": "COLLECTION",
+          "order": "ASCENDING"
+        },
+        {
+          "queryScope": "COLLECTION",
           "order": "DESCENDING"
         },
         {
-          "fieldPath": "__name__",
+          "queryScope": "COLLECTION_GROUP",
+          "order": "ASCENDING"
+        },
+        {
+          "queryScope": "COLLECTION_GROUP",
           "order": "DESCENDING"
         }
       ]
     },
     {
       "collectionGroup": "helpTickets",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
+      "fieldPath": "updatedAt",
+      "indexes": [
         {
-          "fieldPath": "updatedAt",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "__name__",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "offers",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        {
-          "fieldPath": "source",
+          "queryScope": "COLLECTION",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "createdAt",
+          "queryScope": "COLLECTION",
           "order": "DESCENDING"
         },
         {
-          "fieldPath": "__name__",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "helpTickets",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        {
-          "fieldPath": "status",
+          "queryScope": "COLLECTION_GROUP",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "updatedAt",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "__name__",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "helpTickets",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        {
-          "fieldPath": "delivererStatus",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "updatedAt",
-          "order": "DESCENDING"
-        },
-        {
-          "fieldPath": "__name__",
+          "queryScope": "COLLECTION_GROUP",
           "order": "DESCENDING"
         }
       ]
     }
-  ],
-  "fieldOverrides": []
+  ]
 }
