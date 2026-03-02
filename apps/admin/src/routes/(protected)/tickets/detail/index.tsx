@@ -1,9 +1,14 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { ErrorBanner, LoadingPanel } from '../../../../../components/ui/page-state';
-import { callAdminGetHelpTicketDetail } from '../../../../../lib/firebase/callables-admin';
-import type { AdminGetHelpTicketDetailResponse } from '../../../../../lib/types/admin';
-import { formatDateTime, formatNumber } from '../../../../../lib/utils/format';
+import { ErrorBanner, LoadingPanel } from '../../../../components/ui/page-state';
+import { callAdminGetHelpTicketDetail } from '../../../../lib/firebase/callables-admin';
+import type { AdminGetHelpTicketDetailResponse } from '../../../../lib/types/admin';
+import { formatDateTime, formatNumber } from '../../../../lib/utils/format';
 import { useLocation } from '@builder.io/qwik-city';
+
+const readTicketParamsFromQuery = (url: URL): { uid: string; ticketId: string } => ({
+  uid: url.searchParams.get('uid')?.trim() ?? '',
+  ticketId: url.searchParams.get('ticketId')?.trim() ?? '',
+});
 
 export default component$(() => {
   const location = useLocation();
@@ -14,30 +19,41 @@ export default component$(() => {
 
   useVisibleTask$(async ({ track }) => {
     track(() => includeSensitive.value);
+    track(() => location.url.search);
+    const { uid, ticketId } = readTicketParamsFromQuery(location.url);
+
+    if (!uid || !ticketId) {
+      loading.value = false;
+      data.value = null;
+      error.value = 'Missing ticket identifiers in URL.';
+      return;
+    }
+
     loading.value = true;
     error.value = '';
 
     try {
       data.value = await callAdminGetHelpTicketDetail({
-        uid: location.params.uid,
-        ticketId: location.params.ticketId,
+        uid,
+        ticketId,
         includeSensitive: includeSensitive.value,
       });
     } catch (err) {
+      data.value = null;
       error.value = err instanceof Error ? err.message : 'Failed to load ticket details.';
     } finally {
       loading.value = false;
     }
   });
 
+  const { uid, ticketId } = readTicketParamsFromQuery(location.url);
+
   return (
     <>
       <header class="admin-header">
         <div>
           <h1 class="admin-page-title">Ticket detail</h1>
-          <p class="admin-page-subtitle">
-            {location.params.uid} / {location.params.ticketId}
-          </p>
+          <p class="admin-page-subtitle">{uid && ticketId ? `${uid} / ${ticketId}` : 'Missing ticket id'}</p>
         </div>
 
         <label class="admin-field" style={{ minWidth: '180px' }}>
