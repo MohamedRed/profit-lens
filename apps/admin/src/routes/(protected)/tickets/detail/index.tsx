@@ -4,6 +4,7 @@ import { callAdminGetHelpTicketDetail } from '../../../../lib/firebase/callables
 import type { AdminGetHelpTicketDetailResponse } from '../../../../lib/types/admin';
 import { formatDateTime, formatNumber } from '../../../../lib/utils/format';
 import { useLocation } from '@builder.io/qwik-city';
+import { IconLabel } from '../../../../components/ui/icon-label';
 
 const readTicketParamsFromQuery = (url: URL): { uid: string; ticketId: string } => ({
   uid: url.searchParams.get('uid')?.trim() ?? '',
@@ -86,7 +87,7 @@ export default component$(() => {
       {!loading.value && data.value && (
         <div class="admin-grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))' }}>
           <article class="admin-card" style={{ gridColumn: '1 / -1' }}>
-            <h3>Ticket</h3>
+            <h3><IconLabel icon="confirmation_number" text="Ticket" /></h3>
             <p><strong>Title:</strong> {data.value.ticket.title ?? '—'}</p>
             <p><strong>Status:</strong> {data.value.ticket.status ?? '—'}</p>
             <p><strong>Deliverer status:</strong> {data.value.ticket.delivererStatus ?? '—'}</p>
@@ -98,7 +99,7 @@ export default component$(() => {
           </article>
 
           <article class="admin-card">
-            <h3>Timeline</h3>
+            <h3><IconLabel icon="timeline" text="Timeline" /></h3>
             {data.value.timeline.length === 0 && <p class="admin-muted">No timeline events.</p>}
             {data.value.timeline.map((event) => (
               <p key={event.id}>
@@ -110,7 +111,7 @@ export default component$(() => {
           </article>
 
           <article class="admin-card">
-            <h3>Attachments</h3>
+            <h3><IconLabel icon="attach_file" text="Attachments" /></h3>
             {data.value.attachments.length === 0 && <p class="admin-muted">No attachments.</p>}
             {data.value.attachments.map((attachment) => (
               <p key={attachment.id}>
