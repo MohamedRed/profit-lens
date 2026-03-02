@@ -9,6 +9,12 @@ const readTicketParamsFromQuery = (url: URL): { uid: string; ticketId: string } 
   uid: url.searchParams.get('uid')?.trim() ?? '',
   ticketId: url.searchParams.get('ticketId')?.trim() ?? '',
 });
+const resolveRuntimeUrl = (fallback: URL): URL => {
+  if (typeof window === 'undefined') {
+    return fallback;
+  }
+  return new URL(window.location.href);
+};
 
 export default component$(() => {
   const location = useLocation();
@@ -16,11 +22,13 @@ export default component$(() => {
   const loading = useSignal(true);
   const error = useSignal('');
   const data = useSignal<AdminGetHelpTicketDetailResponse | null>(null);
+  const resolvedParams = useSignal({ uid: '', ticketId: '' });
 
   useVisibleTask$(async ({ track }) => {
     track(() => includeSensitive.value);
     track(() => location.url.search);
-    const { uid, ticketId } = readTicketParamsFromQuery(location.url);
+    const { uid, ticketId } = readTicketParamsFromQuery(resolveRuntimeUrl(location.url));
+    resolvedParams.value = { uid, ticketId };
 
     if (!uid || !ticketId) {
       loading.value = false;
@@ -46,14 +54,16 @@ export default component$(() => {
     }
   });
 
-  const { uid, ticketId } = readTicketParamsFromQuery(location.url);
-
   return (
     <>
       <header class="admin-header">
         <div>
           <h1 class="admin-page-title">Ticket detail</h1>
-          <p class="admin-page-subtitle">{uid && ticketId ? `${uid} / ${ticketId}` : 'Missing ticket id'}</p>
+          <p class="admin-page-subtitle">
+            {resolvedParams.value.uid && resolvedParams.value.ticketId
+              ? `${resolvedParams.value.uid} / ${resolvedParams.value.ticketId}`
+              : 'Missing ticket id'}
+          </p>
         </div>
 
         <label class="admin-field" style={{ minWidth: '180px' }}>

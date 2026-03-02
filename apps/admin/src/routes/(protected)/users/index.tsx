@@ -1,5 +1,4 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Link } from '@builder.io/qwik-city';
 import { callAdminListUsers } from '../../../lib/firebase/callables-admin';
 import { getAdminUserPath } from '../../../lib/routes/admin-routes';
 import type { AdminSortDir, AdminUserRow, AdminUsersSortBy } from '../../../lib/types/admin';
@@ -137,9 +136,9 @@ export default component$(() => {
                     </span>
                   </td>
                   <td>
-                    <Link href={getAdminUserPath(row.uid)} class="admin-button secondary" style={{ display: 'inline-block' }}>
+                    <a href={getAdminUserPath(row.uid)} class="admin-button secondary" style={{ display: 'inline-block' }}>
                       Open
-                    </Link>
+                    </a>
                   </td>
                 </tr>
               ))}

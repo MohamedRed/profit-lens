@@ -1,5 +1,5 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Link, useLocation } from '@builder.io/qwik-city';
+import { useLocation } from '@builder.io/qwik-city';
 import { ErrorBanner, LoadingPanel } from '../../../../components/ui/page-state';
 import { callAdminGetUserSnapshot } from '../../../../lib/firebase/callables-admin';
 import { getAdminTicketPath } from '../../../../lib/routes/admin-routes';
@@ -7,6 +7,12 @@ import type { AdminUserSnapshotResponse } from '../../../../lib/types/admin';
 import { formatCurrency, formatDateTime, formatNumber } from '../../../../lib/utils/format';
 
 const readUidFromQuery = (url: URL): string => url.searchParams.get('uid')?.trim() ?? '';
+const resolveRuntimeUrl = (fallback: URL): URL => {
+  if (typeof window === 'undefined') {
+    return fallback;
+  }
+  return new URL(window.location.href);
+};
 
 export default component$(() => {
   const location = useLocation();
@@ -14,9 +20,11 @@ export default component$(() => {
   const loading = useSignal(true);
   const error = useSignal('');
   const data = useSignal<AdminUserSnapshotResponse | null>(null);
+  const resolvedUid = useSignal('');
 
   const loadSnapshot$ = $(async () => {
-    const uid = readUidFromQuery(location.url);
+    const uid = readUidFromQuery(resolveRuntimeUrl(location.url));
+    resolvedUid.value = uid;
     if (!uid) {
       loading.value = false;
       data.value = null;
@@ -45,14 +53,12 @@ export default component$(() => {
     await loadSnapshot$();
   });
 
-  const uid = readUidFromQuery(location.url);
-
   return (
     <>
       <header class="admin-header">
         <div>
           <h1 class="admin-page-title">User snapshot</h1>
-          <p class="admin-page-subtitle">{uid || 'Missing user id'}</p>
+          <p class="admin-page-subtitle">{resolvedUid.value || 'Missing user id'}</p>
         </div>
 
         <label class="admin-field" style={{ minWidth: '180px' }}>
@@ -118,7 +124,7 @@ export default component$(() => {
             {data.value.recentTickets.map((ticket) => (
               <p key={ticket.ticketId}>
                 {formatDateTime(ticket.updatedAtIso)} · {ticket.status ?? 'unknown'} ·{' '}
-                <Link href={getAdminTicketPath(ticket.uid, ticket.ticketId)}>{ticket.ticketId}</Link>
+                <a href={getAdminTicketPath(ticket.uid, ticket.ticketId)}>{ticket.ticketId}</a>
               </p>
             ))}
           </article>

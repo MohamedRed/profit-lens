@@ -1,5 +1,4 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Link } from '@builder.io/qwik-city';
 import { ErrorBanner, EmptyPanel, LoadingPanel } from '../../../components/ui/page-state';
 import { callAdminListHelpTickets } from '../../../lib/firebase/callables-admin';
 import { getAdminTicketPath } from '../../../lib/routes/admin-routes';
@@ -153,13 +152,13 @@ export default component$(() => {
                   <td>{formatDateTime(row.createdAtIso)}</td>
                   <td>{formatDateTime(row.updatedAtIso)}</td>
                   <td>
-                    <Link
+                    <a
                       href={getAdminTicketPath(row.uid, row.ticketId)}
                       class="admin-button secondary"
                       style={{ display: 'inline-block' }}
                     >
                       Open
-                    </Link>
+                    </a>
                   </td>
                 </tr>
               ))}
