@@ -5,6 +5,7 @@ import { callAdminGetUserSnapshot } from '../../../../lib/firebase/callables-adm
 import { getAdminTicketPath } from '../../../../lib/routes/admin-routes';
 import type { AdminUserSnapshotResponse } from '../../../../lib/types/admin';
 import { formatCurrency, formatDateTime, formatNumber } from '../../../../lib/utils/format';
+import { IconLabel } from '../../../../components/ui/icon-label';
 
 const readUidFromQuery = (url: URL): string => url.searchParams.get('uid')?.trim() ?? '';
 const resolveRuntimeUrl = (fallback: URL): URL => {
@@ -81,7 +82,7 @@ export default component$(() => {
       {!loading.value && data.value && (
         <div class="admin-grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))' }}>
           <article class="admin-card">
-            <h3>Profile</h3>
+            <h3><IconLabel icon="person" text="Profile" /></h3>
             <p><strong>UID:</strong> {data.value.user.uid}</p>
             <p><strong>Email:</strong> {data.value.user.email ?? data.value.user.emailMasked ?? '—'}</p>
             <p><strong>Created:</strong> {formatDateTime(data.value.user.createdAtIso)}</p>
@@ -90,7 +91,7 @@ export default component$(() => {
           </article>
 
           <article class="admin-card">
-            <h3>Entitlement</h3>
+            <h3><IconLabel icon="workspace_premium" text="Entitlement" /></h3>
             <p><strong>Plan:</strong> {data.value.entitlement.planId ?? '—'}</p>
             <p><strong>Status:</strong> {data.value.entitlement.status ?? '—'}</p>
             <p><strong>Limit:</strong> {formatNumber(data.value.entitlement.offerLimit)}</p>
@@ -99,7 +100,7 @@ export default component$(() => {
           </article>
 
           <article class="admin-card">
-            <h3>Devices</h3>
+            <h3><IconLabel icon="devices" text="Devices" /></h3>
             {data.value.devices.length === 0 && <p class="admin-muted">No devices found.</p>}
             {data.value.devices.map((device) => (
               <p key={device.deviceId}>
@@ -109,7 +110,7 @@ export default component$(() => {
           </article>
 
           <article class="admin-card" style={{ gridColumn: '1 / -1' }}>
-            <h3>Recent offers</h3>
+            <h3><IconLabel icon="history" text="Recent offers" /></h3>
             {data.value.recentOffers.length === 0 && <p class="admin-muted">No offers found.</p>}
             {data.value.recentOffers.map((offer) => (
               <p key={offer.offerId}>
@@ -119,7 +120,7 @@ export default component$(() => {
           </article>
 
           <article class="admin-card" style={{ gridColumn: '1 / -1' }}>
-            <h3>Recent tickets</h3>
+            <h3><IconLabel icon="support_agent" text="Recent tickets" /></h3>
             {data.value.recentTickets.length === 0 && <p class="admin-muted">No tickets found.</p>}
             {data.value.recentTickets.map((ticket) => (
               <p key={ticket.ticketId}>

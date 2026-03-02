@@ -3,6 +3,7 @@ import { callAdminGetOverview } from '../../lib/firebase/callables-admin';
 import type { AdminGetOverviewResponse, AdminRangeDays } from '../../lib/types/admin';
 import { formatNumber, formatPercentDelta } from '../../lib/utils/format';
 import { ErrorBanner, LoadingPanel } from '../../components/ui/page-state';
+import { IconLabel } from '../../components/ui/icon-label';
 
 const rangeOptions: AdminRangeDays[] = [7, 30, 90];
 
@@ -34,7 +35,7 @@ export default component$(() => {
         </div>
 
         <label class="admin-field" style={{ minWidth: '140px' }}>
-          <span>Range</span>
+          <span><IconLabel icon="calendar_month" text="Range" size="sm" /></span>
           <select
             value={String(rangeDays.value)}
             onChange$={(_, target) => {
@@ -55,7 +56,7 @@ export default component$(() => {
         <>
           <section class="admin-grid kpi">
             <article class="admin-card">
-              <h4>Total users</h4>
+              <h4><IconLabel icon="group" text="Total users" /></h4>
               <div class="admin-kpi-value">{formatNumber(data.value.kpis.totalUsers)}</div>
               <div class={{ 'admin-kpi-delta': true, [data.value.deltas.activeUsersInRange.trend]: true }}>
                 Active users {formatPercentDelta(data.value.deltas.activeUsersInRange.percentChange)}
@@ -63,7 +64,7 @@ export default component$(() => {
             </article>
 
             <article class="admin-card">
-              <h4>Offers in range</h4>
+              <h4><IconLabel icon="local_shipping" text="Offers in range" /></h4>
               <div class="admin-kpi-value">{formatNumber(data.value.kpis.offersInRange)}</div>
               <div class={{ 'admin-kpi-delta': true, [data.value.deltas.offersInRange.trend]: true }}>
                 {formatPercentDelta(data.value.deltas.offersInRange.percentChange)} vs previous period
@@ -71,7 +72,7 @@ export default component$(() => {
             </article>
 
             <article class="admin-card">
-              <h4>Profitability split</h4>
+              <h4><IconLabel icon="trending_up" text="Profitability split" /></h4>
               <div class="admin-kpi-value">
                 {formatNumber(data.value.kpis.positiveOffersInRange)} / {formatNumber(data.value.kpis.negativeOffersInRange)}
               </div>
@@ -79,7 +80,7 @@ export default component$(() => {
             </article>
 
             <article class="admin-card">
-              <h4>Ticket states</h4>
+              <h4><IconLabel icon="support_agent" text="Ticket states" /></h4>
               <div class="admin-kpi-value">
                 {formatNumber(data.value.kpis.openTicketsInRange)} / {formatNumber(data.value.kpis.resolvedTicketsInRange)}
               </div>
@@ -91,7 +92,7 @@ export default component$(() => {
 
           <section class="admin-grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))' }}>
             <article class="admin-card">
-              <h3>Entitlements</h3>
+              <h3><IconLabel icon="workspace_premium" text="Entitlements" /></h3>
               <p class="admin-muted" style={{ margin: 0 }}>
                 Paid users: {formatNumber(data.value.kpis.paidUsers)}
               </p>
@@ -101,7 +102,7 @@ export default component$(() => {
             </article>
 
             <article class="admin-card">
-              <h3>Generated at</h3>
+              <h3><IconLabel icon="schedule" text="Generated at" /></h3>
               <p class="admin-muted" style={{ margin: 0 }}>{new Date(data.value.generatedAtIso).toLocaleString()}</p>
             </article>
           </section>
