@@ -24,6 +24,8 @@
 .admin-nav {
   display: grid;
   gap: 6px;
+  align-content: start;
+  grid-auto-rows: min-content;
 }
 
 .admin-nav a {
