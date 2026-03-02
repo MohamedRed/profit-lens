@@ -1,15 +1,3 @@
-:root {
-  --admin-bg: #f3f6fb;
-  --admin-panel: #ffffff;
-  --admin-border: #d9e2f0;
-  --admin-text: #172033;
-  --admin-muted: #5d6b86;
-  --admin-primary: #2563eb;
-  --admin-primary-soft: #dbeafe;
-  --admin-success: #0f9d58;
-  --admin-danger: #d93025;
-}
-
 * {
   box-sizing: border-box;
 }
@@ -19,9 +7,9 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
-  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  font-family: var(--pl-font-body);
   color: var(--admin-text);
-  background: radial-gradient(circle at top right, #fef7e8 0%, #f3f6fb 40%);
+  background: var(--admin-bg);
 }
 
 a {
@@ -43,23 +31,23 @@ select {
 .admin-field input,
 .admin-field select {
   border: 1px solid var(--admin-border);
-  border-radius: 12px;
+  border-radius: var(--pl-radius-lg);
   padding: 11px 12px;
-  background: #fff;
+  background: var(--admin-panel);
 }
 
 .admin-field input:focus,
 .admin-field select:focus {
-  outline: 2px solid rgba(37, 99, 235, 0.22);
+  outline: 2px solid var(--admin-primary-soft);
   border-color: var(--admin-primary);
 }
 
 .admin-button {
   border: none;
-  border-radius: 12px;
+  border-radius: var(--pl-radius-pill);
   padding: 11px 14px;
   background: var(--admin-primary);
-  color: white;
+  color: var(--pl-color-on-accent);
   font-weight: 600;
   cursor: pointer;
 }
@@ -70,7 +58,7 @@ select {
 }
 
 .admin-button.secondary {
-  background: #e7ecf7;
+  background: var(--pl-color-surface-elevated);
   color: var(--admin-text);
 }
 
@@ -84,22 +72,22 @@ select {
   gap: 6px;
   border-radius: 999px;
   padding: 4px 10px;
-  background: #eef2fb;
+  background: var(--admin-primary-soft);
   font-size: 0.82rem;
 }
 
 .admin-banner {
-  border-radius: 12px;
-  border: 1px solid #fecaca;
-  background: #fff1f2;
-  color: #b91c1c;
+  border-radius: var(--pl-radius-lg);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--admin-danger);
   padding: 10px 12px;
 }
 
 .admin-empty,
 .admin-loading {
   border: 1px dashed var(--admin-border);
-  border-radius: 12px;
+  border-radius: var(--pl-radius-lg);
   padding: 24px;
   color: var(--admin-muted);
   text-align: center;
@@ -113,7 +101,12 @@ select {
 .admin-loading-line {
   height: 14px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #ecf1f8 0%, #f5f8fc 50%, #ecf1f8 100%);
+  background: linear-gradient(
+    90deg,
+    var(--pl-color-surface) 0%,
+    var(--pl-color-surface-elevated) 50%,
+    var(--pl-color-surface) 100%
+  );
   background-size: 200% 100%;
   animation: admin-loading 1.2s ease-in-out infinite;
 }

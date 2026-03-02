@@ -5,18 +5,20 @@
 }
 
 .admin-sidebar {
-  background: #0b1220;
-  color: #f7f9ff;
+  background: var(--admin-panel);
+  color: var(--admin-text);
   padding: 24px 16px;
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 20px;
+  border-right: 1px solid var(--admin-border);
 }
 
 .admin-brand {
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.01em;
+  font-family: var(--pl-font-display);
 }
 
 .admin-nav {
@@ -28,14 +30,15 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #d6ddf0;
-  border-radius: 10px;
+  color: var(--admin-muted);
+  border-radius: var(--pl-radius-lg);
   padding: 10px 12px;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .admin-nav a.active {
-  background: #111d34;
-  color: #ffffff;
+  background: var(--admin-primary-soft);
+  color: var(--admin-primary);
 }
 
 .admin-main {
@@ -54,6 +57,7 @@
 .admin-page-title {
   margin: 0;
   font-size: 1.7rem;
+  font-family: var(--pl-font-display);
 }
 
 .admin-page-subtitle {
@@ -73,8 +77,9 @@
 .admin-card {
   background: var(--admin-panel);
   border: 1px solid var(--admin-border);
-  border-radius: 16px;
+  border-radius: var(--pl-radius-xl);
   padding: 16px;
+  box-shadow: var(--pl-shadow-card);
 }
 
 .admin-card h3,
@@ -104,8 +109,8 @@
 .admin-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--admin-border);
-  border-radius: 14px;
-  background: #fff;
+  border-radius: var(--pl-radius-lg);
+  background: var(--admin-panel);
 }
 
 .admin-table {
@@ -118,7 +123,7 @@
 .admin-table td {
   text-align: left;
   padding: 11px 12px;
-  border-bottom: 1px solid #edf1f7;
+  border-bottom: 1px solid var(--admin-border);
   vertical-align: top;
 }
 

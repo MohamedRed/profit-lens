@@ -1,0 +1,58 @@
+:root {
+  --pl-font-body: 'Roboto', 'Avenir Next', 'Segoe UI', sans-serif;
+  --pl-font-display: 'Roboto', 'Avenir Next', 'Segoe UI', sans-serif;
+
+  --pl-color-background: #ffffff;
+  --pl-color-surface: #f4f4f5;
+  --pl-color-surface-elevated: #e4e4e7;
+  --pl-color-outline: #d4d4d8;
+  --pl-color-overlay: #ffffff;
+
+  --pl-color-text-primary: #18181b;
+  --pl-color-text-secondary: #71717a;
+  --pl-color-text-tertiary: #a1a1aa;
+  --pl-color-text-muted: #d4d4d8;
+  --pl-color-text-subtle: #52525b;
+
+  --pl-color-purple: #8b5cf6;
+  --pl-color-teal: #14b8a6;
+  --pl-color-pink: #f472b6;
+  --pl-color-blue: #8b5cf6;
+  --pl-color-danger: #ef4444;
+  --pl-color-success: #14b8a6;
+  --pl-color-purple-soft: rgba(139, 92, 246, 0.125);
+  --pl-color-on-accent: #ffffff;
+  --pl-color-on-accent-muted: rgba(255, 255, 255, 0.7);
+
+  --pl-space-xs: 4px;
+  --pl-space-sm: 8px;
+  --pl-space-md: 12px;
+  --pl-space-lg: 16px;
+  --pl-space-xl: 20px;
+  --pl-space-xxl: 24px;
+  --pl-space-section: 32px;
+
+  --pl-radius-sm: 14px;
+  --pl-radius-md: 18px;
+  --pl-radius-lg: 20px;
+  --pl-radius-xl: 24px;
+  --pl-radius-xxl: 26px;
+  --pl-radius-pill: 100px;
+
+  --pl-shadow-card: 0 0 0 rgba(0, 0, 0, 0);
+  --pl-shadow-active: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  --pl-size-search-height: 52px;
+  --pl-size-button-height: 48px;
+  --pl-size-control-height: 48px;
+
+  --admin-bg: var(--pl-color-background);
+  --admin-panel: var(--pl-color-surface);
+  --admin-border: var(--pl-color-outline);
+  --admin-text: var(--pl-color-text-primary);
+  --admin-muted: var(--pl-color-text-secondary);
+  --admin-primary: var(--pl-color-purple);
+  --admin-primary-soft: var(--pl-color-purple-soft);
+  --admin-success: var(--pl-color-success);
+  --admin-danger: var(--pl-color-danger);
+}

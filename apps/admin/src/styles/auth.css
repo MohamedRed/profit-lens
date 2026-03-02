@@ -3,14 +3,15 @@
   display: grid;
   place-items: center;
   padding: 24px;
+  background: var(--admin-bg);
 }
 
 .admin-auth-card {
   width: min(420px, 100%);
   background: var(--admin-panel);
   border: 1px solid var(--admin-border);
-  border-radius: 20px;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+  border-radius: var(--pl-radius-xxl);
+  box-shadow: var(--pl-shadow-active);
   padding: 28px;
   display: grid;
   gap: 16px;
@@ -19,6 +20,7 @@
 .admin-auth-card h1 {
   margin: 0;
   font-size: 1.9rem;
+  font-family: var(--pl-font-display);
 }
 
 .admin-status {
