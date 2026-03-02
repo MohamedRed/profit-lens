@@ -4,7 +4,6 @@ import { callAdminListHelpTickets } from '../../../lib/firebase/callables-admin'
 import { getAdminTicketPath } from '../../../lib/routes/admin-routes';
 import type { AdminHelpTicketRow } from '../../../lib/types/admin';
 import { formatDateTime } from '../../../lib/utils/format';
-import { IconLabel } from '../../../components/ui/icon-label';
 
 export default component$(() => {
   const uid = useSignal('');
@@ -63,7 +62,7 @@ export default component$(() => {
 
       <section class="admin-card admin-toolbar">
         <label class="admin-field">
-          <span><IconLabel icon="badge" text="UID" size="sm" /></span>
+          <span>UID</span>
           <input
             type="text"
             value={uid.value}
@@ -75,7 +74,7 @@ export default component$(() => {
         </label>
 
         <label class="admin-field">
-          <span><IconLabel icon="pending_actions" text="Status" size="sm" /></span>
+          <span>Status</span>
           <input
             type="text"
             value={status.value}
@@ -87,7 +86,7 @@ export default component$(() => {
         </label>
 
         <label class="admin-field">
-          <span><IconLabel icon="assignment_turned_in" text="Deliverer status" size="sm" /></span>
+          <span>Deliverer status</span>
           <input
             type="text"
             value={delivererStatus.value}
@@ -105,14 +104,14 @@ export default component$(() => {
 
       <section class="admin-grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
         <article class="admin-card">
-          <h4><IconLabel icon="insights" text="Status counters" /></h4>
+          <h4>Status counters</h4>
           {Object.entries(counters.value.byStatus).map(([key, value]) => (
             <p key={key} class="admin-muted">{key}: {value}</p>
           ))}
         </article>
 
         <article class="admin-card">
-          <h4><IconLabel icon="analytics" text="Deliverer counters" /></h4>
+          <h4>Deliverer counters</h4>
           {Object.entries(counters.value.byDelivererStatus).map(([key, value]) => (
             <p key={key} class="admin-muted">{key}: {value}</p>
           ))}
@@ -129,13 +128,13 @@ export default component$(() => {
           <table class="admin-table">
             <thead>
               <tr>
-                <th><IconLabel icon="confirmation_number" text="Ticket" size="sm" /></th>
-                <th><IconLabel icon="badge" text="UID" size="sm" /></th>
-                <th><IconLabel icon="person" text="User" size="sm" /></th>
-                <th><IconLabel icon="pending_actions" text="Status" size="sm" /></th>
-                <th><IconLabel icon="assignment_turned_in" text="Deliverer status" size="sm" /></th>
-                <th><IconLabel icon="event" text="Created" size="sm" /></th>
-                <th><IconLabel icon="update" text="Updated" size="sm" /></th>
+                <th>Ticket</th>
+                <th>UID</th>
+                <th>User</th>
+                <th>Status</th>
+                <th>Deliverer status</th>
+                <th>Created</th>
+                <th>Updated</th>
                 <th></th>
               </tr>
             </thead>

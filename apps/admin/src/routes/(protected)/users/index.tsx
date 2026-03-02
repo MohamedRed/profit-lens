@@ -4,7 +4,6 @@ import { getAdminUserPath } from '../../../lib/routes/admin-routes';
 import type { AdminSortDir, AdminUserRow, AdminUsersSortBy } from '../../../lib/types/admin';
 import { ErrorBanner, EmptyPanel, LoadingPanel } from '../../../components/ui/page-state';
 import { formatDateTime, formatNumber } from '../../../lib/utils/format';
-import { IconLabel } from '../../../components/ui/icon-label';
 
 export default component$(() => {
   const query = useSignal('');
@@ -58,7 +57,7 @@ export default component$(() => {
 
       <section class="admin-card admin-toolbar">
         <label class="admin-field" style={{ minWidth: '250px' }}>
-          <span><IconLabel icon="search" text="Search" size="sm" /></span>
+          <span>Search</span>
           <input
             type="text"
             placeholder="Search by uid or masked email"
@@ -70,7 +69,7 @@ export default component$(() => {
         </label>
 
         <label class="admin-field">
-          <span><IconLabel icon="sort" text="Sort by" size="sm" /></span>
+          <span>Sort by</span>
           <select
             value={sortBy.value}
             onChange$={(_, target) => {
@@ -84,7 +83,7 @@ export default component$(() => {
         </label>
 
         <label class="admin-field">
-          <span><IconLabel icon="swap_vert" text="Direction" size="sm" /></span>
+          <span>Direction</span>
           <select
             value={sortDir.value}
             onChange$={(_, target) => {
@@ -111,12 +110,12 @@ export default component$(() => {
           <table class="admin-table">
             <thead>
               <tr>
-                <th><IconLabel icon="person" text="User" size="sm" /></th>
-                <th><IconLabel icon="event" text="Created" size="sm" /></th>
-                <th><IconLabel icon="schedule" text="Last activity" size="sm" /></th>
-                <th><IconLabel icon="local_shipping" text="Offers (30d)" size="sm" /></th>
-                <th><IconLabel icon="support_agent" text="Tickets (30d)" size="sm" /></th>
-                <th><IconLabel icon="workspace_premium" text="Entitlement" size="sm" /></th>
+                <th>User</th>
+                <th>Created</th>
+                <th>Last activity</th>
+                <th>Offers (30d)</th>
+                <th>Tickets (30d)</th>
+                <th>Entitlement</th>
                 <th></th>
               </tr>
             </thead>

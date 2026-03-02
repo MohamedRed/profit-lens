@@ -7,7 +7,6 @@ import type {
   AdminProfitabilityFilter,
 } from '../../../lib/types/admin';
 import { formatCurrency, formatDateTime, formatNumber } from '../../../lib/utils/format';
-import { IconLabel } from '../../../components/ui/icon-label';
 
 export default component$(() => {
   const uid = useSignal('');
@@ -60,7 +59,7 @@ export default component$(() => {
 
       <section class="admin-card admin-toolbar">
         <label class="admin-field">
-          <span><IconLabel icon="badge" text="UID" size="sm" /></span>
+          <span>UID</span>
           <input
             type="text"
             placeholder="Optional uid"
@@ -72,7 +71,7 @@ export default component$(() => {
         </label>
 
         <label class="admin-field">
-          <span><IconLabel icon="source" text="Source" size="sm" /></span>
+          <span>Source</span>
           <select
             value={source.value}
             onChange$={(_, target) => {
@@ -86,7 +85,7 @@ export default component$(() => {
         </label>
 
         <label class="admin-field">
-          <span><IconLabel icon="trending_up" text="Profitability" size="sm" /></span>
+          <span>Profitability</span>
           <select
             value={profitability.value}
             onChange$={(_, target) => {
@@ -114,15 +113,15 @@ export default component$(() => {
           <table class="admin-table">
             <thead>
               <tr>
-                <th><IconLabel icon="badge" text="UID" size="sm" /></th>
-                <th><IconLabel icon="confirmation_number" text="Offer" size="sm" /></th>
-                <th><IconLabel icon="event" text="Created" size="sm" /></th>
-                <th><IconLabel icon="source" text="Source" size="sm" /></th>
-                <th><IconLabel icon="payments" text="Payout" size="sm" /></th>
-                <th><IconLabel icon="account_balance_wallet" text="Net profit" size="sm" /></th>
-                <th><IconLabel icon="route" text="Distance" size="sm" /></th>
-                <th><IconLabel icon="my_location" text="Pickup" size="sm" /></th>
-                <th><IconLabel icon="place" text="Dropoff" size="sm" /></th>
+                <th>UID</th>
+                <th>Offer</th>
+                <th>Created</th>
+                <th>Source</th>
+                <th>Payout</th>
+                <th>Net profit</th>
+                <th>Distance</th>
+                <th>Pickup</th>
+                <th>Dropoff</th>
               </tr>
             </thead>
             <tbody>
