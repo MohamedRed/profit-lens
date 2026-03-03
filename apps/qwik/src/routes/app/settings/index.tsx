@@ -8,6 +8,7 @@ import { formatCurrencyAmount } from '../../../lib/i18n/number-format';
 import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
 import { resolvePlanLabelFromEntitlement } from '../../../lib/features/billing/plan-resolution';
 import { startCheckout } from '../../../lib/features/billing/billing-service';
+import { attachReturnToAppLoadingReset } from '../../../lib/features/billing/loading-return-reset';
 import { isRunningAsInstalledPwa } from '../../../lib/features/pwa/pwa-install-state';
 import { saveSelectedVehicleEditorId } from '../../../lib/features/vehicles/vehicle-editor-selection';
 import type { Entitlement, OfferUsage } from '../../../lib/types/billing';
@@ -34,6 +35,12 @@ export default component$(() => {
   useSettingsTabSession({ auth, profile, vehicles, entitlement, usage, devices });
   useVisibleTask$(() => {
     showInstallTile.value = !isRunningAsInstalledPwa(window);
+  });
+  useVisibleTask$(({ cleanup }) => {
+    const removeListeners = attachReturnToAppLoadingReset(() => {
+      checkoutLoading.value = false;
+    });
+    cleanup(removeListeners);
   });
 
   const locale = i18n.locale.value;

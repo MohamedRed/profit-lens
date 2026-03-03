@@ -12,6 +12,7 @@ import {
   watchEntitlement,
   watchUsage,
 } from '../../../../lib/features/billing/billing-service';
+import { attachReturnToAppLoadingReset } from '../../../../lib/features/billing/loading-return-reset';
 import { formatBillingPlanLabel } from '../../../../lib/features/billing/billing-plan-format';
 import { shouldAttemptStripeEntitlementRepair } from '../../../../lib/features/billing/entitlement-repair';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
@@ -41,23 +42,10 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
   const status = useSignal('');
   const statusTone = useSignal<'success' | 'error'>('success');
   useVisibleTask$(({ cleanup }) => {
-    const resetLoadingState = () => {
+    const removeListeners = attachReturnToAppLoadingReset(() => {
       actionLoading.value = false;
-    };
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        resetLoadingState();
-      }
-    };
-
-    resetLoadingState();
-    window.addEventListener('pageshow', resetLoadingState);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    cleanup(() => {
-      window.removeEventListener('pageshow', resetLoadingState);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
     });
+    cleanup(removeListeners);
   });
 
   useVisibleTask$(({ track, cleanup }) => {

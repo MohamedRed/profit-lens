@@ -7,6 +7,7 @@ import {
   openStripeBillingPortal,
   watchEntitlement,
 } from '../../../../../lib/features/billing/billing-service';
+import { attachReturnToAppLoadingReset } from '../../../../../lib/features/billing/loading-return-reset';
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 import type {
   Entitlement,
@@ -28,6 +29,12 @@ export default component$(() => {
   const actionLoading = useSignal(false);
   const status = useSignal('');
   const statusTone = useSignal<'success' | 'error'>('success');
+  useVisibleTask$(({ cleanup }) => {
+    const removeListeners = attachReturnToAppLoadingReset(() => {
+      actionLoading.value = false;
+    });
+    cleanup(removeListeners);
+  });
 
   useVisibleTask$(({ track, cleanup }) => {
     const uid = track(() => auth.user.value?.uid ?? null);
