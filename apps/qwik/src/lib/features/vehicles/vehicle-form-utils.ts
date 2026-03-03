@@ -177,7 +177,8 @@ export const applyVehiclePresetValues = (
     next.energyConsumptionPer100Km = preset.consumptionPer100Km.toFixed(2);
     next.maintenancePerKm = preset.maintenancePerKm.toFixed(2);
     next.depreciationPerKm = preset.depreciationPerKm.toFixed(2);
-    if (preset.fuelType) {
+    // Preserve an explicit manual fuel selection; only seed a default when empty.
+    if (preset.fuelType && !next.fuelType) {
       next.fuelType = preset.fuelType;
     }
   }
