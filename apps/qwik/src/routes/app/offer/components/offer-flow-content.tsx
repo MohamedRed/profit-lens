@@ -29,6 +29,7 @@ interface OfferFlowContentProps {
   minProfitabilityEuro: Signal<number>;
   onAnalyzeManual$: QRL<() => Promise<void>>;
   onClearScreenshotPreview$: QRL<() => void>;
+  onDismissStatus$: QRL<() => void>;
   onImportScreenshotFile$: QRL<(fileToken: string) => Promise<void>>;
   onSaveProfitabilityTarget$: QRL<(value: string) => Promise<void>>;
   onViewDetails$: QRL<() => void | Promise<void>>;
@@ -37,6 +38,7 @@ interface OfferFlowContentProps {
   pickupName: Signal<string>;
   savingProfitTarget: Signal<boolean>;
   screenshotPreviewUrl: Signal<string | null>;
+  screenshotModalUrl: Signal<string | null>;
   selectedVehicleId: Signal<string>;
   status: Signal<string>;
   userId: string;
@@ -187,7 +189,8 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
 
             {props.screenshotPreviewUrl.value ? (
               <OfferScreenshotPreview
-                src={props.screenshotPreviewUrl.value}
+                thumbnailSrc={props.screenshotPreviewUrl.value}
+                previewSrc={props.screenshotModalUrl.value ?? props.screenshotPreviewUrl.value}
                 onRemove$={props.onClearScreenshotPreview$}
                 removeDisabled={
                   props.loading.value || props.analysisRecord.value !== null
@@ -196,7 +199,7 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             ) : null}
           </section>
 
-          <OfferFlowStatus status={props.status.value} />
+          <OfferFlowStatus status={props.status.value} onDismiss$={props.onDismissStatus$} />
 
           <OfferPresenceTransition
             class="ui-offer-overview-transition"

@@ -1,9 +1,13 @@
-import { $, component$, useSignal } from '@builder.io/qwik';
+import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
+import {
+  createOfferScreenshotModalUrl,
+  revokeOfferScreenshotModalUrl,
+} from '../../../lib/features/offers/offer-screenshot-modal-url';
 import { createOfferScreenshotPreviewDataUrl } from '../../../lib/features/offers/offer-screenshot-preview';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
@@ -42,6 +46,7 @@ export default component$(() => {
   const analysisRecord = useSignal<OfferAnalysisRecord | null>(null);
   const analysisRunId = useSignal(0);
   const screenshotPreviewUrl = useSignal<string | null>(null);
+  const screenshotModalUrl = useSignal<string | null>(null);
   useOfferLocationPrefetch();
   const offerTabSessionParams = {
     auth, payout, distance, duration, pickupName, pickupAddress, dropoffName, dropoffAddress,
@@ -49,6 +54,11 @@ export default component$(() => {
     manualEntryRequested, loading, status, analysisRecord, screenshotPreviewUrl,
   };
   useOfferTabSession(offerTabSessionParams);
+  useVisibleTask$(({ cleanup }) => {
+    cleanup(() => {
+      revokeOfferScreenshotModalUrl(screenshotModalUrl.value);
+    });
+  });
   const saveProfitabilityTarget$ = $(async (rawValue: string) => {
     const userProfile = profile.value;
     const normalizedValue = rawValue.trim().replace(',', '.');
@@ -165,7 +175,16 @@ export default component$(() => {
       status.value = resolveUserFacingErrorMessage(i18n, new Error('Missing authenticated user.'), 'offer');
       return;
     }
-    screenshotPreviewUrl.value = await createOfferScreenshotPreviewDataUrl(file);
+    const nextModalUrl = createOfferScreenshotModalUrl(file);
+    try {
+      const nextPreviewUrl = await createOfferScreenshotPreviewDataUrl(file);
+      revokeOfferScreenshotModalUrl(screenshotModalUrl.value);
+      screenshotModalUrl.value = nextModalUrl;
+      screenshotPreviewUrl.value = nextPreviewUrl;
+    } catch (error) {
+      revokeOfferScreenshotModalUrl(nextModalUrl);
+      throw error;
+    }
     loading.value = true;
     status.value = '';
     persistOfferTabSessionSnapshot(offerTabSessionParams);
@@ -233,6 +252,8 @@ export default component$(() => {
     if (loading.value) {
       return;
     }
+    revokeOfferScreenshotModalUrl(screenshotModalUrl.value);
+    screenshotModalUrl.value = null;
     screenshotPreviewUrl.value = null;
   });
   const viewDetails$ = $(async () => {
@@ -274,6 +295,7 @@ export default component$(() => {
       pickupName={pickupName}
       savingProfitTarget={savingProfitTarget}
       screenshotPreviewUrl={screenshotPreviewUrl}
+      screenshotModalUrl={screenshotModalUrl}
       selectedVehicleId={selectedVehicleId}
       status={status}
       vehicles={vehicles}
