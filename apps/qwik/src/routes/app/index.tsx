@@ -1,6 +1,6 @@
 import { component$ } from '@builder.io/qwik';
-import { AppBootBackdrop } from '../../components/ui/app-boot-backdrop';
+import { AppSplash } from '../../components/ui/app-splash';
 
 export default component$(() => {
-  return <AppBootBackdrop status="Preparing your workspace..." />;
+  return <AppSplash status="Preparing your workspace..." progress={0.98} />;
 });
