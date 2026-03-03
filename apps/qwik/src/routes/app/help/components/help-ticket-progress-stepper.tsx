@@ -2,29 +2,17 @@ import { component$ } from '@builder.io/qwik';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { HelpTicketTimelineEvent } from '../../../../lib/types/help';
 import { delivererStatusLabel } from '../../../../lib/features/help/help-ui-utils';
-
-type ProgressStepState = 'done' | 'current' | 'upcoming';
+import {
+  normalizeProgressionStatus,
+  progressionStatuses,
+  resolveProgressStepState,
+  type ProgressionStatus,
+} from '../../../../lib/features/help/help-progress';
 
 interface HelpTicketProgressStepperProps {
   currentStatus: string;
   events: HelpTicketTimelineEvent[];
 }
-
-const progressionStatuses = ['received', 'analyzing', 'needs_info', 'fix_ready', 'resolved'] as const;
-type ProgressionStatus = (typeof progressionStatuses)[number];
-
-const normalizeStatus = (value: string): ProgressionStatus | null => {
-  const normalized = value.trim().toLowerCase();
-  if (normalized === 'needsinfo') {
-    return 'needs_info';
-  }
-  if (normalized === 'fixready') {
-    return 'fix_ready';
-  }
-  return progressionStatuses.includes(normalized as ProgressionStatus)
-    ? (normalized as ProgressionStatus)
-    : null;
-};
 
 const statusColor = (status: ProgressionStatus): string => {
   if (status === 'received' || status === 'needs_info') {
@@ -65,24 +53,10 @@ const statusSoftFill = (status: ProgressionStatus): string => {
   return 'rgba(113, 113, 122, 0.15)';
 };
 
-const stepState = (
-  stepStatus: ProgressionStatus,
-  currentStatus: ProgressionStatus | null,
-  hasEvent: boolean,
-): ProgressStepState => {
-  if (stepStatus === currentStatus) {
-    return 'current';
-  }
-  if (hasEvent) {
-    return 'done';
-  }
-  return 'upcoming';
-};
-
 const latestEventByStatus = (events: HelpTicketTimelineEvent[]): Map<ProgressionStatus, HelpTicketTimelineEvent> => {
   const latest = new Map<ProgressionStatus, HelpTicketTimelineEvent>();
   for (const event of events) {
-    const key = normalizeStatus(event.status);
+    const key = normalizeProgressionStatus(event.status);
     if (!key) {
       continue;
     }
@@ -115,7 +89,7 @@ const formatTimelineDate = (eventAt: Date | null, locale: string, atLabel: strin
 
 export const HelpTicketProgressStepper = component$<HelpTicketProgressStepperProps>(({ currentStatus, events }) => {
   const i18n = useI18n();
-  const normalizedCurrent = normalizeStatus(currentStatus);
+  const normalizedCurrent = normalizeProgressionStatus(currentStatus);
   const byStatus = latestEventByStatus(events);
   const atLabel = t(i18n, 'helpTicketTimelineAtLabel', 'At');
   const locale = i18n.locale.value || 'en';
@@ -125,7 +99,11 @@ export const HelpTicketProgressStepper = component$<HelpTicketProgressStepperPro
       {progressionStatuses.map((status, index) => {
         const isLast = index === progressionStatuses.length - 1;
         const event = byStatus.get(status) ?? null;
-        const state = stepState(status, normalizedCurrent, event !== null);
+        const state = resolveProgressStepState({
+          stepStatus: status,
+          currentStatus: normalizedCurrent,
+          hasEvent: event !== null,
+        });
         const color = statusColor(status);
         const lineColor = state === 'upcoming' ? 'var(--pl-color-outline)' : statusSoftColor(status);
         const fillColor =
@@ -152,7 +130,7 @@ export const HelpTicketProgressStepper = component$<HelpTicketProgressStepperPro
               <p class={['ui-help-progress-label', state === 'upcoming' ? 'is-upcoming' : null]}>
                 {delivererStatusLabel(status, status, (key, fallbackText) => t(i18n, key, fallbackText))}
               </p>
-              {event ? (
+              {event && state !== 'upcoming' ? (
                 <>
                   <p class="ui-help-progress-date">{formatTimelineDate(event.at, locale, atLabel)}</p>
                   <p class="ui-help-progress-message">{event.message}</p>
