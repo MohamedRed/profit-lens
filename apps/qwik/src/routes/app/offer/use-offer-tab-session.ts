@@ -43,6 +43,13 @@ const resolveSelectedVehicleId = (
   return vehicles[0]?.id ?? '';
 };
 
+export const shouldResumeOfferAnalysisLoading = (
+  status: string,
+  analysisRecord: OfferAnalysisRecord | null,
+): boolean => {
+  return parseOfferAnalysisProgressStep(status) !== null && analysisRecord === null;
+};
+
 export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
   const {
     auth,
@@ -93,12 +100,10 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
       vehicles.value = session.vehicles;
       vehiclesLoading.value = session.vehiclesLoading;
       manualEntryRequested.value = session.manualEntryRequested;
-      status.value = parseOfferAnalysisProgressStep(session.status)
-        ? ''
-        : session.status;
+      status.value = session.status;
       analysisRecord.value = session.analysisRecord;
       screenshotPreviewUrl.value = session.screenshotPreviewUrl;
-      loading.value = false;
+      loading.value = shouldResumeOfferAnalysisLoading(session.status, session.analysisRecord);
     } else {
       payout.value = '';
       distance.value = '';
