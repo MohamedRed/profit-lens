@@ -58,7 +58,8 @@ function resolveDelivererStatusValue(input: {
   if (
     input.status === "awaiting_response" ||
     input.aiNeedsUserAction ||
-    input.codingAgentStatus === "no_changes"
+    input.codingAgentStatus === "no_changes" ||
+    input.codingAgentStatus === "failed"
   ) {
     return "needs_info";
   }
@@ -67,8 +68,7 @@ function resolveDelivererStatusValue(input: {
     input.status === "triaging" ||
     input.status === "in_progress" ||
     input.codingAgentStatus === "queued" ||
-    input.codingAgentStatus === "running" ||
-    input.codingAgentStatus === "failed"
+    input.codingAgentStatus === "running"
   ) {
     return "analyzing";
   }

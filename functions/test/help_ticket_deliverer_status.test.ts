@@ -37,15 +37,17 @@ describe("help ticket deliverer status resolver", () => {
     expect(result.delivererStatus).toBe("needs_info");
   });
 
-  it("maps failed coding status to analyzing", () => {
+  it("maps failed coding status to needs_info", () => {
     const result = resolveDelivererStatus({
       status: "open",
       codingAgentStatus: "failed",
       locale: "en",
     });
 
-    expect(result.delivererStatus).toBe("analyzing");
-    expect(result.delivererStatusMessage).toBe("Analysis in progress.");
+    expect(result.delivererStatus).toBe("needs_info");
+    expect(result.delivererStatusMessage).toBe(
+      "We need additional information to continue."
+    );
   });
 
   it("uses arabic localization", () => {
