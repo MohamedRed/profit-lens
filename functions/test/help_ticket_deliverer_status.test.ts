@@ -50,6 +50,19 @@ describe("help ticket deliverer status resolver", () => {
     );
   });
 
+  it("maps cancelled coding status to needs_info", () => {
+    const result = resolveDelivererStatus({
+      status: "open",
+      codingAgentStatus: "cancelled",
+      locale: "en",
+    });
+
+    expect(result.delivererStatus).toBe("needs_info");
+    expect(result.delivererStatusMessage).toBe(
+      "We need additional information to continue."
+    );
+  });
+
   it("uses arabic localization", () => {
     const result = resolveDelivererStatus({
       status: "awaiting_response",

@@ -251,3 +251,19 @@ jobs:
                 --arg message "$MESSAGE" \
                 '{ticketId: $ticketId, uid: $uid, status: "failed", message: $message}')"
           fi
+
+      - name: Notify cancelled
+        if: cancelled()
+        run: |
+          if [ -n "$TICKET_ID" ] && [ -n "$TICKET_UID" ]; then
+            RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            MESSAGE="AI help ticket workflow was cancelled. See run: $RUN_URL"
+            curl -sS --fail-with-body -X POST "$FIREBASE_HELP_TICKET_WEBHOOK_URL" \
+              -H "Authorization: Bearer $CODEX_HELP_TICKET_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n \
+                --arg ticketId "$TICKET_ID" \
+                --arg uid "$TICKET_UID" \
+                --arg message "$MESSAGE" \
+                '{ticketId: $ticketId, uid: $uid, status: "cancelled", message: $message}')"
+          fi

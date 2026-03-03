@@ -59,7 +59,8 @@ function resolveDelivererStatusValue(input: {
     input.status === "awaiting_response" ||
     input.aiNeedsUserAction ||
     input.codingAgentStatus === "no_changes" ||
-    input.codingAgentStatus === "failed"
+    input.codingAgentStatus === "failed" ||
+    input.codingAgentStatus === "cancelled"
   ) {
     return "needs_info";
   }

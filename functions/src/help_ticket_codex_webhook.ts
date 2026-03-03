@@ -111,12 +111,16 @@ function parsePayload(body: unknown): CodexWebhookPayload {
 
 function normalizeStatus(status: string) {
   const normalized = status.toLowerCase();
+  if (normalized === "canceled") {
+    return "cancelled";
+  }
   const allowed = new Set([
     "queued",
     "running",
     "pr_created",
     "no_changes",
     "failed",
+    "cancelled",
   ]);
   return allowed.has(normalized) ? normalized : null;
 }
@@ -146,6 +150,10 @@ function resolveStatusMessage(locale: string | undefined, status: string) {
       if (isFr) return "Échec de la préparation du correctif IA.";
       if (isAr) return "فشل وكيل الذكاء الاصطناعي في إعداد الإصلاح.";
       return "AI agent failed to prepare a fix.";
+    case "cancelled":
+      if (isFr) return "Exécution IA annulée.";
+      if (isAr) return "تم إلغاء تشغيل وكيل الذكاء الاصطناعي.";
+      return "AI agent run was cancelled.";
     default:
       return "AI agent update received.";
   }
