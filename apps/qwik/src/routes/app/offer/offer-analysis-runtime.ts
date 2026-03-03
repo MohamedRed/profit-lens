@@ -15,6 +15,7 @@ interface OfferAnalysisRuntimeSignals {
   analysisRunId: Signal<number>;
   loading: Signal<boolean>;
   status: Signal<string>;
+  onStatusUpdated?: () => void;
 }
 
 interface SetOfferAnalysisErrorStatusParams {
@@ -42,10 +43,12 @@ export const startOfferAnalysisProgress = ({
   analysisRunId,
   loading,
   status,
+  onStatusUpdated,
 }: OfferAnalysisRuntimeSignals) => {
   analysisRunId.value += 1;
   const runId = analysisRunId.value;
   status.value = toOfferAnalysisProgressStatus('extracting');
+  onStatusUpdated?.();
 
   const progressDriver = startOfferAnalysisProgressDriver({
     isActive: () => analysisRunId.value === runId && loading.value,
@@ -54,6 +57,7 @@ export const startOfferAnalysisProgress = ({
         return;
       }
       status.value = toOfferAnalysisProgressStatus(step);
+      onStatusUpdated?.();
     },
   });
 

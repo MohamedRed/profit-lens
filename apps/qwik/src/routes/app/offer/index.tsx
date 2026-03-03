@@ -6,27 +6,17 @@ import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-e
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
-import {
-  analyzeManualOfferAction,
-  analyzeScreenshotOfferAction,
-} from './offer-actions';
-import {
-  readRequiredCurrentLocation,
-} from './offer-current-location';
-import {
-  parseOfferAnalysisRecord,
-  type OfferAnalysisRecord,
-} from './offer-analysis-result';
-import {
-  setOfferAnalysisErrorStatus,
-  startOfferAnalysisProgress,
-} from './offer-analysis-runtime';
+import { analyzeManualOfferAction, analyzeScreenshotOfferAction } from './offer-actions';
+import { readRequiredCurrentLocation } from './offer-current-location';
+import { parseOfferAnalysisRecord, type OfferAnalysisRecord } from './offer-analysis-result';
+import { setOfferAnalysisErrorStatus, startOfferAnalysisProgress } from './offer-analysis-runtime';
 import { primeHistoryAfterAnalysis, primeOfferDetailsNavigation } from './offer-analysis-navigation';
 import { takeOfferScreenshotFile } from './offer-file-transfer-store';
 import { OfferFlowContent } from './components/offer-flow-content';
 import { ensureWithinOfferLimit } from './offer-flow-limits';
 import { loadOffersService } from './offer-service-loader';
 import { useOfferLocationPrefetch } from './use-offer-location-prefetch';
+import { persistOfferTabSessionSnapshot } from './offer-tab-session-persistence';
 import { useOfferTabSession } from './use-offer-tab-session';
 
 export default component$(() => {
@@ -52,27 +42,12 @@ export default component$(() => {
   const analysisRunId = useSignal(0);
   const screenshotPreviewUrl = useSignal<string | null>(null);
   useOfferLocationPrefetch();
-
-  useOfferTabSession({
-    auth,
-    payout,
-    distance,
-    duration,
-    pickupName,
-    pickupAddress,
-    dropoffName,
-    dropoffAddress,
-    profile,
-    minProfitabilityEuro,
-    selectedVehicleId,
-    vehicles,
-    vehiclesLoading,
-    manualEntryRequested,
-    loading,
-    status,
-    analysisRecord,
-    screenshotPreviewUrl,
-  });
+  const offerTabSessionParams = {
+    auth, payout, distance, duration, pickupName, pickupAddress, dropoffName, dropoffAddress,
+    profile, minProfitabilityEuro, selectedVehicleId, vehicles, vehiclesLoading,
+    manualEntryRequested, loading, status, analysisRecord, screenshotPreviewUrl,
+  };
+  useOfferTabSession(offerTabSessionParams);
   const saveProfitabilityTarget$ = $(async (rawValue: string) => {
     const userProfile = profile.value;
     const normalizedValue = rawValue.trim().replace(',', '.');
@@ -115,7 +90,9 @@ export default component$(() => {
       analysisRunId,
       loading,
       status,
+      onStatusUpdated: () => persistOfferTabSessionSnapshot(offerTabSessionParams),
     });
+    persistOfferTabSessionSnapshot(offerTabSessionParams);
     try {
       const currentLocation = await readRequiredCurrentLocation();
       const payload = await analyzeManualOfferAction({
@@ -139,10 +116,12 @@ export default component$(() => {
         return;
       }
       analysisRecord.value = parsed;
+      persistOfferTabSessionSnapshot(offerTabSessionParams);
       primeHistoryAfterAnalysis(user.uid, parsed);
       await progressDriver.waitForMinimumDuration();
       if (analysisRunId.value === runId) {
         status.value = 'Offer analyzed.';
+        persistOfferTabSessionSnapshot(offerTabSessionParams);
       }
     } catch (error) {
       if (analysisRunId.value === runId) {
@@ -152,11 +131,13 @@ export default component$(() => {
           i18n,
           status,
         });
+        persistOfferTabSessionSnapshot(offerTabSessionParams);
       }
     } finally {
       progressDriver.cancel();
       if (analysisRunId.value === runId) {
         loading.value = false;
+        persistOfferTabSessionSnapshot(offerTabSessionParams);
       }
     }
   });
@@ -189,6 +170,7 @@ export default component$(() => {
     screenshotPreviewUrl.value = URL.createObjectURL(file);
     loading.value = true;
     status.value = '';
+    persistOfferTabSessionSnapshot(offerTabSessionParams);
     const withinLimit = await ensureWithinOfferLimit(user.uid);
     if (!withinLimit) {
       status.value = t(
@@ -197,13 +179,16 @@ export default component$(() => {
         'You have reached your monthly offer limit. Upgrade to continue.',
       );
       loading.value = false;
+      persistOfferTabSessionSnapshot(offerTabSessionParams);
       return;
     }
     const { progressDriver, runId } = startOfferAnalysisProgress({
       analysisRunId,
       loading,
       status,
+      onStatusUpdated: () => persistOfferTabSessionSnapshot(offerTabSessionParams),
     });
+    persistOfferTabSessionSnapshot(offerTabSessionParams);
     try {
       const currentLocation = await readRequiredCurrentLocation();
       const payload = await analyzeScreenshotOfferAction({
@@ -221,10 +206,12 @@ export default component$(() => {
         return;
       }
       analysisRecord.value = parsed;
+      persistOfferTabSessionSnapshot(offerTabSessionParams);
       primeHistoryAfterAnalysis(user.uid, parsed);
       await progressDriver.waitForMinimumDuration();
       if (analysisRunId.value === runId) {
         status.value = 'Screenshot analyzed.';
+        persistOfferTabSessionSnapshot(offerTabSessionParams);
       }
     } catch (error) {
       if (analysisRunId.value === runId) {
@@ -234,11 +221,13 @@ export default component$(() => {
           i18n,
           status,
         });
+        persistOfferTabSessionSnapshot(offerTabSessionParams);
       }
     } finally {
       progressDriver.cancel();
       if (analysisRunId.value === runId) {
         loading.value = false;
+        persistOfferTabSessionSnapshot(offerTabSessionParams);
       }
     }
   });

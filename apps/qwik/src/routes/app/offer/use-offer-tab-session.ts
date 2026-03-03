@@ -6,9 +6,10 @@ import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
 import type { OfferAnalysisRecord } from './offer-analysis-result';
 import { parseOfferAnalysisProgressStep } from './offer-analysis-progress';
-import { readOfferTabSessionState, writeOfferTabSessionState } from './offer-tab-session';
+import { persistOfferTabSessionSnapshot } from './offer-tab-session-persistence';
+import { readOfferTabSessionState } from './offer-tab-session';
 
-interface UseOfferTabSessionParams {
+export interface UseOfferTabSessionParams {
   auth: AuthStore;
   payout: Signal<string>;
   distance: Signal<string>;
@@ -151,49 +152,65 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
     });
   });
 
+  useVisibleTask$(({ track, cleanup }) => {
+    const authReady = track(() => auth.ready.value);
+    const uid = track(() => auth.user.value?.uid);
+    const loadingActive = track(() => loading.value);
+    const currentAnalysisId = track(() => analysisRecord.value?.id ?? null);
+    if (!authReady || !uid || !loadingActive || currentAnalysisId) {
+      return;
+    }
+
+    const syncTimer = window.setInterval(() => {
+      const session = readOfferTabSessionState(uid);
+      if (!session) {
+        return;
+      }
+      if (session.status !== status.value) {
+        status.value = session.status;
+      }
+      if (session.analysisRecord && session.analysisRecord.id !== analysisRecord.value?.id) {
+        analysisRecord.value = session.analysisRecord;
+      }
+      if (session.screenshotPreviewUrl !== screenshotPreviewUrl.value) {
+        screenshotPreviewUrl.value = session.screenshotPreviewUrl;
+      }
+      const nextLoading = shouldResumeOfferAnalysisLoading(session.status, session.analysisRecord);
+      if (nextLoading !== loading.value) {
+        loading.value = nextLoading;
+      }
+    }, 250);
+
+    cleanup(() => {
+      window.clearInterval(syncTimer);
+    });
+  });
+
   useVisibleTask$(({ track }) => {
     const authReady = track(() => auth.ready.value);
     const uid = track(() => auth.user.value?.uid);
     const sessionUid = track(() => hydratedSessionUid.value);
-    const currentPayout = track(() => payout.value);
-    const currentDistance = track(() => distance.value);
-    const currentDuration = track(() => duration.value);
-    const currentPickupName = track(() => pickupName.value);
-    const currentPickupAddress = track(() => pickupAddress.value);
-    const currentDropoffName = track(() => dropoffName.value);
-    const currentDropoffAddress = track(() => dropoffAddress.value);
-    const currentProfile = track(() => profile.value);
-    const currentMinProfitability = track(() => minProfitabilityEuro.value);
-    const currentVehicleId = track(() => selectedVehicleId.value);
-    const currentVehicles = track(() => vehicles.value);
-    const currentVehiclesLoading = track(() => vehiclesLoading.value);
-    const currentManualEntryRequested = track(() => manualEntryRequested.value);
-    const currentStatus = track(() => status.value);
-    const currentAnalysisRecord = track(() => analysisRecord.value);
-    const currentScreenshotPreviewUrl = track(() => screenshotPreviewUrl.value);
+    track(() => payout.value);
+    track(() => distance.value);
+    track(() => duration.value);
+    track(() => pickupName.value);
+    track(() => pickupAddress.value);
+    track(() => dropoffName.value);
+    track(() => dropoffAddress.value);
+    track(() => profile.value);
+    track(() => minProfitabilityEuro.value);
+    track(() => selectedVehicleId.value);
+    track(() => vehicles.value);
+    track(() => vehiclesLoading.value);
+    track(() => manualEntryRequested.value);
+    track(() => status.value);
+    track(() => analysisRecord.value);
+    track(() => screenshotPreviewUrl.value);
 
     if (!authReady || !uid || sessionUid !== uid) {
       return;
     }
 
-    writeOfferTabSessionState({
-      uid,
-      payout: currentPayout,
-      distance: currentDistance,
-      duration: currentDuration,
-      pickupName: currentPickupName,
-      pickupAddress: currentPickupAddress,
-      dropoffName: currentDropoffName,
-      dropoffAddress: currentDropoffAddress,
-      profile: currentProfile,
-      minProfitabilityEuro: currentMinProfitability,
-      selectedVehicleId: currentVehicleId,
-      vehicles: currentVehicles,
-      vehiclesLoading: currentVehiclesLoading,
-      manualEntryRequested: currentManualEntryRequested,
-      status: currentStatus,
-      analysisRecord: currentAnalysisRecord,
-      screenshotPreviewUrl: currentScreenshotPreviewUrl,
-    });
+    persistOfferTabSessionSnapshot(params);
   });
 };
