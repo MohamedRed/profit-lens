@@ -2,6 +2,7 @@
   min-height: 100vh;
   display: grid;
   grid-template-columns: clamp(190px, 15vw, 220px) minmax(0, 1fr);
+  align-items: start;
 }
 
 .admin-sidebar {
@@ -12,6 +13,10 @@
   grid-template-rows: auto 1fr auto;
   gap: 14px;
   border-right: 1px solid var(--admin-border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .admin-brand {
@@ -26,6 +31,9 @@
   gap: 6px;
   align-content: start;
   grid-auto-rows: min-content;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 2px;
 }
 
 .admin-nav a {
@@ -163,10 +171,14 @@
   .admin-sidebar {
     grid-template-rows: auto;
     gap: 14px;
+    position: static;
+    height: auto;
+    overflow: visible;
   }
 
   .admin-nav {
     grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+    overflow: visible;
   }
 
   .admin-nav a {
