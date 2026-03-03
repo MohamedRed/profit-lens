@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { billingPlans } from '../../config/runtime-config';
+import { formatBillingPlanLabel } from './billing-plan-format';
 import type { Entitlement } from '../../types/billing';
 import {
   resolveBillingPlanForEntitlement,
@@ -33,7 +34,7 @@ describe('plan-resolution', () => {
   it('returns default selected price for free entitlement', () => {
     const entitlement = buildEntitlement();
     expect(resolveSelectedPriceId(entitlement)).toBe(resolveDefaultPlanPriceId());
-    expect(resolvePlanLabelFromEntitlement(entitlement)).toBeNull();
+    expect(resolvePlanLabelFromEntitlement(entitlement, 'en')).toBeNull();
     expect(resolveBillingPlanForEntitlement(entitlement)).toBeNull();
   });
 
@@ -46,7 +47,9 @@ describe('plan-resolution', () => {
       stripePriceId: tier24Plan?.priceId ?? null,
     });
     expect(resolveSelectedPriceId(entitlement)).toBe(tier24Plan?.priceId ?? '');
-    expect(resolvePlanLabelFromEntitlement(entitlement)).toBe(tier24Plan?.priceLabel ?? null);
+    expect(resolvePlanLabelFromEntitlement(entitlement, 'en')).toBe(
+      tier24Plan ? formatBillingPlanLabel('en', tier24Plan) : null,
+    );
   });
 
   it('falls back to planId when stripePriceId is missing', () => {
@@ -58,7 +61,9 @@ describe('plan-resolution', () => {
       stripePriceId: null,
     });
     expect(resolveSelectedPriceId(entitlement)).toBe(tier34Plan?.priceId ?? '');
-    expect(resolvePlanLabelFromEntitlement(entitlement)).toBe(tier34Plan?.priceLabel ?? null);
+    expect(resolvePlanLabelFromEntitlement(entitlement, 'en')).toBe(
+      tier34Plan ? formatBillingPlanLabel('en', tier34Plan) : null,
+    );
   });
 
   it('falls back to offerLimit when plan linkage is incomplete', () => {
@@ -70,7 +75,9 @@ describe('plan-resolution', () => {
       stripePriceId: null,
     });
     expect(resolveSelectedPriceId(entitlement)).toBe(tier24Plan?.priceId ?? '');
-    expect(resolvePlanLabelFromEntitlement(entitlement)).toBe(tier24Plan?.priceLabel ?? null);
+    expect(resolvePlanLabelFromEntitlement(entitlement, 'en')).toBe(
+      tier24Plan ? formatBillingPlanLabel('en', tier24Plan) : null,
+    );
   });
 
   it('returns default selection but no label for unknown paid entitlement', () => {
@@ -82,7 +89,7 @@ describe('plan-resolution', () => {
       stripePriceId: 'price_unknown',
     });
     expect(resolveSelectedPriceId(entitlement)).toBe(resolveDefaultPlanPriceId());
-    expect(resolvePlanLabelFromEntitlement(entitlement)).toBeNull();
+    expect(resolvePlanLabelFromEntitlement(entitlement, 'en')).toBeNull();
     expect(resolveBillingPlanForEntitlement(entitlement)).toBeNull();
   });
 });

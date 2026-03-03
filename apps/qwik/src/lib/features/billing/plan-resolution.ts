@@ -1,4 +1,5 @@
 import { billingPlans } from '../../config/runtime-config';
+import { formatBillingPlanLabel } from './billing-plan-format';
 import type { BillingPlan, Entitlement } from '../../types/billing';
 
 const normalize = (value: string | null | undefined): string => {
@@ -56,6 +57,13 @@ export const resolveSelectedPriceId = (entitlement: Entitlement | null): string 
   return resolveBillingPlanForEntitlement(entitlement)?.priceId ?? resolveDefaultPlanPriceId();
 };
 
-export const resolvePlanLabelFromEntitlement = (entitlement: Entitlement | null): string | null => {
-  return resolveBillingPlanForEntitlement(entitlement)?.priceLabel ?? null;
+export const resolvePlanLabelFromEntitlement = (
+  entitlement: Entitlement | null,
+  locale: string,
+): string | null => {
+  const resolvedPlan = resolveBillingPlanForEntitlement(entitlement);
+  if (!resolvedPlan) {
+    return null;
+  }
+  return formatBillingPlanLabel(locale, resolvedPlan);
 };

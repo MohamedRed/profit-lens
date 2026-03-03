@@ -12,6 +12,7 @@ import {
   watchEntitlement,
   watchUsage,
 } from '../../../../lib/features/billing/billing-service';
+import { formatBillingPlanLabel } from '../../../../lib/features/billing/billing-plan-format';
 import { shouldAttemptStripeEntitlementRepair } from '../../../../lib/features/billing/entitlement-repair';
 import { formatTemplate, t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { Entitlement, ManagedSubscriptionStateSnapshot, OfferUsage } from '../../../../lib/types/billing';
@@ -30,6 +31,7 @@ interface BillingManagerProps {
 
 export const BillingManager = component$<BillingManagerProps>((props) => {
   const i18n = useI18n();
+  const locale = i18n.locale.value;
   const entitlement = useSignal<Entitlement | null>(null);
   const usage = useSignal<OfferUsage | null>(null);
   const selectedPlanPriceId = useSignal(resolveDefaultPlanPriceId());
@@ -144,7 +146,7 @@ export const BillingManager = component$<BillingManagerProps>((props) => {
     .filter((plan) => Boolean(plan.priceId))
     .map((plan) => ({
       value: plan.priceId,
-      label: plan.priceLabel,
+      label: formatBillingPlanLabel(locale, plan),
       subtitle:
         plan.offerLimit == null
           ? t(i18n, 'planUnlimitedLabel', 'Unlimited offers')

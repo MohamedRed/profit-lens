@@ -21,7 +21,7 @@ export interface OfferUsage {
 export interface BillingPlan {
   id: string;
   priceId: string;
-  priceLabel: string;
+  monthlyPriceEuro: number;
   offerLimit: number | null;
 }
 

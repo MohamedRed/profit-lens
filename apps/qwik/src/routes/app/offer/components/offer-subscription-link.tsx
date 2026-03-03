@@ -23,9 +23,10 @@ const resolvePlanSummary = (params: {
   }
   const isFree =
     normalize(entitlement.planId) === 'free' || normalize(entitlement.status) === 'free';
+  const locale = i18n.locale.value;
   const planLabel = isFree
     ? t(i18n, 'subscriptionFreeTitle', 'Free plan')
-    : resolvePlanLabelFromEntitlement(entitlement) ?? t(i18n, 'subscriptionStatusUnknown', 'Unknown');
+    : resolvePlanLabelFromEntitlement(entitlement, locale) ?? t(i18n, 'subscriptionStatusUnknown', 'Unknown');
   return formatTemplate(t(i18n, 'subscriptionActivePlan', 'Current plan: {price}'), {
     price: planLabel,
   });

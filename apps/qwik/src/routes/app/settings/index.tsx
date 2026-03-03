@@ -4,6 +4,7 @@ import { useAuth } from '../../../lib/auth/auth-context';
 import { signOutCurrentUser } from '../../../lib/firebase/auth';
 import { billingPlans } from '../../../lib/config/runtime-config';
 import { applyLocale, formatTemplate, t, useI18n } from '../../../lib/i18n/i18n-context';
+import { formatCurrencyAmount } from '../../../lib/i18n/number-format';
 import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
 import { resolvePlanLabelFromEntitlement } from '../../../lib/features/billing/plan-resolution';
 import { startCheckout } from '../../../lib/features/billing/billing-service';
@@ -17,15 +18,6 @@ import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
 import { buildVehicleEditorHref } from './shared/vehicle-editor-href';
 import { useSettingsTabSession } from './use-settings-tab-session';
-
-const formatCurrency = (locale: string, value: number): string => {
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-};
 
 export default component$(() => {
   const auth = useAuth();
@@ -53,7 +45,7 @@ export default component$(() => {
   const currentEntitlement = entitlement.value;
   const currentDevice = devices.value.find((entry) => entry.isCurrent);
   const paidPlan = billingPlans.find((plan) => plan.offerLimit !== null && Boolean(plan.priceId));
-  const currentPlanLabel = resolvePlanLabelFromEntitlement(currentEntitlement);
+  const currentPlanLabel = resolvePlanLabelFromEntitlement(currentEntitlement, locale);
   const subscriptionTitle = currentEntitlement?.planId.toLowerCase() === 'free'
     ? t(i18n, 'subscriptionFreeTitle', 'Free plan')
     : t(i18n, 'subscriptionActiveTitle', 'Subscription active');
@@ -117,7 +109,7 @@ export default component$(() => {
             </p>
             <p class="ui-settings-subtitle">
               {t(i18n, 'monthlyFixedCostsLabel', 'Monthly fixed costs')}:{' '}
-              {currentProfile ? formatCurrency(locale, currentProfile.monthlyFixedCosts) : '—'}
+              {currentProfile ? formatCurrencyAmount(locale, currentProfile.monthlyFixedCosts) : '—'}
             </p>
           </div>
           <span class="material-icons-outlined ui-settings-chevron" aria-hidden="true">

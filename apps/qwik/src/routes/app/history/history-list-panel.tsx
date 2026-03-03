@@ -8,7 +8,7 @@ import {
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import { saveExplicitBackTarget } from '../../../lib/navigation/explicit-back-target';
 import type { OfferRecord } from '../../../lib/types/offer';
-import { formatCurrency, formatShortDateTime } from './history-helpers';
+import { formatCurrency, formatDistanceKm, formatShortDateTime } from './history-helpers';
 
 interface HistoryListPanelProps {
   offers: OfferRecord[];
@@ -40,6 +40,11 @@ export const HistoryListPanel = component$<HistoryListPanelProps>((props) => {
       {props.offers.map((item) => {
         const profit = item.netProfitEuro ?? 0;
         const distance = item.routeVerifiedDistanceKm ?? item.distanceKm;
+        const distanceLabel = formatDistanceKm(
+          props.locale,
+          distance,
+          t(i18n, 'distanceUnitKm', 'km'),
+        );
         return (
           <li key={item.id} class="ui-history-item">
             <Link
@@ -61,7 +66,7 @@ export const HistoryListPanel = component$<HistoryListPanelProps>((props) => {
                   {formatCurrency(props.locale, profit)}
                 </p>
                 <p class="ui-history-item-meta">
-                  {distance.toFixed(1)} km • {formatShortDateTime(props.locale, item.createdAt)}
+                  {distanceLabel} • {formatShortDateTime(props.locale, item.createdAt)}
                 </p>
               </div>
               <div class="ui-history-item-side">

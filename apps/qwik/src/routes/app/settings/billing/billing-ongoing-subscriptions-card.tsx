@@ -51,7 +51,7 @@ export const BillingOngoingSubscriptionsCard = component$<BillingOngoingSubscrip
             <li key={subscription.subscriptionId} class="ui-settings-billing-subscription-item">
               <p class="ui-settings-billing-subscription-row">
                 <strong class="ui-settings-billing-emphasis-value">
-                  {resolvePlanLabelFromSubscription(subscription)}
+                  {resolvePlanLabelFromSubscription(subscription, locale)}
                 </strong>
                 <span class={`ui-settings-billing-status-value ${statusToneClass}`}>{statusDisplay}</span>
               </p>

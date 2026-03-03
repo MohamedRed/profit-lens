@@ -12,6 +12,7 @@ import { Label } from "../../../../components/ui/label";
 import { SkeletonBlock } from "../../../../components/ui/page-loading-skeleton";
 import { VisualOptionPicker } from "../../../../components/ui/visual-option-picker";
 import { t, useI18n } from "../../../../lib/i18n/i18n-context";
+import { resolveCurrencySymbol } from "../../../../lib/i18n/number-format";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import { resolveVehicleTypeIcon } from "../../shared/vehicle-visuals";
 import { BillingManager } from "../../settings/billing/billing-manager";
@@ -41,6 +42,8 @@ interface OfferSettingsSheetProps {
 
 export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) => {
   const i18n = useI18n();
+  const locale = i18n.locale.value;
+  const minProfitabilityUnit = `${resolveCurrencySymbol(locale)}/${t(i18n, "distanceUnitKm", "km")}`;
   const { dialogRef } = useOfferDialogTransition({
     isOpen: props.isOpen,
   });
@@ -223,7 +226,7 @@ export const OfferSettingsSheet = component$<OfferSettingsSheetProps>((props) =>
                         draftMinProfitability.value = element.value;
                       }}
                     />
-                    <span class="ui-offer-target-suffix">€/km</span>
+                    <span class="ui-offer-target-suffix">{minProfitabilityUnit}</span>
                   </div>
                   <p class="ui-offer-target-hint">
                     {t(i18n, "minProfitabilityHint", "Suggested default: €2.00/km")}

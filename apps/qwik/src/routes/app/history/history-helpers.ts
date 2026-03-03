@@ -1,4 +1,10 @@
 import { t, type I18nStore } from '../../../lib/i18n/i18n-context';
+import {
+  formatCurrencyAmount,
+  formatDecimalNumber,
+  formatWholeNumber,
+  resolveFormattingLocale,
+} from '../../../lib/i18n/number-format';
 import type { OfferStatsDay } from '../../../lib/types/offer';
 
 export const chartWidth = 288;
@@ -6,33 +12,32 @@ export const chartHeight = 170;
 export const chartPadding = 12;
 
 export const formatCurrency = (locale: string, value: number): string => {
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
+  return formatCurrencyAmount(locale, value);
 };
 
 export const formatChartCurrency = (locale: string, value: number): string => {
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
+  return formatCurrency(locale, value);
+};
+
+export const formatDistanceKm = (locale: string, value: number, unitLabel: string): string => {
+  return `${formatDecimalNumber(locale, value, 1)} ${unitLabel}`;
+};
+
+export const formatDurationMinutes = (locale: string, value: number, unitLabel: string): string => {
+  return `${formatWholeNumber(locale, value)} ${unitLabel}`;
 };
 
 export const formatShortDateTime = (locale: string, value: Date | null): string => {
   if (!value) {
     return 'n/a';
   }
-  const date = new Intl.DateTimeFormat(locale, {
+  const formatLocale = resolveFormattingLocale(locale);
+  const date = new Intl.DateTimeFormat(formatLocale, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
   }).format(value);
-  const time = new Intl.DateTimeFormat(locale, {
+  const time = new Intl.DateTimeFormat(formatLocale, {
     hour: '2-digit',
     minute: '2-digit',
   }).format(value);

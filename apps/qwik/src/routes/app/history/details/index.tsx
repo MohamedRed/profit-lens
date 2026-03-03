@@ -9,21 +9,18 @@ import { useAuth } from '../../../../lib/auth/auth-context';
 import { watchOfferById } from '../../../../lib/features/offers/offers-service';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type { OfferRecord } from '../../../../lib/types/offer';
-import { formatCurrency, formatShortDateTime } from '../history-helpers';
+import {
+  formatCurrency,
+  formatDistanceKm,
+  formatDurationMinutes,
+  formatShortDateTime,
+} from '../history-helpers';
 import {
   readHistoryOfferFromCache,
   readSelectedHistoryOfferId,
   saveSelectedHistoryOfferId,
   upsertHistoryOfferCache,
 } from '../history-offer-cache';
-
-const formatDistance = (value: number): string => {
-  return `${value.toFixed(1)} km`;
-};
-
-const formatDuration = (value: number, unit: string): string => {
-  return `${Math.round(value).toString()} ${unit}`;
-};
 
 const readOfferIdFromPath = (path: string): string | null => {
   const match = path.match(/\/app\/history\/([^/]+)\/?$/);
@@ -130,12 +127,12 @@ export default component$(() => {
         </div>
         <div class="ui-history-detail-row">
           <span>{t(i18n, 'verifiedDistanceLabel', 'Verified distance')}</span>
-          <span>{formatDistance(distance)}</span>
+          <span>{formatDistanceKm(locale, distance, t(i18n, 'distanceUnitKm', 'km'))}</span>
         </div>
         {typeof duration === 'number' ? (
           <div class="ui-history-detail-row">
             <span>{t(i18n, 'verifiedDurationLabel', 'Verified time')}</span>
-            <span>{formatDuration(duration, t(i18n, 'durationUnitMinutes', 'min'))}</span>
+            <span>{formatDurationMinutes(locale, duration, t(i18n, 'durationUnitMinutes', 'min'))}</span>
           </div>
         ) : null}
 

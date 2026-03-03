@@ -70,8 +70,8 @@ export const BillingSummaryCard = component$<BillingSummaryCardProps>((props) =>
     normalize(props.entitlement?.planId) === 'free' || normalize(props.entitlement?.status) === 'free';
   const primaryManagedSubscription = resolvePrimaryManagedSubscription(props.managedState);
   const currentPlanLabel = primaryManagedSubscription
-    ? resolvePlanLabelFromSubscription(primaryManagedSubscription)
-    : resolvePlanLabelFromEntitlement(props.entitlement);
+    ? resolvePlanLabelFromSubscription(primaryManagedSubscription, locale)
+    : resolvePlanLabelFromEntitlement(props.entitlement, locale);
   const currentPlanCopy =
     props.entitlement && !isFreeEntitlement && currentPlanLabel
       ? formatTemplate(t(i18n, 'subscriptionActivePlan', 'Current plan: {price}'), {
