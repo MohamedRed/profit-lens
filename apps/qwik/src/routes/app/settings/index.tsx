@@ -159,7 +159,7 @@ export default component$(() => {
       </section>
 
       <section class="ui-settings-card">
-        <div class="ui-settings-tile">
+        <div class="ui-settings-tile ui-settings-subscription-tile">
           <span class="material-icons-outlined ui-settings-leading" aria-hidden="true">
             payment
           </span>
