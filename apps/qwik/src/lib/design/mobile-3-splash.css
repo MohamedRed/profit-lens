@@ -1,8 +1,11 @@
 .ui-splash-viewport {
-  min-height: 100svh;
-  min-height: 100dvh;
-  width: min(100%, 430px);
-  margin: 0 auto;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  width: 100%;
+  min-height: 100vh;
+  height: 100dvh;
+  margin: 0;
   display: grid;
   place-items: center;
   padding:

@@ -1,6 +1,9 @@
 .ui-boot-backdrop {
   position: fixed;
   inset: 0;
+  width: 100%;
+  min-height: 100vh;
+  height: 100dvh;
   z-index: 999;
   pointer-events: none;
   overflow: hidden;
