@@ -256,6 +256,10 @@ export default component$(() => {
     screenshotModalUrl.value = null;
     screenshotPreviewUrl.value = null;
   });
+  const dismissStatus$ = $(() => {
+    status.value = '';
+    persistOfferTabSessionSnapshot(offerTabSessionParams);
+  });
   const viewDetails$ = $(async () => {
     const record = analysisRecord.value;
     if (!record?.id) {
@@ -287,6 +291,7 @@ export default component$(() => {
       minProfitabilityEuro={minProfitabilityEuro}
       onAnalyzeManual$={analyzeManual$}
       onClearScreenshotPreview$={clearScreenshotPreview$}
+      onDismissStatus$={dismissStatus$}
       onImportScreenshotFile$={importScreenshotFile$}
       onSaveProfitabilityTarget$={saveProfitabilityTarget$}
       onViewDetails$={viewDetails$}

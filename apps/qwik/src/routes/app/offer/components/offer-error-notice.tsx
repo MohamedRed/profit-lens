@@ -1,13 +1,36 @@
-import { component$ } from '@builder.io/qwik';
+import { component$, type QRL } from '@builder.io/qwik';
+import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 
 interface OfferErrorNoticeProps {
   title?: string;
   message: string;
+  onDismiss$?: QRL<() => void>;
 }
 
-export const OfferErrorNotice = component$<OfferErrorNoticeProps>(({ title, message }) => {
+export const OfferErrorNotice = component$<OfferErrorNoticeProps>(({ title, message, onDismiss$ }) => {
+  const i18n = useI18n();
+
   return (
-    <section class="ui-offer-error-notice" role="alert" aria-live="polite">
+    <section
+      class={{
+        'ui-offer-error-notice': true,
+        'has-dismiss': Boolean(onDismiss$),
+      }}
+      role="alert"
+      aria-live="polite"
+    >
+      {onDismiss$ ? (
+        <button
+          type="button"
+          class="ui-offer-error-notice-dismiss"
+          aria-label={t(i18n, 'closeLabel', 'Close')}
+          onClick$={onDismiss$}
+        >
+          <span class="material-icons-outlined" aria-hidden="true">
+            close
+          </span>
+        </button>
+      ) : null}
       {title ? (
         <div class="ui-offer-error-notice-header">
           <span class="material-icons-outlined ui-offer-error-notice-icon" aria-hidden="true">

@@ -1,4 +1,4 @@
-import { component$, useSignal, type JSXOutput } from '@builder.io/qwik';
+import { component$, useSignal, type JSXOutput, type QRL } from '@builder.io/qwik';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import { parseOfferAnalysisProgressStep } from '../offer-analysis-progress';
 import { OfferAnalysisProgressStepper } from './offer-analysis-progress-stepper';
@@ -7,6 +7,7 @@ import { OfferPresenceTransition } from './offer-presence-transition';
 
 interface OfferFlowStatusProps {
   status: string;
+  onDismiss$: QRL<() => void>;
 }
 
 const isSuccessStatus = (value: string): boolean => {
@@ -32,7 +33,7 @@ const isScreenshotFailureStatus = (status: string, screenshotFailureMessage: str
   );
 };
 
-export const OfferFlowStatus = component$<OfferFlowStatusProps>(({ status }) => {
+export const OfferFlowStatus = component$<OfferFlowStatusProps>(({ status, onDismiss$ }) => {
   const i18n = useI18n();
   const currentStatus = status.trim();
   const activeAnalysisStep = parseOfferAnalysisProgressStep(currentStatus);
@@ -51,9 +52,21 @@ export const OfferFlowStatus = component$<OfferFlowStatusProps>(({ status }) => 
     const isSelectVehicleHint = currentStatus.toLowerCase() === selectVehicleMessage.toLowerCase();
     if (isSelectVehicleHint) {
       statusNode = (
-        <p class={{ 'ui-status': true, 'ui-status-error': true }}>
-          {currentStatus}
-        </p>
+        <div class="ui-offer-inline-status">
+          <p class={{ 'ui-status': true, 'ui-status-error': true }}>
+            {currentStatus}
+          </p>
+          <button
+            type="button"
+            class="ui-offer-screenshot-remove"
+            aria-label={t(i18n, 'closeLabel', 'Close')}
+            onClick$={onDismiss$}
+          >
+            <span class="material-icons-outlined" aria-hidden="true">
+              close
+            </span>
+          </button>
+        </div>
       );
     } else {
       const screenshotFailureMessage = t(
@@ -63,7 +76,7 @@ export const OfferFlowStatus = component$<OfferFlowStatusProps>(({ status }) => 
       );
       const isScreenshotFailure = isScreenshotFailureStatus(currentStatus, screenshotFailureMessage);
       const statusTitle = isScreenshotFailure ? t(i18n, 'analysisFailedTitle', 'Analysis incomplete') : undefined;
-      statusNode = <OfferErrorNotice title={statusTitle} message={currentStatus} />;
+      statusNode = <OfferErrorNotice title={statusTitle} message={currentStatus} onDismiss$={onDismiss$} />;
     }
   }
 
