@@ -96,7 +96,7 @@ const buildState = (uid: string): OfferTabSessionState => ({
       netProfit: 8.3,
     },
   },
-  screenshotPreviewUrl: 'blob:preview',
+  screenshotPreviewUrl: 'data:image/jpeg;base64,preview',
 });
 
 describe('offer-tab-session', () => {
@@ -148,5 +148,17 @@ describe('offer-tab-session', () => {
     );
 
     expect(readOfferTabSessionState('uid-b')).toBeNull();
+  });
+
+  it('removes legacy blob preview urls loaded from storage', () => {
+    const state = buildState('uid-legacy');
+    state.screenshotPreviewUrl = 'blob:legacy-preview';
+    getWindow().sessionStorage.setItem(
+      OFFER_TAB_SESSION_STORAGE_KEY,
+      JSON.stringify(state),
+    );
+
+    const session = readOfferTabSessionState('uid-legacy');
+    expect(session?.screenshotPreviewUrl).toBeNull();
   });
 });

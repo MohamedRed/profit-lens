@@ -4,6 +4,7 @@ import { getDeviceId } from '../../../lib/config/device-id';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
 import { saveUserProfile } from '../../../lib/features/profile/profile-service';
+import { createOfferScreenshotPreviewDataUrl } from '../../../lib/features/offers/offer-screenshot-preview';
 import type { UserProfile } from '../../../lib/types/profile';
 import type { VehicleProfile } from '../../../lib/types/vehicle';
 import { analyzeManualOfferAction, analyzeScreenshotOfferAction } from './offer-actions';
@@ -164,10 +165,7 @@ export default component$(() => {
       status.value = resolveUserFacingErrorMessage(i18n, new Error('Missing authenticated user.'), 'offer');
       return;
     }
-    if (screenshotPreviewUrl.value) {
-      URL.revokeObjectURL(screenshotPreviewUrl.value);
-    }
-    screenshotPreviewUrl.value = URL.createObjectURL(file);
+    screenshotPreviewUrl.value = await createOfferScreenshotPreviewDataUrl(file);
     loading.value = true;
     status.value = '';
     persistOfferTabSessionSnapshot(offerTabSessionParams);
@@ -234,9 +232,6 @@ export default component$(() => {
   const clearScreenshotPreview$ = $(() => {
     if (loading.value) {
       return;
-    }
-    if (screenshotPreviewUrl.value) {
-      URL.revokeObjectURL(screenshotPreviewUrl.value);
     }
     screenshotPreviewUrl.value = null;
   });

@@ -26,6 +26,16 @@ export interface OfferTabSessionState {
 
 let offerTabSessionState: OfferTabSessionState | null = null;
 
+const normalizeScreenshotPreviewUrl = (value: string | null | undefined): string | null => {
+  if (!value || typeof value !== 'string') {
+    return null;
+  }
+  if (value.startsWith('blob:')) {
+    return null;
+  }
+  return value;
+};
+
 const cloneAnalysisRecord = (record: OfferAnalysisRecord | null): OfferAnalysisRecord | null => {
   if (!record) {
     return null;
@@ -46,6 +56,7 @@ const cloneOfferTabSessionState = (state: OfferTabSessionState): OfferTabSession
     profile: state.profile ? { ...state.profile } : null,
     vehicles: state.vehicles.map((vehicle) => ({ ...vehicle })),
     analysisRecord: cloneAnalysisRecord(state.analysisRecord),
+    screenshotPreviewUrl: normalizeScreenshotPreviewUrl(state.screenshotPreviewUrl),
   };
 };
 
@@ -58,7 +69,11 @@ const readOfferTabSessionStateFromStorage = (): OfferTabSessionState | null => {
     if (!raw) {
       return null;
     }
-    return JSON.parse(raw) as OfferTabSessionState;
+    const parsed = JSON.parse(raw) as OfferTabSessionState;
+    return {
+      ...parsed,
+      screenshotPreviewUrl: normalizeScreenshotPreviewUrl(parsed.screenshotPreviewUrl),
+    };
   } catch {
     return null;
   }
