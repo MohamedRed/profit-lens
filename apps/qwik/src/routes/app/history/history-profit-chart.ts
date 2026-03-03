@@ -14,19 +14,13 @@ export interface ProfitChartGeometry {
   areaPath: string;
 }
 
-export interface ProfitSparklineGeometry {
-  width: number;
-  height: number;
-  path: string;
-}
-
 const chartLayout = {
-  width: 720,
-  height: 352,
-  plotTop: 20,
+  width: 760,
+  height: 460,
+  plotTop: 24,
   plotRight: 18,
-  plotBottom: 56,
-  plotLeft: 12,
+  plotBottom: 68,
+  plotLeft: 8,
 } as const;
 
 export const buildProfitSeriesValues = (stats: OfferStatsDay[]): number[] => {
@@ -87,45 +81,5 @@ export const buildProfitChartGeometry = (values: number[]): ProfitChartGeometry 
     thresholdY: toY(0),
     linePath,
     areaPath,
-  };
-};
-
-export const buildProfitSparklineGeometry = (
-  values: number[],
-  width = 140,
-  height = 64,
-  padding = 6,
-): ProfitSparklineGeometry => {
-  const normalized = values.filter((value) => Number.isFinite(value));
-  if (normalized.length === 0) {
-    const centerY = height / 2;
-    return {
-      width,
-      height,
-      path: `M ${padding} ${centerY} L ${width - padding} ${centerY}`,
-    };
-  }
-
-  const minValue = Math.min(...normalized);
-  const maxValue = Math.max(...normalized);
-  const spread = maxValue - minValue || 1;
-  const usableWidth = Math.max(width - padding * 2, 1);
-  const usableHeight = Math.max(height - padding * 2, 1);
-
-  const path = normalized
-    .map((value, index) => {
-      const x =
-        padding +
-        (normalized.length <= 1 ? usableWidth / 2 : (index / (normalized.length - 1)) * usableWidth);
-      const ratio = (value - minValue) / spread;
-      const y = height - padding - ratio * usableHeight;
-      return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
-    })
-    .join(' ');
-
-  return {
-    width,
-    height,
-    path,
   };
 };
