@@ -36,6 +36,7 @@ export const VehicleCostsSection = component$<VehicleCostsSectionProps>(
               state.draft.value = { ...state.draft.value, maintenancePerKm: element.value };
             }}
           />
+          <p class="ui-settings-field-hint">{t(i18n, 'maintenanceUnitHint', 'EUR/km')}</p>
         </div>
 
         <div class="ui-settings-field">
@@ -55,6 +56,7 @@ export const VehicleCostsSection = component$<VehicleCostsSectionProps>(
               state.draft.value = { ...state.draft.value, depreciationPerKm: element.value };
             }}
           />
+          <p class="ui-settings-field-hint">{t(i18n, 'depreciationUnitHint', 'EUR/km')}</p>
         </div>
       </>
     );
