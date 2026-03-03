@@ -12,6 +12,7 @@ import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-e
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import type { HelpAttachmentDraft } from '../../../lib/types/help';
 import { HelpAttachmentDraftList } from './components/help-attachment-draft-list';
+import { readHelpTabSessionState, writeHelpTabSessionState } from './help-tab-session';
 
 export default component$(() => {
   const auth = useAuth();
@@ -21,6 +22,16 @@ export default component$(() => {
   const drafts = useSignal<HelpAttachmentDraft[]>([]);
   const submitting = useSignal(false);
   const status = useSignal('');
+
+  useVisibleTask$(({ track }) => {
+    const uid = track(() => auth.user.value?.uid ?? null);
+    if (!uid) {
+      description.value = '';
+      return;
+    }
+    const savedState = readHelpTabSessionState(uid);
+    description.value = savedState?.description ?? '';
+  });
 
   useVisibleTask$(({ cleanup }) => {
     cleanup(() => {
@@ -58,7 +69,16 @@ export default component$(() => {
           value={description.value}
           placeholder={t(i18n, 'helpDescriptionLabel', 'Describe the issue')}
           onInput$={(_, el) => {
-            description.value = el.value;
+            const nextDescription = el.value;
+            description.value = nextDescription;
+            const uid = auth.user.value?.uid;
+            if (!uid) {
+              return;
+            }
+            writeHelpTabSessionState({
+              uid,
+              description: nextDescription,
+            });
           }}
         />
 
@@ -136,6 +156,10 @@ export default component$(() => {
               revokeHelpDraftPreviews(drafts.value);
               description.value = '';
               drafts.value = [];
+              writeHelpTabSessionState({
+                uid: user.uid,
+                description: '',
+              });
               status.value = t(i18n, 'helpTicketSubmitted', 'Ticket submitted.');
             } catch (error) {
               status.value = resolveUserFacingErrorMessage(i18n, error, 'help-submit');
