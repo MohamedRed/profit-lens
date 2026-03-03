@@ -92,7 +92,7 @@ export const VisualOptionPicker = component$<VisualOptionPickerProps>((props) =>
             </span>
 
             <span class="material-icons-outlined ui-visual-option-check" aria-hidden="true">
-              check_circle
+              {selected ? 'check_circle' : 'radio_button_unchecked'}
             </span>
           </button>
         );
