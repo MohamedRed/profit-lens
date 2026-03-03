@@ -5,6 +5,7 @@ ProfitLens is a Qwik web app for analyzing delivery offers (for example Uber Eat
 ## Repository layout
 
 - `apps/qwik`: Main web application (Qwik + Qwik City)
+- `apps/admin`: Read-only admin dashboard (Qwik + Qwik City)
 - `functions`: Firebase Cloud Functions backend
 - `infrastructure/terraform`: Infrastructure as code
 - `tool`: Build and deployment helper scripts
@@ -23,21 +24,30 @@ ProfitLens is a Qwik web app for analyzing delivery offers (for example Uber Eat
 
 ## Production web bundle
 
-Build the Firebase Hosting bundle:
+Build user app bundle:
 
 ```bash
 ./tool/build_web.sh
 ```
 
-Validate the expected bundle structure:
+Build admin app bundle:
+
+```bash
+./tool/build_admin_web.sh
+```
+
+Validate expected bundle structures:
 
 ```bash
 ./tool/verify_web_bundle_layout.sh
+./tool/verify_admin_bundle_layout.sh
 ```
 
 ## Firebase deployment
 
-- Hosting deploy uses `firebase.json` and `tool/build_web.sh`
+- Hosting deploy uses Firebase multi-target hosting:
+  - `app` target uses `tool/build_web.sh`
+  - `admin` target uses `tool/build_admin_web.sh`
 - Functions deploy uses `functions/`
 
 Examples:
@@ -50,9 +60,11 @@ firebase deploy --only functions
 ## Runtime config
 
 - Firebase client config source: `apps/qwik/public/firebase-web-config.js`
+- Admin Firebase client config source: `apps/admin/public/firebase-web-config.js`
 - Billing runtime defines source: `tool/dev_runtime_defines.json`
 - Generated TypeScript config files:
   - `apps/qwik/src/lib/config/firebase-web-config.ts`
+  - `apps/admin/src/lib/config/firebase-web-config.ts`
   - `apps/qwik/src/lib/config/billing-defines.ts`
 
 Use `tool/sync_web_runtime_config.sh` to regenerate generated config files after runtime changes.

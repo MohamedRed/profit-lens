@@ -1,0 +1,136 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: var(--pl-font-body);
+  color: var(--admin-text);
+  background: var(--admin-bg);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.admin-field {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-field input,
+.admin-field select {
+  border: 1px solid var(--admin-border);
+  border-radius: var(--pl-radius-lg);
+  padding: 11px 12px;
+  background: var(--admin-panel);
+}
+
+.admin-field input:focus,
+.admin-field select:focus {
+  outline: 2px solid var(--admin-primary-soft);
+  border-color: var(--admin-primary);
+}
+
+.admin-button {
+  border: none;
+  border-radius: var(--pl-radius-pill);
+  padding: 11px 14px;
+  background: var(--admin-primary);
+  color: var(--pl-color-on-accent);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-button[disabled] {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.admin-button.secondary {
+  background: var(--pl-color-surface-elevated);
+  color: var(--admin-text);
+}
+
+.admin-muted {
+  color: var(--admin-muted);
+}
+
+.admin-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: var(--admin-primary-soft);
+  font-size: 0.82rem;
+}
+
+.admin-icon-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-icon-label .material-icons-outlined {
+  font-size: 18px;
+  color: var(--admin-muted);
+}
+
+.admin-icon-label.size-sm .material-icons-outlined {
+  font-size: 16px;
+}
+
+.admin-banner {
+  border-radius: var(--pl-radius-lg);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--admin-danger);
+  padding: 10px 12px;
+}
+
+.admin-empty,
+.admin-loading {
+  border: 1px dashed var(--admin-border);
+  border-radius: var(--pl-radius-lg);
+  padding: 24px;
+  color: var(--admin-muted);
+  text-align: center;
+}
+
+.admin-loading-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-loading-line {
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--pl-color-surface) 0%,
+    var(--pl-color-surface-elevated) 50%,
+    var(--pl-color-surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: admin-loading 1.2s ease-in-out infinite;
+}
+
+@keyframes admin-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

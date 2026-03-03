@@ -26,6 +26,10 @@ migrate_working_dir/
 # Build and local tooling
 .dart_tool/
 .gemini/
+**/node_modules/
+apps/*/dist/
+apps/*/server/
+apps/*/tmp/
 gha-creds-*.json
 .firebase/
 .codex/
