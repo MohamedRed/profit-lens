@@ -12,10 +12,10 @@ interface AuthGuardProps {
 const resolveSignedInRedirect = (url: URL): string => {
   const redirect = url.searchParams.get('redirect');
   if (!redirect || !redirect.startsWith('/next/')) {
-    return '/next/app';
+    return '/next/app/offer';
   }
   if (redirect.startsWith('/next/login') || redirect.startsWith('/next/register')) {
-    return '/next/app';
+    return '/next/app/offer';
   }
   return redirect;
 };

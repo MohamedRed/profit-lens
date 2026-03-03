@@ -35,13 +35,44 @@ cat > "${BUILD_DIR}/index.html" <<'EOF'
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ece8ff" />
   <meta http-equiv="refresh" content="0;url=/next/" />
   <title>Liive Profit</title>
-</head>
-<body>
+  <style>
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(120% 140% at 16% -10%, rgba(139, 92, 246, 0.34) 0%, rgba(139, 92, 246, 0) 58%),
+        radial-gradient(100% 110% at 90% 120%, rgba(124, 58, 237, 0.2) 0%, rgba(124, 58, 237, 0) 62%),
+        linear-gradient(180deg, #faf9ff 0%, #f2efff 58%, #ece8ff 100%);
+      color: #18181b;
+      font-family: Roboto, "Avenir Next", "Segoe UI", sans-serif;
+    }
+
+    .redirect-shell {
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .redirect-copy {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #52525b;
+    }
+  </style>
   <script>
     window.location.replace('/next/');
   </script>
+</head>
+<body>
+  <main class="redirect-shell" role="status" aria-live="polite">
+    <p class="redirect-copy">Launching Liive Profit...</p>
+  </main>
   <noscript>
     <a href="/next/">Continue to Liive Profit</a>
   </noscript>
