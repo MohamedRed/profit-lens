@@ -32,6 +32,13 @@
   font-size: 0.97rem;
 }
 
+.ui-history-chart-meta {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
 .ui-history-chart-shell {
   display: grid;
   grid-template-columns: minmax(60px, max-content) minmax(0, 1fr);
@@ -112,6 +119,13 @@
   animation: ui-history-point-pop 320ms ease 260ms forwards;
 }
 
+.ui-history-chart-note {
+  margin: 0;
+  color: #475569;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
 @keyframes ui-history-line-shell-intro {
   from {
     opacity: 0;
@@ -169,6 +183,11 @@
 
   .ui-history-chart-axis {
     font-size: 0.72rem;
+  }
+
+  .ui-history-chart-meta,
+  .ui-history-chart-note {
+    font-size: 0.8rem;
   }
 }
 

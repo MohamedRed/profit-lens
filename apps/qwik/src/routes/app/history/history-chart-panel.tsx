@@ -30,6 +30,7 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
   const chart = buildProfitChartGeometry(chartValues);
 
   const latestValue = chartValues.length > 0 ? chartValues[chartValues.length - 1] : 0;
+  const hasSingleDayPoint = chartValues.length === 1;
 
   const isPanelActive = isActive ?? true;
   const isPreload = preload ?? false;
@@ -58,7 +59,14 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
         <div class="ui-history-chart-heading">
           <h2 class="ui-history-chart-title">{t(i18n, 'historyChartTitle', 'Profit over time')}</h2>
           <p class="ui-history-chart-subtitle">
-            {t(i18n, 'latestProfitLabel', 'Latest profit')}: {formatCurrency(locale, latestValue)}
+            {t(i18n, 'historyLatestDailyAverageLabel', 'Latest day average')}: {formatCurrency(locale, latestValue)}
+          </p>
+          <p class="ui-history-chart-meta">
+            {t(
+              i18n,
+              'historyChartAggregationHint',
+              'Each point is the average profit for one day. The list shows each offer.',
+            )}
           </p>
         </div>
       </div>
@@ -123,6 +131,16 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
           </svg>
         </div>
       )}
+
+      {hasSingleDayPoint ? (
+        <p class="ui-history-chart-note">
+          {t(
+            i18n,
+            'historyChartSingleDayHint',
+            'All current offers are on the same day, so the chart shows one point.',
+          )}
+        </p>
+      ) : null}
     </div>
   );
 });

@@ -54,7 +54,7 @@ export const buildProfitChartGeometry = (values: number[]): ProfitChartGeometry 
   const points = values.map((value, index) => {
     const x =
       plotLeft +
-      (values.length <= 1 ? usableWidth / 2 : (index / (values.length - 1)) * usableWidth);
+      (values.length <= 1 ? 0 : (index / (values.length - 1)) * usableWidth);
     return {
       x,
       y: toY(value),
