@@ -13,6 +13,19 @@ interface VehicleEditorVisualOptions {
   typeOptions: VisualOptionItem[];
 }
 
+const resolveFuelTypeIcon = (fuelType: string): string => {
+  if (fuelType === 'gazole') {
+    return 'oil_barrel';
+  }
+  if (fuelType === 'e85') {
+    return 'eco';
+  }
+  if (fuelType === 'gplc') {
+    return 'propane_tank';
+  }
+  return 'local_gas_station';
+};
+
 export const buildVehicleEditorVisualOptions = (
   i18n: I18nStore,
 ): VehicleEditorVisualOptions => {
@@ -33,7 +46,7 @@ export const buildVehicleEditorVisualOptions = (
 
   const fuelOptions = buildFuelTypeOptions(i18n).map((option) => ({
     ...option,
-    mediaText: option.label,
+    icon: resolveFuelTypeIcon(option.value),
   }));
 
   return { typeOptions, energyOptions, fuelOptions };
