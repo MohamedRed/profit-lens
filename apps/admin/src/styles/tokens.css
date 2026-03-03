@@ -55,4 +55,10 @@
   --admin-primary-soft: var(--pl-color-purple-soft);
   --admin-success: var(--pl-color-success);
   --admin-danger: var(--pl-color-danger);
+  --admin-chart-primary: #7c3aed;
+  --admin-chart-secondary: #0ea5e9;
+  --admin-chart-success: #10b981;
+  --admin-chart-danger: #ef4444;
+  --admin-chart-warning: #f59e0b;
+  --admin-chart-info: #06b6d4;
 }

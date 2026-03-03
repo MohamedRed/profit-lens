@@ -1,9 +1,10 @@
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { callAdminGetOverview } from '../../lib/firebase/callables-admin';
 import type { AdminGetOverviewResponse, AdminRangeDays } from '../../lib/types/admin';
-import { formatNumber, formatPercentDelta } from '../../lib/utils/format';
+import { formatDayLabel, formatNumber, formatPercentDelta } from '../../lib/utils/format';
 import { ErrorBanner, LoadingPanel } from '../../components/ui/page-state';
 import { IconLabel } from '../../components/ui/icon-label';
+import { MultiLineChart } from '../../components/charts/multi-line-chart';
 
 const rangeOptions: AdminRangeDays[] = [7, 30, 90];
 
@@ -87,6 +88,89 @@ export default component$(() => {
               <div class={{ 'admin-kpi-delta': true, [data.value.deltas.ticketsInRange.trend]: true }}>
                 {formatPercentDelta(data.value.deltas.ticketsInRange.percentChange)} total tickets
               </div>
+            </article>
+          </section>
+
+          <section class="admin-grid admin-overview-charts">
+            <article class="admin-card">
+              <div class="admin-chart-card-head">
+                <h3><IconLabel icon="insights" text="Demand trend" /></h3>
+                <p class="admin-page-subtitle">Daily offers compared to active users.</p>
+              </div>
+
+              <MultiLineChart
+                labels={data.value.series.map((point) => formatDayLabel(point.dateIso))}
+                series={[
+                  {
+                    id: 'offers',
+                    label: 'Offers',
+                    color: 'var(--admin-chart-primary)',
+                    showArea: true,
+                    values: data.value.series.map((point) => point.offers),
+                  },
+                  {
+                    id: 'active-users',
+                    label: 'Active users',
+                    color: 'var(--admin-chart-secondary)',
+                    values: data.value.series.map((point) => point.activeUsers),
+                  },
+                ]}
+                emptyMessage="No demand data available in this range."
+              />
+            </article>
+
+            <article class="admin-card">
+              <div class="admin-chart-card-head">
+                <h3><IconLabel icon="trending_up" text="Profitability trend" /></h3>
+                <p class="admin-page-subtitle">Positive vs negative offers by day.</p>
+              </div>
+
+              <MultiLineChart
+                labels={data.value.series.map((point) => formatDayLabel(point.dateIso))}
+                series={[
+                  {
+                    id: 'positive-offers',
+                    label: 'Positive offers',
+                    color: 'var(--admin-chart-success)',
+                    showArea: true,
+                    values: data.value.series.map((point) => point.positiveOffers),
+                  },
+                  {
+                    id: 'negative-offers',
+                    label: 'Negative offers',
+                    color: 'var(--admin-chart-danger)',
+                    values: data.value.series.map((point) => point.negativeOffers),
+                  },
+                ]}
+                emptyMessage="No profitability data available in this range."
+              />
+            </article>
+
+            <article class="admin-card">
+              <div class="admin-chart-card-head">
+                <h3><IconLabel icon="support_agent" text="Support load" /></h3>
+                <p class="admin-page-subtitle">Open and resolved ticket activity over time.</p>
+              </div>
+
+              <MultiLineChart
+                labels={data.value.series.map((point) => formatDayLabel(point.dateIso))}
+                series={[
+                  {
+                    id: 'open-tickets',
+                    label: 'Open tickets',
+                    color: 'var(--admin-chart-warning)',
+                    showArea: true,
+                    values: data.value.series.map((point) => point.openTickets),
+                  },
+                  {
+                    id: 'resolved-tickets',
+                    label: 'Resolved tickets',
+                    color: 'var(--admin-chart-info)',
+                    values: data.value.series.map((point) => point.resolvedTickets),
+                  },
+                ]}
+                emptyMessage="No ticket data available in this range."
+              />
             </article>
           </section>
 

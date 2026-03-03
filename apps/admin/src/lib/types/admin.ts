@@ -15,6 +15,16 @@ export interface AdminKpiDelta {
   trend: 'up' | 'down' | 'flat';
 }
 
+export interface AdminOverviewSeriesPoint {
+  dateIso: string;
+  activeUsers: number;
+  offers: number;
+  positiveOffers: number;
+  negativeOffers: number;
+  openTickets: number;
+  resolvedTickets: number;
+}
+
 export interface AdminGetOverviewResponse {
   rangeDays: AdminRangeDays;
   generatedAtIso: string;
@@ -34,6 +44,7 @@ export interface AdminGetOverviewResponse {
     offersInRange: AdminKpiDelta;
     ticketsInRange: AdminKpiDelta;
   };
+  series: AdminOverviewSeriesPoint[];
 }
 
 export interface AdminListUsersRequest {

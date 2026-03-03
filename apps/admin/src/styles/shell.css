@@ -91,6 +91,10 @@
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
 }
 
+.admin-overview-charts {
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+}
+
 .admin-card {
   background: var(--admin-panel);
   border: 1px solid var(--admin-border);
@@ -161,6 +165,88 @@
 
 .admin-toolbar .admin-field {
   min-width: 170px;
+}
+
+.admin-chart-card-head {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.admin-chart-card-head h3 {
+  margin: 0;
+}
+
+.admin-multi-line-chart {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.admin-chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.86rem;
+  color: var(--admin-muted);
+}
+
+.admin-chart-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.admin-chart-svg-wrap {
+  border: 1px solid var(--admin-border);
+  border-radius: var(--pl-radius-lg);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.46) 0%, rgba(255, 255, 255, 0.08) 100%),
+    var(--admin-bg);
+  overflow: hidden;
+}
+
+.admin-chart-svg {
+  width: 100%;
+  height: 220px;
+  display: block;
+}
+
+.admin-chart-grid-line {
+  stroke: rgba(113, 113, 122, 0.28);
+  stroke-width: 1;
+  stroke-dasharray: 4 6;
+}
+
+.admin-chart-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.admin-chart-area {
+  opacity: 0.14;
+}
+
+.admin-chart-axis {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.75rem;
+  color: var(--admin-muted);
+}
+
+.admin-chart-empty {
+  border: 1px dashed var(--admin-border);
+  border-radius: var(--pl-radius-lg);
+  padding: 22px 14px;
+  text-align: center;
+  color: var(--admin-muted);
 }
 
 @media (max-width: 1040px) {

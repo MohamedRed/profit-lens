@@ -4,6 +4,11 @@ import { db } from "../firebase_admin";
 import { assertAdminAccess } from "./authz";
 import { adminCallableConfig } from "./constants";
 import { logAdminCall } from "./logging";
+import {
+  buildOverviewSeries,
+  summarizeOfferProfitabilityFromDocs,
+  summarizeTicketsFromDocs,
+} from "./overview_series";
 import { toDayRangeStart } from "./readers";
 import type {
   AdminGetOverviewRequest,
@@ -26,34 +31,43 @@ export const adminGetOverview = onCall(adminCallableConfig, async (request) => {
 
   const [
     totalUsers,
-    activeUsersCurrent,
+    activeUsersCurrentSnapshot,
     activeUsersPrevious,
-    offersCurrent,
+    offersCurrentSnapshot,
     offersPrevious,
-    offerProfitabilityCurrent,
-    ticketSummaryCurrent,
+    ticketsCurrentSnapshot,
     ticketsPrevious,
   ] = await Promise.all([
     countDocs(db.collection("users")),
-    countDocs(db.collection("users").where("updatedAt", ">=", Timestamp.fromDate(currentStart))),
+    db
+      .collection("users")
+      .where("updatedAt", ">=", Timestamp.fromDate(currentStart))
+      .select("updatedAt")
+      .get(),
     countDocs(
       db
         .collection("users")
         .where("updatedAt", ">=", Timestamp.fromDate(previousStart))
         .where("updatedAt", "<", Timestamp.fromDate(currentStart))
     ),
-    countDocs(db.collectionGroup("offers").where("createdAt", ">=", Timestamp.fromDate(currentStart))),
+    db
+      .collectionGroup("offers")
+      .where("createdAt", ">=", Timestamp.fromDate(currentStart))
+      .where("createdAt", "<=", Timestamp.fromDate(now))
+      .select("createdAt", "breakdown", "netProfit", "netProfitEuro")
+      .get(),
     countDocs(
       db
         .collectionGroup("offers")
         .where("createdAt", ">=", Timestamp.fromDate(previousStart))
         .where("createdAt", "<", Timestamp.fromDate(currentStart))
     ),
-    summarizeOfferProfitability({
-      from: currentStart,
-      to: now,
-    }),
-    summarizeTickets({ from: currentStart, to: now }),
+    db
+      .collectionGroup("helpTickets")
+      .where("updatedAt", ">=", Timestamp.fromDate(currentStart))
+      .where("updatedAt", "<=", Timestamp.fromDate(now))
+      .select("updatedAt", "status")
+      .get(),
     countDocs(
       db
         .collectionGroup("helpTickets")
@@ -61,7 +75,19 @@ export const adminGetOverview = onCall(adminCallableConfig, async (request) => {
         .where("updatedAt", "<", Timestamp.fromDate(currentStart))
     ),
   ]);
+
+  const activeUsersCurrent = activeUsersCurrentSnapshot.docs.length;
+  const offersCurrent = offersCurrentSnapshot.docs.length;
+  const offerProfitabilityCurrent = summarizeOfferProfitabilityFromDocs(offersCurrentSnapshot.docs);
+  const ticketSummaryCurrent = summarizeTicketsFromDocs(ticketsCurrentSnapshot.docs);
   const paidFree = await summarizePaidVsFree(totalUsers);
+  const series = buildOverviewSeries({
+    from: currentStart,
+    to: now,
+    activeUsersDocs: activeUsersCurrentSnapshot.docs,
+    offerDocs: offersCurrentSnapshot.docs,
+    ticketDocs: ticketsCurrentSnapshot.docs,
+  });
 
   const response: AdminGetOverviewResponse = {
     rangeDays: payload.rangeDays,
@@ -82,6 +108,7 @@ export const adminGetOverview = onCall(adminCallableConfig, async (request) => {
       offersInRange: buildDelta(offersCurrent, offersPrevious),
       ticketsInRange: buildDelta(ticketSummaryCurrent.total, ticketsPrevious),
     },
+    series,
   };
 
   logAdminCall({
@@ -135,69 +162,6 @@ function buildDelta(currentValue: number, previousValue: number): AdminKpiDelta 
         : absoluteChange < 0
           ? "down"
           : "flat",
-  };
-}
-
-async function summarizeOfferProfitability(params: {
-  from: Date;
-  to: Date;
-}): Promise<{ positive: number; negative: number }> {
-  let query: FirebaseFirestore.Query = db
-    .collectionGroup("offers")
-    .where("createdAt", ">=", Timestamp.fromDate(params.from))
-    .where("createdAt", "<=", Timestamp.fromDate(params.to))
-    .select("breakdown");
-
-  const snapshot = await query.get();
-  let positive = 0;
-  let negative = 0;
-
-  for (const doc of snapshot.docs) {
-    const data = doc.data() as Record<string, unknown>;
-    const breakdown = (data.breakdown ?? {}) as Record<string, unknown>;
-    const netProfit = typeof breakdown.netProfit === "number"
-      ? breakdown.netProfit
-      : typeof breakdown.netProfitEuro === "number"
-        ? breakdown.netProfitEuro
-        : 0;
-
-    if (netProfit > 0) {
-      positive += 1;
-    } else if (netProfit < 0) {
-      negative += 1;
-    }
-  }
-
-  return { positive, negative };
-}
-
-async function summarizeTickets(params: {
-  from: Date;
-  to: Date;
-}): Promise<{ total: number; open: number; resolved: number }> {
-  const snapshot = await db
-    .collectionGroup("helpTickets")
-    .where("updatedAt", ">=", Timestamp.fromDate(params.from))
-    .where("updatedAt", "<=", Timestamp.fromDate(params.to))
-    .select("status")
-    .get();
-
-  let open = 0;
-  let resolved = 0;
-
-  for (const doc of snapshot.docs) {
-    const status = (doc.data().status as string | undefined)?.toLowerCase() ?? "";
-    if (status === "resolved" || status === "closed") {
-      resolved += 1;
-    } else {
-      open += 1;
-    }
-  }
-
-  return {
-    total: snapshot.docs.length,
-    open,
-    resolved,
   };
 }
 

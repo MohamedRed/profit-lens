@@ -15,6 +15,23 @@ export const formatDateTime = (value: string | null | undefined): string => {
   }).format(date);
 };
 
+export const formatDayLabel = (value: string | null | undefined): string => {
+  if (!value) {
+    return '—';
+  }
+
+  const dateValue = /^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T00:00:00.000Z` : value;
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) {
+    return '—';
+  }
+
+  return new Intl.DateTimeFormat('en-GB', {
+    month: 'short',
+    day: '2-digit',
+  }).format(date);
+};
+
 export const formatNumber = (value: number | null | undefined): string => {
   if (typeof value !== 'number' || !Number.isFinite(value)) {
     return '—';
