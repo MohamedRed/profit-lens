@@ -23,6 +23,7 @@ const clampIndex = (value: number, max: number): number => {
 };
 
 const swipeThresholdPx = 40;
+const modalTransitionDurationMs = 220;
 
 export const ImagePreviewModal = component$<ImagePreviewModalProps>(
   ({ alt, initialIndex, isOpen, items, onClose$, src }) => {
@@ -31,23 +32,41 @@ export const ImagePreviewModal = component$<ImagePreviewModalProps>(
     const activeIndex = useSignal(0);
     const touchStartX = useSignal<number | null>(null);
     const touchStartY = useSignal<number | null>(null);
-    const galleryItems = items?.length ? items : src ? [{ src, alt }] : [];
+    const isClosing = useSignal(false);
+    const closeTimerId = useSignal<number | null>(null);
+    const persistedGalleryItems = useSignal<ImagePreviewItem[]>([]);
+    const persistedAlt = useSignal('');
+    const liveGalleryItems = items?.length ? items : src ? [{ src, alt }] : [];
+    const galleryItems = liveGalleryItems.length > 0 ? liveGalleryItems : persistedGalleryItems.value;
     const maxItems = galleryItems.length;
     const hasGallery = maxItems > 1;
     const safeIndex = clampIndex(activeIndex.value, maxItems);
     const currentItem = maxItems > 0 ? galleryItems[safeIndex] : null;
+    const currentAlt = currentItem?.alt || persistedAlt.value || alt;
 
     useVisibleTask$(({ track, cleanup }) => {
       const open = track(() => isOpen);
       const nextInitialIndex = track(() => initialIndex ?? 0);
-      const nextLength = track(() => items?.length ?? 0);
+      track(() => src);
+      track(() => alt);
+      track(() => items?.map((item) => `${item.src}|${item.alt}`).join('||') ?? '');
       const dialog = dialogRef.value;
       if (!dialog) {
         return;
       }
       if (open) {
-        const max = nextLength > 0 ? nextLength : src ? 1 : 0;
+        const nextGalleryItems = items?.length ? items : src ? [{ src, alt }] : [];
+        if (nextGalleryItems.length > 0) {
+          persistedGalleryItems.value = nextGalleryItems;
+          persistedAlt.value = alt;
+        }
+        const max = nextGalleryItems.length;
         activeIndex.value = clampIndex(nextInitialIndex, max);
+        if (closeTimerId.value !== null) {
+          window.clearTimeout(closeTimerId.value);
+          closeTimerId.value = null;
+        }
+        isClosing.value = false;
         if (!hasScrollLock.value) {
           // Keep body positioning stable on mobile when the dialog opens.
           lockPageScroll({ disableTouchAction: false });
@@ -57,15 +76,38 @@ export const ImagePreviewModal = component$<ImagePreviewModalProps>(
           dialog.showModal();
         }
       } else if (dialog.open) {
-        dialog.close();
-      }
-
-      if (!open && hasScrollLock.value) {
-        unlockPageScroll();
-        hasScrollLock.value = false;
+        isClosing.value = true;
+        if (closeTimerId.value !== null) {
+          window.clearTimeout(closeTimerId.value);
+          closeTimerId.value = null;
+        }
+        closeTimerId.value = window.setTimeout(() => {
+          if (dialog.open) {
+            dialog.close();
+          }
+          isClosing.value = false;
+          persistedGalleryItems.value = [];
+          persistedAlt.value = '';
+          if (hasScrollLock.value) {
+            unlockPageScroll();
+            hasScrollLock.value = false;
+          }
+          closeTimerId.value = null;
+        }, modalTransitionDurationMs);
+      } else {
+        persistedGalleryItems.value = [];
+        persistedAlt.value = '';
+        if (hasScrollLock.value) {
+          unlockPageScroll();
+          hasScrollLock.value = false;
+        }
       }
 
       cleanup(() => {
+        if (closeTimerId.value !== null) {
+          window.clearTimeout(closeTimerId.value);
+          closeTimerId.value = null;
+        }
         if (hasScrollLock.value) {
           unlockPageScroll();
           hasScrollLock.value = false;
@@ -80,8 +122,11 @@ export const ImagePreviewModal = component$<ImagePreviewModalProps>(
     return (
       <dialog
         ref={dialogRef}
-        class="ui-image-modal-dialog"
-        aria-label={currentItem.alt || alt}
+        class={{
+          'ui-image-modal-dialog': true,
+          'is-closing': isClosing.value,
+        }}
+        aria-label={currentAlt}
         onCancel$={(event) => {
           event.preventDefault();
           onClose$();
