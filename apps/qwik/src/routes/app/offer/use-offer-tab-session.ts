@@ -1,4 +1,4 @@
-import { useVisibleTask$, type Signal } from '@builder.io/qwik';
+import { useSignal, useVisibleTask$, type Signal } from '@builder.io/qwik';
 import type { AuthStore } from '../../../lib/auth/auth-context';
 import { watchUserProfile } from '../../../lib/features/profile/profile-service';
 import { watchVehicles } from '../../../lib/features/vehicles/vehicles-service';
@@ -64,19 +64,17 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
     analysisRecord,
     screenshotPreviewUrl,
   } = params;
+  const hydratedSessionUid = useSignal<string | null>(null);
 
   useVisibleTask$(({ track, cleanup }) => {
+    const authReady = track(() => auth.ready.value);
     const userUid = track(() => auth.user.value?.uid);
     const user = auth.user.value;
+    if (!authReady) {
+      return;
+    }
     if (!user || !userUid) {
-      profile.value = null;
-      vehicles.value = [];
-      selectedVehicleId.value = '';
-      vehiclesLoading.value = false;
-      loading.value = false;
-      status.value = '';
-      analysisRecord.value = null;
-      screenshotPreviewUrl.value = null;
+      hydratedSessionUid.value = null;
       return;
     }
 
@@ -102,8 +100,25 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
       screenshotPreviewUrl.value = session.screenshotPreviewUrl;
       loading.value = false;
     } else {
+      payout.value = '';
+      distance.value = '';
+      duration.value = '';
+      pickupName.value = '';
+      pickupAddress.value = '';
+      dropoffName.value = '';
+      dropoffAddress.value = '';
+      profile.value = null;
+      minProfitabilityEuro.value = 2;
+      selectedVehicleId.value = '';
+      vehicles.value = [];
       vehiclesLoading.value = true;
+      manualEntryRequested.value = false;
+      loading.value = false;
+      status.value = '';
+      analysisRecord.value = null;
+      screenshotPreviewUrl.value = null;
     }
+    hydratedSessionUid.value = userUid;
 
     const unsubscribeVehicles = watchVehicles(userUid, (items) => {
       vehicles.value = items;
@@ -132,7 +147,9 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
   });
 
   useVisibleTask$(({ track }) => {
+    const authReady = track(() => auth.ready.value);
     const uid = track(() => auth.user.value?.uid);
+    const sessionUid = track(() => hydratedSessionUid.value);
     const currentPayout = track(() => payout.value);
     const currentDistance = track(() => distance.value);
     const currentDuration = track(() => duration.value);
@@ -150,7 +167,7 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
     const currentAnalysisRecord = track(() => analysisRecord.value);
     const currentScreenshotPreviewUrl = track(() => screenshotPreviewUrl.value);
 
-    if (!uid) {
+    if (!authReady || !uid || sessionUid !== uid) {
       return;
     }
 
