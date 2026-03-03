@@ -39,6 +39,16 @@ export async function applyDelivererStatusUpdate(
   const db = input.ticketRef.firestore;
   return db.runTransaction(async (transaction) => {
     const ticketSnapshot = await transaction.get(input.ticketRef);
+    const timelineCollection = input.ticketRef.collection("delivererTimeline");
+    const latestQuery = timelineCollection
+      .orderBy("at", "desc")
+      .orderBy(FieldPath.documentId(), "desc")
+      .limit(1);
+    const latestSnapshot = await transaction.get(latestQuery);
+    const latestEvent = latestSnapshot.docs[0]?.data() as
+      | TimelineEventSnapshot
+      | undefined;
+
     if (!ticketSnapshot.exists) {
       throw new Error(`Ticket not found: ${input.ticketRef.path}`);
     }
@@ -55,6 +65,12 @@ export async function applyDelivererStatusUpdate(
       locale: asString(nextData.locale),
     });
 
+    const shouldAppend = shouldAppendTimelineEvent({
+      latestEvent,
+      nextStatus: resolution.delivererStatus,
+      nextMessage: resolution.delivererStatusMessage,
+    });
+
     transaction.set(
       input.ticketRef,
       {
@@ -66,22 +82,6 @@ export async function applyDelivererStatusUpdate(
       },
       { merge: true }
     );
-
-    const timelineCollection = input.ticketRef.collection("delivererTimeline");
-    const latestQuery = timelineCollection
-      .orderBy("at", "desc")
-      .orderBy(FieldPath.documentId(), "desc")
-      .limit(1);
-    const latestSnapshot = await transaction.get(latestQuery);
-    const latestEvent = latestSnapshot.docs[0]?.data() as
-      | TimelineEventSnapshot
-      | undefined;
-
-    const shouldAppend = shouldAppendTimelineEvent({
-      latestEvent,
-      nextStatus: resolution.delivererStatus,
-      nextMessage: resolution.delivererStatusMessage,
-    });
 
     if (shouldAppend) {
       transaction.set(timelineCollection.doc(), {
