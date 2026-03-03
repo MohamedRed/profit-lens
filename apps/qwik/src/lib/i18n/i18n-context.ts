@@ -23,7 +23,7 @@ export interface I18nStore {
 
 const I18nContext = createContextId<I18nStore>('profit-lens.i18n');
 
-const resolveLocale = (raw: string | null | undefined): LocaleCode => {
+export const resolveLocaleCode = (raw: string | null | undefined): LocaleCode => {
   const value = (raw ?? '').toLowerCase();
   if (value.startsWith('ar')) {
     return 'ar';
@@ -67,7 +67,7 @@ export const setupI18nProvider = () => {
   useVisibleTask$(async () => {
     const stored = localStorage.getItem(localeStorageKey);
     const browser = navigator.language;
-    const resolved = resolveLocale(stored ?? browser);
+    const resolved = resolveLocaleCode(stored ?? browser);
     await applyLocale(store, resolved);
   });
 

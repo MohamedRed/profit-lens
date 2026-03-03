@@ -85,12 +85,20 @@ export default component$(() => {
             status.value = '';
             languageSaving.value = true;
             const previous = selectedLanguage.value;
+            const previousLocale = i18n.locale.value;
             selectedLanguage.value = nextLocale;
             try {
               await applyLocale(i18n, nextLocale);
               await saveUserProfile({ ...currentProfile, preferredLocale: nextLocale });
             } catch (error) {
               selectedLanguage.value = previous;
+              if (previousLocale !== i18n.locale.value) {
+                try {
+                  await applyLocale(i18n, previousLocale);
+                } catch {
+                  // Keep the user-facing error from the original failure.
+                }
+              }
               status.value = resolveUserFacingErrorMessage(i18n, error, 'language');
             } finally {
               languageSaving.value = false;
