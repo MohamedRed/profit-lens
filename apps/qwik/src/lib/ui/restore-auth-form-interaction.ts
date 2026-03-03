@@ -1,6 +1,5 @@
 import { resetPageScrollLock } from './page-scroll-lock';
 
-const modalOpenClass = 'ui-image-modal-open';
 const authRouteClass = 'ui-auth-route-active';
 
 const closeOpenDialogs = (): void => {
@@ -41,8 +40,6 @@ export const restoreAuthFormInteraction = (): (() => void) => {
   closeOpenDialogs();
   removeInstallPromptHosts();
 
-  document.documentElement.classList.remove(modalOpenClass);
-  document.body.classList.remove(modalOpenClass);
   document.documentElement.classList.add(authRouteClass);
   document.body.classList.add(authRouteClass);
 
