@@ -1,12 +1,8 @@
 import { Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useLocation, useNavigate } from '@builder.io/qwik-city';
 import { useAuth } from '../../lib/auth/auth-context';
-import {
-  readVehiclePresenceHint,
-  writeVehiclePresenceHint,
-} from '../../lib/features/vehicles/vehicle-presence-hint';
 import { watchVehicles } from '../../lib/features/vehicles/vehicles-service';
-import { AppSplash } from '../ui/app-splash';
+import { AppBootBackdrop } from '../ui/app-boot-backdrop';
 import { toAppPath } from '../layout/app-shell-routing';
 
 export const OnboardingGuard = component$(() => {
@@ -24,19 +20,12 @@ export const OnboardingGuard = component$(() => {
       return;
     }
 
-    const cachedVehiclePresence = readVehiclePresenceHint(uid);
-    hasVehicles.value = cachedVehiclePresence;
+    hasVehicles.value = null;
     const unsubscribe = watchVehicles(uid, (items) => {
-      const nextHasVehicles = items.length > 0;
-      writeVehiclePresenceHint(uid, nextHasVehicles);
-      hasVehicles.value = nextHasVehicles;
+      hasVehicles.value = items.length > 0;
     }, (error) => {
       console.warn('[onboarding] unable to watch vehicles', error);
-      if (hasVehicles.value !== null) {
-        return;
-      }
-      const fallbackPresence = readVehiclePresenceHint(uid);
-      hasVehicles.value = fallbackPresence === null ? true : fallbackPresence;
+      hasVehicles.value = null;
     });
 
     cleanup(() => {
@@ -71,8 +60,8 @@ export const OnboardingGuard = component$(() => {
 
   const shouldHoldRootShell = currentPath === '/app';
 
-  if (shouldHoldRootShell && hasVehicles.value === null) {
-    return <AppSplash status="Preparing your workspace..." progress={0.98} />;
+  if (shouldHoldRootShell) {
+    return <AppBootBackdrop status="Preparing your workspace..." />;
   }
 
   return <Slot />;
