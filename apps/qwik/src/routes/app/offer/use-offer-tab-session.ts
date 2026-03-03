@@ -66,17 +66,21 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
   } = params;
 
   useVisibleTask$(({ track, cleanup }) => {
-    const user = track(() => auth.user.value);
-    if (!user) {
+    const userUid = track(() => auth.user.value?.uid);
+    const user = auth.user.value;
+    if (!user || !userUid) {
       profile.value = null;
       vehicles.value = [];
       selectedVehicleId.value = '';
       vehiclesLoading.value = false;
+      loading.value = false;
+      status.value = '';
+      analysisRecord.value = null;
       screenshotPreviewUrl.value = null;
       return;
     }
 
-    const session = readOfferTabSessionState(user.uid);
+    const session = readOfferTabSessionState(userUid);
     if (session) {
       payout.value = session.payout;
       distance.value = session.distance;
@@ -101,7 +105,7 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
       vehiclesLoading.value = true;
     }
 
-    const unsubscribeVehicles = watchVehicles(user.uid, (items) => {
+    const unsubscribeVehicles = watchVehicles(userUid, (items) => {
       vehicles.value = items;
       vehiclesLoading.value = false;
       selectedVehicleId.value = resolveSelectedVehicleId(
@@ -111,7 +115,7 @@ export const useOfferTabSession = (params: UseOfferTabSessionParams): void => {
       );
     });
 
-    const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (nextProfile) => {
+    const unsubscribeProfile = watchUserProfile(userUid, user.email ?? null, (nextProfile) => {
       profile.value = nextProfile;
       minProfitabilityEuro.value = nextProfile.minProfitabilityEuro;
       selectedVehicleId.value = resolveSelectedVehicleId(
