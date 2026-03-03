@@ -7,23 +7,40 @@ import { IconLabel } from '../../components/ui/icon-label';
 import { MultiLineChart } from '../../components/charts/multi-line-chart';
 
 const rangeOptions: AdminRangeDays[] = [7, 30, 90];
+const defaultRangeDays: AdminRangeDays = 30;
 
 export default component$(() => {
-  const rangeDays = useSignal<AdminRangeDays>(30);
+  const rangeDays = useSignal<AdminRangeDays>(defaultRangeDays);
   const loading = useSignal(true);
   const error = useSignal('');
   const data = useSignal<AdminGetOverviewResponse | null>(null);
+  const activeRequestId = useSignal(0);
 
   useVisibleTask$(async ({ track }) => {
     track(() => rangeDays.value);
+    const requestId = activeRequestId.value + 1;
+    activeRequestId.value = requestId;
     loading.value = true;
     error.value = '';
+
     try {
-      data.value = await callAdminGetOverview({ rangeDays: rangeDays.value });
+      const response = await callAdminGetOverview({ rangeDays: rangeDays.value });
+      if (requestId !== activeRequestId.value) {
+        return;
+      }
+      data.value = response;
+      if (rangeDays.value !== response.rangeDays) {
+        rangeDays.value = response.rangeDays;
+      }
     } catch (err) {
+      if (requestId !== activeRequestId.value) {
+        return;
+      }
       error.value = err instanceof Error ? err.message : 'Failed to load overview.';
     } finally {
-      loading.value = false;
+      if (requestId === activeRequestId.value) {
+        loading.value = false;
+      }
     }
   });
 
@@ -38,7 +55,7 @@ export default component$(() => {
         <label class="admin-field" style={{ minWidth: '140px' }}>
           <span><IconLabel icon="calendar_month" text="Range" size="sm" /></span>
           <select
-            value={String(rangeDays.value)}
+            value={String(data.value?.rangeDays ?? rangeDays.value)}
             onChange$={(_, target) => {
               rangeDays.value = Number(target.value) as AdminRangeDays;
             }}
