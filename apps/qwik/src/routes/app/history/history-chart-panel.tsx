@@ -112,6 +112,14 @@ export const HistoryChartPanel = component$<HistoryChartPanelProps>(({ stats, lo
               stroke-width="4"
               pathLength={100}
             />
+            {chart.singlePoint ? (
+              <circle
+                class={{ 'ui-history-yearly-point': true, 'is-intro': showIntro }}
+                cx={String(chart.singlePoint.x)}
+                cy={String(chart.singlePoint.y)}
+                r="6"
+              />
+            ) : null}
           </svg>
         </div>
       )}

@@ -10,6 +10,7 @@ export interface ProfitChartGeometry {
   tickValues: number[];
   gridLinesY: number[];
   thresholdY: number;
+  singlePoint: { x: number; y: number } | null;
   linePath: string;
   areaPath: string;
 }
@@ -79,6 +80,7 @@ export const buildProfitChartGeometry = (values: number[]): ProfitChartGeometry 
     tickValues,
     gridLinesY,
     thresholdY: toY(0),
+    singlePoint: points.length === 1 ? points[0] : null,
     linePath,
     areaPath,
   };
