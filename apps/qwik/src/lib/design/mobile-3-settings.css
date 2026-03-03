@@ -54,21 +54,6 @@
   color: var(--pl-color-text-secondary);
 }
 
-.ui-settings-language {
-  padding: 14px 16px;
-}
-
-.ui-settings-section-title {
-  margin: 0 0 10px;
-  font-size: 1.6rem;
-  font-family: var(--pl-font-display);
-}
-
-.ui-settings-language-select {
-  min-height: 52px;
-  font-size: 1.05rem;
-}
-
 .ui-settings-pill-button {
   border: 0;
   border-radius: var(--pl-radius-pill);

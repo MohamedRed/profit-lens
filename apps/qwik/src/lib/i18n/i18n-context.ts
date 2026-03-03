@@ -10,7 +10,6 @@ import {
 export type LocaleCode = 'fr' | 'en' | 'ar';
 
 export const supportedLocales: LocaleCode[] = ['fr', 'en', 'ar'];
-const localeStorageKey = 'profit-lens-locale';
 
 type Dictionary = Record<string, string>;
 
@@ -32,6 +31,13 @@ export const resolveLocaleCode = (raw: string | null | undefined): LocaleCode =>
     return 'en';
   }
   return 'fr';
+};
+
+const resolveSystemLocale = (): LocaleCode => {
+  if (typeof navigator === 'undefined') {
+    return 'fr';
+  }
+  return resolveLocaleCode(navigator.language);
 };
 
 const dictionaryPath = (locale: LocaleCode): string => {
@@ -64,11 +70,29 @@ export const setupI18nProvider = () => {
 
   useContextProvider(I18nContext, store);
 
-  useVisibleTask$(async () => {
-    const stored = localStorage.getItem(localeStorageKey);
-    const browser = navigator.language;
-    const resolved = resolveLocaleCode(stored ?? browser);
-    await applyLocale(store, resolved);
+  useVisibleTask$(({ cleanup }) => {
+    const syncFromSystemLocale = async () => {
+      const nextLocale = resolveSystemLocale();
+      if (store.ready.value && store.locale.value === nextLocale) {
+        return;
+      }
+      await applyLocale(store, nextLocale);
+    };
+
+    void syncFromSystemLocale().catch((error) => {
+      console.warn('[i18n] failed to apply system locale', error);
+    });
+
+    const onLanguageChange = () => {
+      void syncFromSystemLocale().catch((error) => {
+        console.warn('[i18n] failed to apply system locale change', error);
+      });
+    };
+
+    window.addEventListener('languagechange', onLanguageChange);
+    cleanup(() => {
+      window.removeEventListener('languagechange', onLanguageChange);
+    });
   });
 
   return store;
@@ -85,7 +109,6 @@ export const applyLocale = async (store: I18nStore, locale: LocaleCode) => {
   store.direction.value = locale === 'ar' ? 'rtl' : 'ltr';
   store.ready.value = true;
 
-  localStorage.setItem(localeStorageKey, locale);
   document.documentElement.lang = locale;
   document.documentElement.dir = store.direction.value;
 };

@@ -3,15 +3,13 @@ import { Link } from '@builder.io/qwik-city';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { signOutCurrentUser } from '../../../lib/firebase/auth';
 import { billingPlans } from '../../../lib/config/runtime-config';
-import { applyLocale, formatTemplate, t, useI18n } from '../../../lib/i18n/i18n-context';
+import { formatTemplate, t, useI18n } from '../../../lib/i18n/i18n-context';
 import { formatCurrencyAmount } from '../../../lib/i18n/number-format';
 import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
 import { resolvePlanLabelFromEntitlement } from '../../../lib/features/billing/plan-resolution';
 import { startCheckout } from '../../../lib/features/billing/billing-service';
 import { isRunningAsInstalledPwa } from '../../../lib/features/pwa/pwa-install-state';
-import { saveUserProfile } from '../../../lib/features/profile/profile-service';
 import { saveSelectedVehicleEditorId } from '../../../lib/features/vehicles/vehicle-editor-selection';
-import { VisualOptionPicker } from '../../../components/ui/visual-option-picker';
 import type { Entitlement, OfferUsage } from '../../../lib/types/billing';
 import type { DeviceEntry } from '../../../lib/types/device';
 import type { UserProfile } from '../../../lib/types/profile';
@@ -29,13 +27,11 @@ export default component$(() => {
   const usage = useSignal<OfferUsage | null>(null);
   const devices = useSignal<DeviceEntry[]>([]);
 
-  const selectedLanguage = useSignal<'fr' | 'en' | 'ar'>('fr');
-  const languageSaving = useSignal(false);
   const checkoutLoading = useSignal(false);
   const showInstallTile = useSignal(false);
   const status = useSignal('');
 
-  useSettingsTabSession({ auth, profile, vehicles, entitlement, usage, devices, selectedLanguage });
+  useSettingsTabSession({ auth, profile, vehicles, entitlement, usage, devices });
   useVisibleTask$(() => {
     showInstallTile.value = !isRunningAsInstalledPwa(window);
   });
@@ -56,57 +52,8 @@ export default component$(() => {
         currentPlanLabel ?? '—',
       );
 
-  const languageOptions = [
-    { value: 'fr', label: t(i18n, 'languageFrench', 'French'), mediaText: '🇫🇷' },
-    { value: 'en', label: t(i18n, 'languageEnglish', 'English'), mediaText: '🇬🇧' },
-    { value: 'ar', label: t(i18n, 'languageArabic', 'Arabic'), mediaText: '🇲🇦' },
-  ];
-
   return (
     <div class="ui-settings-root">
-      <section class="ui-settings-card ui-settings-language">
-        <h2 class="ui-settings-section-title">{t(i18n, 'languageSectionTitle', 'Language')}</h2>
-        <VisualOptionPicker
-          ariaLabel={t(i18n, 'languageSectionTitle', 'Language')}
-          class="ui-settings-language-select"
-          compact
-          columns={3}
-          options={languageOptions}
-          value={selectedLanguage.value}
-          disabled={languageSaving.value || !currentProfile}
-          onChange$={async (next) => {
-            if (!currentProfile) {
-              return;
-            }
-            const nextLocale = next as 'fr' | 'en' | 'ar';
-            if (nextLocale === selectedLanguage.value) {
-              return;
-            }
-            status.value = '';
-            languageSaving.value = true;
-            const previous = selectedLanguage.value;
-            const previousLocale = i18n.locale.value;
-            selectedLanguage.value = nextLocale;
-            try {
-              await applyLocale(i18n, nextLocale);
-              await saveUserProfile({ ...currentProfile, preferredLocale: nextLocale });
-            } catch (error) {
-              selectedLanguage.value = previous;
-              if (previousLocale !== i18n.locale.value) {
-                try {
-                  await applyLocale(i18n, previousLocale);
-                } catch {
-                  // Keep the user-facing error from the original failure.
-                }
-              }
-              status.value = resolveUserFacingErrorMessage(i18n, error, 'language');
-            } finally {
-              languageSaving.value = false;
-            }
-          }}
-        />
-      </section>
-
       <section class="ui-settings-card">
         <Link class="ui-settings-tile ui-settings-tile-link" href="/next/app/settings/profile">
           <div class="ui-settings-tile-content">

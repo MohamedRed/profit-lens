@@ -12,7 +12,6 @@ export interface SettingsTabSessionState {
   entitlement: Entitlement | null;
   usage: OfferUsage | null;
   devices: DeviceEntry[];
-  selectedLanguage: 'fr' | 'en' | 'ar';
 }
 
 let settingsTabSessionState: SettingsTabSessionState | null = null;

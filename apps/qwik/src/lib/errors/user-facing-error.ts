@@ -11,7 +11,6 @@ export type UserFacingErrorContext =
   | 'vehicle'
   | 'billing'
   | 'devices'
-  | 'language'
   | 'generic';
 
 const readRawMessage = (error: unknown): string => {
@@ -102,8 +101,6 @@ const resolveFallbackMessage = (i18n: I18nStore, context: UserFacingErrorContext
       return t(i18n, 'billingActionFailedMessage', 'Unable to update subscription right now. Please try again.');
     case 'devices':
       return t(i18n, 'deviceActionFailedMessage', 'Unable to update device right now. Please try again.');
-    case 'language':
-      return t(i18n, 'languageSaveFailedMessage', 'Unable to update language right now. Please try again.');
     default:
       return t(i18n, 'genericActionFailedMessage', 'Something went wrong. Please try again.');
   }

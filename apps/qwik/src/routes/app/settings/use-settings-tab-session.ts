@@ -23,11 +23,10 @@ interface UseSettingsTabSessionParams {
   entitlement: Signal<Entitlement | null>;
   usage: Signal<OfferUsage | null>;
   devices: Signal<DeviceEntry[]>;
-  selectedLanguage: Signal<'fr' | 'en' | 'ar'>;
 }
 
 export const useSettingsTabSession = (params: UseSettingsTabSessionParams): void => {
-  const { auth, profile, vehicles, entitlement, usage, devices, selectedLanguage } = params;
+  const { auth, profile, vehicles, entitlement, usage, devices } = params;
 
   useVisibleTask$(({ track, cleanup }) => {
     const user = track(() => auth.user.value);
@@ -47,7 +46,6 @@ export const useSettingsTabSession = (params: UseSettingsTabSessionParams): void
       entitlement.value = session.entitlement;
       usage.value = session.usage;
       devices.value = session.devices;
-      selectedLanguage.value = session.selectedLanguage;
     }
 
     let unsubscribeUsage: (() => void) | null = null;
@@ -55,7 +53,6 @@ export const useSettingsTabSession = (params: UseSettingsTabSessionParams): void
     let entitlementRepairAttempted = false;
     const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (nextProfile) => {
       profile.value = nextProfile;
-      selectedLanguage.value = (nextProfile.preferredLocale || 'fr') as 'fr' | 'en' | 'ar';
     });
     const unsubscribeVehicles = watchVehicles(user.uid, (items) => {
       vehicles.value = items;
@@ -105,7 +102,6 @@ export const useSettingsTabSession = (params: UseSettingsTabSessionParams): void
     const currentEntitlement = track(() => entitlement.value);
     const currentUsage = track(() => usage.value);
     const currentDevices = track(() => devices.value);
-    const currentLanguage = track(() => selectedLanguage.value);
 
     if (!uid) {
       return;
@@ -118,7 +114,6 @@ export const useSettingsTabSession = (params: UseSettingsTabSessionParams): void
       entitlement: currentEntitlement,
       usage: currentUsage,
       devices: currentDevices,
-      selectedLanguage: currentLanguage,
     });
   });
 };

@@ -22,7 +22,6 @@ import {
   shouldPreferDeterministicBack,
   toAppPath,
 } from './app-shell-routing';
-import { useAppLocaleSync } from './use-app-locale-sync';
 
 const triggerTabHaptic = (): void => {
   if (typeof window === 'undefined' || typeof navigator === 'undefined') {
@@ -58,8 +57,6 @@ export const AppShell = component$(() => {
   const showHeader = Boolean(headerBackHref) || showHelpTicketsAction;
   const hideTabNav = shouldHideTabNav(appPath);
   const isOnboardingRoute = appPath.startsWith('/app/onboarding');
-  useAppLocaleSync({ auth, i18n });
-
   const onHeaderBack$ = $(async () => {
     if (!headerBackHref) {
       return;
