@@ -5,9 +5,17 @@ interface OfferErrorNoticeProps {
   title?: string;
   message: string;
   onDismiss$?: QRL<() => void>;
+  actionLabel?: string;
+  onAction$?: QRL<() => void | Promise<void>>;
 }
 
-export const OfferErrorNotice = component$<OfferErrorNoticeProps>(({ title, message, onDismiss$ }) => {
+export const OfferErrorNotice = component$<OfferErrorNoticeProps>(({
+  title,
+  message,
+  onDismiss$,
+  actionLabel,
+  onAction$,
+}) => {
   const i18n = useI18n();
 
   return (
@@ -40,6 +48,15 @@ export const OfferErrorNotice = component$<OfferErrorNoticeProps>(({ title, mess
         </div>
       ) : null}
       <p class="ui-offer-error-notice-message">{message}</p>
+      {onAction$ && actionLabel ? (
+        <button
+          type="button"
+          class="ui-offer-error-notice-action"
+          onClick$={onAction$}
+        >
+          {actionLabel}
+        </button>
+      ) : null}
     </section>
   );
 });

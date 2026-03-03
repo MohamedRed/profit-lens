@@ -8,6 +8,7 @@ import { OfferPresenceTransition } from './offer-presence-transition';
 interface OfferFlowStatusProps {
   status: string;
   onDismiss$: QRL<() => void>;
+  onEnableLocation$?: QRL<() => void | Promise<void>>;
 }
 
 const isSuccessStatus = (value: string): boolean => {
@@ -33,7 +34,11 @@ const isScreenshotFailureStatus = (status: string, screenshotFailureMessage: str
   );
 };
 
-export const OfferFlowStatus = component$<OfferFlowStatusProps>(({ status, onDismiss$ }) => {
+export const OfferFlowStatus = component$<OfferFlowStatusProps>(({
+  status,
+  onDismiss$,
+  onEnableLocation$,
+}) => {
   const i18n = useI18n();
   const currentStatus = status.trim();
   const activeAnalysisStep = parseOfferAnalysisProgressStep(currentStatus);
@@ -50,6 +55,26 @@ export const OfferFlowStatus = component$<OfferFlowStatusProps>(({ status, onDis
   if (shouldShowStatusMessage) {
     const selectVehicleMessage = t(i18n, 'vehicleSelectLabel', 'Select vehicle');
     const isSelectVehicleHint = currentStatus.toLowerCase() === selectVehicleMessage.toLowerCase();
+    const locationRetryMessages = [
+      t(
+        i18n,
+        'offerLocationPermissionRequired',
+        'Location permission is required to analyze an offer.',
+      ),
+      t(
+        i18n,
+        'offerLocationUnavailable',
+        'Unable to read your current location. Check GPS and try again.',
+      ),
+      t(
+        i18n,
+        'offerLocationTimeout',
+        'Location took too long to load. Try again in an open area.',
+      ),
+    ];
+    const isLocationRetryHint = locationRetryMessages.some(
+      (message) => message.toLowerCase() === currentStatus.toLowerCase(),
+    );
     if (isSelectVehicleHint) {
       statusNode = (
         <div class="ui-offer-inline-status">
@@ -76,7 +101,15 @@ export const OfferFlowStatus = component$<OfferFlowStatusProps>(({ status, onDis
       );
       const isScreenshotFailure = isScreenshotFailureStatus(currentStatus, screenshotFailureMessage);
       const statusTitle = isScreenshotFailure ? t(i18n, 'analysisFailedTitle', 'Analysis incomplete') : undefined;
-      statusNode = <OfferErrorNotice title={statusTitle} message={currentStatus} onDismiss$={onDismiss$} />;
+      statusNode = (
+        <OfferErrorNotice
+          title={statusTitle}
+          message={currentStatus}
+          onDismiss$={onDismiss$}
+          actionLabel={isLocationRetryHint ? t(i18n, 'retryButtonLabel', 'Retry') : undefined}
+          onAction$={isLocationRetryHint ? onEnableLocation$ : undefined}
+        />
+      );
     }
   }
 

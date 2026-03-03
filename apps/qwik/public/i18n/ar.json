@@ -102,6 +102,7 @@
   "offerLocationUnavailable": "تعذر تحديد موقعك الحالي. تحقق من GPS ثم أعد المحاولة.",
   "offerLocationTimeout": "استغرق تحديد الموقع وقتًا طويلًا. أعد المحاولة في منطقة مفتوحة.",
   "offerLocationUnsupported": "هذا الجهاز لا يدعم تحديد الموقع لتحليل العروض.",
+  "offerLocationRequesting": "جارٍ طلب إذن الموقع...",
   "billingActionFailedMessage": "تعذر تحديث الاشتراك الآن. يرجى المحاولة مرة أخرى.",
   "deviceActionFailedMessage": "تعذر تحديث الجهاز الآن. يرجى المحاولة مرة أخرى.",
   "vehicleActionFailedMessage": "تعذر تحديث المركبة الآن. يرجى المحاولة مرة أخرى.",

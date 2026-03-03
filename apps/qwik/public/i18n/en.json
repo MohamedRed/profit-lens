@@ -102,6 +102,7 @@
   "offerLocationUnavailable": "Unable to read your current location. Check GPS and try again.",
   "offerLocationTimeout": "Location took too long to load. Try again in an open area.",
   "offerLocationUnsupported": "This device does not support location for offer analysis.",
+  "offerLocationRequesting": "Requesting location permission...",
   "billingActionFailedMessage": "Unable to update subscription right now. Please try again.",
   "deviceActionFailedMessage": "Unable to update device right now. Please try again.",
   "vehicleActionFailedMessage": "Unable to update vehicle right now. Please try again.",

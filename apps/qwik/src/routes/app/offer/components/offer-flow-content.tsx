@@ -30,6 +30,7 @@ interface OfferFlowContentProps {
   onAnalyzeManual$: QRL<() => Promise<void>>;
   onClearScreenshotPreview$: QRL<() => void>;
   onDismissStatus$: QRL<() => void>;
+  onEnableLocation$: QRL<() => Promise<void>>;
   onImportScreenshotFile$: QRL<(fileToken: string) => Promise<void>>;
   onSaveProfitabilityTarget$: QRL<(value: string) => Promise<void>>;
   onViewDetails$: QRL<() => void | Promise<void>>;
@@ -199,7 +200,11 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
             ) : null}
           </section>
 
-          <OfferFlowStatus status={props.status.value} onDismiss$={props.onDismissStatus$} />
+          <OfferFlowStatus
+            status={props.status.value}
+            onDismiss$={props.onDismissStatus$}
+            onEnableLocation$={props.onEnableLocation$}
+          />
 
           <OfferPresenceTransition
             class="ui-offer-overview-transition"

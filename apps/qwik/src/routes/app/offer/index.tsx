@@ -1,9 +1,8 @@
-import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { $, component$, useSignal } from '@builder.io/qwik';
 import { useAuth } from '../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../lib/config/device-id';
 import { t, useI18n } from '../../../lib/i18n/i18n-context';
 import { resolveUserFacingErrorMessage } from '../../../lib/errors/user-facing-error';
-import { saveUserProfile } from '../../../lib/features/profile/profile-service';
 import {
   createOfferScreenshotModalUrl,
   revokeOfferScreenshotModalUrl,
@@ -15,12 +14,20 @@ import { analyzeManualOfferAction, analyzeScreenshotOfferAction } from './offer-
 import { readRequiredCurrentLocation } from './offer-current-location';
 import { parseOfferAnalysisRecord, type OfferAnalysisRecord } from './offer-analysis-result';
 import { setOfferAnalysisErrorStatus, startOfferAnalysisProgress } from './offer-analysis-runtime';
-import { primeHistoryAfterAnalysis, primeOfferDetailsNavigation } from './offer-analysis-navigation';
+import { primeHistoryAfterAnalysis } from './offer-analysis-navigation';
 import { takeOfferScreenshotFile } from './offer-file-transfer-store';
 import { OfferFlowContent } from './components/offer-flow-content';
 import { ensureWithinOfferLimit } from './offer-flow-limits';
 import { loadOffersService } from './offer-service-loader';
+import {
+  clearScreenshotPreviewAction,
+  dismissStatusAction,
+  enableLocationAction,
+  saveProfitabilityTargetAction,
+  viewDetailsAction,
+} from './offer-ui-actions';
 import { useOfferLocationPrefetch } from './use-offer-location-prefetch';
+import { useOfferScreenshotModalCleanup } from './use-offer-screenshot-modal-cleanup';
 import { persistOfferTabSessionSnapshot } from './offer-tab-session-persistence';
 import { useOfferTabSession } from './use-offer-tab-session';
 
@@ -54,33 +61,15 @@ export default component$(() => {
     manualEntryRequested, loading, status, analysisRecord, screenshotPreviewUrl,
   };
   useOfferTabSession(offerTabSessionParams);
-  useVisibleTask$(({ cleanup }) => {
-    cleanup(() => {
-      revokeOfferScreenshotModalUrl(screenshotModalUrl.value);
-    });
-  });
+  useOfferScreenshotModalCleanup(screenshotModalUrl);
   const saveProfitabilityTarget$ = $(async (rawValue: string) => {
-    const userProfile = profile.value;
-    const normalizedValue = rawValue.trim().replace(',', '.');
-    const parsed = Number(normalizedValue);
-    if (!userProfile || !Number.isFinite(parsed) || parsed <= 0) {
-      return;
-    }
-    if (parsed === userProfile.minProfitabilityEuro) {
-      return;
-    }
-    const nextProfile = { ...userProfile, minProfitabilityEuro: parsed };
-    minProfitabilityEuro.value = parsed;
-    profile.value = nextProfile;
-    savingProfitTarget.value = true;
-
-    try {
-      await saveUserProfile(nextProfile);
-    } catch (error) {
-      status.value = resolveUserFacingErrorMessage(i18n, error, 'profile');
-    } finally {
-      savingProfitTarget.value = false;
-    }
+    await saveProfitabilityTargetAction({
+      profile,
+      minProfitabilityEuro,
+      savingProfitTarget,
+      i18n,
+      status,
+    }, rawValue);
   });
   const analyzeManual$ = $(async () => {
     if (loading.value) {
@@ -249,30 +238,23 @@ export default component$(() => {
     }
   });
   const clearScreenshotPreview$ = $(() => {
-    if (loading.value) {
-      return;
-    }
-    revokeOfferScreenshotModalUrl(screenshotModalUrl.value);
-    screenshotModalUrl.value = null;
-    screenshotPreviewUrl.value = null;
+    clearScreenshotPreviewAction({ loading, screenshotModalUrl, screenshotPreviewUrl });
+  });
+  const enableLocation$ = $(async () => {
+    await enableLocationAction({
+      i18n,
+      status,
+      persistState: () => persistOfferTabSessionSnapshot(offerTabSessionParams),
+    }, loading);
   });
   const dismissStatus$ = $(() => {
-    status.value = '';
-    persistOfferTabSessionSnapshot(offerTabSessionParams);
+    dismissStatusAction({
+      status,
+      persistState: () => persistOfferTabSessionSnapshot(offerTabSessionParams),
+    });
   });
   const viewDetails$ = $(async () => {
-    const record = analysisRecord.value;
-    if (!record?.id) {
-      analysisRecord.value = null;
-      status.value = t(
-        i18n,
-        'offerDetailsUnavailableMessage',
-        'Unable to open details for this analysis. Please run the analysis again.',
-      );
-      return;
-    }
-    const scrollY = typeof window !== 'undefined' ? window.scrollY : null;
-    primeOfferDetailsNavigation(record, scrollY);
+    viewDetailsAction({ analysisRecord, i18n, status });
   });
   const user = auth.user.value;
   if (!user) {
@@ -292,6 +274,7 @@ export default component$(() => {
       onAnalyzeManual$={analyzeManual$}
       onClearScreenshotPreview$={clearScreenshotPreview$}
       onDismissStatus$={dismissStatus$}
+      onEnableLocation$={enableLocation$}
       onImportScreenshotFile$={importScreenshotFile$}
       onSaveProfitabilityTarget$={saveProfitabilityTarget$}
       onViewDetails$={viewDetails$}
