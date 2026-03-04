@@ -103,6 +103,8 @@
   "offerLocationTimeout": "La localisation prend trop de temps. Réessayez dans une zone dégagée.",
   "offerLocationUnsupported": "Cet appareil ne prend pas en charge la localisation pour l’analyse des offres.",
   "offerLocationRequesting": "Demande d’autorisation de localisation…",
+  "offerLocationEnableActionLabel": "Activer la localisation",
+  "offerLocationTryAgainActionLabel": "Réessayer",
   "billingActionFailedMessage": "Impossible de mettre à jour l’abonnement pour le moment. Réessayez.",
   "deviceActionFailedMessage": "Impossible de mettre à jour l’appareil pour le moment. Réessayez.",
   "vehicleActionFailedMessage": "Impossible de mettre à jour le véhicule pour le moment. Réessayez.",

@@ -3,6 +3,7 @@ import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import { parseOfferAnalysisProgressStep } from '../offer-analysis-progress';
 import { OfferAnalysisProgressStepper } from './offer-analysis-progress-stepper';
 import { OfferErrorNotice } from './offer-error-notice';
+import { resolveOfferLocationStatusAction } from './offer-location-status-action';
 import { OfferPresenceTransition } from './offer-presence-transition';
 
 interface OfferFlowStatusProps {
@@ -55,26 +56,7 @@ export const OfferFlowStatus = component$<OfferFlowStatusProps>(({
   if (shouldShowStatusMessage) {
     const selectVehicleMessage = t(i18n, 'vehicleSelectLabel', 'Select vehicle');
     const isSelectVehicleHint = currentStatus.toLowerCase() === selectVehicleMessage.toLowerCase();
-    const locationRetryMessages = [
-      t(
-        i18n,
-        'offerLocationPermissionRequired',
-        'Location permission is required to analyze an offer.',
-      ),
-      t(
-        i18n,
-        'offerLocationUnavailable',
-        'Unable to read your current location. Check GPS and try again.',
-      ),
-      t(
-        i18n,
-        'offerLocationTimeout',
-        'Location took too long to load. Try again in an open area.',
-      ),
-    ];
-    const isLocationRetryHint = locationRetryMessages.some(
-      (message) => message.toLowerCase() === currentStatus.toLowerCase(),
-    );
+    const locationStatusAction = resolveOfferLocationStatusAction(i18n, currentStatus);
     if (isSelectVehicleHint) {
       statusNode = (
         <div class="ui-offer-inline-status">
@@ -106,8 +88,8 @@ export const OfferFlowStatus = component$<OfferFlowStatusProps>(({
           title={statusTitle}
           message={currentStatus}
           onDismiss$={onDismiss$}
-          actionLabel={isLocationRetryHint ? t(i18n, 'retryButtonLabel', 'Retry') : undefined}
-          onAction$={isLocationRetryHint ? onEnableLocation$ : undefined}
+          actionLabel={locationStatusAction?.actionLabel}
+          onAction$={locationStatusAction && onEnableLocation$ ? onEnableLocation$ : undefined}
         />
       );
     }
