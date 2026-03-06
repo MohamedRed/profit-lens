@@ -10,7 +10,6 @@ import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
 import type { OfferAnalysisRecord } from "../offer-analysis-result";
 import { enableCaptureCta, enableManualEntry } from "../offer-feature-flags";
-import { OfferModeToggle } from "./offer-mode-toggle";
 import { OfferPresenceTransition } from "./offer-presence-transition";
 import { OfferFlowStatus } from "./offer-flow-status";
 import { OfferManualDetailsSection } from "./offer-manual-details-section";
@@ -107,7 +106,6 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
 
   return (
     <div class="ui-stack ui-offer-flow">
-      <OfferModeToggle mode="single" />
       {showEmptyState ? (
         <div class="ui-offer-no-vehicle-state">
           <p class="ui-offer-empty-copy">

@@ -11,6 +11,7 @@ interface RunBulkParseImportParams {
   files: File[];
   timezone: string;
   serviceDateIso: string;
+  vehicleId?: string;
   i18n: I18nStore;
   parseRunId: Signal<number>;
   parseInFlight: Signal<boolean>;
@@ -67,6 +68,7 @@ export const runBulkParseImport = async (
         deviceId: params.deviceId,
         timezone: params.timezone,
         serviceDateIso: params.serviceDateIso,
+        vehicleId: params.vehicleId,
         file,
       });
       const rowOffset = params.parsedRows.value.length;

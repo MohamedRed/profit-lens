@@ -1,40 +1,41 @@
-import { component$ } from '@builder.io/qwik';
-import { Link } from '@builder.io/qwik-city';
+import { component$, type QRL } from '@builder.io/qwik';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
-
-type OfferMode = 'single' | 'bulk';
+import type { OfferMode } from './offer-mode-state';
 
 interface OfferModeToggleProps {
   mode: OfferMode;
+  onSelectMode$: QRL<(mode: OfferMode) => void>;
 }
 
-export const OfferModeToggle = component$<OfferModeToggleProps>(({ mode }) => {
+export const OfferModeToggle = component$<OfferModeToggleProps>(({ mode, onSelectMode$ }) => {
   const i18n = useI18n();
   const isSingle = mode === 'single';
   const isBulk = mode === 'bulk';
 
   return (
     <nav class="ui-offer-mode-segmented" aria-label={t(i18n, 'offerModeToggleLabel', 'Offer mode')}>
-      <Link
-        href="/next/app/offer"
+      <button
+        type="button"
         class={{ 'ui-offer-mode-segment-btn': true, 'is-active': isSingle }}
         aria-current={isSingle ? 'page' : undefined}
+        onClick$={() => onSelectMode$('single')}
       >
         <span class="material-icons-outlined ui-offer-mode-segment-icon" aria-hidden="true">
-          local_shipping
+          looks_one
         </span>
         <span>{t(i18n, 'offerModeSingleLabel', 'Single')}</span>
-      </Link>
-      <Link
-        href="/next/app/offer/bulk"
+      </button>
+      <button
+        type="button"
         class={{ 'ui-offer-mode-segment-btn': true, 'is-active': isBulk }}
         aria-current={isBulk ? 'page' : undefined}
+        onClick$={() => onSelectMode$('bulk')}
       >
         <span class="material-icons-outlined ui-offer-mode-segment-icon" aria-hidden="true">
-          calendar_view_day
+          library_add_check
         </span>
         <span>{t(i18n, 'offerModeBulkLabel', 'Bulk')}</span>
-      </Link>
+      </button>
     </nav>
   );
 });
