@@ -23,8 +23,6 @@ import { BulkSummaryKpis } from './components/bulk-summary-kpis';
 import { BulkUploadStep } from './components/bulk-upload-step';
 import { OfferModeToggle } from '../components/offer-mode-toggle';
 import {
-  patchBulkRow,
-  removeBulkRow,
   resolveLocalTodayIso,
   revokeBulkScreenshotPreviews,
   type BulkScreenshotPreview,
@@ -164,14 +162,6 @@ export default component$(() => {
     );
   });
 
-  const onPatchRow$ = $((index: number, patch: Partial<BulkParsedRow>) => {
-    parsedRows.value = patchBulkRow(parsedRows.value, index, patch);
-  });
-
-  const onRemoveRow$ = $((index: number) => {
-    parsedRows.value = removeBulkRow(parsedRows.value, index);
-  });
-
   const onSave$ = $(async () => {
     const user = auth.user.value;
     if (!user) {
@@ -238,11 +228,7 @@ export default component$(() => {
       <OfferModeToggle mode="bulk" />
 
       <BulkUploadStep
-        serviceDateIso={serviceDateIso.value}
         parseInFlight={parseInFlight.value}
-        onServiceDateChange$={$((nextDateIso: string) => {
-          serviceDateIso.value = nextDateIso;
-        })}
         onImportFiles$={onImportFiles$}
       />
       <BulkAnalysisProgress
@@ -254,10 +240,9 @@ export default component$(() => {
 
       <BulkReviewList
         rows={parsedRows.value}
+        locale={i18n.locale.value}
         profile={profile.value}
         vehicle={defaultVehicle}
-        onPatch$={onPatchRow$}
-        onRemove$={onRemoveRow$}
       />
       <BulkInvalidRowsPanel rows={invalidRows.value} />
       <BulkSummaryKpis locale={i18n.locale.value} committed={commitResult.value} />

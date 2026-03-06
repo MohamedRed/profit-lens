@@ -52,7 +52,6 @@ export const BulkScreenshotPreviewList = component$<BulkScreenshotPreviewListPro
                 </button>
                 <div class="ui-offer-screenshot-meta">
                   <p class="ui-offer-screenshot-title">{`${itemLabel} #${index + 1}`}</p>
-                  <p class="ui-offer-screenshot-subtitle">{preview.fileName}</p>
                 </div>
               </div>
             );

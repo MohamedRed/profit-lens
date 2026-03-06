@@ -2,9 +2,7 @@ import { $, component$, type PropFunction } from '@builder.io/qwik';
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 
 interface BulkUploadStepProps {
-  serviceDateIso: string;
   parseInFlight: boolean;
-  onServiceDateChange$: PropFunction<(serviceDateIso: string) => void>;
   onImportFiles$: PropFunction<(files: File[]) => Promise<void>>;
 }
 
@@ -22,27 +20,8 @@ export const BulkUploadStep = component$<BulkUploadStepProps>((props) => {
     <section class="ui-offer-bulk-section">
       <header class="ui-offer-bulk-section-head">
         <h2>{t(i18n, 'bulkShiftTitle', 'Shift analysis')}</h2>
-        <p>{t(i18n, 'bulkShiftSubtitle', 'Import a day screenshot and review each delivery before saving.')}</p>
+        <p>{t(i18n, 'bulkShiftSubtitle', 'Import one or more screenshots and process each delivery automatically before saving.')}</p>
       </header>
-
-      <div class="ui-offer-bulk-grid ui-offer-bulk-upload-grid">
-        <label class="ui-field">
-          <span>{t(i18n, 'bulkShiftDateLabel', 'Service date')}</span>
-          <input
-            class="ui-input"
-            type="date"
-            value={props.serviceDateIso}
-            onInput$={(_, input) => props.onServiceDateChange$(input.value)}
-          />
-          <small class="ui-offer-bulk-date-hint">
-            {t(
-              i18n,
-              'bulkShiftDateHint',
-              'Used to place delivery times on the correct day for history and KPIs.',
-            )}
-          </small>
-        </label>
-      </div>
 
       <div class="ui-offer-file-cta-shell">
         <button
