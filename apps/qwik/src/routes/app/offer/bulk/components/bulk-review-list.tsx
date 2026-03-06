@@ -1,10 +1,14 @@
 import { component$, type PropFunction } from '@builder.io/qwik';
 import type { BulkParsedRow } from '../../../../../lib/types/bulk-offers';
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
+import type { UserProfile } from '../../../../../lib/types/profile';
+import type { VehicleProfile } from '../../../../../lib/types/vehicle';
 import { BulkReviewRowCard } from './bulk-review-row-card';
 
 interface BulkReviewListProps {
   rows: BulkParsedRow[];
+  profile: UserProfile | null;
+  vehicle: VehicleProfile | null;
   onPatch$: PropFunction<(index: number, patch: Partial<BulkParsedRow>) => void>;
   onRemove$: PropFunction<(index: number) => void>;
 }
@@ -22,7 +26,7 @@ export const BulkReviewList = component$<BulkReviewListProps>((props) => {
           {t(
             i18n,
             'bulkReviewSubtitle',
-            'Only validated rows are saved. Edit values before committing.',
+            'Each row uses your default vehicle and minimum profit target, like single-offer analysis. Edit values before committing.',
           )}
         </p>
       </header>
@@ -32,6 +36,8 @@ export const BulkReviewList = component$<BulkReviewListProps>((props) => {
             key={`${row.sourceIndex}-${index}`}
             row={row}
             index={index}
+            profile={props.profile}
+            vehicle={props.vehicle}
             onPatch$={props.onPatch$}
             onRemove$={props.onRemove$}
           />

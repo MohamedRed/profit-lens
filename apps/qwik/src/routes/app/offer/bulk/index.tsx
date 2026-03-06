@@ -3,6 +3,8 @@ import { useAuth } from '../../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../../lib/config/device-id';
 import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
 import { commitBulkOffersImport } from '../../../../lib/features/offers/bulk-offers-service';
+import { watchUserProfile } from '../../../../lib/features/profile/profile-service';
+import { watchVehicles } from '../../../../lib/features/vehicles/vehicles-service';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type {
   BulkInvalidRow,
@@ -10,6 +12,8 @@ import type {
   CommitBulkOffersImportResponse,
   ScreenshotRef,
 } from '../../../../lib/types/bulk-offers';
+import type { UserProfile } from '../../../../lib/types/profile';
+import type { VehicleProfile } from '../../../../lib/types/vehicle';
 import { BulkInvalidRowsPanel } from './components/bulk-invalid-rows-panel';
 import { BulkAnalysisProgress } from './components/bulk-analysis-progress';
 import { BulkReviewList } from './components/bulk-review-list';
@@ -25,6 +29,7 @@ import {
   revokeBulkScreenshotPreviews,
   type BulkScreenshotPreview,
 } from './bulk-helpers';
+import { resolveBulkDefaultVehicle } from './bulk-review-analysis';
 import { type OfferAnalysisProgressStep } from '../offer-analysis-progress';
 import { runBulkParseImport } from './bulk-parse-import';
 
@@ -47,6 +52,8 @@ export default component$(() => {
   const parseBatchIndex = useSignal(0);
   const parseBatchTotal = useSignal(0);
   const saveInFlight = useSignal(false);
+  const profile = useSignal<UserProfile | null>(null);
+  const vehicles = useSignal<VehicleProfile[]>([]);
   const parsedRows = useSignal<BulkParsedRow[]>([]);
   const invalidRows = useSignal<BulkInvalidRow[]>([]);
   const screenshotRefs = useSignal<ScreenshotRef[]>([]);
@@ -54,15 +61,30 @@ export default component$(() => {
   const status = useSignal('');
   const commitResult = useSignal<CommitBulkOffersImportResponse | null>(null);
 
-  useVisibleTask$(({ track }) => {
+  useVisibleTask$(({ track, cleanup }) => {
     const isReady = track(() => auth.ready.value);
     const user = track(() => auth.user.value);
     if (!isReady || !user) {
+      profile.value = null;
+      vehicles.value = [];
       if (screenshotPreviews.value.length > 0) {
         revokeBulkScreenshotPreviews(screenshotPreviews.value);
         screenshotPreviews.value = [];
       }
+      return;
     }
+
+    const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (nextProfile) => {
+      profile.value = nextProfile;
+    });
+    const unsubscribeVehicles = watchVehicles(user.uid, (nextVehicles) => {
+      vehicles.value = nextVehicles;
+    });
+
+    cleanup(() => {
+      unsubscribeProfile();
+      unsubscribeVehicles();
+    });
   });
 
   useVisibleTask$(({ cleanup }) => {
@@ -163,6 +185,14 @@ export default component$(() => {
       status.value = t(i18n, 'bulkScreenshotMissing', 'Screenshot reference is missing. Parse again.');
       return;
     }
+    if (!defaultVehicle) {
+      status.value = t(
+        i18n,
+        'bulkDefaultVehicleRequiredMessage',
+        'Set a default vehicle in Settings before saving bulk offers.',
+      );
+      return;
+    }
     const timezone = resolveTimeZone();
     if (!timezone) {
       status.value = t(i18n, 'bulkTimezoneMissing', 'Timezone is required on this device.');
@@ -192,6 +222,16 @@ export default component$(() => {
   if (!user) {
     return null;
   }
+  const defaultVehicle = resolveBulkDefaultVehicle(vehicles.value, profile.value?.defaultVehicleId ?? null);
+  const saveStatus =
+    status.value ||
+    (parsedRows.value.length > 0 && !defaultVehicle
+      ? t(
+          i18n,
+          'bulkDefaultVehicleRequiredMessage',
+          'Set a default vehicle in Settings before saving bulk offers.',
+        )
+      : '');
 
   return (
     <div class="ui-stack ui-offer-bulk-root">
@@ -212,14 +252,20 @@ export default component$(() => {
       />
       <BulkScreenshotPreviewList previews={screenshotPreviews.value} />
 
-      <BulkReviewList rows={parsedRows.value} onPatch$={onPatchRow$} onRemove$={onRemoveRow$} />
+      <BulkReviewList
+        rows={parsedRows.value}
+        profile={profile.value}
+        vehicle={defaultVehicle}
+        onPatch$={onPatchRow$}
+        onRemove$={onRemoveRow$}
+      />
       <BulkInvalidRowsPanel rows={invalidRows.value} />
       <BulkSummaryKpis locale={i18n.locale.value} committed={commitResult.value} />
       <BulkSaveFooter
-        canSave={parsedRows.value.length > 0 && !parseInFlight.value}
+        canSave={parsedRows.value.length > 0 && !parseInFlight.value && defaultVehicle !== null}
         rowCount={parsedRows.value.length}
         saving={saveInFlight.value}
-        status={status.value}
+        status={saveStatus}
         onSave$={onSave$}
       />
     </div>
