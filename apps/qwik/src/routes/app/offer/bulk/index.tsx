@@ -39,7 +39,6 @@ export default component$(() => {
   const vehicles = useSignal<VehicleProfile[]>([]);
   const selectedVehicleId = useSignal('');
   const defaultVehicleId = useSignal<string | null>(null);
-  const vehiclesLoading = useSignal(true);
   const selectedFile = useSignal<File | null>(null);
   const serviceDateIso = useSignal(resolveLocalTodayIso());
   const parseInFlight = useSignal(false);
@@ -57,13 +56,11 @@ export default component$(() => {
       vehicles.value = [];
       selectedVehicleId.value = '';
       defaultVehicleId.value = null;
-      vehiclesLoading.value = true;
       return;
     }
 
     const unsubscribeVehicles = watchVehicles(user.uid, (items) => {
       vehicles.value = items;
-      vehiclesLoading.value = false;
       selectedVehicleId.value = resolveVehicleSelection(
         selectedVehicleId.value,
         items,
@@ -85,16 +82,16 @@ export default component$(() => {
     });
   });
 
-  const onParse$ = $(async () => {
+  const onParse$ = $(async (fileOverride?: File | null) => {
     const user = auth.user.value;
     if (!user) {
       return;
     }
-    if (!selectedVehicleId.value) {
-      status.value = t(i18n, 'vehicleSelectLabel', 'Select vehicle');
-      return;
+    if (fileOverride !== undefined) {
+      selectedFile.value = fileOverride;
     }
-    if (!selectedFile.value) {
+    const file = selectedFile.value;
+    if (!file) {
       status.value = t(i18n, 'bulkSelectScreenshotButton', 'Choose screenshot');
       return;
     }
@@ -108,10 +105,9 @@ export default component$(() => {
     try {
       const response = await parseBulkOffersScreenshot({
         deviceId: getDeviceId(),
-        vehicleId: selectedVehicleId.value,
         timezone,
         serviceDateIso: serviceDateIso.value,
-        file: selectedFile.value,
+        file,
       });
       const rowOffset = parsedRows.value.length;
       parsedRows.value = [
@@ -169,7 +165,7 @@ export default component$(() => {
         deviceId: getDeviceId(),
         timezone,
         serviceDateIso: serviceDateIso.value,
-        vehicleId: selectedVehicleId.value,
+        vehicleId: selectedVehicleId.value || undefined,
         screenshotRefs: screenshotRefs.value,
         rows: parsedRows.value,
       });
@@ -192,18 +188,10 @@ export default component$(() => {
       <OfferModeToggle mode="bulk" />
 
       <BulkUploadStep
-        vehicles={vehicles.value}
-        selectedVehicleId={selectedVehicleId.value}
         serviceDateIso={serviceDateIso.value}
-        parseInFlight={parseInFlight.value || vehiclesLoading.value}
-        onVehicleChange$={$((vehicleId: string) => {
-          selectedVehicleId.value = vehicleId;
-        })}
+        parseInFlight={parseInFlight.value}
         onServiceDateChange$={$((nextDateIso: string) => {
           serviceDateIso.value = nextDateIso;
-        })}
-        onFileSelected$={$((file: File | null) => {
-          selectedFile.value = file;
         })}
         onParse$={onParse$}
       />

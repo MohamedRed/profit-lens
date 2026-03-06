@@ -1,23 +1,21 @@
 import { $, component$, type PropFunction } from '@builder.io/qwik';
-import type { VehicleProfile } from '../../../../../lib/types/vehicle';
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 
 interface BulkUploadStepProps {
-  vehicles: VehicleProfile[];
-  selectedVehicleId: string;
   serviceDateIso: string;
   parseInFlight: boolean;
-  onVehicleChange$: PropFunction<(vehicleId: string) => void>;
   onServiceDateChange$: PropFunction<(serviceDateIso: string) => void>;
-  onFileSelected$: PropFunction<(file: File | null) => void>;
-  onParse$: PropFunction<() => Promise<void>>;
+  onParse$: PropFunction<(file?: File | null) => Promise<void>>;
 }
 
 export const BulkUploadStep = component$<BulkUploadStepProps>((props) => {
   const i18n = useI18n();
-  const onFileChange$ = $((_: Event, input: HTMLInputElement) => {
+  const fileImportDisabled = props.parseInFlight;
+  const onFileChange$ = $(async (_: Event, input: HTMLInputElement) => {
     const next = input.files?.[0] ?? null;
-    props.onFileSelected$(next);
+    await props.onParse$(next);
+    // Allow selecting the same file again to retrigger auto-parse.
+    input.value = '';
   });
 
   return (
@@ -27,23 +25,7 @@ export const BulkUploadStep = component$<BulkUploadStepProps>((props) => {
         <p>{t(i18n, 'bulkShiftSubtitle', 'Import a day screenshot and review each delivery before saving.')}</p>
       </header>
 
-      <div class="ui-offer-bulk-grid">
-        <label class="ui-field">
-          <span>{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</span>
-          <select
-            class="ui-input"
-            value={props.selectedVehicleId}
-            onChange$={(_, input) => props.onVehicleChange$(input.value)}
-          >
-            <option value="">{t(i18n, 'vehicleSelectLabel', 'Select vehicle')}</option>
-            {props.vehicles.map((vehicle) => (
-              <option key={vehicle.id} value={vehicle.id}>
-                {vehicle.name}
-              </option>
-            ))}
-          </select>
-        </label>
-
+      <div class="ui-offer-bulk-grid ui-offer-bulk-upload-grid">
         <label class="ui-field">
           <span>{t(i18n, 'bulkShiftDateLabel', 'Service date')}</span>
           <input
@@ -52,6 +34,13 @@ export const BulkUploadStep = component$<BulkUploadStepProps>((props) => {
             value={props.serviceDateIso}
             onInput$={(_, input) => props.onServiceDateChange$(input.value)}
           />
+          <small class="ui-offer-bulk-date-hint">
+            {t(
+              i18n,
+              'bulkShiftDateHint',
+              'Used to place delivery times on the correct day for history and KPIs.',
+            )}
+          </small>
         </label>
       </div>
 
@@ -62,7 +51,7 @@ export const BulkUploadStep = component$<BulkUploadStepProps>((props) => {
           type="file"
           accept="image/*"
           onChange$={onFileChange$}
-          disabled={props.parseInFlight}
+          disabled={fileImportDisabled}
         />
       </label>
 
@@ -70,7 +59,7 @@ export const BulkUploadStep = component$<BulkUploadStepProps>((props) => {
         type="button"
         class="ui-button ui-button-lg ui-offer-primary-cta"
         disabled={props.parseInFlight}
-        onClick$={props.onParse$}
+        onClick$={$(() => props.onParse$())}
       >
         {props.parseInFlight
           ? t(i18n, 'offerAnalyzingLabel', 'Analysing...')

@@ -30,6 +30,16 @@
   gap: 10px;
 }
 
+.ui-offer-bulk-upload-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ui-offer-bulk-date-hint {
+  color: var(--pl-color-text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
 .ui-offer-bulk-row-list {
   display: grid;
   gap: 10px;
