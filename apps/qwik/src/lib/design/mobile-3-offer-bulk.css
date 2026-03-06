@@ -1,16 +1,5 @@
-.ui-offer-shift-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .ui-offer-bulk-root {
   gap: 16px;
-}
-
-.ui-offer-bulk-top {
-  display: flex;
-  justify-content: flex-start;
 }
 
 .ui-offer-bulk-section {

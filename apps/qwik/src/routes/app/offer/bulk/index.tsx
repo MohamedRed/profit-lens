@@ -1,5 +1,4 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { Link } from '@builder.io/qwik-city';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../../lib/config/device-id';
 import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
@@ -22,6 +21,7 @@ import { BulkReviewList } from './components/bulk-review-list';
 import { BulkSaveFooter } from './components/bulk-save-footer';
 import { BulkSummaryKpis } from './components/bulk-summary-kpis';
 import { BulkUploadStep } from './components/bulk-upload-step';
+import { OfferModeToggle } from '../components/offer-mode-toggle';
 import { patchBulkRow, removeBulkRow, resolveLocalTodayIso, resolveVehicleSelection } from './bulk-helpers';
 
 const resolveTimeZone = (): string | null => {
@@ -189,14 +189,7 @@ export default component$(() => {
 
   return (
     <div class="ui-stack ui-offer-bulk-root">
-      <div class="ui-offer-bulk-top">
-        <Link class="ui-button ui-button-ghost" href="/next/app/offer">
-          <span class="material-icons-outlined" aria-hidden="true">
-            arrow_back
-          </span>
-          <span>{t(i18n, 'backButtonLabel', 'Back')}</span>
-        </Link>
-      </div>
+      <OfferModeToggle mode="bulk" />
 
       <BulkUploadStep
         vehicles={vehicles.value}
