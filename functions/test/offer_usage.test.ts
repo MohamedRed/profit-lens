@@ -131,4 +131,112 @@ describe("offer usage", () => {
     const usage = getStoreValue(store, usageRef);
     expect(usage?.offerCount).toBe(1);
   });
+
+  it("increments usage by batch size", async () => {
+    const store = new Map<string, Record<string, any>>();
+    const fakeDb = createFakeDb(store);
+    vi.resetModules();
+    vi.doMock("../src/firebase_admin", () => ({ db: fakeDb }));
+
+    const { saveOffersWithUsage } = await import("../src/offer_usage");
+
+    const uid = "user-4";
+    const periodKey = "2026-02";
+    const entitlement = {
+      planId: "tier_9",
+      status: "active",
+      offerLimit: 10,
+      deviceLimit: 1,
+      periodStart: new Date("2026-02-01T00:00:00Z"),
+      periodEnd: new Date("2026-03-01T00:00:00Z"),
+      periodKey,
+      source: "stripe" as const,
+    };
+    const writes = ["offer-a", "offer-b", "offer-c"].map((id) => ({
+      docRef: fakeDb.collection("users").doc(uid).collection("offers").doc(id),
+      document: { id },
+    }));
+
+    const result = await saveOffersWithUsage({
+      uid,
+      entitlement,
+      writes,
+    });
+
+    const usageRef = fakeDb.collection("users").doc(uid).collection("usage").doc(periodKey);
+    const usage = getStoreValue(store, usageRef);
+    expect(result.usedAfter).toBe(3);
+    expect(usage?.offerCount).toBe(3);
+  });
+
+  it("supports explicit usageIncrement for non-offer writes", async () => {
+    const store = new Map<string, Record<string, any>>();
+    const fakeDb = createFakeDb(store);
+    vi.resetModules();
+    vi.doMock("../src/firebase_admin", () => ({ db: fakeDb }));
+
+    const { saveOffersWithUsage } = await import("../src/offer_usage");
+
+    const uid = "user-6";
+    const periodKey = "2026-02";
+    const entitlement = {
+      planId: "tier_9",
+      status: "active",
+      offerLimit: 10,
+      deviceLimit: 1,
+      periodStart: new Date("2026-02-01T00:00:00Z"),
+      periodEnd: new Date("2026-03-01T00:00:00Z"),
+      periodKey,
+      source: "stripe" as const,
+    };
+    const writes = ["offer-a", "import-batch"].map((id) => ({
+      docRef: fakeDb.collection("users").doc(uid).collection("offers").doc(id),
+      document: { id },
+    }));
+
+    const result = await saveOffersWithUsage({
+      uid,
+      entitlement,
+      usageIncrement: 1,
+      writes,
+    });
+
+    const usageRef = fakeDb.collection("users").doc(uid).collection("usage").doc(periodKey);
+    const usage = getStoreValue(store, usageRef);
+    expect(result.usedAfter).toBe(1);
+    expect(usage?.offerCount).toBe(1);
+  });
+
+  it("blocks when requested count exceeds remaining quota", async () => {
+    const store = new Map<string, Record<string, any>>();
+    const fakeDb = createFakeDb(store);
+    vi.resetModules();
+    vi.doMock("../src/firebase_admin", () => ({ db: fakeDb }));
+
+    const { assertOfferLimitAvailableForCount } = await import("../src/offer_usage");
+
+    const uid = "user-5";
+    const periodKey = "2026-02";
+    const usageRef = fakeDb.collection("users").doc(uid).collection("usage").doc(periodKey);
+    store.set(usageRef.path, { offerCount: 4 });
+
+    const entitlement = {
+      planId: "tier_9",
+      status: "active",
+      offerLimit: 5,
+      deviceLimit: 1,
+      periodStart: new Date("2026-02-01T00:00:00Z"),
+      periodEnd: new Date("2026-03-01T00:00:00Z"),
+      periodKey,
+      source: "stripe" as const,
+    };
+
+    await expect(
+      assertOfferLimitAvailableForCount({
+        uid,
+        entitlement,
+        requestedCount: 2,
+      })
+    ).rejects.toHaveProperty("code", "resource-exhausted");
+  });
 });

@@ -17,6 +17,18 @@ type OfferRecordParams = {
   costSnapshot: CostSettings;
   breakdown: CostBreakdown;
   extraction?: OfferExtraction | null;
+  createdAtMode?: "server" | "fixed";
+  localDayId?: string;
+  localDayStart?: Date;
+  analysisMode?: "single" | "bulk";
+  distanceSource?: "actual" | "estimated";
+  importBatchId?: string;
+  tipEuro?: number | null;
+  bulkContext?: {
+    timezone: string;
+    sourceApp: string;
+    screenshotCount: number;
+  };
 };
 
 export function buildOfferRecordPayload(params: OfferRecordParams) {
@@ -44,11 +56,36 @@ export function buildOfferRecordPayload(params: OfferRecordParams) {
     dropoffName: params.offer.dropoffName ?? null,
     dropoffAddress: params.offer.dropoffAddress ?? null,
     source: params.source,
-    createdAt: FieldValue.serverTimestamp(),
+    createdAt:
+      params.createdAtMode === "fixed"
+        ? params.createdAt
+        : FieldValue.serverTimestamp(),
     vehicleSnapshot: params.vehicleSnapshot,
     costSnapshot: params.costSnapshot,
     breakdown: params.breakdown,
   };
+
+  if (params.localDayId) {
+    document.localDayId = params.localDayId;
+  }
+  if (params.localDayStart) {
+    document.localDayStart = params.localDayStart;
+  }
+  if (params.analysisMode) {
+    document.analysisMode = params.analysisMode;
+  }
+  if (params.distanceSource) {
+    document.distanceSource = params.distanceSource;
+  }
+  if (params.importBatchId) {
+    document.importBatchId = params.importBatchId;
+  }
+  if (params.tipEuro != null) {
+    document.tipEuro = params.tipEuro;
+  }
+  if (params.bulkContext) {
+    document.bulkContext = params.bulkContext;
+  }
 
   if (params.offer.routeVerification) {
     document.routeVerification = params.offer.routeVerification;

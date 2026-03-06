@@ -56,6 +56,16 @@ export const HistoryListPanel = component$<HistoryListPanelProps>((props) => {
               }}
             >
               <div class="ui-history-item-main">
+                <div class="ui-history-item-profit-row">
+                  {item.analysisMode === 'bulk' ? (
+                    <span class="ui-history-item-bulk-badge">
+                      <span class="material-icons-outlined" aria-hidden="true">
+                        calendar_view_day
+                      </span>
+                      <span>{t(i18n, 'bulkBadgeLabel', 'Bulk')}</span>
+                    </span>
+                  ) : null}
+                </div>
                 <p
                   class={{
                     'ui-history-item-profit': true,

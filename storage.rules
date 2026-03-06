@@ -8,5 +8,9 @@ service firebase.storage {
     match /users/{uid}/helpTickets/{ticketId}/attachments/{fileName} {
       allow read, write: if isOwner(uid);
     }
+
+    match /users/{uid}/offerImports/{rest=**} {
+      allow read, write: if isOwner(uid);
+    }
   }
 }

@@ -11,6 +11,16 @@ type GeminiRequest = {
   mimeType: string;
 };
 
+type GeminiImageJsonRequest = {
+  model: string;
+  prompt: string;
+  schema: Record<string, unknown>;
+  imageBase64: string;
+  mimeType: string;
+  temperature?: number;
+  maxOutputTokens?: number;
+};
+
 type GeminiJsonRequest = {
   model: string;
   prompt: string;
@@ -58,6 +68,20 @@ const vertexAuth = new GoogleAuth({
 export async function requestGeminiOffer(
   request: GeminiRequest
 ): Promise<string> {
+  return await requestGeminiImageJson({
+    model: request.model,
+    prompt: offerExtractionPrompt,
+    schema: offerExtractionSchema as unknown as Record<string, unknown>,
+    imageBase64: request.imageBase64,
+    mimeType: request.mimeType,
+    temperature: 0.2,
+    maxOutputTokens: 2048,
+  });
+}
+
+export async function requestGeminiImageJson(
+  request: GeminiImageJsonRequest
+): Promise<string> {
   const body = (await requestGeminiContent({
     model: request.model,
     body: {
@@ -65,7 +89,7 @@ export async function requestGeminiOffer(
         {
           role: "user",
           parts: [
-            { text: offerExtractionPrompt },
+            { text: request.prompt },
             {
               inlineData: {
                 mimeType: request.mimeType,
@@ -76,10 +100,10 @@ export async function requestGeminiOffer(
         },
       ],
       generationConfig: {
-        temperature: 0.2,
-        maxOutputTokens: 2048,
+        temperature: request.temperature ?? 0.2,
+        maxOutputTokens: request.maxOutputTokens ?? 2048,
         responseMimeType: "application/json",
-        responseJsonSchema: offerExtractionSchema,
+        responseJsonSchema: request.schema,
       },
     },
   })) as {

@@ -5,6 +5,7 @@ import {
   type Signal,
   useSignal,
 } from "@builder.io/qwik";
+import { Link } from "@builder.io/qwik-city";
 import { Button } from "../../../../components/ui/button";
 import { t, useI18n } from "../../../../lib/i18n/i18n-context";
 import type { VehicleProfile } from "../../../../lib/types/vehicle";
@@ -173,6 +174,13 @@ export const OfferFlowContent = component$<OfferFlowContentProps>((props) => {
                 />
               </div>
             </div>
+
+            <Link class="ui-button ui-button-secondary ui-button-lg ui-offer-shift-link" href="/next/app/offer/bulk">
+              <span class="material-icons-outlined" aria-hidden="true">
+                calendar_view_day
+              </span>
+              <span>{t(i18n, "bulkShiftOpenButton", "Shift analysis")}</span>
+            </Link>
 
             {enableCaptureCta ? (
               <label class="ui-button ui-button-secondary ui-button-lg ui-offer-file-trigger">

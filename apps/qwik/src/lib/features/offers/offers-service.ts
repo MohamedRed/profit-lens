@@ -114,9 +114,13 @@ const mapOffer = (docId: string, data: Record<string, unknown>): OfferRecord => 
     id: docId,
     source: (data.source as string) ?? 'manual',
     createdAt: asDate(data.createdAt),
+    analysisMode: (data.analysisMode as 'single' | 'bulk' | undefined) ?? undefined,
+    importBatchId: (data.importBatchId as string | undefined) ?? undefined,
+    distanceSource: (data.distanceSource as 'actual' | 'estimated' | undefined) ?? undefined,
     payoutEuro,
     distanceKm,
     durationMinutes,
+    tipEuro: asNumber(data.tipEuro),
     pickupName: (offer.pickupName as string | undefined) ?? (data.pickupName as string | undefined),
     pickupAddress:
       (offer.pickupAddress as string | undefined) ?? (data.pickupAddress as string | undefined),
@@ -133,6 +137,8 @@ const mapOffer = (docId: string, data: Record<string, unknown>): OfferRecord => 
     fixedCostAllocationEuro,
     routeVerifiedDistanceKm,
     routeVerifiedDurationMinutes,
+    localDayId: (data.localDayId as string | undefined) ?? undefined,
+    localDayStart: asDate(data.localDayStart),
   };
 };
 
@@ -250,6 +256,7 @@ export const analyzeManualOffer = async (params: {
   currentLocation: OfferCurrentLocation;
   vehicleId?: string;
   source?: 'manual' | 'screenshot';
+  timezone?: string;
   offer: OfferInputPayload;
 }): Promise<Record<string, unknown>> => {
   const payload: Record<string, unknown> = {
@@ -258,6 +265,9 @@ export const analyzeManualOffer = async (params: {
     deviceId: params.deviceId,
     currentLocation: params.currentLocation,
   };
+  if (params.timezone) {
+    payload.timezone = params.timezone;
+  }
   if (params.vehicleId) {
     payload.vehicleId = params.vehicleId;
   }
@@ -269,6 +279,7 @@ export const analyzeScreenshotOffer = async (params: {
   currentLocation: OfferCurrentLocation;
   file: File;
   vehicleId?: string;
+  timezone?: string;
 }): Promise<Record<string, unknown>> => {
   const { imageBase64, mimeType } = await encodeScreenshotForAnalyze(params.file);
   const payload: Record<string, unknown> = {
@@ -278,6 +289,9 @@ export const analyzeScreenshotOffer = async (params: {
     deviceId: params.deviceId,
     currentLocation: params.currentLocation,
   };
+  if (params.timezone) {
+    payload.timezone = params.timezone;
+  }
   if (params.vehicleId) {
     payload.vehicleId = params.vehicleId;
   }

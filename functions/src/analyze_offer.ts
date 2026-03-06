@@ -12,6 +12,7 @@ import { buildRouteVerification } from "./route_verification_builder";
 import { assertOfferLimitAvailable, saveOfferWithUsage } from "./offer_usage";
 import { assertDeviceActive } from "./device_registry";
 import { readRequiredCurrentLocation } from "./current_location";
+import { resolveDayStartFromDayId, resolveLocalDayId } from "./local_day";
 
 const routesApiKey = defineSecret("ROUTES_API_KEY");
 const geocodingApiKey = defineSecret("GEOCODING_API_KEY");
@@ -119,6 +120,9 @@ export const analyzeOffer = onCall(
 
     const source = resolveSource(payload);
     const createdAt = new Date();
+    const timezone = payload.timezone?.trim() || null;
+    const localDayId = resolveLocalDayId(createdAt, timezone);
+    const localDayStart = resolveDayStartFromDayId(localDayId);
     const docRef = db
       .collection("users")
       .doc(uid)
@@ -134,6 +138,10 @@ export const analyzeOffer = onCall(
       costSnapshot: costSettings,
       breakdown,
       extraction,
+      localDayId,
+      localDayStart,
+      analysisMode: "single",
+      distanceSource: "estimated",
     });
 
     await trackDuration(timingsMs, "saveOffer", async () =>

@@ -12,4 +12,5 @@ export type AnalyzeOfferPayload = {
   imageBase64?: string;
   mimeType?: string;
   deviceId?: string;
+  timezone?: string;
 };

@@ -25,6 +25,14 @@ interface AnalyzeScreenshotOfferActionParams {
   vehicleId?: string;
 }
 
+const resolveTimeZone = (): string | undefined => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch {
+    return undefined;
+  }
+};
+
 export const analyzeManualOfferAction = async ({
   deviceId,
   currentLocation,
@@ -43,6 +51,7 @@ export const analyzeManualOfferAction = async ({
     deviceId,
     currentLocation,
     vehicleId,
+    timezone: resolveTimeZone(),
     source: 'manual',
     offer: {
       payoutEuro: Number(payout || 0),
@@ -69,5 +78,6 @@ export const analyzeScreenshotOfferAction = async ({
     currentLocation,
     file,
     vehicleId,
+    timezone: resolveTimeZone(),
   });
 };

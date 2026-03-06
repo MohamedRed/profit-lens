@@ -47,10 +47,22 @@ type OfferDelta = {
 function extractOfferDelta(data?: Record<string, unknown>): OfferDelta | null {
   if (!data) return null;
   const createdAt = data.createdAt as Timestamp | undefined;
-  if (!createdAt) return null;
   const breakdown = data.breakdown as Record<string, unknown> | undefined;
   const netProfit = (breakdown?.netProfit as number | undefined) ?? null;
   if (netProfit == null) return null;
+
+  const explicitDayId =
+    typeof data.localDayId === "string" && data.localDayId.trim().length > 0
+      ? data.localDayId.trim()
+      : null;
+  const explicitDayStart = toDate(data.localDayStart);
+  if (explicitDayId) {
+    const fallbackDayStart = new Date(`${explicitDayId}T00:00:00.000Z`);
+    const dayStart = explicitDayStart ?? fallbackDayStart;
+    return { dayId: explicitDayId, dayStart, netProfit };
+  }
+
+  if (!createdAt) return null;
   const dayStart = toUtcDayStart(createdAt.toDate());
   const dayId = dayStart.toISOString().slice(0, 10);
   return { dayId, dayStart, netProfit };
@@ -58,6 +70,22 @@ function extractOfferDelta(data?: Record<string, unknown>): OfferDelta | null {
 
 function toUtcDayStart(date: Date): Date {
   return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+}
+
+function toDate(value: unknown): Date | null {
+  if (value instanceof Timestamp) {
+    return value.toDate();
+  }
+  if (value instanceof Date) {
+    return value;
+  }
+  if (typeof value === "string") {
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed;
+    }
+  }
+  return null;
 }
 
 async function applyDelta(

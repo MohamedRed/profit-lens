@@ -17,9 +17,13 @@ export interface OfferRecord {
   id: string;
   source: string;
   createdAt: Date | null;
+  analysisMode?: 'single' | 'bulk';
+  importBatchId?: string;
+  distanceSource?: 'actual' | 'estimated';
   payoutEuro: number;
   distanceKm: number;
   durationMinutes?: number;
+  tipEuro?: number;
   routeVerifiedDurationMinutes?: number;
   pickupName?: string;
   pickupAddress?: string;
@@ -34,6 +38,8 @@ export interface OfferRecord {
   incomeTaxEuro?: number;
   fixedCostAllocationEuro?: number;
   routeVerifiedDistanceKm?: number;
+  localDayId?: string;
+  localDayStart?: Date | null;
 }
 
 export interface OfferStatsDay {

@@ -81,3 +81,15 @@ export const callTranscribeHelpDraftAudio = async (payload: Record<string, unkno
   const result = await callable(payload);
   return result.data as Record<string, unknown>;
 };
+
+export const callParseBulkOffersScreenshot = async (payload: Record<string, unknown>) => {
+  const callable = httpsCallable(getFn(), 'parseBulkOffersScreenshot');
+  const result = await callable(payload);
+  return result.data as Record<string, unknown>;
+};
+
+export const callCommitBulkOffersImport = async (payload: Record<string, unknown>) => {
+  const callable = httpsCallable(getFn(), 'commitBulkOffersImport');
+  const result = await callable(payload);
+  return result.data as Record<string, unknown>;
+};
