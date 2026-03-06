@@ -1,4 +1,5 @@
 import { ExtractionIssue, ExtractedOfferCandidate } from "../offer_extraction_core/types";
+import { OfferRecordData } from "../profitability_types";
 
 export type BulkSourceApp = "uber_eats" | "deliveroo" | "other";
 
@@ -82,6 +83,7 @@ export type CommitBulkOffersImportResponse = {
   savedCount: number;
   skippedCount: number;
   skipped: BulkInvalidRow[];
+  records: OfferRecordData[];
   usage: {
     periodKey: string;
     usedAfter: number;

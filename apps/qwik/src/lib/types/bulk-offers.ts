@@ -1,3 +1,5 @@
+import type { OfferAnalysisRecord } from '../features/offers/offer-analysis-record';
+
 export type BulkSourceApp = 'uber_eats' | 'deliveroo' | 'other';
 
 export type ExtractionIssueCode =
@@ -78,6 +80,7 @@ export interface CommitBulkOffersImportResponse {
   savedCount: number;
   skippedCount: number;
   skipped: BulkInvalidRow[];
+  records: OfferAnalysisRecord[];
   usage: {
     periodKey: string;
     usedAfter: number;

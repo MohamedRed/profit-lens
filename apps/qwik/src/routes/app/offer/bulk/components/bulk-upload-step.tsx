@@ -2,13 +2,14 @@ import { $, component$, type PropFunction } from '@builder.io/qwik';
 import { t, useI18n } from '../../../../../lib/i18n/i18n-context';
 
 interface BulkUploadStepProps {
-  parseInFlight: boolean;
+  busy: boolean;
+  disabled: boolean;
   onImportFiles$: PropFunction<(files: File[]) => Promise<void>>;
 }
 
 export const BulkUploadStep = component$<BulkUploadStepProps>((props) => {
   const i18n = useI18n();
-  const fileImportDisabled = props.parseInFlight;
+  const fileImportDisabled = props.busy || props.disabled;
   const onFileChange$ = $(async (_: Event, input: HTMLInputElement) => {
     const nextFiles = input.files ? Array.from(input.files) : [];
     await props.onImportFiles$(nextFiles);
@@ -20,7 +21,7 @@ export const BulkUploadStep = component$<BulkUploadStepProps>((props) => {
     <section class="ui-offer-bulk-section">
       <header class="ui-offer-bulk-section-head">
         <h2>{t(i18n, 'bulkShiftTitle', 'Shift analysis')}</h2>
-        <p>{t(i18n, 'bulkShiftSubtitle', 'Import one or more screenshots and process each delivery automatically before saving.')}</p>
+        <p>{t(i18n, 'bulkShiftSubtitle', 'Import one or more screenshots. Each delivery is analyzed and saved automatically.')}</p>
       </header>
 
       <div class="ui-offer-file-cta-shell">
@@ -29,7 +30,7 @@ export const BulkUploadStep = component$<BulkUploadStepProps>((props) => {
           class="ui-button ui-button-lg ui-offer-primary-cta"
           disabled={fileImportDisabled}
         >
-          {props.parseInFlight
+          {props.busy
             ? t(i18n, 'offerAnalyzingLabel', 'Analysing...')
             : t(i18n, 'bulkImportScreenshotsButton', 'Import screenshots')}
         </button>

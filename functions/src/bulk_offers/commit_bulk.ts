@@ -139,6 +139,7 @@ export const commitBulkOffersImport = onCall(bulkCallableConfig, async (request)
   const vehicle = await loadVehicleSnapshot(uid, vehicleId);
 
   const offerWrites: Array<{ docRef: DocumentReference; document: DocumentData }> = [];
+  const records = [];
   const createdAt = new Date();
   const importBatchRef = db.collection("users").doc(uid).collection("offerImports").doc();
 
@@ -165,7 +166,7 @@ export const commitBulkOffersImport = onCall(bulkCallableConfig, async (request)
       costs: profile.costSettings,
     });
 
-    const { document } = buildOfferRecordPayload({
+    const { record, document } = buildOfferRecordPayload({
       id: offerRef.id,
       offer,
       source: "bulk_screenshot",
@@ -195,6 +196,7 @@ export const commitBulkOffersImport = onCall(bulkCallableConfig, async (request)
         importedAt: Timestamp.fromDate(createdAt),
       },
     });
+    records.push(record);
   }
 
   const importBatchDocument = {
@@ -236,6 +238,7 @@ export const commitBulkOffersImport = onCall(bulkCallableConfig, async (request)
     savedCount: validRows.length,
     skippedCount: skipped.length,
     skipped,
+    records,
     usage: {
       periodKey: entitlement.periodKey,
       usedAfter,

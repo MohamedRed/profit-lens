@@ -16,9 +16,9 @@ import type { UserProfile } from '../../../../lib/types/profile';
 import type { VehicleProfile } from '../../../../lib/types/vehicle';
 import { BulkInvalidRowsPanel } from './components/bulk-invalid-rows-panel';
 import { BulkAnalysisProgress } from './components/bulk-analysis-progress';
-import { BulkReviewList } from './components/bulk-review-list';
-import { BulkSaveFooter } from './components/bulk-save-footer';
+import { BulkSavedResults } from './components/bulk-saved-results';
 import { BulkScreenshotPreviewList } from './components/bulk-screenshot-preview-list';
+import { BulkStatusBanner } from './components/bulk-status-banner';
 import { BulkSummaryKpis } from './components/bulk-summary-kpis';
 import { BulkUploadStep } from './components/bulk-upload-step';
 import { OfferModeToggle } from '../components/offer-mode-toggle';
@@ -27,7 +27,7 @@ import {
   revokeBulkScreenshotPreviews,
   type BulkScreenshotPreview,
 } from './bulk-helpers';
-import { resolveBulkDefaultVehicle } from './bulk-review-analysis';
+import { resolveBulkDefaultVehicle } from './bulk-default-vehicle';
 import { type OfferAnalysisProgressStep } from '../offer-analysis-progress';
 import { runBulkParseImport } from './bulk-parse-import';
 
@@ -57,6 +57,7 @@ export default component$(() => {
   const screenshotRefs = useSignal<ScreenshotRef[]>([]);
   const screenshotPreviews = useSignal<BulkScreenshotPreview[]>([]);
   const status = useSignal('');
+  const statusTone = useSignal<'default' | 'error' | 'success'>('default');
   const commitResult = useSignal<CommitBulkOffersImportResponse | null>(null);
 
   useVisibleTask$(({ track, cleanup }) => {
@@ -99,18 +100,30 @@ export default component$(() => {
     if (parseInFlight.value) {
       return;
     }
+    if (!defaultVehicle) {
+      status.value = t(
+        i18n,
+        'bulkDefaultVehicleRequiredMessage',
+        'Set a default vehicle in Settings before importing bulk offers.',
+      );
+      statusTone.value = 'error';
+      return;
+    }
     if (files.length === 0) {
       status.value = t(i18n, 'bulkSelectScreenshotButton', 'Choose screenshot');
+      statusTone.value = 'error';
       return;
     }
     const imageFiles = files.filter((file) => file.type.startsWith('image/'));
     if (imageFiles.length === 0) {
       status.value = t(i18n, 'bulkSelectScreenshotButton', 'Choose screenshot');
+      statusTone.value = 'error';
       return;
     }
     const timezone = resolveTimeZone();
     if (!timezone) {
       status.value = t(i18n, 'bulkTimezoneMissing', 'Timezone is required on this device.');
+      statusTone.value = 'error';
       return;
     }
 
@@ -122,8 +135,9 @@ export default component$(() => {
     screenshotRefs.value = [];
     screenshotPreviews.value = [];
     status.value = '';
+    statusTone.value = 'default';
     commitResult.value = null;
-    const { parsedFileCount, failedFileCount, latestErrorMessage } = await runBulkParseImport({
+    const { failedFileCount, latestErrorMessage } = await runBulkParseImport({
       deviceId: getDeviceId(),
       files: imageFiles,
       timezone,
@@ -139,58 +153,20 @@ export default component$(() => {
       screenshotRefs,
       screenshotPreviews,
     });
-    if (parsedFileCount > 0 && failedFileCount === 0) {
-      status.value = t(i18n, 'bulkParseSuccess', 'Screenshot parsed. Review rows before saving.');
-      return;
-    }
 
-    if (parsedFileCount > 0 && failedFileCount > 0) {
-      status.value = t(
-        i18n,
-        'bulkParsePartialSuccess',
-        '{parsed} screenshot(s) parsed, {failed} failed. Review rows before saving.',
-      )
-        .replace('{parsed}', String(parsedFileCount))
-        .replace('{failed}', String(failedFileCount));
-      return;
-    }
-
-    status.value = latestErrorMessage ?? t(
-      i18n,
-      'offerActionFailedMessage',
-      'Unable to complete this action right now. Please try again.',
-    );
-  });
-
-  const onSave$ = $(async () => {
-    const user = auth.user.value;
-    if (!user) {
-      return;
-    }
     if (parsedRows.value.length === 0) {
-      status.value = t(i18n, 'bulkNoRowsToSave', 'No valid rows to save.');
-      return;
-    }
-    if (screenshotRefs.value.length === 0) {
-      status.value = t(i18n, 'bulkScreenshotMissing', 'Screenshot reference is missing. Parse again.');
-      return;
-    }
-    if (!defaultVehicle) {
-      status.value = t(
+      status.value = latestErrorMessage ?? t(
         i18n,
-        'bulkDefaultVehicleRequiredMessage',
-        'Set a default vehicle in Settings before saving bulk offers.',
+        'bulkNoRowsToSave',
+        'No valid rows to save.',
       );
-      return;
-    }
-    const timezone = resolveTimeZone();
-    if (!timezone) {
-      status.value = t(i18n, 'bulkTimezoneMissing', 'Timezone is required on this device.');
+      statusTone.value = 'error';
       return;
     }
 
     saveInFlight.value = true;
-    status.value = '';
+    status.value = t(i18n, 'bulkAutoSaveInFlight', 'Saving analyzed deliveries...');
+    statusTone.value = 'default';
     try {
       const response = await commitBulkOffersImport({
         deviceId: getDeviceId(),
@@ -200,9 +176,27 @@ export default component$(() => {
         rows: parsedRows.value,
       });
       commitResult.value = response;
-      status.value = t(i18n, 'bulkSaveSuccess', 'Rows saved successfully.');
+      parsedRows.value = [];
+      screenshotRefs.value = [];
+      status.value =
+        failedFileCount > 0
+          ? t(
+              i18n,
+              'bulkAutoSavePartialSuccess',
+              '{saved} deliveries saved automatically. {failed} screenshot(s) failed to parse.',
+            )
+              .replace('{saved}', String(response.savedCount))
+              .replace('{failed}', String(failedFileCount))
+          : t(i18n, 'bulkAutoSaveSuccess', '{saved} deliveries saved automatically.').replace(
+              '{saved}',
+              String(response.savedCount),
+            );
+      statusTone.value = 'success';
+      return;
     } catch (error) {
       status.value = resolveUserFacingErrorMessage(i18n, error, 'offer');
+      statusTone.value = 'error';
+      return;
     } finally {
       saveInFlight.value = false;
     }
@@ -213,22 +207,14 @@ export default component$(() => {
     return null;
   }
   const defaultVehicle = resolveBulkDefaultVehicle(vehicles.value, profile.value?.defaultVehicleId ?? null);
-  const saveStatus =
-    status.value ||
-    (parsedRows.value.length > 0 && !defaultVehicle
-      ? t(
-          i18n,
-          'bulkDefaultVehicleRequiredMessage',
-          'Set a default vehicle in Settings before saving bulk offers.',
-        )
-      : '');
 
   return (
     <div class="ui-stack ui-offer-bulk-root">
       <OfferModeToggle mode="bulk" />
 
       <BulkUploadStep
-        parseInFlight={parseInFlight.value}
+        busy={parseInFlight.value || saveInFlight.value}
+        disabled={defaultVehicle === null}
         onImportFiles$={onImportFiles$}
       />
       <BulkAnalysisProgress
@@ -236,23 +222,14 @@ export default component$(() => {
         currentIndex={parseBatchIndex.value}
         totalCount={parseBatchTotal.value}
       />
+      <BulkStatusBanner message={status.value} tone={statusTone.value} />
       <BulkScreenshotPreviewList previews={screenshotPreviews.value} />
-
-      <BulkReviewList
-        rows={parsedRows.value}
-        locale={i18n.locale.value}
-        profile={profile.value}
-        vehicle={defaultVehicle}
-      />
       <BulkInvalidRowsPanel rows={invalidRows.value} />
-      <BulkSummaryKpis locale={i18n.locale.value} committed={commitResult.value} />
-      <BulkSaveFooter
-        canSave={parsedRows.value.length > 0 && !parseInFlight.value && defaultVehicle !== null}
-        rowCount={parsedRows.value.length}
-        saving={saveInFlight.value}
-        status={saveStatus}
-        onSave$={onSave$}
+      <BulkSavedResults
+        minProfitabilityEuro={profile.value?.minProfitabilityEuro ?? 0}
+        records={commitResult.value?.records ?? []}
       />
+      <BulkSummaryKpis locale={i18n.locale.value} committed={commitResult.value} />
     </div>
   );
 });
