@@ -5,15 +5,15 @@ interface BulkUploadStepProps {
   serviceDateIso: string;
   parseInFlight: boolean;
   onServiceDateChange$: PropFunction<(serviceDateIso: string) => void>;
-  onParse$: PropFunction<(file?: File | null) => Promise<void>>;
+  onImportFiles$: PropFunction<(files: File[]) => Promise<void>>;
 }
 
 export const BulkUploadStep = component$<BulkUploadStepProps>((props) => {
   const i18n = useI18n();
   const fileImportDisabled = props.parseInFlight;
   const onFileChange$ = $(async (_: Event, input: HTMLInputElement) => {
-    const next = input.files?.[0] ?? null;
-    await props.onParse$(next);
+    const nextFiles = input.files ? Array.from(input.files) : [];
+    await props.onImportFiles$(nextFiles);
     // Allow selecting the same file again to retrigger auto-parse.
     input.value = '';
   });
@@ -44,27 +44,25 @@ export const BulkUploadStep = component$<BulkUploadStepProps>((props) => {
         </label>
       </div>
 
-      <label class="ui-button ui-button-secondary ui-button-lg ui-offer-bulk-file-trigger">
-        {t(i18n, 'bulkSelectScreenshotButton', 'Choose screenshot')}
+      <div class="ui-offer-file-cta-shell">
+        <button
+          type="button"
+          class="ui-button ui-button-lg ui-offer-primary-cta"
+          disabled={fileImportDisabled}
+        >
+          {props.parseInFlight
+            ? t(i18n, 'offerAnalyzingLabel', 'Analysing...')
+            : t(i18n, 'bulkImportScreenshotsButton', 'Import screenshots')}
+        </button>
         <input
-          class="ui-offer-file-input-hidden"
+          class="ui-offer-file-input-overlay"
           type="file"
           accept="image/*"
+          multiple
           onChange$={onFileChange$}
           disabled={fileImportDisabled}
         />
-      </label>
-
-      <button
-        type="button"
-        class="ui-button ui-button-lg ui-offer-primary-cta"
-        disabled={props.parseInFlight}
-        onClick$={$(() => props.onParse$())}
-      >
-        {props.parseInFlight
-          ? t(i18n, 'offerAnalyzingLabel', 'Analysing...')
-          : t(i18n, 'bulkParseButton', 'Parse screenshot')}
-      </button>
+      </div>
     </section>
   );
 });

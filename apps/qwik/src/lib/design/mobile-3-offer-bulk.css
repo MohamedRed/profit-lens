@@ -40,6 +40,23 @@
   line-height: 1.35;
 }
 
+.ui-offer-bulk-progress {
+  display: grid;
+  gap: 8px;
+}
+
+.ui-offer-bulk-progress-meta {
+  margin: 0;
+  color: var(--pl-color-text-secondary);
+  font-size: 0.86rem;
+  text-align: center;
+}
+
+.ui-offer-bulk-preview-list {
+  display: grid;
+  gap: 10px;
+}
+
 .ui-offer-bulk-row-list {
   display: grid;
   gap: 10px;
@@ -132,10 +149,6 @@
   margin: 0;
   color: var(--pl-color-text-secondary);
   font-size: 0.9rem;
-}
-
-.ui-offer-bulk-file-trigger {
-  justify-content: center;
 }
 
 .ui-history-item-profit-row {

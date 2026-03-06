@@ -1,23 +1,20 @@
 import type { BulkParsedRow } from '../../../../lib/types/bulk-offers';
-import type { VehicleProfile } from '../../../../lib/types/vehicle';
+import {
+  createOfferScreenshotModalUrl,
+  revokeOfferScreenshotModalUrl,
+} from '../../../../lib/features/offers/offer-screenshot-modal-url';
+
+export interface BulkScreenshotPreview {
+  id: string;
+  fileName: string;
+  url: string;
+}
+
+let bulkPreviewSequence = 0;
 
 export const resolveLocalTodayIso = (now: Date = new Date()): string => {
   const local = new Date(now.getTime() - now.getTimezoneOffset() * 60_000);
   return local.toISOString().slice(0, 10);
-};
-
-export const resolveVehicleSelection = (
-  previous: string,
-  vehicles: VehicleProfile[],
-  defaultVehicleId: string | null,
-): string => {
-  if (previous && vehicles.some((vehicle) => vehicle.id === previous)) {
-    return previous;
-  }
-  if (defaultVehicleId && vehicles.some((vehicle) => vehicle.id === defaultVehicleId)) {
-    return defaultVehicleId;
-  }
-  return vehicles[0]?.id ?? '';
 };
 
 export const patchBulkRow = (
@@ -35,4 +32,18 @@ export const patchBulkRow = (
 
 export const removeBulkRow = (rows: BulkParsedRow[], index: number): BulkParsedRow[] => {
   return rows.filter((_, rowIndex) => rowIndex !== index);
+};
+
+export const createBulkScreenshotPreviews = (files: File[]): BulkScreenshotPreview[] => {
+  return files.map((file) => ({
+    id: `bulk-shot-${Date.now()}-${bulkPreviewSequence += 1}`,
+    fileName: file.name,
+    url: createOfferScreenshotModalUrl(file),
+  }));
+};
+
+export const revokeBulkScreenshotPreviews = (previews: BulkScreenshotPreview[]): void => {
+  previews.forEach((preview) => {
+    revokeOfferScreenshotModalUrl(preview.url);
+  });
 };

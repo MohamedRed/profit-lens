@@ -2,12 +2,7 @@ import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useAuth } from '../../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../../lib/config/device-id';
 import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
-import { watchUserProfile } from '../../../../lib/features/profile/profile-service';
-import {
-  commitBulkOffersImport,
-  parseBulkOffersScreenshot,
-} from '../../../../lib/features/offers/bulk-offers-service';
-import { watchVehicles } from '../../../../lib/features/vehicles/vehicles-service';
+import { commitBulkOffersImport } from '../../../../lib/features/offers/bulk-offers-service';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type {
   BulkInvalidRow,
@@ -15,14 +10,23 @@ import type {
   CommitBulkOffersImportResponse,
   ScreenshotRef,
 } from '../../../../lib/types/bulk-offers';
-import type { VehicleProfile } from '../../../../lib/types/vehicle';
 import { BulkInvalidRowsPanel } from './components/bulk-invalid-rows-panel';
+import { BulkAnalysisProgress } from './components/bulk-analysis-progress';
 import { BulkReviewList } from './components/bulk-review-list';
 import { BulkSaveFooter } from './components/bulk-save-footer';
+import { BulkScreenshotPreviewList } from './components/bulk-screenshot-preview-list';
 import { BulkSummaryKpis } from './components/bulk-summary-kpis';
 import { BulkUploadStep } from './components/bulk-upload-step';
 import { OfferModeToggle } from '../components/offer-mode-toggle';
-import { patchBulkRow, removeBulkRow, resolveLocalTodayIso, resolveVehicleSelection } from './bulk-helpers';
+import {
+  patchBulkRow,
+  removeBulkRow,
+  resolveLocalTodayIso,
+  revokeBulkScreenshotPreviews,
+  type BulkScreenshotPreview,
+} from './bulk-helpers';
+import { type OfferAnalysisProgressStep } from '../offer-analysis-progress';
+import { runBulkParseImport } from './bulk-parse-import';
 
 const resolveTimeZone = (): string | null => {
   try {
@@ -36,62 +40,51 @@ const resolveTimeZone = (): string | null => {
 export default component$(() => {
   const auth = useAuth();
   const i18n = useI18n();
-  const vehicles = useSignal<VehicleProfile[]>([]);
-  const selectedVehicleId = useSignal('');
-  const defaultVehicleId = useSignal<string | null>(null);
-  const selectedFile = useSignal<File | null>(null);
   const serviceDateIso = useSignal(resolveLocalTodayIso());
   const parseInFlight = useSignal(false);
+  const parseRunId = useSignal(0);
+  const activeParseStep = useSignal<OfferAnalysisProgressStep | null>(null);
+  const parseBatchIndex = useSignal(0);
+  const parseBatchTotal = useSignal(0);
   const saveInFlight = useSignal(false);
   const parsedRows = useSignal<BulkParsedRow[]>([]);
   const invalidRows = useSignal<BulkInvalidRow[]>([]);
   const screenshotRefs = useSignal<ScreenshotRef[]>([]);
+  const screenshotPreviews = useSignal<BulkScreenshotPreview[]>([]);
   const status = useSignal('');
   const commitResult = useSignal<CommitBulkOffersImportResponse | null>(null);
 
-  useVisibleTask$(({ track, cleanup }) => {
+  useVisibleTask$(({ track }) => {
     const isReady = track(() => auth.ready.value);
     const user = track(() => auth.user.value);
     if (!isReady || !user) {
-      vehicles.value = [];
-      selectedVehicleId.value = '';
-      defaultVehicleId.value = null;
-      return;
+      if (screenshotPreviews.value.length > 0) {
+        revokeBulkScreenshotPreviews(screenshotPreviews.value);
+        screenshotPreviews.value = [];
+      }
     }
+  });
 
-    const unsubscribeVehicles = watchVehicles(user.uid, (items) => {
-      vehicles.value = items;
-      selectedVehicleId.value = resolveVehicleSelection(
-        selectedVehicleId.value,
-        items,
-        defaultVehicleId.value,
-      );
-    });
-    const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (profile) => {
-      defaultVehicleId.value = profile.defaultVehicleId;
-      selectedVehicleId.value = resolveVehicleSelection(
-        selectedVehicleId.value,
-        vehicles.value,
-        profile.defaultVehicleId,
-      );
-    });
-
+  useVisibleTask$(({ cleanup }) => {
     cleanup(() => {
-      unsubscribeVehicles();
-      unsubscribeProfile();
+      revokeBulkScreenshotPreviews(screenshotPreviews.value);
     });
   });
 
-  const onParse$ = $(async (fileOverride?: File | null) => {
+  const onImportFiles$ = $(async (files: File[]) => {
     const user = auth.user.value;
     if (!user) {
       return;
     }
-    if (fileOverride !== undefined) {
-      selectedFile.value = fileOverride;
+    if (parseInFlight.value) {
+      return;
     }
-    const file = selectedFile.value;
-    if (!file) {
+    if (files.length === 0) {
+      status.value = t(i18n, 'bulkSelectScreenshotButton', 'Choose screenshot');
+      return;
+    }
+    const imageFiles = files.filter((file) => file.type.startsWith('image/'));
+    if (imageFiles.length === 0) {
       status.value = t(i18n, 'bulkSelectScreenshotButton', 'Choose screenshot');
       return;
     }
@@ -100,35 +93,53 @@ export default component$(() => {
       status.value = t(i18n, 'bulkTimezoneMissing', 'Timezone is required on this device.');
       return;
     }
-    parseInFlight.value = true;
-    status.value = '';
-    try {
-      const response = await parseBulkOffersScreenshot({
-        deviceId: getDeviceId(),
-        timezone,
-        serviceDateIso: serviceDateIso.value,
-        file,
-      });
-      const rowOffset = parsedRows.value.length;
-      parsedRows.value = [
-        ...parsedRows.value,
-        ...response.parsedRows.map((row, index) => ({ ...row, sourceIndex: rowOffset + index })),
-      ];
-      invalidRows.value = [
-        ...invalidRows.value,
-        ...response.invalidRows.map((row) => ({ ...row, sourceIndex: row.sourceIndex + rowOffset })),
-      ];
-      screenshotRefs.value = [
-        ...screenshotRefs.value.filter((item) => item.path !== response.screenshotRef.path),
-        response.screenshotRef,
-      ];
-      commitResult.value = null;
-      status.value = t(i18n, 'bulkParseSuccess', 'Screenshot parsed. Review rows before saving.');
-    } catch (error) {
-      status.value = resolveUserFacingErrorMessage(i18n, error, 'offer');
-    } finally {
-      parseInFlight.value = false;
+
+    if (screenshotPreviews.value.length > 0) {
+      revokeBulkScreenshotPreviews(screenshotPreviews.value);
     }
+    parsedRows.value = [];
+    invalidRows.value = [];
+    screenshotRefs.value = [];
+    screenshotPreviews.value = [];
+    status.value = '';
+    commitResult.value = null;
+    const { parsedFileCount, failedFileCount, latestErrorMessage } = await runBulkParseImport({
+      deviceId: getDeviceId(),
+      files: imageFiles,
+      timezone,
+      serviceDateIso: serviceDateIso.value,
+      i18n,
+      parseRunId,
+      parseInFlight,
+      activeParseStep,
+      parseBatchIndex,
+      parseBatchTotal,
+      parsedRows,
+      invalidRows,
+      screenshotRefs,
+      screenshotPreviews,
+    });
+    if (parsedFileCount > 0 && failedFileCount === 0) {
+      status.value = t(i18n, 'bulkParseSuccess', 'Screenshot parsed. Review rows before saving.');
+      return;
+    }
+
+    if (parsedFileCount > 0 && failedFileCount > 0) {
+      status.value = t(
+        i18n,
+        'bulkParsePartialSuccess',
+        '{parsed} screenshot(s) parsed, {failed} failed. Review rows before saving.',
+      )
+        .replace('{parsed}', String(parsedFileCount))
+        .replace('{failed}', String(failedFileCount));
+      return;
+    }
+
+    status.value = latestErrorMessage ?? t(
+      i18n,
+      'offerActionFailedMessage',
+      'Unable to complete this action right now. Please try again.',
+    );
   });
 
   const onPatchRow$ = $((index: number, patch: Partial<BulkParsedRow>) => {
@@ -165,7 +176,6 @@ export default component$(() => {
         deviceId: getDeviceId(),
         timezone,
         serviceDateIso: serviceDateIso.value,
-        vehicleId: selectedVehicleId.value || undefined,
         screenshotRefs: screenshotRefs.value,
         rows: parsedRows.value,
       });
@@ -193,8 +203,14 @@ export default component$(() => {
         onServiceDateChange$={$((nextDateIso: string) => {
           serviceDateIso.value = nextDateIso;
         })}
-        onParse$={onParse$}
+        onImportFiles$={onImportFiles$}
       />
+      <BulkAnalysisProgress
+        activeStep={activeParseStep.value}
+        currentIndex={parseBatchIndex.value}
+        totalCount={parseBatchTotal.value}
+      />
+      <BulkScreenshotPreviewList previews={screenshotPreviews.value} />
 
       <BulkReviewList rows={parsedRows.value} onPatch$={onPatchRow$} onRemove$={onRemoveRow$} />
       <BulkInvalidRowsPanel rows={invalidRows.value} />
