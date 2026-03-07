@@ -2,7 +2,6 @@
   width: min(100%, 252px);
   margin: 0 auto;
   border-radius: 12px;
-  border: 1px solid rgba(198, 190, 216, 0.8);
   background: var(--pl-color-surface);
   padding: 2px;
   display: grid;
