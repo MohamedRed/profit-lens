@@ -264,13 +264,13 @@ export const BulkOfferFlow = component$(() => {
             }}
           />
 
+          <BulkScreenshotPreviewList previews={screenshotPreviews.value} />
           <BulkAnalysisProgress
             activeStep={activeParseStep.value}
             currentIndex={parseBatchIndex.value}
             totalCount={parseBatchTotal.value}
           />
           <BulkStatusBanner message={status.value} tone={statusTone.value} />
-          <BulkScreenshotPreviewList previews={screenshotPreviews.value} />
           <BulkInvalidRowsPanel rows={invalidRows.value} />
           <BulkSavedResults
             minProfitabilityEuro={minProfitabilityEuro.value}
