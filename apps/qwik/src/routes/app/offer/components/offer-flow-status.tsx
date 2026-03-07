@@ -3,6 +3,7 @@ import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import { parseOfferAnalysisProgressStep } from '../offer-analysis-progress';
 import { OfferAnalysisProgressStepper } from './offer-analysis-progress-stepper';
 import { OfferErrorNotice } from './offer-error-notice';
+import { resolveOfferLocationPermissionGuidance } from './offer-location-permission-guidance';
 import { resolveOfferLocationStatusAction } from './offer-location-status-action';
 import { OfferPresenceTransition } from './offer-presence-transition';
 
@@ -83,10 +84,23 @@ export const OfferFlowStatus = component$<OfferFlowStatusProps>(({
       );
       const isScreenshotFailure = isScreenshotFailureStatus(currentStatus, screenshotFailureMessage);
       const statusTitle = isScreenshotFailure ? t(i18n, 'analysisFailedTitle', 'Analysis incomplete') : undefined;
+      const permissionMessage = t(
+        i18n,
+        'offerLocationPermissionRequired',
+        'Location permission is required to analyze an offer.',
+      );
+      const detailMessage =
+        currentStatus.toLowerCase() === permissionMessage.toLowerCase()
+          ? resolveOfferLocationPermissionGuidance(
+              i18n,
+              typeof window !== 'undefined' ? window : undefined,
+            ) ?? undefined
+          : undefined;
       statusNode = (
         <OfferErrorNotice
           title={statusTitle}
           message={currentStatus}
+          detail={detailMessage}
           onDismiss$={onDismiss$}
           actionLabel={locationStatusAction?.actionLabel}
           onAction$={locationStatusAction && onEnableLocation$ ? onEnableLocation$ : undefined}

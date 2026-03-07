@@ -4,6 +4,7 @@ import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 interface OfferErrorNoticeProps {
   title?: string;
   message: string;
+  detail?: string;
   onDismiss$?: QRL<() => void>;
   actionLabel?: string;
   onAction$?: QRL<() => void | Promise<void>>;
@@ -12,6 +13,7 @@ interface OfferErrorNoticeProps {
 export const OfferErrorNotice = component$<OfferErrorNoticeProps>(({
   title,
   message,
+  detail,
   onDismiss$,
   actionLabel,
   onAction$,
@@ -48,6 +50,7 @@ export const OfferErrorNotice = component$<OfferErrorNoticeProps>(({
         </div>
       ) : null}
       <p class="ui-offer-error-notice-message">{message}</p>
+      {detail ? <p class="ui-offer-error-notice-detail">{detail}</p> : null}
       {onAction$ && actionLabel ? (
         <button
           type="button"

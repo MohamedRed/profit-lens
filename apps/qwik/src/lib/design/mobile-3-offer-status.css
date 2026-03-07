@@ -151,6 +151,13 @@
   line-height: 1.35;
 }
 
+.ui-offer-error-notice-detail {
+  margin: 0;
+  color: rgba(127, 29, 29, 0.88);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
 .ui-offer-error-notice-action {
   margin-top: 10px;
   width: 100%;
