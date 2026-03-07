@@ -10,5 +10,7 @@
 - codify changes in Terraform when needed
 - check if changes need to be included in the web-integhration-smoke.yml
 - no shallow solving of issues, always fix the root cause.
+- consider the different possible error cases and present them clearly in the UI so users are guided on what to do next, or at least informed about what happened.
+- never expose technical or internal diagnostic information to end users; error messaging must stay user-friendly and action-oriented.
 - when working with UI, use pencil mcp server with "Shadcn UI" system and "mobile-3-minimalvibrant" style guide. Always make the UI responsive.
 - For UI, always think how to optimize loading speed for the best user experience.
