@@ -44,6 +44,19 @@ describe('resolveUserFacingErrorMessage', () => {
     expect(message).toBe('Screenshot analysis is temporarily unavailable.');
   });
 
+  it('maps offer quota exhaustion to the offer-limit message', () => {
+    const i18n = createI18n({
+      offerLimitReachedMessage: 'You have reached your monthly offer limit. Upgrade to continue.',
+      errorTooManyRequests: 'Too many attempts. Please wait a moment and try again.',
+    });
+    const message = resolveUserFacingErrorMessage(
+      i18n,
+      { code: 'functions/resource-exhausted', message: 'Offer limit reached.' },
+      'offer',
+    );
+    expect(message).toBe('You have reached your monthly offer limit. Upgrade to continue.');
+  });
+
   it.each([
     'No offer found in screenshot.',
     'Failed to parse Gemini JSON response.',

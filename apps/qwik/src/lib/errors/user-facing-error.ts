@@ -139,6 +139,10 @@ export const resolveUserFacingErrorMessage = (
     return t(i18n, 'errorPlanUnavailable', 'No paid plan is available right now. Please try again later.');
   }
 
+  if (context === 'offer' && messageLower.includes('offer limit reached')) {
+    return t(i18n, 'offerLimitReachedMessage', 'You have reached your monthly offer limit. Upgrade to continue.');
+  }
+
   if (messageLower.includes('already exists') && context === 'vehicle') {
     return t(i18n, 'vehicleLicensePlateDuplicate', 'A vehicle with this plate already exists.');
   }
