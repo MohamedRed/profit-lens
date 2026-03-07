@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ensureWithinOfferLimit } from './offer-flow-limits';
+import { checkOfferLimitAvailability } from './offer-flow-limits';
 import type { Entitlement, OfferUsage } from '../../../lib/types/billing';
 
 const { fetchEntitlementMock, fetchUsageMock } = vi.hoisted(() => {
@@ -37,14 +37,20 @@ describe('offer-flow-limits', () => {
   it('allows import when entitlement is missing', async () => {
     fetchEntitlementMock.mockResolvedValueOnce(null);
 
-    await expect(ensureWithinOfferLimit('uid_1')).resolves.toBe(true);
+    await expect(checkOfferLimitAvailability('uid_1')).resolves.toEqual({
+      withinLimit: true,
+      remainingOffers: null,
+    });
     expect(fetchUsageMock).not.toHaveBeenCalled();
   });
 
   it('allows import for unlimited plans', async () => {
     fetchEntitlementMock.mockResolvedValueOnce(entitlement(null));
 
-    await expect(ensureWithinOfferLimit('uid_1')).resolves.toBe(true);
+    await expect(checkOfferLimitAvailability('uid_1')).resolves.toEqual({
+      withinLimit: true,
+      remainingOffers: null,
+    });
     expect(fetchUsageMock).not.toHaveBeenCalled();
   });
 
@@ -56,7 +62,10 @@ describe('offer-flow-limits', () => {
       periodEnd: new Date('2026-02-28T23:59:59.999Z'),
     });
 
-    await expect(ensureWithinOfferLimit('uid_1')).resolves.toBe(false);
+    await expect(checkOfferLimitAvailability('uid_1')).resolves.toEqual({
+      withinLimit: false,
+      remainingOffers: 0,
+    });
   });
 
   it('allows import when usage is below offer limit', async () => {
@@ -67,12 +76,18 @@ describe('offer-flow-limits', () => {
       periodEnd: new Date('2026-02-28T23:59:59.999Z'),
     });
 
-    await expect(ensureWithinOfferLimit('uid_1')).resolves.toBe(true);
+    await expect(checkOfferLimitAvailability('uid_1')).resolves.toEqual({
+      withinLimit: true,
+      remainingOffers: 130,
+    });
   });
 
   it('fails open when billing fetch errors', async () => {
     fetchEntitlementMock.mockRejectedValueOnce(new Error('network'));
 
-    await expect(ensureWithinOfferLimit('uid_1')).resolves.toBe(true);
+    await expect(checkOfferLimitAvailability('uid_1')).resolves.toEqual({
+      withinLimit: true,
+      remainingOffers: null,
+    });
   });
 });

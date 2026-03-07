@@ -9,7 +9,7 @@ export const resolveTimeZone = (): string | null => {
   }
 };
 
-export const buildBulkQuotaExceededMessage = (
+export const buildOfferQuotaExceededMessage = (
   i18n: I18nStore,
   requestedCount: number,
   remainingCount: number,
@@ -17,8 +17,8 @@ export const buildBulkQuotaExceededMessage = (
   formatTemplate(
     t(
       i18n,
-      'bulkOfferImportExceedsRemainingMessage',
-      'This import needs {count} offers, but only {remaining} remain this month.',
+      'offerQuotaExceededMessage',
+      'This action needs {count} offer(s), but only {remaining} remain this month.',
     ),
     {
       count: String(requestedCount),

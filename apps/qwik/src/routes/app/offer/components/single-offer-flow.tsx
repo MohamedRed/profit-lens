@@ -15,9 +15,10 @@ import { parseOfferAnalysisRecord, type OfferAnalysisRecord } from '../offer-ana
 import { primeHistoryAfterAnalysis } from '../offer-analysis-navigation';
 import { readRequiredCurrentLocation } from '../offer-current-location';
 import { takeOfferScreenshotFile } from '../offer-file-transfer-store';
-import { ensureWithinOfferLimit } from '../offer-flow-limits';
+import { checkOfferLimitAvailability } from '../offer-flow-limits';
 import { setOfferAnalysisErrorStatus, startOfferAnalysisProgress } from '../offer-analysis-runtime';
 import { loadOffersService } from '../offer-service-loader';
+import { buildOfferQuotaExceededMessage } from '../bulk/bulk-offer-quota';
 import {
   clearScreenshotPreviewAction,
   dismissStatusAction,
@@ -172,9 +173,11 @@ export const SingleOfferFlow = component$(() => {
     loading.value = true;
     status.value = '';
     persistOfferTabSessionSnapshot(offerTabSessionParams);
-    const withinLimit = await ensureWithinOfferLimit(user.uid);
+    const { withinLimit, remainingOffers } = await checkOfferLimitAvailability(user.uid);
     if (!withinLimit) {
-      status.value = t(i18n, 'offerLimitReachedMessage', 'You have reached your monthly offer limit. Upgrade to continue.');
+      status.value = remainingOffers == null
+        ? t(i18n, 'offerLimitReachedMessage', 'You have reached your monthly offer limit. Upgrade to continue.')
+        : buildOfferQuotaExceededMessage(i18n, 1, remainingOffers);
       loading.value = false;
       persistOfferTabSessionSnapshot(offerTabSessionParams);
       return;

@@ -305,7 +305,7 @@
   "billingStripePortalSubtitle": "افتح Stripe لإدارة الفواتير وطرق الدفع وتفاصيل الفوترة.",
   "billingStripePortalButton": "فتح فوترة Stripe",
   "offerLimitReachedMessage": "لقد بلغت الحد الشهري للعروض. قم بالترقية للمتابعة.",
-  "bulkOfferImportExceedsRemainingMessage": "يحتاج هذا الاستيراد إلى {count} عروض، لكن المتبقي هذا الشهر هو {remaining} فقط.",
+  "offerQuotaExceededMessage": "يحتاج هذا الإجراء إلى {count} عرض/عروض، لكن المتبقي هذا الشهر هو {remaining} فقط.",
   "subscriptionPlansTitle": "اختر خطة",
   "subscriptionPlansSubtitle": "اختر الحد الشهري المناسب لتوصيلاتك.",
   "planPricePerMonth": "{price} / شهرياً",

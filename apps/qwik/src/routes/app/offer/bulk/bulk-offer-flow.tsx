@@ -14,7 +14,7 @@ import { OfferSetupModalStack } from '../components/offer-setup-modal-stack';
 import { resolveRemainingOffers, useOfferEntitlement } from '../components/use-offer-entitlement';
 import { saveProfitabilityTargetAction } from '../offer-ui-actions';
 import { type OfferAnalysisProgressStep } from '../offer-analysis-progress';
-import { buildBulkQuotaExceededMessage, resolveTimeZone } from './bulk-offer-quota';
+import { buildOfferQuotaExceededMessage, resolveTimeZone } from './bulk-offer-quota';
 import { BulkAnalysisProgress } from './components/bulk-analysis-progress';
 import { BulkImportHero } from './components/bulk-import-hero';
 import { BulkInvalidRowsPanel } from './components/bulk-invalid-rows-panel';
@@ -149,7 +149,7 @@ export const BulkOfferFlow = component$(() => {
     }
     const remainingAfterParse = resolveRemainingOffers(entitlement.value, usage.value);
     if (remainingAfterParse !== null && parsedRows.value.length > remainingAfterParse) {
-      status.value = buildBulkQuotaExceededMessage(i18n, parsedRows.value.length, remainingAfterParse);
+      status.value = buildOfferQuotaExceededMessage(i18n, parsedRows.value.length, remainingAfterParse);
       statusTone.value = 'error';
       return;
     }
