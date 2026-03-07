@@ -1,7 +1,6 @@
 import { $, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
 import { BulkOfferFlow } from '../bulk/bulk-offer-flow';
-import { OfferPresenceTransition } from './offer-presence-transition';
 import { OfferModeToggle } from './offer-mode-toggle';
 import { resolveOfferMode, resolveOfferModeHref, type OfferMode } from './offer-mode-state';
 import { SingleOfferFlow } from './single-offer-flow';
@@ -48,12 +47,7 @@ export const OfferModeShell = component$<OfferModeShellProps>(({ initialMode = '
   return (
     <div class="ui-stack ui-offer-screen">
       <OfferModeToggle mode={mode.value} onSelectMode$={selectMode$} />
-      <OfferPresenceTransition class="ui-offer-mode-panel" show={mode.value === 'single'}>
-        <SingleOfferFlow />
-      </OfferPresenceTransition>
-      <OfferPresenceTransition class="ui-offer-mode-panel" show={mode.value === 'bulk'}>
-        <BulkOfferFlow />
-      </OfferPresenceTransition>
+      {mode.value === 'single' ? <SingleOfferFlow /> : <BulkOfferFlow />}
     </div>
   );
 });
