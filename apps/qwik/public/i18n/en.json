@@ -305,6 +305,7 @@
   "billingStripePortalSubtitle": "Open Stripe to manage invoices, payment methods, and billing details.",
   "billingStripePortalButton": "Open Stripe billing",
   "offerLimitReachedMessage": "You have reached your monthly offer limit. Upgrade to continue.",
+  "bulkOfferImportExceedsRemainingMessage": "This import needs {count} offers, but only {remaining} remain this month.",
   "subscriptionPlansTitle": "Choose a plan",
   "subscriptionPlansSubtitle": "Pick the monthly cap that fits your deliveries.",
   "planPricePerMonth": "{price} / month",

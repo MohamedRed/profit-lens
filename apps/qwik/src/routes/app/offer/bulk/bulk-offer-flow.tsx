@@ -3,8 +3,6 @@ import { useAuth } from '../../../../lib/auth/auth-context';
 import { getDeviceId } from '../../../../lib/config/device-id';
 import { resolveUserFacingErrorMessage } from '../../../../lib/errors/user-facing-error';
 import { commitBulkOffersImport } from '../../../../lib/features/offers/bulk-offers-service';
-import { watchUserProfile } from '../../../../lib/features/profile/profile-service';
-import { watchVehicles } from '../../../../lib/features/vehicles/vehicles-service';
 import { t, useI18n } from '../../../../lib/i18n/i18n-context';
 import type {
   BulkInvalidRow,
@@ -12,14 +10,15 @@ import type {
   CommitBulkOffersImportResponse,
   ScreenshotRef,
 } from '../../../../lib/types/bulk-offers';
-import type { UserProfile } from '../../../../lib/types/profile';
-import type { VehicleProfile } from '../../../../lib/types/vehicle';
 import { OfferSetupModalStack } from '../components/offer-setup-modal-stack';
+import { resolveRemainingOffers, useOfferEntitlement } from '../components/use-offer-entitlement';
 import { saveProfitabilityTargetAction } from '../offer-ui-actions';
 import { type OfferAnalysisProgressStep } from '../offer-analysis-progress';
+import { buildBulkQuotaExceededMessage, resolveTimeZone } from './bulk-offer-quota';
 import { BulkAnalysisProgress } from './components/bulk-analysis-progress';
 import { BulkImportHero } from './components/bulk-import-hero';
 import { BulkInvalidRowsPanel } from './components/bulk-invalid-rows-panel';
+import { BulkOfferQuotaNotice } from './components/bulk-offer-quota-notice';
 import { BulkSavedResults } from './components/bulk-saved-results';
 import { BulkScreenshotPreviewList } from './components/bulk-screenshot-preview-list';
 import { BulkStatusBanner } from './components/bulk-status-banner';
@@ -30,18 +29,13 @@ import {
   type BulkScreenshotPreview,
 } from './bulk-helpers';
 import { runBulkParseImport } from './bulk-parse-import';
-const resolveTimeZone = (): string | null => {
-  try {
-    const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    return zone && zone.trim().length > 0 ? zone : null;
-  } catch {
-    return null;
-  }
-};
+import { useBulkOfferSetupState } from './use-bulk-offer-setup-state';
 
 export const BulkOfferFlow = component$(() => {
   const auth = useAuth();
   const i18n = useI18n();
+  const { entitlement, usage } = useOfferEntitlement(auth);
+  const { profile, minProfitabilityEuro, vehicles, vehiclesLoading, selectedVehicleId } = useBulkOfferSetupState(auth);
   const serviceDateIso = useSignal(resolveLocalTodayIso());
   const parseInFlight = useSignal(false);
   const parseRunId = useSignal(0);
@@ -49,11 +43,6 @@ export const BulkOfferFlow = component$(() => {
   const parseBatchIndex = useSignal(0);
   const parseBatchTotal = useSignal(0);
   const saveInFlight = useSignal(false);
-  const profile = useSignal<UserProfile | null>(null);
-  const minProfitabilityEuro = useSignal(2);
-  const vehicles = useSignal<VehicleProfile[]>([]);
-  const vehiclesLoading = useSignal(true);
-  const selectedVehicleId = useSignal('');
   const savingProfitTarget = useSignal(false);
   const settingsSheetOpen = useSignal(false);
   const importFileInputRef = useSignal<HTMLInputElement>();
@@ -64,43 +53,6 @@ export const BulkOfferFlow = component$(() => {
   const status = useSignal('');
   const statusTone = useSignal<'default' | 'error' | 'success'>('default');
   const commitResult = useSignal<CommitBulkOffersImportResponse | null>(null);
-  useVisibleTask$(({ track, cleanup }) => {
-    const isReady = track(() => auth.ready.value);
-    const user = track(() => auth.user.value);
-    if (!isReady || !user) {
-      profile.value = null;
-      vehicles.value = [];
-      vehiclesLoading.value = true;
-      selectedVehicleId.value = '';
-      return;
-    }
-
-    const unsubscribeProfile = watchUserProfile(user.uid, user.email ?? null, (nextProfile) => {
-      profile.value = nextProfile;
-      minProfitabilityEuro.value = nextProfile.minProfitabilityEuro;
-    });
-    const unsubscribeVehicles = watchVehicles(user.uid, (nextVehicles) => {
-      vehicles.value = nextVehicles;
-      vehiclesLoading.value = false;
-    });
-
-    cleanup(() => {
-      unsubscribeProfile();
-      unsubscribeVehicles();
-    });
-  });
-
-  useVisibleTask$(({ track }) => {
-    track(() => vehicles.value);
-    track(() => profile.value?.defaultVehicleId);
-    const isSelectedVehicleValid = vehicles.value.some((vehicle) => vehicle.id === selectedVehicleId.value);
-    if (!isSelectedVehicleValid) {
-      const defaultVehicleId = profile.value?.defaultVehicleId ?? '';
-      selectedVehicleId.value = vehicles.value.some((vehicle) => vehicle.id === defaultVehicleId)
-        ? defaultVehicleId
-        : '';
-    }
-  });
 
   useVisibleTask$(({ cleanup }) => {
     cleanup(() => {
@@ -130,6 +82,12 @@ export const BulkOfferFlow = component$(() => {
       return;
     }
     if (parseInFlight.value || saveInFlight.value) {
+      return;
+    }
+    const remainingOffers = resolveRemainingOffers(entitlement.value, usage.value);
+    if (remainingOffers !== null && remainingOffers <= 0) {
+      status.value = t(i18n, 'offerLimitReachedMessage', 'You have reached your monthly offer limit. Upgrade to continue.');
+      statusTone.value = 'error';
       return;
     }
     if (!selectedVehicleId.value) {
@@ -189,6 +147,12 @@ export const BulkOfferFlow = component$(() => {
       statusTone.value = 'error';
       return;
     }
+    const remainingAfterParse = resolveRemainingOffers(entitlement.value, usage.value);
+    if (remainingAfterParse !== null && parsedRows.value.length > remainingAfterParse) {
+      status.value = buildBulkQuotaExceededMessage(i18n, parsedRows.value.length, remainingAfterParse);
+      statusTone.value = 'error';
+      return;
+    }
 
     saveInFlight.value = true;
     status.value = t(i18n, 'bulkAutoSaveInFlight', 'Saving analyzed deliveries...');
@@ -241,6 +205,7 @@ export const BulkOfferFlow = component$(() => {
   const hasVehicles = vehicles.value.length > 0;
   const busy = parseInFlight.value || saveInFlight.value;
   const importDisabled = busy || !hasVehicles;
+  const remainingOffers = resolveRemainingOffers(entitlement.value, usage.value);
   const showEmptyState = !vehiclesLoading.value && !hasVehicles;
 
   return (
@@ -263,6 +228,7 @@ export const BulkOfferFlow = component$(() => {
               settingsSheetOpen.value = true;
             }}
           />
+          <BulkOfferQuotaNotice remainingOffers={remainingOffers} />
 
           <BulkScreenshotPreviewList previews={screenshotPreviews.value} />
           <BulkAnalysisProgress

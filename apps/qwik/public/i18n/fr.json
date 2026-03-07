@@ -305,6 +305,7 @@
   "billingStripePortalSubtitle": "Ouvrez Stripe pour gérer les factures, moyens de paiement et détails de facturation.",
   "billingStripePortalButton": "Ouvrir la facturation Stripe",
   "offerLimitReachedMessage": "Vous avez atteint votre limite mensuelle. Passez à un forfait supérieur pour continuer.",
+  "bulkOfferImportExceedsRemainingMessage": "Cet import nécessite {count} offres, mais il n'en reste que {remaining} ce mois-ci.",
   "subscriptionPlansTitle": "Choisir un forfait",
   "subscriptionPlansSubtitle": "Sélectionnez le plafond mensuel adapté à vos livraisons.",
   "planPricePerMonth": "{price} / mois",
