@@ -90,6 +90,17 @@ export const SingleOfferFlow = component$(() => {
     }
     analysisRecord.value = null;
     loading.value = true;
+    status.value = '';
+    persistOfferTabSessionSnapshot(offerTabSessionParams);
+    const { withinLimit, remainingOffers } = await checkOfferLimitAvailability(user.uid);
+    if (!withinLimit) {
+      status.value = remainingOffers == null
+        ? t(i18n, 'offerLimitReachedMessage', 'You have reached your monthly offer limit. Upgrade to continue.')
+        : buildOfferQuotaExceededMessage(i18n, 1, remainingOffers);
+      loading.value = false;
+      persistOfferTabSessionSnapshot(offerTabSessionParams);
+      return;
+    }
     const { progressDriver, runId } = startOfferAnalysisProgress({
       analysisRunId,
       loading,
