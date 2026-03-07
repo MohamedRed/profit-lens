@@ -20,7 +20,7 @@ DEFINES_FILE="${DEFINES_FILE}" "${ROOT_DIR}/tool/sync_web_runtime_config.sh"
 rm -rf "${BUILD_DIR}"
 mkdir -p "${BUILD_DIR}"
 
-npm --prefix "${ADMIN_DIR}" ci
+npm --prefix "${ADMIN_DIR}" ci --include=dev
 npm --prefix "${ADMIN_DIR}" run build
 
 if [[ ! -f "${ADMIN_DIR}/dist/index.html" ]]; then

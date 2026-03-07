@@ -20,7 +20,7 @@ DEFINES_FILE="${DEFINES_FILE}" "${ROOT_DIR}/tool/sync_web_runtime_config.sh"
 rm -rf "${BUILD_DIR}"
 mkdir -p "${BUILD_DIR}/next"
 
-npm --prefix "${QWIK_DIR}" ci
+npm --prefix "${QWIK_DIR}" ci --include=dev
 npm --prefix "${QWIK_DIR}" run build
 
 if [[ ! -f "${QWIK_DIR}/dist/next/index.html" ]]; then
