@@ -26,3 +26,21 @@ export function readRequiredCurrentLocation(payload: AnalyzeOfferPayload): GeoPo
 
   return { lat, lng };
 }
+
+export function readOptionalCurrentLocation(
+  payload: Pick<AnalyzeOfferPayload, "currentLocation">
+): GeoPoint | null {
+  const location = payload.currentLocation;
+  if (!location || typeof location !== "object") {
+    return null;
+  }
+  const lat = (location as { lat?: unknown }).lat;
+  const lng = (location as { lng?: unknown }).lng;
+  if (!hasFiniteNumber(lat) || !hasFiniteNumber(lng)) {
+    return null;
+  }
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+    return null;
+  }
+  return { lat, lng };
+}

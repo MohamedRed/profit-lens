@@ -115,7 +115,10 @@ export interface AdminUserDeviceSummary {
   lastSeenIso: string | null;
 }
 
-export type AdminOfferSource = "manual" | "screenshot";
+export type AdminOfferSource =
+  | "manual"
+  | "screenshot"
+  | "android_accessibility_live";
 export type AdminProfitabilityFilter = "positive" | "negative";
 
 export interface AdminListOffersRequest {

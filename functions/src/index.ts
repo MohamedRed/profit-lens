@@ -10,6 +10,7 @@ import { parseGeminiJson } from "./gemini_json";
 import { postprocessOfferExtraction } from "./offer_postprocess";
 export { verifyOfferRoute } from "./verify_offer_route";
 export { analyzeOffer } from "./analyze_offer";
+export { scoreLiveOffer, commitLiveOfferVerdict } from "./live_offers";
 export { parseBulkOffersScreenshot, commitBulkOffersImport } from "./bulk_offers";
 export { syncOfferDailyStats } from "./offer_stats";
 export { backfillOfferStats } from "./offer_stats_backfill";

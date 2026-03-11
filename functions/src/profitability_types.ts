@@ -28,6 +28,16 @@ export type OfferInput = {
   routeVerification?: RouteVerification | null;
 };
 
+export type LiveOfferProvider = "uber_eats" | "deliveroo";
+
+export type LiveOfferCaptureContext = {
+  parserVersion: string;
+  packageName: string;
+  screenVariant?: string | null;
+  confidence?: number | null;
+  locationAgeMs?: number | null;
+};
+
 export type VehicleSnapshot = {
   id: string;
   name: string;
@@ -77,4 +87,7 @@ export type OfferRecordData = {
   costSnapshot: CostSettings;
   breakdown: CostBreakdown;
   extraction?: OfferExtraction | null;
+  provider?: LiveOfferProvider | null;
+  liveOfferSessionId?: string | null;
+  captureContext?: LiveOfferCaptureContext | null;
 };

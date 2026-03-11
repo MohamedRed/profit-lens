@@ -1,0 +1,5 @@
+<resources>
+  <string name="app_name">Profit Lens</string>
+  <string name="accessibility_service_name">Profit Lens overlay monitor</string>
+  <string name="accessibility_service_description">Reads supported courier offer screens to show a live profitability badge.</string>
+</resources>

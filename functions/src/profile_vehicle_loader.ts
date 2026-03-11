@@ -9,6 +9,7 @@ import {
 type ProfileLoadResult = {
   costSettings: CostSettings;
   defaultVehicleId?: string | null;
+  minProfitabilityEuro: number;
 };
 
 export async function loadUserProfile(uid: string): Promise<ProfileLoadResult> {
@@ -49,6 +50,7 @@ export async function loadUserProfile(uid: string): Promise<ProfileLoadResult> {
       monthlyDeliveries,
     },
     defaultVehicleId: (data.defaultVehicleId as string | undefined) ?? null,
+    minProfitabilityEuro: toNumber(data.minProfitabilityEuro) ?? 2,
   };
 }
 

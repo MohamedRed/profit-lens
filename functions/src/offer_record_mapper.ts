@@ -2,6 +2,8 @@ import { FieldValue } from "firebase-admin/firestore";
 import {
   CostBreakdown,
   CostSettings,
+  LiveOfferCaptureContext,
+  LiveOfferProvider,
   OfferExtraction,
   OfferInput,
   OfferRecordData,
@@ -29,6 +31,11 @@ type OfferRecordParams = {
     sourceApp: string;
     screenshotCount: number;
   };
+  liveContext?: {
+    provider: LiveOfferProvider;
+    liveOfferSessionId: string;
+    captureContext: LiveOfferCaptureContext;
+  };
 };
 
 export function buildOfferRecordPayload(params: OfferRecordParams) {
@@ -45,6 +52,9 @@ export function buildOfferRecordPayload(params: OfferRecordParams) {
     costSnapshot: params.costSnapshot,
     breakdown: params.breakdown,
     extraction: params.extraction ?? null,
+    provider: params.liveContext?.provider ?? null,
+    liveOfferSessionId: params.liveContext?.liveOfferSessionId ?? null,
+    captureContext: params.liveContext?.captureContext ?? null,
   };
 
   const document: Record<string, unknown> = {
@@ -85,6 +95,11 @@ export function buildOfferRecordPayload(params: OfferRecordParams) {
   }
   if (params.bulkContext) {
     document.bulkContext = params.bulkContext;
+  }
+  if (params.liveContext) {
+    document.provider = params.liveContext.provider;
+    document.liveOfferSessionId = params.liveContext.liveOfferSessionId;
+    document.captureContext = params.liveContext.captureContext;
   }
 
   if (params.offer.routeVerification) {

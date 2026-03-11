@@ -1,6 +1,5 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
-import { defineSecret, defineString } from "firebase-functions/params";
 import { loadUserProfile, loadVehicleSnapshot } from "./profile_vehicle_loader";
 import { evaluateProfitability } from "./profitability_engine";
 import { buildOfferRecordPayload } from "./offer_record_mapper";
@@ -13,12 +12,7 @@ import { assertOfferLimitAvailable, saveOfferWithUsage } from "./offer_usage";
 import { assertDeviceActive } from "./device_registry";
 import { readRequiredCurrentLocation } from "./current_location";
 import { resolveDayStartFromDayId, resolveLocalDayId } from "./local_day";
-
-const routesApiKey = defineSecret("ROUTES_API_KEY");
-const geocodingApiKey = defineSecret("GEOCODING_API_KEY");
-const geminiModel = defineString("GEMINI_MODEL", {
-  default: "gemini-3-flash-preview",
-});
+import { geocodingApiKey, geminiModel, routesApiKey } from "./offer_runtime_config";
 
 export const analyzeOffer = onCall(
   {

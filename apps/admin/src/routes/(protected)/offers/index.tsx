@@ -82,6 +82,7 @@ export default component$(() => {
             <option value="all">All</option>
             <option value="manual">Manual</option>
             <option value="screenshot">Screenshot</option>
+            <option value="android_accessibility_live">Android overlay</option>
           </select>
         </label>
 

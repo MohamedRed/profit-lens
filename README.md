@@ -6,6 +6,7 @@ ProfitLens is a Qwik web app for analyzing delivery offers (for example Uber Eat
 
 - `apps/qwik`: Main web application (Qwik + Qwik City)
 - `apps/admin`: Read-only admin dashboard (Qwik + Qwik City)
+- `apps/android`: Native Android overlay client (Jetpack Compose + AccessibilityService)
 - `functions`: Firebase Cloud Functions backend
 - `infrastructure/terraform`: Infrastructure as code
 - `tool`: Build and deployment helper scripts

@@ -32,6 +32,7 @@ const OFFERS_CURSOR_TYPE = "admin-offers";
 const SUPPORTED_SOURCE: readonly AdminOfferSource[] = [
   "manual",
   "screenshot",
+  "android_accessibility_live",
 ] as const;
 const SUPPORTED_PROFITABILITY: readonly AdminProfitabilityFilter[] = [
   "positive",
