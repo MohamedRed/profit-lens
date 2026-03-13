@@ -14,6 +14,7 @@ data class OverlayMonitorUiState(
   val batteryOptimizedIgnored: Boolean,
   val featureFlags: OverlayFeatureFlags,
   val sessions: List<LiveOfferSessionEntity>,
+  val workspace: WorkspaceLaunchState,
   val message: String?,
   val loading: Boolean,
 )

@@ -24,6 +24,15 @@ class LiveOfferFunctionsRepository(private val firebaseReady: Boolean) {
     ).await()
   }
 
+  suspend fun createAndroidWebSession(deviceId: String): AndroidWebSession {
+    val callable = functions?.getHttpsCallable("createAndroidWebSession")
+      ?: error("Firebase is not configured.")
+    val data = callable.call(mapOf("deviceId" to deviceId)).await().getData() as Map<*, *>
+    return AndroidWebSession(
+      customToken = data["customToken"] as String,
+    )
+  }
+
   suspend fun scoreLiveOffer(payload: LiveOfferRequest): LiveScoreResponse {
     val callable = functions?.getHttpsCallable("scoreLiveOffer")
       ?: error("Firebase is not configured.")

@@ -6,7 +6,13 @@ import {
   useVisibleTask$,
   type Signal,
 } from '@builder.io/qwik';
-import { authStateListener, readCurrentAuthUser } from '../firebase/auth';
+import {
+  authStateListener,
+  consumeEmbeddedAndroidCustomToken,
+  hasEmbeddedAndroidCustomToken,
+  notifyEmbeddedAndroidAuthState,
+  readCurrentAuthUser,
+} from '../firebase/auth';
 import type { AuthUser } from '../types/auth';
 
 export interface AuthStore {
@@ -29,6 +35,8 @@ export const setupAuthProvider = () => {
 
   useVisibleTask$(({ cleanup }) => {
     let initialStateResolved = false;
+    const hasPendingAndroidToken = hasEmbeddedAndroidCustomToken();
+    let androidBootstrapPending = hasPendingAndroidToken;
     const syncUserFromAuthClient = () => {
       store.user.value = readCurrentAuthUser();
     };
@@ -53,7 +61,11 @@ export const setupAuthProvider = () => {
     };
 
     const applyAuthState = (currentUser: AuthUser | null) => {
+      if (androidBootstrapPending && !currentUser) {
+        return;
+      }
       store.user.value = currentUser;
+      notifyEmbeddedAndroidAuthState(currentUser);
       resolveInitialReady();
     };
 
@@ -78,6 +90,21 @@ export const setupAuthProvider = () => {
     };
     document.addEventListener('visibilitychange', onVisibilityChange);
     window.addEventListener('focus', onFocus);
+
+    void (async () => {
+      if (!hasPendingAndroidToken) {
+        return;
+      }
+      try {
+        await consumeEmbeddedAndroidCustomToken();
+      } catch (error) {
+        console.error('[auth] embedded android sign-in failed', error);
+      } finally {
+        androidBootstrapPending = false;
+        syncUserFromAuthClient();
+        resolveInitialReady();
+      }
+    })();
 
     cleanup(() => {
       window.clearTimeout(readyTimeout);

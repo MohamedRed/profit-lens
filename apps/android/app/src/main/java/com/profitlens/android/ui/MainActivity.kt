@@ -19,6 +19,8 @@ class MainActivity : ComponentActivity() {
         onSignIn = viewModel::signIn,
         onSignOut = viewModel::signOut,
         onMonitoringChanged = viewModel::setMonitoringEnabled,
+        onRefreshWorkspace = viewModel::refreshWorkspaceSession,
+        onWorkspaceSignedOut = viewModel::handleWorkspaceSignedOut,
       )
     }
   }

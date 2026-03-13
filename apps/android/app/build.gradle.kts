@@ -67,6 +67,11 @@ android {
       readEnvOrDefault("ANDROID_FIREBASE_MESSAGING_SENDER_ID", "117544150167").asBuildConfigLiteral(),
     )
     buildConfigField("String", "FUNCTIONS_REGION", "\"europe-west1\"")
+    buildConfigField(
+      "String",
+      "WEB_APP_URL",
+      readEnvOrDefault("ANDROID_WEB_APP_URL", "https://profit-lens-prod-2e417.web.app").asBuildConfigLiteral(),
+    )
     buildConfigField("String", "UBER_EATS_PACKAGE", "\"com.ubercab.eats\"")
     buildConfigField("String", "DELIVEROO_PACKAGE", "\"com.deliveroo.orderapp\"")
   }
@@ -128,6 +133,7 @@ dependencies {
   implementation("androidx.room:room-ktx:2.6.1")
   ksp("androidx.room:room-compiler:2.6.1")
   implementation("com.google.android.material:material:1.12.0")
+  implementation("androidx.compose.material:material-icons-extended")
   implementation("androidx.compose.material3:material3")
   implementation("androidx.compose.ui:ui")
   implementation("androidx.compose.ui:ui-tooling-preview")
