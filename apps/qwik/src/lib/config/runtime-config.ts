@@ -4,10 +4,14 @@ import { installDefines } from './install-defines';
 
 export const firebaseFunctionsRegion = 'europe-west1';
 
-const normalizePublicHttpUrl = (value: string): string => {
+export const normalizeDownloadUrl = (value: string): string => {
   const trimmed = value.trim();
   if (!trimmed) {
     return '';
+  }
+
+  if (trimmed.startsWith('/')) {
+    return trimmed;
   }
 
   try {
@@ -18,7 +22,7 @@ const normalizePublicHttpUrl = (value: string): string => {
   }
 };
 
-export const androidAppDownloadUrl = normalizePublicHttpUrl(installDefines.androidAppDownloadUrl);
+export const androidAppDownloadUrl = normalizeDownloadUrl(installDefines.androidAppDownloadUrl);
 
 export const billingPlans: BillingPlan[] = [
   {

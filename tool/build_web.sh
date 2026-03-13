@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 DEFINES_FILE="${DEFINES_FILE:-${ROOT_DIR}/tool/dev_runtime_defines.json}"
 BUILD_DIR="${ROOT_DIR}/build/web"
 QWIK_DIR="${ROOT_DIR}/apps/qwik"
+ANDROID_APK_SOURCE="${ROOT_DIR}/artifacts/android/profit-lens-android-release.apk"
 
 if [[ ! -f "${DEFINES_FILE}" ]]; then
   echo "Missing ${DEFINES_FILE}."
@@ -28,6 +29,11 @@ if [[ ! -f "${QWIK_DIR}/dist/next/index.html" ]]; then
   exit 1
 fi
 cp -R "${QWIK_DIR}/dist/next/." "${BUILD_DIR}/next/"
+
+if [[ -f "${ANDROID_APK_SOURCE}" ]]; then
+  mkdir -p "${BUILD_DIR}/downloads"
+  cp "${ANDROID_APK_SOURCE}" "${BUILD_DIR}/downloads/profit-lens-android-release.apk"
+fi
 
 cat > "${BUILD_DIR}/index.html" <<'EOF'
 <!doctype html>

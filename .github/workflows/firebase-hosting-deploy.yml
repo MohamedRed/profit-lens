@@ -55,5 +55,12 @@ jobs:
           printf "%s" "$FIREBASE_SERVICE_ACCOUNT" > "$CREDENTIALS_PATH"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$CREDENTIALS_PATH" >> "$GITHUB_ENV"
 
+      - name: Download Android APK asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/android
+          gh release download android-latest --repo "${{ github.repository }}" --pattern "profit-lens-android-release.apk" --dir artifacts/android
+
       - name: Deploy Hosting
         run: firebase deploy --project "$FIREBASE_PROJECT_ID" --only hosting --non-interactive
