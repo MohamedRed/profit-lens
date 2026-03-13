@@ -1,8 +1,7 @@
 package com.profitlens.android.data
 
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ktx.remoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import kotlinx.coroutines.tasks.await
 
 data class OverlayFeatureFlags(
@@ -15,11 +14,11 @@ class OverlayFeatureFlagsRepository(private val firebaseReady: Boolean) {
     if (!firebaseReady) {
       return defaultFlags()
     }
-    val remoteConfig = Firebase.remoteConfig
+    val remoteConfig = FirebaseRemoteConfig.getInstance()
     remoteConfig.setConfigSettingsAsync(
-      remoteConfigSettings {
-        minimumFetchIntervalInSeconds = 300
-      },
+      FirebaseRemoteConfigSettings.Builder()
+        .setMinimumFetchIntervalInSeconds(300)
+        .build(),
     ).await()
     remoteConfig.setDefaultsAsync(
       mapOf(

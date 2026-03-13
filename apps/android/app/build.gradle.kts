@@ -135,7 +135,7 @@ dependencies {
   implementation("com.google.android.gms:play-services-location:21.3.0")
   implementation("com.google.firebase:firebase-auth-ktx")
   implementation("com.google.firebase:firebase-functions-ktx")
-  implementation("com.google.firebase:firebase-remote-config-ktx")
+  implementation("com.google.firebase:firebase-remote-config")
 
   debugImplementation("androidx.compose.ui:ui-tooling")
   debugImplementation("androidx.compose.ui:ui-test-manifest")
