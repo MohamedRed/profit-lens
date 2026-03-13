@@ -1,29 +1,26 @@
 import { Slot, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { androidAppDownloadUrl } from '../../lib/config/runtime-config';
 import { t, useI18n } from '../../lib/i18n/i18n-context';
+import { watchDeferredInstallPrompt } from '../../lib/features/pwa/pwa-install-prompt';
 import {
-  consumeDeferredInstallPrompt,
-  watchDeferredInstallPrompt,
-} from '../../lib/features/pwa/pwa-install-prompt';
-import {
+  isAndroidMobileBrowser,
   isIosInstallManualOnly,
   isRunningAsInstalledPwa,
   shouldEnforcePwaInstallGate,
 } from '../../lib/features/pwa/pwa-install-state';
-
-interface PwaInstallElementLike extends HTMLElement {
-  showDialog: (forced?: boolean) => void;
-}
-
-type InstallGateState = 'checking' | 'installed' | 'not-installed';
-type InstallFlowState =
-  | 'unknown'
-  | 'ios-manual'
-  | 'native-ready'
-  | 'native-pending'
-  | 'native-manual';
-const installHostId = 'ui-pwa-install-host';
-const nativePromptFallbackDelayMs = 3000;
-const knownInstalledKey = 'profit-lens-pwa-installed';
+import { PwaInstallGuardActions } from './pwa-install-guard-actions';
+import {
+  beginPwaInstall,
+  getKnownInstalledFlag,
+  installHostId,
+  nativePromptFallbackDelayMs,
+  resolveInstallButtonLabel,
+  resolveInstallCopy,
+  setKnownInstalledFlag,
+  type InstallFlowState,
+  type InstallGateState,
+  type PwaInstallElementLike,
+} from './pwa-install-guard-helpers';
 
 export const PwaInstallGuard = component$(() => {
   const i18n = useI18n();
@@ -33,29 +30,15 @@ export const PwaInstallGuard = component$(() => {
   const dialogRef = useSignal<PwaInstallElementLike | null>(null);
   const installing = useSignal(false);
   const loadError = useSignal('');
+  const showAndroidApkAction = useSignal(false);
 
   useVisibleTask$(({ cleanup }) => {
-    const setKnownInstalled = (installed: boolean) => {
-      try {
-        if (installed) {
-          window.localStorage.setItem(knownInstalledKey, '1');
-        } else {
-          window.localStorage.removeItem(knownInstalledKey);
-        }
-      } catch {
-        // Ignore storage failures (private mode / blocked storage).
-      }
-    };
-
-    const getKnownInstalled = (): boolean => {
-      try {
-        return window.localStorage.getItem(knownInstalledKey) === '1';
-      } catch {
-        return false;
-      }
-    };
-
     const evaluate = () => {
+      showAndroidApkAction.value =
+        androidAppDownloadUrl.length > 0 &&
+        isAndroidMobileBrowser(window) &&
+        !isRunningAsInstalledPwa(window);
+
       if (!shouldEnforcePwaInstallGate(window)) {
         gateState.value = 'installed';
         installFlow.value = 'unknown';
@@ -63,13 +46,13 @@ export const PwaInstallGuard = component$(() => {
       }
 
       if (isRunningAsInstalledPwa(window)) {
-        setKnownInstalled(true);
+        setKnownInstalledFlag(true);
         gateState.value = 'installed';
         installFlow.value = 'unknown';
         return;
       }
 
-      if (getKnownInstalled()) {
+      if (getKnownInstalledFlag()) {
         gateState.value = 'installed';
         installFlow.value = 'unknown';
         return;
@@ -80,7 +63,7 @@ export const PwaInstallGuard = component$(() => {
     };
 
     const onInstalled = () => {
-      setKnownInstalled(true);
+      setKnownInstalledFlag(true);
       gateState.value = 'installed';
       installFlow.value = 'unknown';
     };
@@ -99,7 +82,7 @@ export const PwaInstallGuard = component$(() => {
         return;
       }
       if (event) {
-        setKnownInstalled(false);
+        setKnownInstalledFlag(false);
         installFlow.value = 'native-ready';
         return;
       }
@@ -196,26 +179,11 @@ export const PwaInstallGuard = component$(() => {
   const isIosFlow = installFlow.value === 'ios-manual';
   const isNativeManualFlow = installFlow.value === 'native-manual';
   const showInstallAction = isIosFlow || isNativeManualFlow || installFlow.value === 'native-ready';
+  const showAnyAction = showInstallAction || showAndroidApkAction.value;
   const showSpinner =
     (!dialogReady.value && isIosFlow) || installFlow.value === 'native-pending';
-  const copy =
-    installFlow.value === 'native-ready'
-      ? t(
-          i18n,
-          'installAppRequiredNativeBody',
-          'To continue, install Liive Profit and open it from your home screen. Tap Install to open the browser prompt.',
-        )
-      : installFlow.value === 'native-manual'
-        ? t(
-            i18n,
-            'installAppRequiredManualBody',
-            'To continue, install Liive Profit and open it from your home screen. Tap Install to open guided install steps for your browser.',
-          )
-      : t(
-          i18n,
-          'installAppRequiredBody',
-          'To continue, install Liive Profit and open it from your home screen. We show the install guide automatically.',
-        );
+  const installButtonLabel = resolveInstallButtonLabel(i18n, showAndroidApkAction.value);
+  const copy = resolveInstallCopy(i18n, installFlow.value);
 
   return (
     <div class="ui-pwa-gate">
@@ -228,61 +196,35 @@ export const PwaInstallGuard = component$(() => {
 
         <div id={installHostId} class="ui-pwa-install-host" />
 
-        {showInstallAction ? (
-          <button
-            type="button"
-            class="ui-pwa-gate-button"
-            disabled={installing.value || (isIosFlow && !dialogReady.value)}
-            onClick$={async () => {
-              if (installing.value) {
-                return;
-              }
-              if (isIosFlow) {
-                if (!dialogRef.value) {
-                  loadError.value = t(i18n, 'installAppLoadFailed', 'Failed to load install dialog.');
-                  return;
-                }
-                loadError.value = '';
-                dialogRef.value.showDialog(true);
-                return;
-              }
-
-              const deferredPrompt = consumeDeferredInstallPrompt();
-              if (!deferredPrompt) {
-                if (isNativeManualFlow) {
-                  loadError.value = t(
-                    i18n,
-                    'installAppDesktopManualHint',
-                    'Install prompt is unavailable in this desktop session. Use your browser install option in the menu or address bar, then reopen Liive Profit from the installed app.',
-                  );
-                } else {
-                  loadError.value = t(
-                    i18n,
-                    'installAppPromptUnavailable',
-                    'Install prompt is not ready yet. Wait a moment and try again.',
-                  );
-                  installFlow.value = 'native-manual';
-                }
-                return;
-              }
-
-              installing.value = true;
-              loadError.value = '';
-              try {
-                await deferredPrompt.prompt();
-                if (deferredPrompt.userChoice) {
-                  await deferredPrompt.userChoice;
-                }
-              } catch (error) {
-                loadError.value =
-                  error instanceof Error ? error.message : t(i18n, 'installAppPromptFailed', 'Install failed.');
-              } finally {
-                installing.value = false;
-              }
+        {showAnyAction ? (
+          <PwaInstallGuardActions
+            showInstallAction={showInstallAction}
+            installButtonLabel={installButtonLabel}
+            installDisabled={!showInstallAction || installing.value || (isIosFlow && !dialogReady.value)}
+            installing={installing.value}
+            loadingLabel={t(i18n, 'loadingLabel', 'Loading...')}
+            showAndroidApkAction={showAndroidApkAction.value}
+            androidApkDownloadUrl={androidAppDownloadUrl}
+            androidApkButtonLabel={t(i18n, 'downloadAndroidApkCta', 'Download APK')}
+            onInstall$={async () => {
+              await beginPwaInstall({
+                dialogRef: dialogRef.value,
+                i18n,
+                installFlow: installFlow.value,
+                installing: installing.value,
+                isIosFlow,
+                setInstallFlow: (flow) => {
+                  installFlow.value = flow;
+                },
+                setInstalling: (value) => {
+                  installing.value = value;
+                },
+                setLoadError: (message) => {
+                  loadError.value = message;
+                },
+              });
             }}
-          >
-            {installing.value ? t(i18n, 'loadingLabel', 'Loading...') : t(i18n, 'installAppCta', 'Install')}
-          </button>
+          />
         ) : null}
 
         {showSpinner && !loadError.value ? (
@@ -305,6 +247,16 @@ export const PwaInstallGuard = component$(() => {
               i18n,
               'installAppPromptManual',
               'Automatic prompt is unavailable on this browser session. Tap Install to open manual install steps.',
+            )}
+          </p>
+        ) : null}
+
+        {showAndroidApkAction.value ? (
+          <p class="ui-status">
+            {t(
+              i18n,
+              'downloadAndroidApkHint',
+              'The APK installs outside the browser prompt and may require allowing installs from your browser source.',
             )}
           </p>
         ) : null}

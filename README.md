@@ -63,9 +63,11 @@ firebase deploy --only functions
 - Firebase client config source: `apps/qwik/public/firebase-web-config.js`
 - Admin Firebase client config source: `apps/admin/public/firebase-web-config.js`
 - Billing runtime defines source: `tool/dev_runtime_defines.json`
+- Android APK runtime define: `ANDROID_APP_DOWNLOAD_URL` in `tool/dev_runtime_defines.json`
 - Generated TypeScript config files:
   - `apps/qwik/src/lib/config/firebase-web-config.ts`
   - `apps/admin/src/lib/config/firebase-web-config.ts`
   - `apps/qwik/src/lib/config/billing-defines.ts`
+  - `apps/qwik/src/lib/config/install-defines.ts`
 
 Use `tool/sync_web_runtime_config.sh` to regenerate generated config files after runtime changes.

@@ -52,6 +52,12 @@
   width: 100%;
 }
 
+.ui-pwa-gate-actions {
+  width: 100%;
+  display: grid;
+  gap: 10px;
+}
+
 .ui-pwa-gate-button {
   border: 0;
   border-radius: var(--pl-radius-pill);
@@ -62,11 +68,20 @@
   color: var(--pl-color-purple);
   font-weight: 600;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ui-pwa-gate-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.ui-pwa-gate-button-secondary {
+  background: rgba(250, 250, 250, 0.92);
+  color: var(--pl-color-text-primary);
+  border: 1px solid var(--pl-color-outline);
 }
 
 

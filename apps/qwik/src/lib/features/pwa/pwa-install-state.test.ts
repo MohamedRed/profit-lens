@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  isAndroidMobileBrowser,
   isIosInstallManualOnly,
   isRunningAsInstalledPwa,
   shouldEnforcePwaInstallGate,
@@ -83,6 +84,29 @@ describe('pwa-install-state', () => {
         },
       }),
     ).toBe(true);
+  });
+
+  it('detects Android mobile browsers that can show an APK download option', () => {
+    expect(
+      isAndroidMobileBrowser({
+        navigator: {
+          userAgent:
+            'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Mobile Safari/537.36',
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('does not treat installed PWAs as Android browser sessions', () => {
+    expect(
+      isAndroidMobileBrowser({
+        navigator: {
+          userAgent:
+            'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Mobile Safari/537.36',
+        },
+        matchMedia: (query: string) => ({ matches: query === '(display-mode: standalone)' }),
+      }),
+    ).toBe(false);
   });
 
   it('does not enforce install gate on desktop browser user agent', () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { billingPlans, firebaseFunctionsRegion } from './runtime-config';
+import { androidAppDownloadUrl, billingPlans, firebaseFunctionsRegion } from './runtime-config';
 
 describe('runtime-config', () => {
   it('uses the expected Firebase region', () => {
@@ -12,5 +12,9 @@ describe('runtime-config', () => {
 
   it('defines Stripe price ids for all billing tiers', () => {
     expect(billingPlans.every((plan) => plan.priceId.length > 0)).toBe(true);
+  });
+
+  it('keeps Android APK download disabled until configured', () => {
+    expect(androidAppDownloadUrl).toBe('');
   });
 });

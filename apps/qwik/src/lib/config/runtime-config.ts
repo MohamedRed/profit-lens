@@ -1,7 +1,24 @@
 import type { BillingPlan } from '../types/billing';
 import { billingDefines } from './billing-defines';
+import { installDefines } from './install-defines';
 
 export const firebaseFunctionsRegion = 'europe-west1';
+
+const normalizePublicHttpUrl = (value: string): string => {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return '';
+  }
+
+  try {
+    const url = new URL(trimmed);
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.toString() : '';
+  } catch {
+    return '';
+  }
+};
+
+export const androidAppDownloadUrl = normalizePublicHttpUrl(installDefines.androidAppDownloadUrl);
 
 export const billingPlans: BillingPlan[] = [
   {
