@@ -1,0 +1,71 @@
+name: Android APK Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-release-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ANDROID_FIREBASE_API_KEY: ${{ secrets.ANDROID_FIREBASE_API_KEY }}
+      ANDROID_FIREBASE_APP_ID: ${{ secrets.ANDROID_FIREBASE_APP_ID }}
+      ANDROID_FIREBASE_PROJECT_ID: ${{ secrets.ANDROID_FIREBASE_PROJECT_ID }}
+      ANDROID_FIREBASE_AUTH_DOMAIN: ${{ secrets.ANDROID_FIREBASE_AUTH_DOMAIN }}
+      ANDROID_FIREBASE_STORAGE_BUCKET: ${{ secrets.ANDROID_FIREBASE_STORAGE_BUCKET }}
+      ANDROID_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.ANDROID_FIREBASE_MESSAGING_SENDER_ID }}
+      ANDROID_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}
+      ANDROID_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
+      ANDROID_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_STORE_PASSWORD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.7
+
+      - name: Decode Android upload keystore
+        env:
+          ANDROID_UPLOAD_KEYSTORE_BASE64: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$ANDROID_UPLOAD_KEYSTORE_BASE64" ]; then
+            echo "Missing ANDROID_UPLOAD_KEYSTORE_BASE64 secret."
+            exit 1
+          fi
+          printf "%s" "$ANDROID_UPLOAD_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/profit-lens-upload.keystore"
+          echo "ANDROID_UPLOAD_STORE_FILE=$RUNNER_TEMP/profit-lens-upload.keystore" >> "$GITHUB_ENV"
+
+      - name: Assemble release APK
+        run: gradle -p apps/android :app:assembleRelease
+
+      - name: Rename release APK
+        run: |
+          mkdir -p artifacts
+          cp apps/android/app/build/outputs/apk/release/app-release.apk artifacts/profit-lens-android-release.apk
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: profit-lens-android-release
+          path: artifacts/profit-lens-android-release.apk
+
+      - name: Publish GitHub release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view android-latest >/dev/null 2>&1 || gh release create android-latest --title "Android latest" --notes "Latest direct-download APK for Profit Lens Android."
+          gh release upload android-latest artifacts/profit-lens-android-release.apk --clobber

@@ -4,9 +4,29 @@ plugins {
   id("com.google.devtools.ksp")
 }
 
+fun readEnvOrDefault(name: String, fallback: String): String {
+  return System.getenv(name)?.takeIf { it.isNotBlank() } ?: fallback
+}
+
+fun String.asBuildConfigLiteral(): String {
+  return "\"${replace("\\", "\\\\").replace("\"", "\\\"")}\""
+}
+
 android {
   namespace = "com.profitlens.android"
   compileSdk = 35
+
+  signingConfigs {
+    create("release") {
+      val storePath = System.getenv("ANDROID_UPLOAD_STORE_FILE")?.takeIf { it.isNotBlank() }
+      if (storePath != null) {
+        storeFile = file(storePath)
+        storePassword = System.getenv("ANDROID_UPLOAD_STORE_PASSWORD")
+        keyAlias = System.getenv("ANDROID_UPLOAD_KEY_ALIAS")
+        keyPassword = System.getenv("ANDROID_UPLOAD_KEY_PASSWORD")
+      }
+    }
+  }
 
   defaultConfig {
     applicationId = "com.profitlens.android"
@@ -16,12 +36,36 @@ android {
     versionName = "0.1.0"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-    buildConfigField("String", "FIREBASE_API_KEY", "\"\"")
-    buildConfigField("String", "FIREBASE_APP_ID", "\"\"")
-    buildConfigField("String", "FIREBASE_PROJECT_ID", "\"\"")
-    buildConfigField("String", "FIREBASE_AUTH_DOMAIN", "\"\"")
-    buildConfigField("String", "FIREBASE_STORAGE_BUCKET", "\"\"")
-    buildConfigField("String", "FIREBASE_MESSAGING_SENDER_ID", "\"\"")
+    buildConfigField(
+      "String",
+      "FIREBASE_API_KEY",
+      readEnvOrDefault("ANDROID_FIREBASE_API_KEY", "AIzaSyAuP4nShQ60Axflrnjvplsro5OD2YjYslM").asBuildConfigLiteral(),
+    )
+    buildConfigField(
+      "String",
+      "FIREBASE_APP_ID",
+      readEnvOrDefault("ANDROID_FIREBASE_APP_ID", "1:117544150167:web:9a18d96b6b193da94f75d2").asBuildConfigLiteral(),
+    )
+    buildConfigField(
+      "String",
+      "FIREBASE_PROJECT_ID",
+      readEnvOrDefault("ANDROID_FIREBASE_PROJECT_ID", "profit-lens-prod-2e417").asBuildConfigLiteral(),
+    )
+    buildConfigField(
+      "String",
+      "FIREBASE_AUTH_DOMAIN",
+      readEnvOrDefault("ANDROID_FIREBASE_AUTH_DOMAIN", "profit-lens-prod-2e417.firebaseapp.com").asBuildConfigLiteral(),
+    )
+    buildConfigField(
+      "String",
+      "FIREBASE_STORAGE_BUCKET",
+      readEnvOrDefault("ANDROID_FIREBASE_STORAGE_BUCKET", "profit-lens-prod-2e417.firebasestorage.app").asBuildConfigLiteral(),
+    )
+    buildConfigField(
+      "String",
+      "FIREBASE_MESSAGING_SENDER_ID",
+      readEnvOrDefault("ANDROID_FIREBASE_MESSAGING_SENDER_ID", "117544150167").asBuildConfigLiteral(),
+    )
     buildConfigField("String", "FUNCTIONS_REGION", "\"europe-west1\"")
     buildConfigField("String", "UBER_EATS_PACKAGE", "\"com.ubercab.eats\"")
     buildConfigField("String", "DELIVEROO_PACKAGE", "\"com.deliveroo.orderapp\"")
@@ -30,6 +74,7 @@ android {
   buildTypes {
     release {
       isMinifyEnabled = false
+      signingConfig = signingConfigs.getByName("release")
       proguardFiles(
         getDefaultProguardFile("proguard-android-optimize.txt"),
         "proguard-rules.pro",

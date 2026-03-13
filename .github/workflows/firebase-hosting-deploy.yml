@@ -1,6 +1,7 @@
 name: Firebase Hosting Deploy
 
 on:
+  workflow_dispatch:
   pull_request:
     types: [closed]
     branches: [main]
@@ -17,7 +18,7 @@ permissions:
 
 jobs:
   deploy-hosting:
-    if: github.event.pull_request.merged == true
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
