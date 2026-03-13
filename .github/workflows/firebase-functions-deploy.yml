@@ -8,13 +8,14 @@ on:
       - "functions/**"
       - "firebase.json"
       - ".firebaserc"
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
   deploy-functions:
-    if: github.event.pull_request.merged == true
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
