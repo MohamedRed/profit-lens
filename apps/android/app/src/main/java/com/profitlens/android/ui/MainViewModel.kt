@@ -5,7 +5,8 @@ import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.profitlens.android.app.ProfitLensApplication
-import com.profitlens.android.data.OverlayFeatureFlags
+import com.profitlens.android.auth.ProfitLensAuthUser
+import com.profitlens.android.data.LiveOfferSessionEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -25,7 +26,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     message,
     loading,
     featureFlags,
-  ) { user, monitoringEnabled, sessions, currentMessage, isLoading, flags ->
+  ) { values ->
+    val user = values[0] as ProfitLensAuthUser?
+    val monitoringEnabled = values[1] as Boolean
+    @Suppress("UNCHECKED_CAST")
+    val sessions = values[2] as List<LiveOfferSessionEntity>
+    val currentMessage = values[3] as String?
+    val isLoading = values[4] as Boolean
+    val flags = values[5] as com.profitlens.android.data.OverlayFeatureFlags
     OverlayMonitorUiState(
       firebaseReady = container.firebaseReady,
       user = user,

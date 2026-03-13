@@ -27,7 +27,7 @@ class LiveOfferFunctionsRepository(private val firebaseReady: Boolean) {
   suspend fun scoreLiveOffer(payload: LiveOfferRequest): LiveScoreResponse {
     val callable = functions?.getHttpsCallable("scoreLiveOffer")
       ?: error("Firebase is not configured.")
-    val data = callable.call(payload.toMap()).await().data as Map<*, *>
+    val data = callable.call(payload.toMap()).await().getData() as Map<*, *>
     return LiveScoreResponse(
       sessionId = data["sessionId"] as String,
       status = data["status"] as String,
@@ -39,7 +39,7 @@ class LiveOfferFunctionsRepository(private val firebaseReady: Boolean) {
   suspend fun commitLiveOffer(payload: LiveOfferRequest): LiveCommitResponse {
     val callable = functions?.getHttpsCallable("commitLiveOfferVerdict")
       ?: error("Firebase is not configured.")
-    val data = callable.call(payload.toMap()).await().data as Map<*, *>
+    val data = callable.call(payload.toMap()).await().getData() as Map<*, *>
     @Suppress("UNCHECKED_CAST")
     return LiveCommitResponse(
       sessionId = data["sessionId"] as String,
