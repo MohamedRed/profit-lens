@@ -102,15 +102,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     viewModelScope.launch {
       runCatching {
         container.authRepository.signIn(email, password)
-        container.functionsRepository.registerDevice(
-          deviceId = container.deviceIdStore.getOrCreate(),
-          userAgent = "android/${Build.VERSION.RELEASE} ${Build.MODEL}",
-        )
         refreshWorkspaceSession(force = true)
       }.onSuccess {
         message.value = "Signed in."
       }.onFailure {
-        message.value = it.message ?: "Unable to sign in."
+        message.value = toUserFacingWorkspaceMessage(it)
       }
       loading.value = false
     }
@@ -145,7 +141,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         ownerUid = user.uid,
       )
       runCatching {
-        val deviceId = container.deviceIdStore.getOrCreate()
+        val deviceId = ensureAndroidDeviceRegistration()
         val session = container.functionsRepository.createAndroidWebSession(deviceId)
         WorkspaceLaunchState(
           startUrl = buildWorkspaceStartUrl(session.customToken),
@@ -160,7 +156,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         workspace.value = WorkspaceLaunchState(
           startUrl = null,
           loading = false,
-          message = "We could not open your workspace right now. Please try again.",
+          message = toUserFacingWorkspaceMessage(it),
           sessionKey = null,
           ownerUid = user.uid,
         )
@@ -170,5 +166,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
   fun handleWorkspaceSignedOut() {
     signOut()
+  }
+
+  private suspend fun ensureAndroidDeviceRegistration(): String {
+    val deviceId = container.deviceIdStore.getOrCreate()
+    container.functionsRepository.registerDevice(
+      deviceId = deviceId,
+      userAgent = "android/${Build.VERSION.RELEASE} ${Build.MODEL}",
+    )
+    return deviceId
   }
 }
