@@ -2,14 +2,8 @@ plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
   id("com.google.devtools.ksp")
-}
-
-fun readEnvOrDefault(name: String, fallback: String): String {
-  return System.getenv(name)?.takeIf { it.isNotBlank() } ?: fallback
-}
-
-fun String.asBuildConfigLiteral(): String {
-  return "\"${replace("\\", "\\\\").replace("\"", "\\\"")}\""
+  id("org.jetbrains.kotlin.plugin.serialization")
+  id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -35,45 +29,6 @@ android {
     versionCode = 1
     versionName = "0.1.0"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-    buildConfigField(
-      "String",
-      "FIREBASE_API_KEY",
-      readEnvOrDefault("ANDROID_FIREBASE_API_KEY", "AIzaSyAuP4nShQ60Axflrnjvplsro5OD2YjYslM").asBuildConfigLiteral(),
-    )
-    buildConfigField(
-      "String",
-      "FIREBASE_APP_ID",
-      readEnvOrDefault("ANDROID_FIREBASE_APP_ID", "1:117544150167:web:9a18d96b6b193da94f75d2").asBuildConfigLiteral(),
-    )
-    buildConfigField(
-      "String",
-      "FIREBASE_PROJECT_ID",
-      readEnvOrDefault("ANDROID_FIREBASE_PROJECT_ID", "profit-lens-prod-2e417").asBuildConfigLiteral(),
-    )
-    buildConfigField(
-      "String",
-      "FIREBASE_AUTH_DOMAIN",
-      readEnvOrDefault("ANDROID_FIREBASE_AUTH_DOMAIN", "profit-lens-prod-2e417.firebaseapp.com").asBuildConfigLiteral(),
-    )
-    buildConfigField(
-      "String",
-      "FIREBASE_STORAGE_BUCKET",
-      readEnvOrDefault("ANDROID_FIREBASE_STORAGE_BUCKET", "profit-lens-prod-2e417.firebasestorage.app").asBuildConfigLiteral(),
-    )
-    buildConfigField(
-      "String",
-      "FIREBASE_MESSAGING_SENDER_ID",
-      readEnvOrDefault("ANDROID_FIREBASE_MESSAGING_SENDER_ID", "117544150167").asBuildConfigLiteral(),
-    )
-    buildConfigField("String", "FUNCTIONS_REGION", "\"europe-west1\"")
-    buildConfigField(
-      "String",
-      "WEB_APP_URL",
-      readEnvOrDefault("ANDROID_WEB_APP_URL", "https://profit-lens-prod-2e417.web.app").asBuildConfigLiteral(),
-    )
-    buildConfigField("String", "UBER_EATS_PACKAGE", "\"com.ubercab.eats\"")
-    buildConfigField("String", "DELIVEROO_PACKAGE", "\"com.deliveroo.orderapp\"")
   }
 
   buildTypes {
@@ -98,7 +53,6 @@ android {
 
   buildFeatures {
     compose = true
-    buildConfig = true
   }
 
   composeOptions {
@@ -124,24 +78,30 @@ dependencies {
   androidTestImplementation(composeBom)
   implementation(firebaseBom)
 
+  implementation(project(":core:designsystem"))
+  implementation(project(":core:ui"))
+  implementation(project(":core:firebase"))
+  implementation(project(":core:data"))
+  implementation(project(":feature:auth"))
+  implementation(project(":feature:onboarding"))
+  implementation(project(":feature:offer"))
+  implementation(project(":feature:history"))
+  implementation(project(":feature:settings"))
+  implementation(project(":feature:help"))
+  implementation(project(":feature:billing"))
+  implementation(project(":feature:overlay"))
+
   implementation("androidx.core:core-ktx:1.13.1")
   implementation("androidx.activity:activity-compose:1.9.2")
   implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.6")
   implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
-  implementation("androidx.work:work-runtime-ktx:2.9.1")
-  implementation("androidx.room:room-runtime:2.6.1")
-  implementation("androidx.room:room-ktx:2.6.1")
-  ksp("androidx.room:room-compiler:2.6.1")
-  implementation("com.google.android.material:material:1.12.0")
-  implementation("androidx.compose.material:material-icons-extended")
   implementation("androidx.compose.material3:material3")
   implementation("androidx.compose.ui:ui")
   implementation("androidx.compose.ui:ui-tooling-preview")
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
-  implementation("com.google.android.gms:play-services-location:21.3.0")
-  implementation("com.google.firebase:firebase-auth-ktx")
-  implementation("com.google.firebase:firebase-functions-ktx")
+  implementation("androidx.navigation:navigation-compose:2.8.2")
+  implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+  implementation("com.google.dagger:hilt-android:2.52")
+  ksp("com.google.dagger:hilt-compiler:2.52")
 
   debugImplementation("androidx.compose.ui:ui-tooling")
   debugImplementation("androidx.compose.ui:ui-test-manifest")

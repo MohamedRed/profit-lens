@@ -1,13 +1,7 @@
 package com.profitlens.android.app
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-class ProfitLensApplication : Application() {
-  lateinit var container: AppContainer
-    private set
-
-  override fun onCreate() {
-    super.onCreate()
-    container = AppContainer(this)
-  }
-}
+@HiltAndroidApp
+class ProfitLensApplication : Application()

@@ -178,6 +178,24 @@
               "value": "public,max-age=3600"
             }
           ]
+        },
+        {
+          "source": "/android-return/**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
+            }
+          ]
+        },
+        {
+          "source": "/.well-known/assetlinks.json",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
+            }
+          ]
         }
       ],
       "rewrites": [

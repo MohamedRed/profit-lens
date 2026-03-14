@@ -1,0 +1,50 @@
+package com.profitlens.android.core.ui
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun AppScaffold(
+  snackbarHostState: SnackbarHostState,
+  topBar: @Composable (() -> Unit)? = null,
+  bottomBar: @Composable (() -> Unit)? = null,
+  content: @Composable (PaddingValues) -> Unit,
+) {
+  Scaffold(
+    snackbarHost = { SnackbarHost(snackbarHostState) },
+    topBar = { topBar?.invoke() },
+    bottomBar = { bottomBar?.invoke() },
+  ) { padding ->
+    content(padding)
+  }
+}
+
+@Composable
+fun ScrollColumn(
+  padding: PaddingValues,
+  content: @Composable ColumnScopeScope.() -> Unit,
+) {
+  Column(
+    modifier = Modifier
+      .fillMaxSize()
+      .padding(padding)
+      .verticalScroll(rememberScrollState())
+      .padding(horizontal = 20.dp, vertical = 16.dp),
+    verticalArrangement = Arrangement.spacedBy(16.dp),
+  ) {
+    ColumnScopeScope.content()
+  }
+}
+
+typealias ColumnScopeScope = androidx.compose.foundation.layout.ColumnScope

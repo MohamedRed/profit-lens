@@ -34,6 +34,15 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Write runtime defines
         run: |
           if [ -z "$WEB_RUNTIME_DEFINES_JSON" ]; then
@@ -61,6 +70,21 @@ jobs:
         run: |
           mkdir -p artifacts/android
           gh release download android-latest --repo "${{ github.repository }}" --pattern "profit-lens-android-release.apk" --dir artifacts/android
+
+      - name: Extract Android app link fingerprint
+        run: |
+          BUILD_TOOLS_DIR="$(find "${ANDROID_HOME}/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)"
+          APKSIGNER="${BUILD_TOOLS_DIR}/apksigner"
+          if [ ! -x "${APKSIGNER}" ]; then
+            echo "Could not find apksigner."
+            exit 1
+          fi
+          SHA256="$("${APKSIGNER}" verify --print-certs artifacts/android/profit-lens-android-release.apk | awk -F': ' '/SHA-256 digest/ {print $2; exit}')"
+          if [ -z "${SHA256}" ]; then
+            echo "Failed to read APK SHA-256 signing digest."
+            exit 1
+          fi
+          echo "ANDROID_APP_CERT_SHA256=${SHA256}" >> "$GITHUB_ENV"
 
       - name: Deploy Hosting
         run: firebase deploy --project "$FIREBASE_PROJECT_ID" --only hosting --non-interactive
