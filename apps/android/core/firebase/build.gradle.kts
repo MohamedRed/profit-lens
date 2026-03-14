@@ -75,6 +75,6 @@ dependencies {
   api("com.google.firebase:firebase-firestore-ktx")
   api("com.google.firebase:firebase-functions-ktx")
   api("com.google.firebase:firebase-storage-ktx")
-  api("com.google.firebase:firebase-remote-config-ktx")
+  api("com.google.firebase:firebase-config-ktx")
   ksp("com.google.dagger:hilt-compiler:2.52")
 }
