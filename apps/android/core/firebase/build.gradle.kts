@@ -67,14 +67,14 @@ android {
 
 dependencies {
   val firebaseBom = platform("com.google.firebase:firebase-bom:33.6.0")
-  implementation(firebaseBom)
+  api(firebaseBom)
   implementation("androidx.core:core-ktx:1.13.1")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
   implementation("com.google.dagger:hilt-android:2.52")
-  implementation("com.google.firebase:firebase-auth-ktx")
-  implementation("com.google.firebase:firebase-firestore-ktx")
-  implementation("com.google.firebase:firebase-functions-ktx")
-  implementation("com.google.firebase:firebase-storage-ktx")
-  implementation("com.google.firebase:firebase-remote-config-ktx")
+  api("com.google.firebase:firebase-auth-ktx")
+  api("com.google.firebase:firebase-firestore-ktx")
+  api("com.google.firebase:firebase-functions-ktx")
+  api("com.google.firebase:firebase-storage-ktx")
+  api("com.google.firebase:firebase-remote-config-ktx")
   ksp("com.google.dagger:hilt-compiler:2.52")
 }
