@@ -4,12 +4,16 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,14 +25,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.ExposedDropdownMenu
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.menuAnchor
 import com.profitlens.android.core.ui.ScrollColumn
 import com.profitlens.android.core.ui.SectionCard
 import com.profitlens.android.core.ui.StatusBanner
@@ -186,23 +182,24 @@ private fun OfferDraftFields(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun VehicleSelector(
   selectedVehicleId: String,
   vehicles: List<com.profitlens.android.core.data.model.VehicleProfile>,
   onVehicleSelected: (String) -> Unit,
 ) {
   val expanded = remember { mutableStateOf(false) }
-  ExposedDropdownMenuBox(expanded = expanded.value, onExpandedChange = { expanded.value = !expanded.value }) {
+  Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Button(onClick = { expanded.value = true }, modifier = Modifier.fillMaxWidth()) {
+      Text(vehicles.firstOrNull { it.id == selectedVehicleId }?.name ?: "Select a vehicle")
+    }
     OutlinedTextField(
       value = vehicles.firstOrNull { it.id == selectedVehicleId }?.name ?: "Select a vehicle",
       onValueChange = {},
-      modifier = Modifier.menuAnchor().fillMaxWidth(),
+      modifier = Modifier.fillMaxWidth(),
       readOnly = true,
       label = { Text("Vehicle") },
-      trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value) },
     )
-    ExposedDropdownMenu(
+    DropdownMenu(
       expanded = expanded.value,
       onDismissRequest = { expanded.value = false },
     ) {

@@ -1,6 +1,6 @@
 package com.profitlens.android.ui
 
-import com.profitlens.android.core.data.model.AuthUser
+import com.profitlens.android.auth.AuthUser
 import com.profitlens.android.data.LiveOfferSessionEntity
 import com.profitlens.android.data.OverlayFeatureFlags
 

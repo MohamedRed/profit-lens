@@ -205,7 +205,7 @@ export const PwaInstallGuard = component$(() => {
             loadingLabel={t(i18n, 'loadingLabel', 'Loading...')}
             showAndroidApkAction={showAndroidApkAction.value}
             androidApkDownloadUrl={androidAppDownloadUrl}
-            androidApkButtonLabel={t(i18n, 'downloadAndroidApkCta', 'Download APK')}
+            androidApkButtonLabel={t(i18n, 'downloadAndroidApkCta', 'Download Android Preview APK')}
             onInstall$={async () => {
               await beginPwaInstall({
                 dialogRef: dialogRef.value,
@@ -256,7 +256,7 @@ export const PwaInstallGuard = component$(() => {
             {t(
               i18n,
               'downloadAndroidApkHint',
-              'The APK installs outside the browser prompt and may require allowing installs from your browser source.',
+              'This preview APK installs outside the browser prompt. If Profit Lens is already installed, uninstall the old app first, then allow installs from your browser source if Android asks.',
             )}
           </p>
         ) : null}

@@ -71,7 +71,7 @@ class OffersRepository @Inject constructor(
 
   suspend fun analyzeManualOffer(payload: Map<String, Any?>): OfferAnalysisRecord {
     val callable = functions?.getHttpsCallable("analyzeOffer") ?: error("Firebase is not configured.")
-    val data = callable.call(payload).await().data as Map<*, *>
+    val data = callable.call(payload).await().getData() as Map<*, *>
     return parseAnalysisRecord(data)
   }
 
@@ -88,7 +88,7 @@ class OffersRepository @Inject constructor(
     val callable = functions?.getHttpsCallable("verifyOfferRoute") ?: error("Firebase is not configured.")
     return callable.call(
       mapOf("pickupAddress" to pickupAddress, "dropoffAddress" to dropoffAddress),
-    ).await().data as Map<*, *>
+    ).await().getData() as Map<*, *>
   }
 
   suspend fun parseBulkScreenshot(payload: Map<String, Any?>, imageUri: Uri): Map<*, *> {
@@ -99,12 +99,12 @@ class OffersRepository @Inject constructor(
       "imageBase64" to Base64.encodeToString(bytes, Base64.NO_WRAP),
       "mimeType" to (contentResolver.getType(imageUri) ?: "image/png"),
     )
-    return callable.call(fullPayload).await().data as Map<*, *>
+    return callable.call(fullPayload).await().getData() as Map<*, *>
   }
 
   suspend fun commitBulkImport(payload: Map<String, Any?>): Map<*, *> {
     val callable = functions?.getHttpsCallable("commitBulkOffersImport") ?: error("Firebase is not configured.")
-    return callable.call(payload).await().data as Map<*, *>
+    return callable.call(payload).await().getData() as Map<*, *>
   }
 
   private fun parseAnalysisRecord(data: Map<*, *>): OfferAnalysisRecord {

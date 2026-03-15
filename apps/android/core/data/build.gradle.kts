@@ -34,7 +34,7 @@ dependencies {
   implementation("androidx.room:room-ktx:2.6.1")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
   implementation("com.google.dagger:hilt-android:2.52")
   implementation("com.google.android.gms:play-services-location:21.3.0")
   ksp("androidx.room:room-compiler:2.6.1")

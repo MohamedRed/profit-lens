@@ -67,18 +67,48 @@ class SettingsViewModel @Inject constructor(
   private val entitlement = authUser.flatMapLatest { user ->
     user?.let { billingRepository.watchEntitlement(it.uid) } ?: flowOf(null)
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+  private data class SettingsProfileSnapshot(
+    val profile: UserProfile?,
+    val profileDraft: UserProfile?,
+    val vehicles: List<VehicleProfile>,
+    val devices: List<com.profitlens.android.core.data.model.DeviceEntry>,
+  )
 
-  val uiState = combine(profile, profileDraft, vehicles, devices, entitlement, vehicleDraft, message, saving) { profileValue, profileDraftValue, vehiclesValue, devicesValue, entitlementValue, vehicleDraftValue, messageValue, savingValue ->
+  private data class SettingsStatusSnapshot(
+    val currentPlanId: String,
+    val vehicleDraft: VehicleDraft,
+    val message: String?,
+    val saving: Boolean,
+  )
+
+  val uiState = combine(
+    combine(profile, profileDraft, vehicles, devices) { profileValue, profileDraftValue, vehiclesValue, devicesValue ->
+      SettingsProfileSnapshot(
+        profile = profileValue,
+        profileDraft = profileDraftValue,
+        vehicles = vehiclesValue,
+        devices = devicesValue,
+      )
+    },
+    combine(entitlement, vehicleDraft, message, saving) { entitlementValue, vehicleDraftValue, messageValue, savingValue ->
+      SettingsStatusSnapshot(
+        currentPlanId = entitlementValue?.planId ?: "free",
+        vehicleDraft = vehicleDraftValue,
+        message = messageValue,
+        saving = savingValue,
+      )
+    },
+  ) { profileSnapshot, statusSnapshot ->
     SettingsUiState(
       loading = false,
-      profile = profileValue,
-      profileDraft = profileDraftValue ?: profileValue,
-      vehicleDraft = vehicleDraftValue,
-      vehicles = vehiclesValue,
-      devices = devicesValue,
-      currentPlanId = entitlementValue?.planId ?: "free",
-      message = messageValue,
-      saving = savingValue,
+      profile = profileSnapshot.profile,
+      profileDraft = profileSnapshot.profileDraft ?: profileSnapshot.profile,
+      vehicleDraft = statusSnapshot.vehicleDraft,
+      vehicles = profileSnapshot.vehicles,
+      devices = profileSnapshot.devices,
+      currentPlanId = statusSnapshot.currentPlanId,
+      message = statusSnapshot.message,
+      saving = statusSnapshot.saving,
     )
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SettingsUiState())
 

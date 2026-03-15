@@ -3,10 +3,10 @@ package com.profitlens.android.core.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.weight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 fun SectionCard(
   title: String,
   subtitle: String? = null,
-  content: @Composable ColumnScopeScope.() -> Unit,
+  content: @Composable ColumnScope.() -> Unit,
 ) {
   Card(modifier = Modifier.fillMaxWidth()) {
     Column(
@@ -34,7 +34,7 @@ fun SectionCard(
         Text(text = subtitle, style = MaterialTheme.typography.bodyMedium)
       }
       Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        ColumnScopeScope.content()
+        content()
       }
     }
   }

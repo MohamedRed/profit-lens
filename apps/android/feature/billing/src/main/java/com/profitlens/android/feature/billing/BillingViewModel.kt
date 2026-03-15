@@ -60,10 +60,11 @@ class BillingViewModel @Inject constructor(
     if (user == null) {
       return@combine BillingUiState(loading = false)
     }
+    val offerLimit = currentEntitlement?.offerLimit
     val remainingOffers = when {
-      currentEntitlement?.offerLimit == null -> "Unlimited"
+      offerLimit == null -> "Unlimited"
       currentUsage == null -> "—"
-      else -> (currentEntitlement.offerLimit - currentUsage.offerCount).coerceAtLeast(0).toString()
+      else -> (offerLimit - currentUsage.offerCount).coerceAtLeast(0).toString()
     }
     BillingUiState(
       loading = false,

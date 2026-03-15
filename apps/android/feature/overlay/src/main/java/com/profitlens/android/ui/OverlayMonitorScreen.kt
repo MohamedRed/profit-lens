@@ -62,10 +62,11 @@ fun OverlayMonitorScreen(
         state.sessions.forEach { session ->
           Card {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+              val reasonCode = session.reasonCode
               Text(text = session.provider.replace('_', ' '))
               Text(text = "${session.status} ${session.netProfitEuro?.let { "(${String.format("%.2f", it)} EUR)" } ?: ""}")
-              if (!session.reasonCode.isNullOrBlank()) {
-                Text(text = session.reasonCode)
+              if (!reasonCode.isNullOrBlank()) {
+                Text(text = reasonCode)
               }
             }
           }

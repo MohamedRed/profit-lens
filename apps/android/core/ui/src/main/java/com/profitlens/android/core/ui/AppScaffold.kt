@@ -2,6 +2,7 @@ package com.profitlens.android.core.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -33,7 +34,7 @@ fun AppScaffold(
 @Composable
 fun ScrollColumn(
   padding: PaddingValues,
-  content: @Composable ColumnScopeScope.() -> Unit,
+  content: @Composable ColumnScope.() -> Unit,
 ) {
   Column(
     modifier = Modifier
@@ -43,8 +44,6 @@ fun ScrollColumn(
       .padding(horizontal = 20.dp, vertical = 16.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp),
   ) {
-    ColumnScopeScope.content()
+    content()
   }
 }
-
-typealias ColumnScopeScope = androidx.compose.foundation.layout.ColumnScope

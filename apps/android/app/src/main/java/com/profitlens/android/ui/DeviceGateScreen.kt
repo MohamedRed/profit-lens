@@ -32,11 +32,12 @@ fun DeviceGateScreen(
           subtitle = message ?: "This subscription already uses its active device limit.",
         ) {
           activeDevices.forEach { device ->
+            val lastSeenLabel = device.lastSeen?.let { DateFormat.getDateTimeInstance().format(it) } ?: "recently"
             SectionCard(
               title = if (device.deviceId == currentDeviceId) "This Android device" else (device.platform.ifBlank { "Active device" }),
               subtitle = buildString {
                 append("Last seen ")
-                append(device.lastSeen?.let(DateFormat::getDateTimeInstance)?.format(it) ?: "recently")
+                append(lastSeenLabel)
               },
             ) {
               if (device.deviceId != currentDeviceId) {

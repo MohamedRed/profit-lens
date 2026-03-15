@@ -68,27 +68,48 @@ class HelpViewModel @Inject constructor(
     .flatMapLatest { (uid, ticketId) ->
       if (uid == null || ticketId == null) flowOf(emptyList()) else helpRepository.watchTimeline(uid, ticketId)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+  private data class HelpEditorSnapshot(
+    val description: String,
+    val attachments: List<HelpAttachmentDraft>,
+    val tickets: List<com.profitlens.android.core.data.model.HelpTicket>,
+    val selectedTicket: com.profitlens.android.core.data.model.HelpTicket?,
+  )
+
+  private data class HelpTicketSnapshot(
+    val attachments: List<com.profitlens.android.core.data.model.HelpTicketAttachment>,
+    val timeline: List<com.profitlens.android.core.data.model.HelpTicketTimelineEvent>,
+    val message: String?,
+    val submitting: Boolean,
+  )
 
   val uiState = combine(
-    description,
-    attachments,
-    tickets,
-    selectedTicket,
-    ticketAttachments,
-    ticketTimeline,
-    message,
-    submitting,
-  ) { descriptionValue, attachmentsValue, ticketsValue, selectedTicketValue, attachmentItems, timelineItems, messageValue, submittingValue ->
+    combine(description, attachments, tickets, selectedTicket) { descriptionValue, attachmentsValue, ticketsValue, selectedTicketValue ->
+      HelpEditorSnapshot(
+        description = descriptionValue,
+        attachments = attachmentsValue,
+        tickets = ticketsValue,
+        selectedTicket = selectedTicketValue,
+      )
+    },
+    combine(ticketAttachments, ticketTimeline, message, submitting) { attachmentItems, timelineItems, messageValue, submittingValue ->
+      HelpTicketSnapshot(
+        attachments = attachmentItems,
+        timeline = timelineItems,
+        message = messageValue,
+        submitting = submittingValue,
+      )
+    },
+  ) { editorSnapshot, ticketSnapshot ->
     HelpUiState(
       loading = false,
-      description = descriptionValue,
-      attachments = attachmentsValue,
-      tickets = ticketsValue,
-      selectedTicket = selectedTicketValue,
-      selectedAttachments = attachmentItems,
-      selectedTimeline = timelineItems,
-      message = messageValue,
-      submitting = submittingValue,
+      description = editorSnapshot.description,
+      attachments = editorSnapshot.attachments,
+      tickets = editorSnapshot.tickets,
+      selectedTicket = editorSnapshot.selectedTicket,
+      selectedAttachments = ticketSnapshot.attachments,
+      selectedTimeline = ticketSnapshot.timeline,
+      message = ticketSnapshot.message,
+      submitting = ticketSnapshot.submitting,
     )
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HelpUiState())
 

@@ -45,7 +45,8 @@ fun NavGraphBuilder.helpGraph(navController: NavController, padding: PaddingValu
       state.selectedTicket?.let { ticket ->
         SectionCard(title = ticket.title ?: "Support ticket", subtitle = ticket.delivererStatusMessage ?: ticket.status) {
           Text(ticket.description)
-          Text("Created ${ticket.createdAt?.let(DateFormat::getDateTimeInstance()::format) ?: "recently"}")
+          val createdAtLabel = ticket.createdAt?.let { DateFormat.getDateTimeInstance().format(it) } ?: "recently"
+          Text("Created $createdAtLabel")
         }
         SectionCard(title = "Attachments", subtitle = null) {
           if (state.selectedAttachments.isEmpty()) {

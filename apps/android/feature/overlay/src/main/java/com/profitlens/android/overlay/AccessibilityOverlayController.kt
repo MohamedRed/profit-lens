@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
-import com.profitlens.android.ui.MainActivity
 
 class AccessibilityOverlayController(
   private val context: Context,
@@ -35,10 +34,11 @@ class AccessibilityOverlayController(
       OverlayChip(
         state = state,
         onClick = {
-          val intent = Intent(context, MainActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+          val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+            ?.apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP) }
+          if (intent != null) {
+            context.startActivity(intent)
           }
-          context.startActivity(intent)
         },
       )
     }

@@ -4,10 +4,10 @@ import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.functions.FirebaseFunctionsException
+import com.profitlens.android.auth.AuthUser
 import com.profitlens.android.auth.AuthRepository
 import com.profitlens.android.core.data.apps.AppPreferencesStore
 import com.profitlens.android.core.data.apps.PendingBillingReturnRepository
-import com.profitlens.android.core.data.model.AuthUser
 import com.profitlens.android.core.data.repository.DevicesRepository
 import com.profitlens.android.core.data.repository.ProfileRepository
 import com.profitlens.android.core.data.repository.VehiclesRepository
@@ -63,32 +63,54 @@ class AppRootViewModel @Inject constructor(
   private val vehicles = authUser.flatMapLatest { user ->
     user?.let { vehiclesRepository.watchVehicles(it.uid) } ?: flowOf(emptyList())
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+  private data class AppRootSessionSnapshot(
+    val user: AuthUser?,
+    val profile: com.profitlens.android.core.data.model.UserProfile?,
+    val vehicles: List<com.profitlens.android.core.data.model.VehicleProfile>,
+    val selectedMainTab: String,
+    val pendingBillingStatus: String?,
+  )
+
+  private data class AppRootGateSnapshot(
+    val currentDeviceId: String?,
+    val deviceGateStatus: DeviceGateStatus,
+    val deviceGateMessage: String?,
+    val activeDevices: List<com.profitlens.android.core.data.model.ActiveDeviceSnapshot>,
+  )
 
   val uiState: StateFlow<AppRootState> = combine(
-    authUser,
-    profile,
-    vehicles,
-    selectedMainTab,
-    currentDeviceId,
-    deviceGateStatus,
-    deviceGateMessage,
-    activeDevices,
-    pendingBillingStatus,
-  ) { user, currentProfile, currentVehicles, tab, deviceId, gateStatus, gateMessage, blockedDevices, billingStatus ->
-    val onboardingRequired = user != null &&
-      gateStatus == DeviceGateStatus.READY &&
-      !isOnboardingComplete(currentProfile, currentVehicles)
+    combine(authUser, profile, vehicles, selectedMainTab, pendingBillingStatus) { user, currentProfile, currentVehicles, tab, billingStatus ->
+      AppRootSessionSnapshot(
+        user = user,
+        profile = currentProfile,
+        vehicles = currentVehicles,
+        selectedMainTab = tab,
+        pendingBillingStatus = billingStatus,
+      )
+    },
+    combine(currentDeviceId, deviceGateStatus, deviceGateMessage, activeDevices) { deviceId, gateStatus, gateMessage, blockedDevices ->
+      AppRootGateSnapshot(
+        currentDeviceId = deviceId,
+        deviceGateStatus = gateStatus,
+        deviceGateMessage = gateMessage,
+        activeDevices = blockedDevices,
+      )
+    },
+  ) { sessionSnapshot, gateSnapshot ->
+    val onboardingRequired = sessionSnapshot.user != null &&
+      gateSnapshot.deviceGateStatus == DeviceGateStatus.READY &&
+      !isOnboardingComplete(sessionSnapshot.profile, sessionSnapshot.vehicles)
     AppRootState(
       firebaseReady = firebaseReady,
-      loading = user != null && gateStatus == DeviceGateStatus.CHECKING,
-      user = user,
+      loading = sessionSnapshot.user != null && gateSnapshot.deviceGateStatus == DeviceGateStatus.CHECKING,
+      user = sessionSnapshot.user,
       onboardingRequired = onboardingRequired,
-      selectedMainTab = tab,
-      currentDeviceId = deviceId,
-      deviceGateStatus = if (user == null) DeviceGateStatus.READY else gateStatus,
-      deviceGateMessage = gateMessage,
-      activeDevices = blockedDevices,
-      pendingBillingStatus = billingStatus,
+      selectedMainTab = sessionSnapshot.selectedMainTab,
+      currentDeviceId = gateSnapshot.currentDeviceId,
+      deviceGateStatus = if (sessionSnapshot.user == null) DeviceGateStatus.READY else gateSnapshot.deviceGateStatus,
+      deviceGateMessage = gateSnapshot.deviceGateMessage,
+      activeDevices = gateSnapshot.activeDevices,
+      pendingBillingStatus = sessionSnapshot.pendingBillingStatus,
     )
   }.stateIn(
     viewModelScope,

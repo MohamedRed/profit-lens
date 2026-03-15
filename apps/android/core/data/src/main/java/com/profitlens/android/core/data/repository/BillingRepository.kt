@@ -90,21 +90,21 @@ class BillingRepository @Inject constructor(
   suspend fun createAndroidCheckoutSession(planId: String, returnUrl: String): String {
     val callable = functions?.getHttpsCallable("createAndroidCheckoutSession")
       ?: error("Firebase is not configured.")
-    val data = callable.call(mapOf("planId" to planId, "returnUrl" to returnUrl)).await().data as Map<*, *>
+    val data = callable.call(mapOf("planId" to planId, "returnUrl" to returnUrl)).await().getData() as Map<*, *>
     return data["url"] as? String ?: error("Missing checkout URL.")
   }
 
   suspend fun createAndroidPortalSession(returnUrl: String): String {
     val callable = functions?.getHttpsCallable("createAndroidCustomerPortalSession")
       ?: error("Firebase is not configured.")
-    val data = callable.call(mapOf("returnUrl" to returnUrl)).await().data as Map<*, *>
+    val data = callable.call(mapOf("returnUrl" to returnUrl)).await().getData() as Map<*, *>
     return data["url"] as? String ?: error("Missing portal URL.")
   }
 
   suspend fun checkEligibility(): SubscriptionCheckoutEligibility {
     val callable = functions?.getHttpsCallable("checkSubscriptionEligibility")
       ?: error("Firebase is not configured.")
-    val data = callable.call(emptyMap<String, Any>()).await().data as Map<*, *>
+    val data = callable.call(emptyMap<String, Any>()).await().getData() as Map<*, *>
     return SubscriptionCheckoutEligibility(
       eligibleForCheckout = data["eligibleForCheckout"] as? Boolean ?: false,
       manageableSubscriptionCount = (data["manageableSubscriptionCount"] as? Number)?.toInt() ?: 0,
@@ -116,7 +116,7 @@ class BillingRepository @Inject constructor(
   suspend fun getManagedState(): ManagedSubscriptionStateSnapshot {
     val callable = functions?.getHttpsCallable("getManagedSubscriptionState")
       ?: error("Firebase is not configured.")
-    val data = callable.call(emptyMap<String, Any>()).await().data as Map<*, *>
+    val data = callable.call(emptyMap<String, Any>()).await().getData() as Map<*, *>
     val primary = data["primarySubscriptionId"] as? String ?: ""
     val subscriptions = (data["managedSubscriptions"] as? List<*>).orEmpty().mapNotNull { item ->
       val map = item as? Map<*, *> ?: return@mapNotNull null

@@ -88,7 +88,7 @@ class HelpRepository @Inject constructor(
       "contentType" to (contentResolver.getType(uri) ?: "audio/webm"),
       "locale" to locale,
     )
-    val data = callable.call(payload).await().data as Map<*, *>
+    val data = callable.call(payload).await().getData() as Map<*, *>
     return (data["transcript"] as? String)?.trim()?.takeIf { it.isNotEmpty() }
   }
 

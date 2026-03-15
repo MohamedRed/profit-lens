@@ -64,45 +64,101 @@ class OfferViewModel @Inject constructor(
   }.flatMapLatest { (uid, periodKey) ->
     if (uid == null || periodKey == null) flowOf(null) else billingRepository.watchUsage(uid, periodKey)
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+  private data class OfferSelectionSnapshot(
+    val profile: com.profitlens.android.core.data.model.UserProfile?,
+    val vehicles: List<com.profitlens.android.core.data.model.VehicleProfile>,
+    val selectedVehicleId: String,
+    val draft: OfferDraft,
+    val screenshotUri: Uri?,
+    val bulkScreenshotUri: Uri?,
+  )
+
+  private data class OfferInputSnapshot(
+    val draft: OfferDraft,
+    val screenshotUri: Uri?,
+    val bulkScreenshotUri: Uri?,
+  )
+
+  private data class OfferUsageSnapshot(
+    val remainingOffersLabel: String,
+    val latestAnalysis: com.profitlens.android.core.data.model.OfferAnalysisRecord?,
+    val recentOffers: List<com.profitlens.android.core.data.model.OfferRecord>,
+  )
+
+  private data class OfferStatusSnapshot(
+    val bulkPreview: BulkImportPreview?,
+    val message: String?,
+    val analyzing: Boolean,
+    val usage: OfferUsageSnapshot,
+  )
 
   val uiState = combine(
-    profile,
-    vehicles,
-    selectedVehicleId,
-    draft,
-    screenshotUri,
-    bulkScreenshotUri,
-    entitlement,
-    usage,
-    latestAnalysis,
-    recentOffers,
-    bulkPreview,
-    message,
-    analyzing,
-  ) { profileValue, vehiclesValue, selectedVehicleValue, draftValue, screenshotValue, bulkScreenshotValue, entitlementValue, usageValue, latestValue, recentValue, bulkValue, messageValue, analyzingValue ->
+    combine(
+      combine(profile, vehicles, selectedVehicleId) { profileValue, vehiclesValue, selectedVehicleValue ->
+        Triple(profileValue, vehiclesValue, selectedVehicleValue)
+      },
+      combine(draft, screenshotUri, bulkScreenshotUri) { draftValue, screenshotValue, bulkScreenshotValue ->
+        OfferInputSnapshot(
+          draft = draftValue,
+          screenshotUri = screenshotValue,
+          bulkScreenshotUri = bulkScreenshotValue,
+        )
+      },
+    ) { selectionValues, inputSnapshot ->
+      OfferSelectionSnapshot(
+        profile = selectionValues.first,
+        vehicles = selectionValues.second,
+        selectedVehicleId = selectionValues.third,
+        draft = inputSnapshot.draft,
+        screenshotUri = inputSnapshot.screenshotUri,
+        bulkScreenshotUri = inputSnapshot.bulkScreenshotUri,
+      )
+    },
+    combine(
+      combine(entitlement, usage, latestAnalysis, recentOffers) { entitlementValue, usageValue, latestValue, recentValue ->
+        val offerLimit = entitlementValue?.offerLimit
+        OfferUsageSnapshot(
+          remainingOffersLabel = when {
+            offerLimit == null -> "Unlimited"
+            usageValue == null -> "—"
+            else -> (offerLimit - usageValue.offerCount).coerceAtLeast(0).toString()
+          },
+          latestAnalysis = latestValue,
+          recentOffers = recentValue,
+        )
+      },
+      combine(bulkPreview, message, analyzing) { bulkValue, messageValue, analyzingValue ->
+        Triple(bulkValue, messageValue, analyzingValue)
+      },
+    ) { usageSnapshot, statusValues ->
+      OfferStatusSnapshot(
+        bulkPreview = statusValues.first,
+        message = statusValues.second,
+        analyzing = statusValues.third,
+        usage = usageSnapshot,
+      )
+    },
+  ) { selectionSnapshot, statusSnapshot ->
+    val profileDefaultVehicleId = selectionSnapshot.profile?.defaultVehicleId
     val defaultVehicleId = when {
-      selectedVehicleValue.isNotBlank() -> selectedVehicleValue
-      profileValue?.defaultVehicleId != null -> profileValue.defaultVehicleId
-      else -> vehiclesValue.firstOrNull()?.id.orEmpty()
+      selectionSnapshot.selectedVehicleId.isNotBlank() -> selectionSnapshot.selectedVehicleId
+      !profileDefaultVehicleId.isNullOrBlank() -> profileDefaultVehicleId
+      else -> selectionSnapshot.vehicles.firstOrNull()?.id.orEmpty()
     }
     OfferUiState(
-      loading = profileValue == null && authUser.value != null,
-      message = messageValue,
-      profile = profileValue,
-      vehicles = vehiclesValue,
+      loading = selectionSnapshot.profile == null && authUser.value != null,
+      message = statusSnapshot.message,
+      profile = selectionSnapshot.profile,
+      vehicles = selectionSnapshot.vehicles,
       selectedVehicleId = defaultVehicleId,
-      manualDraft = draftValue,
-      screenshotUri = screenshotValue,
-      bulkScreenshotUri = bulkScreenshotValue,
-      remainingOffersLabel = when {
-        entitlementValue?.offerLimit == null -> "Unlimited"
-        usageValue == null -> "—"
-        else -> (entitlementValue.offerLimit - usageValue.offerCount).coerceAtLeast(0).toString()
-      },
-      latestAnalysis = latestValue,
-      recentOffers = recentValue,
-      bulkPreview = bulkValue,
-      analyzing = analyzingValue,
+      manualDraft = selectionSnapshot.draft,
+      screenshotUri = selectionSnapshot.screenshotUri,
+      bulkScreenshotUri = selectionSnapshot.bulkScreenshotUri,
+      remainingOffersLabel = statusSnapshot.usage.remainingOffersLabel,
+      latestAnalysis = statusSnapshot.usage.latestAnalysis,
+      recentOffers = statusSnapshot.usage.recentOffers,
+      bulkPreview = statusSnapshot.bulkPreview,
+      analyzing = statusSnapshot.analyzing,
     )
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), OfferUiState())
 

@@ -1,4 +1,4 @@
-package com.profitlens.android.core.data.model
+package com.profitlens.android.auth
 
 data class AuthUser(
   val uid: String,

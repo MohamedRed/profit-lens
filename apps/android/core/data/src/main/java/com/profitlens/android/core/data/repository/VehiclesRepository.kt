@@ -76,13 +76,13 @@ class VehiclesRepository @Inject constructor(
   suspend fun lookupByPlate(licensePlate: String, countryCode: String): Map<*, *> {
     val callable = functions?.getHttpsCallable("lookupVehicleByPlate")
       ?: error("Firebase is not configured.")
-    return callable.call(mapOf("licensePlate" to licensePlate, "countryCode" to countryCode)).await().data as Map<*, *>
+    return callable.call(mapOf("licensePlate" to licensePlate, "countryCode" to countryCode)).await().getData() as Map<*, *>
   }
 
   suspend fun lookupModel(brand: String, model: String, energyType: String): Map<*, *> {
     val callable = functions?.getHttpsCallable("lookupVehicleModel")
       ?: error("Firebase is not configured.")
-    return callable.call(mapOf("brand" to brand, "model" to model, "energyType" to energyType)).await().data as Map<*, *>
+    return callable.call(mapOf("brand" to brand, "model" to model, "energyType" to energyType)).await().getData() as Map<*, *>
   }
 
   private fun mapVehicle(snapshot: DocumentSnapshot): VehicleProfile? {
