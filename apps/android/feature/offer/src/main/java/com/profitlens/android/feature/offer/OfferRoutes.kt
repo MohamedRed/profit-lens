@@ -6,6 +6,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.profitlens.android.feature.billing.billingRoute
 import com.profitlens.android.feature.history.historyDetailRoute
 import com.profitlens.android.feature.overlay.overlayGraph
 import com.profitlens.android.feature.overlay.overlayRoute
@@ -25,9 +26,11 @@ fun NavGraphBuilder.offerGraph(navController: NavController, padding: androidx.c
       onParseBulk = viewModel::parseBulkScreenshot,
       onCommitBulk = viewModel::commitBulkImport,
       onOverlay = { navController.navigate(overlayRoute) },
+      onBilling = { navController.navigate(billingRoute) },
       onOfferSelected = { navController.navigate(historyDetailRoute(it)) },
       onPickScreenshot = viewModel::setScreenshotUri,
       onPickBulkScreenshot = viewModel::setBulkScreenshotUri,
+      onSaveProfitabilityTarget = viewModel::saveProfitabilityTarget,
       padding = padding,
     )
   }

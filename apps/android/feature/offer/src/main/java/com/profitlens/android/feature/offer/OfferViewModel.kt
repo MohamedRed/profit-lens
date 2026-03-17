@@ -45,6 +45,7 @@ class OfferViewModel @Inject constructor(
   private val latestAnalysis = MutableStateFlow<com.profitlens.android.core.data.model.OfferAnalysisRecord?>(null)
   private val message = MutableStateFlow<String?>(null)
   private val analyzing = MutableStateFlow(false)
+  private val savingProfitabilityTarget = MutableStateFlow(false)
 
   private val authUser = authRepository.watchUser().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
   private val profile = authUser.flatMapLatest { user ->
@@ -64,103 +65,24 @@ class OfferViewModel @Inject constructor(
   }.flatMapLatest { (uid, periodKey) ->
     if (uid == null || periodKey == null) flowOf(null) else billingRepository.watchUsage(uid, periodKey)
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
-  private data class OfferSelectionSnapshot(
-    val profile: com.profitlens.android.core.data.model.UserProfile?,
-    val vehicles: List<com.profitlens.android.core.data.model.VehicleProfile>,
-    val selectedVehicleId: String,
-    val draft: OfferDraft,
-    val screenshotUri: Uri?,
-    val bulkScreenshotUri: Uri?,
+  val uiState = buildOfferUiStateFlow(
+    scope = viewModelScope,
+    isAuthenticated = { authUser.value != null },
+    profile = profile,
+    vehicles = vehicles,
+    selectedVehicleId = selectedVehicleId,
+    draft = draft,
+    screenshotUri = screenshotUri,
+    bulkScreenshotUri = bulkScreenshotUri,
+    entitlement = entitlement,
+    usage = usage,
+    latestAnalysis = latestAnalysis,
+    recentOffers = recentOffers,
+    bulkPreview = bulkPreview,
+    message = message,
+    analyzing = analyzing,
+    savingProfitabilityTarget = savingProfitabilityTarget,
   )
-
-  private data class OfferInputSnapshot(
-    val draft: OfferDraft,
-    val screenshotUri: Uri?,
-    val bulkScreenshotUri: Uri?,
-  )
-
-  private data class OfferUsageSnapshot(
-    val remainingOffersLabel: String,
-    val latestAnalysis: com.profitlens.android.core.data.model.OfferAnalysisRecord?,
-    val recentOffers: List<com.profitlens.android.core.data.model.OfferRecord>,
-  )
-
-  private data class OfferStatusSnapshot(
-    val bulkPreview: BulkImportPreview?,
-    val message: String?,
-    val analyzing: Boolean,
-    val usage: OfferUsageSnapshot,
-  )
-
-  val uiState = combine(
-    combine(
-      combine(profile, vehicles, selectedVehicleId) { profileValue, vehiclesValue, selectedVehicleValue ->
-        Triple(profileValue, vehiclesValue, selectedVehicleValue)
-      },
-      combine(draft, screenshotUri, bulkScreenshotUri) { draftValue, screenshotValue, bulkScreenshotValue ->
-        OfferInputSnapshot(
-          draft = draftValue,
-          screenshotUri = screenshotValue,
-          bulkScreenshotUri = bulkScreenshotValue,
-        )
-      },
-    ) { selectionValues, inputSnapshot ->
-      OfferSelectionSnapshot(
-        profile = selectionValues.first,
-        vehicles = selectionValues.second,
-        selectedVehicleId = selectionValues.third,
-        draft = inputSnapshot.draft,
-        screenshotUri = inputSnapshot.screenshotUri,
-        bulkScreenshotUri = inputSnapshot.bulkScreenshotUri,
-      )
-    },
-    combine(
-      combine(entitlement, usage, latestAnalysis, recentOffers) { entitlementValue, usageValue, latestValue, recentValue ->
-        val offerLimit = entitlementValue?.offerLimit
-        OfferUsageSnapshot(
-          remainingOffersLabel = when {
-            offerLimit == null -> "Unlimited"
-            usageValue == null -> "—"
-            else -> (offerLimit - usageValue.offerCount).coerceAtLeast(0).toString()
-          },
-          latestAnalysis = latestValue,
-          recentOffers = recentValue,
-        )
-      },
-      combine(bulkPreview, message, analyzing) { bulkValue, messageValue, analyzingValue ->
-        Triple(bulkValue, messageValue, analyzingValue)
-      },
-    ) { usageSnapshot, statusValues ->
-      OfferStatusSnapshot(
-        bulkPreview = statusValues.first,
-        message = statusValues.second,
-        analyzing = statusValues.third,
-        usage = usageSnapshot,
-      )
-    },
-  ) { selectionSnapshot, statusSnapshot ->
-    val profileDefaultVehicleId = selectionSnapshot.profile?.defaultVehicleId
-    val defaultVehicleId = when {
-      selectionSnapshot.selectedVehicleId.isNotBlank() -> selectionSnapshot.selectedVehicleId
-      !profileDefaultVehicleId.isNullOrBlank() -> profileDefaultVehicleId
-      else -> selectionSnapshot.vehicles.firstOrNull()?.id.orEmpty()
-    }
-    OfferUiState(
-      loading = selectionSnapshot.profile == null && authUser.value != null,
-      message = statusSnapshot.message,
-      profile = selectionSnapshot.profile,
-      vehicles = selectionSnapshot.vehicles,
-      selectedVehicleId = defaultVehicleId,
-      manualDraft = selectionSnapshot.draft,
-      screenshotUri = selectionSnapshot.screenshotUri,
-      bulkScreenshotUri = selectionSnapshot.bulkScreenshotUri,
-      remainingOffersLabel = statusSnapshot.usage.remainingOffersLabel,
-      latestAnalysis = statusSnapshot.usage.latestAnalysis,
-      recentOffers = statusSnapshot.usage.recentOffers,
-      bulkPreview = statusSnapshot.bulkPreview,
-      analyzing = statusSnapshot.analyzing,
-    )
-  }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), OfferUiState())
 
   init {
     viewModelScope.launch {
@@ -191,16 +113,44 @@ class OfferViewModel @Inject constructor(
 
   fun selectVehicle(vehicleId: String) {
     selectedVehicleId.value = vehicleId
+    latestAnalysis.value = null
+    message.value = null
     persistDraft()
   }
 
   fun setScreenshotUri(uri: Uri?) {
     screenshotUri.value = uri
+    latestAnalysis.value = null
+    message.value = null
   }
 
   fun setBulkScreenshotUri(uri: Uri?) {
     bulkScreenshotUri.value = uri
     bulkPreview.value = null
+    message.value = null
+  }
+
+  suspend fun saveProfitabilityTarget(rawValue: String): Boolean {
+    val currentProfile = uiState.value.profile ?: run {
+      message.value = "Finish your profile setup before changing offer settings."
+      return false
+    }
+    val parsedValue = rawValue.trim().replace(',', '.').toDoubleOrNull()
+    if (parsedValue == null || parsedValue < 0.0) {
+      message.value = "Enter a valid minimum profit per km."
+      return false
+    }
+    savingProfitabilityTarget.value = true
+    message.value = null
+    return runCatching {
+      profileRepository.save(currentProfile.copy(minProfitabilityEuro = parsedValue))
+    }.onSuccess {
+      message.value = "Offer settings updated."
+    }.onFailure {
+      message.value = "Offer settings could not be saved right now."
+    }.isSuccess.also {
+      savingProfitabilityTarget.value = false
+    }
   }
 
   fun analyzeManualOffer() {

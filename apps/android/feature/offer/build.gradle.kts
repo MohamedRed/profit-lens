@@ -40,6 +40,7 @@ dependencies {
   implementation(project(":core:ui"))
   implementation(project(":core:data"))
   implementation(project(":core:firebase"))
+  implementation(project(":feature:billing"))
   implementation(project(":feature:history"))
   implementation(project(":feature:overlay"))
   implementation("androidx.activity:activity-compose:1.9.2")

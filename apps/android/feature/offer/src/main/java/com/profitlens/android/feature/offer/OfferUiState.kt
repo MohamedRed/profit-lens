@@ -37,4 +37,5 @@ data class OfferUiState(
   val recentOffers: List<OfferRecord> = emptyList(),
   val bulkPreview: BulkImportPreview? = null,
   val analyzing: Boolean = false,
+  val savingProfitabilityTarget: Boolean = false,
 )
