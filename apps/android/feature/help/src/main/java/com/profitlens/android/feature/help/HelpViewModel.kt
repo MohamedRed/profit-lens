@@ -34,11 +34,6 @@ data class HelpUiState(
   val message: String? = null,
   val submitting: Boolean = false,
 )
-
-const val helpRoute = "help"
-const val helpDetailRoutePattern = "help/detail/{ticketId}"
-fun helpDetailRoute(ticketId: String): String = "help/detail/$ticketId"
-
 @HiltViewModel
 class HelpViewModel @Inject constructor(
   authRepository: AuthRepository,
