@@ -8,6 +8,7 @@ QWIK_DIR="${ROOT_DIR}/apps/qwik"
 ANDROID_APK_SOURCE="${ROOT_DIR}/artifacts/android/profit-lens-android-release.apk"
 ANDROID_APP_CERT_SHA256="${ANDROID_APP_CERT_SHA256:-}"
 ANDROID_APP_PACKAGE="${ANDROID_APP_PACKAGE:-com.profitlens.android}"
+ANDROID_APP_DOWNLOAD_SUFFIX="${ANDROID_APP_DOWNLOAD_SUFFIX:-}"
 
 if [[ ! -f "${DEFINES_FILE}" ]]; then
   echo "Missing ${DEFINES_FILE}."
@@ -18,7 +19,12 @@ fi
 if [[ ! -x "${ROOT_DIR}/tool/sync_web_runtime_config.sh" ]]; then
   chmod +x "${ROOT_DIR}/tool/sync_web_runtime_config.sh"
 fi
-DEFINES_FILE="${DEFINES_FILE}" "${ROOT_DIR}/tool/sync_web_runtime_config.sh"
+
+if [[ -z "${ANDROID_APP_DOWNLOAD_SUFFIX}" && -f "${ANDROID_APK_SOURCE}" ]]; then
+  ANDROID_APP_DOWNLOAD_SUFFIX="$(shasum -a 256 "${ANDROID_APK_SOURCE}" | awk '{print substr($1, 1, 16)}')"
+fi
+
+DEFINES_FILE="${DEFINES_FILE}" ANDROID_APP_DOWNLOAD_SUFFIX="${ANDROID_APP_DOWNLOAD_SUFFIX}" "${ROOT_DIR}/tool/sync_web_runtime_config.sh"
 
 rm -rf "${BUILD_DIR}"
 mkdir -p "${BUILD_DIR}/next"
