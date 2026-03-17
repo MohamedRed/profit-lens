@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -23,6 +24,7 @@ fun AppScaffold(
   content: @Composable (PaddingValues) -> Unit,
 ) {
   Scaffold(
+    containerColor = MaterialTheme.colorScheme.background,
     snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = { topBar?.invoke() },
     bottomBar = { bottomBar?.invoke() },
@@ -41,7 +43,7 @@ fun ScrollColumn(
       .fillMaxSize()
       .padding(padding)
       .verticalScroll(rememberScrollState())
-      .padding(horizontal = 20.dp, vertical = 16.dp),
+      .padding(horizontal = 16.dp, vertical = 20.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp),
   ) {
     content()

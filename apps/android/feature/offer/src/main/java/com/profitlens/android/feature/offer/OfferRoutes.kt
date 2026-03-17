@@ -7,13 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +22,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.profitlens.android.core.ui.AppListRow
+import com.profitlens.android.core.ui.AppTextField
+import com.profitlens.android.core.ui.PrimaryButton
 import com.profitlens.android.core.ui.ScrollColumn
+import com.profitlens.android.core.ui.SecondaryButton
 import com.profitlens.android.core.ui.SectionCard
 import com.profitlens.android.core.ui.StatusBanner
 import com.profitlens.android.feature.history.historyDetailRoute
@@ -78,44 +79,30 @@ private fun OfferScreen(
       title = "Analyze offers",
       subtitle = "Run single, screenshot, bulk, and live-overlay workflows from the native Android app.",
     ) {
-      Text("Offers remaining this period: ${state.remainingOffersLabel}")
+      StatusBanner(message = "Offers remaining this period: ${state.remainingOffersLabel}", tone = "success")
       VehicleSelector(
         selectedVehicleId = state.selectedVehicleId,
         vehicles = state.vehicles,
         onVehicleSelected = onVehicleSelected,
       )
-      Button(onClick = onOverlay, modifier = Modifier.fillMaxWidth()) {
-        Text("Open overlay monitor")
-      }
+      SecondaryButton(label = "Open overlay monitor", onClick = onOverlay)
     }
     SectionCard(title = "Single offer", subtitle = "Enter the visible courier offer details.") {
       OfferDraftFields(draft = state.manualDraft, onDraftChanged = onDraftChanged)
-      Button(onClick = onAnalyzeManual, enabled = !state.analyzing, modifier = Modifier.fillMaxWidth()) {
-        Text(if (state.analyzing) "Analyzing…" else "Analyze manual offer")
-      }
+      PrimaryButton(label = if (state.analyzing) "Analyzing…" else "Analyze manual offer", onClick = onAnalyzeManual, enabled = !state.analyzing)
     }
     SectionCard(title = "Screenshot import", subtitle = "Pick a screenshot from this device or from the Android share sheet.") {
       Text(state.screenshotUri?.toString() ?: "No screenshot selected.")
-      Button(onClick = { screenshotPicker.launch("image/*") }, modifier = Modifier.fillMaxWidth()) {
-        Text("Choose screenshot")
-      }
-      Button(onClick = onAnalyzeScreenshot, enabled = !state.analyzing, modifier = Modifier.fillMaxWidth()) {
-        Text("Analyze screenshot")
-      }
+      SecondaryButton(label = "Choose screenshot", onClick = { screenshotPicker.launch("image/*") })
+      PrimaryButton(label = "Analyze screenshot", onClick = onAnalyzeScreenshot, enabled = !state.analyzing)
     }
     SectionCard(title = "Bulk import", subtitle = "Parse and save multiple offers from one screenshot.") {
       Text(state.bulkScreenshotUri?.toString() ?: "No bulk screenshot selected.")
-      Button(onClick = { bulkPicker.launch("image/*") }, modifier = Modifier.fillMaxWidth()) {
-        Text("Choose bulk screenshot")
-      }
-      Button(onClick = onParseBulk, enabled = !state.analyzing, modifier = Modifier.fillMaxWidth()) {
-        Text("Parse bulk screenshot")
-      }
+      SecondaryButton(label = "Choose bulk screenshot", onClick = { bulkPicker.launch("image/*") })
+      PrimaryButton(label = "Parse bulk screenshot", onClick = onParseBulk, enabled = !state.analyzing)
       state.bulkPreview?.let { preview ->
         Text("Ready to save ${preview.parsedCount} rows. ${preview.invalidCount} rows were skipped.")
-        Button(onClick = onCommitBulk, enabled = !state.analyzing, modifier = Modifier.fillMaxWidth()) {
-          Text("Save parsed offers")
-        }
+        PrimaryButton(label = "Save parsed offers", onClick = onCommitBulk, enabled = !state.analyzing)
       }
     }
     state.latestAnalysis?.let { latest ->
@@ -131,12 +118,11 @@ private fun OfferScreen(
         Text("No saved offers yet.")
       } else {
         state.recentOffers.take(6).forEach { offer ->
-          TextButton(onClick = { onOfferSelected(offer.id) }, modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-              Text("€${"%.2f".format(offer.netProfitEuro)} net · €${"%.2f".format(offer.payoutEuro)} payout", style = MaterialTheme.typography.titleMedium)
-              Text("${offer.pickupAddress ?: "Pickup unavailable"} → ${offer.dropoffAddress ?: "Dropoff unavailable"}")
-            }
-          }
+          AppListRow(
+            title = "€${"%.2f".format(offer.netProfitEuro)} net · €${"%.2f".format(offer.payoutEuro)} payout",
+            subtitle = "${offer.pickupAddress ?: "Pickup unavailable"} → ${offer.dropoffAddress ?: "Dropoff unavailable"}",
+            onClick = { onOfferSelected(offer.id) },
+          )
         }
       }
     }
@@ -159,7 +145,7 @@ private fun OfferDraftFields(
       "Dropoff name" to draft.dropoffName,
       "Dropoff address" to draft.dropoffAddress,
     ).forEach { (label, value) ->
-      OutlinedTextField(
+      AppTextField(
         value = value,
         onValueChange = {
           onDraftChanged { current ->
@@ -174,8 +160,7 @@ private fun OfferDraftFields(
             }
           }
         },
-        modifier = Modifier.fillMaxWidth(),
-        label = { Text(label) },
+        label = label,
       )
     }
   }
@@ -189,15 +174,15 @@ private fun VehicleSelector(
 ) {
   val expanded = remember { mutableStateOf(false) }
   Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-    Button(onClick = { expanded.value = true }, modifier = Modifier.fillMaxWidth()) {
-      Text(vehicles.firstOrNull { it.id == selectedVehicleId }?.name ?: "Select a vehicle")
-    }
-    OutlinedTextField(
+    SecondaryButton(
+      label = vehicles.firstOrNull { it.id == selectedVehicleId }?.name ?: "Select a vehicle",
+      onClick = { expanded.value = true },
+    )
+    AppTextField(
       value = vehicles.firstOrNull { it.id == selectedVehicleId }?.name ?: "Select a vehicle",
       onValueChange = {},
-      modifier = Modifier.fillMaxWidth(),
       readOnly = true,
-      label = { Text("Vehicle") },
+      label = "Vehicle",
     )
     DropdownMenu(
       expanded = expanded.value,

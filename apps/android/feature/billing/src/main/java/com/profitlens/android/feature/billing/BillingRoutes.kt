@@ -5,13 +5,10 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,7 +18,10 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navArgument
 import androidx.navigation.compose.composable
+import com.profitlens.android.core.ui.AppListRow
+import com.profitlens.android.core.ui.PrimaryButton
 import com.profitlens.android.core.ui.ScrollColumn
+import com.profitlens.android.core.ui.SecondaryButton
 import com.profitlens.android.core.ui.SectionCard
 import com.profitlens.android.core.ui.StatusBanner
 
@@ -59,27 +59,28 @@ fun BillingScreen(entry: NavBackStackEntry, padding: PaddingValues) {
         Text("Offers remaining this month: ${state.remainingOffers}")
         Text(state.subscriptionsSummary)
         viewModel.availablePlans().forEach { plan ->
-          Button(
+          AppListRow(
+            title = plan.id,
+            subtitle = "€${plan.monthlyPriceEuro} / month",
+            supporting = "Open secure checkout in Stripe.",
+          )
+          PrimaryButton(
+            label = "Choose ${plan.id}",
             onClick = {
               viewModel.createCheckout(plan.id) { url ->
                 CustomTabsIntent.Builder().build().launchUrl(context, Uri.parse(url))
               }
             },
-            modifier = Modifier.fillMaxWidth(),
-          ) {
-            Text("Choose ${plan.id} · €${plan.monthlyPriceEuro}")
-          }
+          )
         }
-        Button(
+        SecondaryButton(
+          label = "Open Stripe billing",
           onClick = {
             viewModel.openPortal { url ->
               CustomTabsIntent.Builder().build().launchUrl(context, Uri.parse(url))
             }
           },
-          modifier = Modifier.fillMaxWidth(),
-        ) {
-          Text("Open Stripe billing")
-        }
+        )
       }
     }
     state.message?.let { StatusBanner(message = it, tone = "success") }

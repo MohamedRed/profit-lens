@@ -4,9 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -15,8 +12,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.profitlens.android.core.ui.AppTextField
+import com.profitlens.android.core.ui.PrimaryButton
 import com.profitlens.android.core.ui.ScrollColumn
 import com.profitlens.android.core.ui.SectionCard
+import com.profitlens.android.core.ui.SelectionOption
+import com.profitlens.android.core.ui.SelectionPills
 import com.profitlens.android.core.ui.StatusBanner
 
 const val onboardingRoute = "onboarding"
@@ -36,7 +37,8 @@ fun NavGraphBuilder.onboardingGraph() {
           1 -> VehicleCostStep(state, viewModel)
           else -> ProfileCostStep(state, viewModel)
         }
-        Button(
+        PrimaryButton(
+          label = if (state.saving) "Saving..." else if (state.step < 2) "Next" else "Finish setup",
           onClick = {
             if (state.step < 2) {
               viewModel.setStep(state.step + 1)
@@ -45,10 +47,7 @@ fun NavGraphBuilder.onboardingGraph() {
             }
           },
           enabled = !state.saving,
-          modifier = Modifier.fillMaxWidth(),
-        ) {
-          Text(if (state.saving) "Saving..." else if (state.step < 2) "Next" else "Finish setup")
-        }
+        )
       }
       state.message?.let { StatusBanner(message = it, tone = "error") }
     }
@@ -57,41 +56,39 @@ fun NavGraphBuilder.onboardingGraph() {
 
 @Composable
 private fun StepHeader(step: Int, onStepSelected: (Int) -> Unit) {
-  Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-    listOf("Vehicle", "Costs", "Business").forEachIndexed { index, label ->
-      Button(onClick = { onStepSelected(index) }, modifier = Modifier.fillMaxWidth()) {
-        Text("${index + 1}. $label${if (step == index) " · current" else ""}")
-      }
-    }
-  }
+  SelectionPills(
+    options = listOf(
+      SelectionOption(id = "0", label = "Vehicle"),
+      SelectionOption(id = "1", label = "Costs"),
+      SelectionOption(id = "2", label = "Business"),
+    ),
+    selectedId = step.toString(),
+    onSelected = { onStepSelected(it.toInt()) },
+  )
 }
 
 @Composable
 private fun VehicleIdentityStep(state: OnboardingState, viewModel: OnboardingViewModel) {
   Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-    OutlinedTextField(
+    AppTextField(
       value = state.vehicle.name,
       onValueChange = { viewModel.updateVehicle { current -> current.copy(name = it) } },
-      modifier = Modifier.fillMaxWidth(),
-      label = { Text("Vehicle name") },
+      label = "Vehicle name",
     )
-    OutlinedTextField(
+    AppTextField(
       value = state.vehicle.type,
       onValueChange = { viewModel.updateVehicle { current -> current.copy(type = it) } },
-      modifier = Modifier.fillMaxWidth(),
-      label = { Text("Vehicle type") },
+      label = "Vehicle type",
     )
-    OutlinedTextField(
+    AppTextField(
       value = state.vehicle.energyType,
       onValueChange = { viewModel.updateVehicle { current -> current.copy(energyType = it) } },
-      modifier = Modifier.fillMaxWidth(),
-      label = { Text("Energy type") },
+      label = "Energy type",
     )
-    OutlinedTextField(
+    AppTextField(
       value = state.vehicle.fuelType,
       onValueChange = { viewModel.updateVehicle { current -> current.copy(fuelType = it) } },
-      modifier = Modifier.fillMaxWidth(),
-      label = { Text("Fuel type") },
+      label = "Fuel type",
     )
   }
 }
@@ -105,7 +102,7 @@ private fun VehicleCostStep(state: OnboardingState, viewModel: OnboardingViewMod
       "Maintenance / km" to state.vehicle.maintenancePerKm,
       "Depreciation / km" to state.vehicle.depreciationPerKm,
     ).forEach { (label, value) ->
-      OutlinedTextField(
+      AppTextField(
         value = value,
         onValueChange = {
           viewModel.updateVehicle { current ->
@@ -117,8 +114,7 @@ private fun VehicleCostStep(state: OnboardingState, viewModel: OnboardingViewMod
             }
           }
         },
-        modifier = Modifier.fillMaxWidth(),
-        label = { Text(label) },
+        label = label,
       )
     }
   }
@@ -128,35 +124,32 @@ private fun VehicleCostStep(state: OnboardingState, viewModel: OnboardingViewMod
 private fun ProfileCostStep(state: OnboardingState, viewModel: OnboardingViewModel) {
   val profile = state.profile ?: return
   Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(bottom = 4.dp)) {
-    OutlinedTextField(
+    AppTextField(
       value = (profile.socialContributionRate * 100).toString(),
       onValueChange = {
         viewModel.updateProfile { current ->
           current.copy(socialContributionRate = (it.toDoubleOrNull() ?: 0.0) / 100)
         }
       },
-      modifier = Modifier.fillMaxWidth(),
-      label = { Text("Social rate %") },
+      label = "Social rate %",
     )
-    OutlinedTextField(
+    AppTextField(
       value = profile.monthlyFixedCosts.toString(),
       onValueChange = {
         viewModel.updateProfile { current ->
           current.copy(monthlyFixedCosts = it.toDoubleOrNull() ?: 0.0)
         }
       },
-      modifier = Modifier.fillMaxWidth(),
-      label = { Text("Monthly fixed costs") },
+      label = "Monthly fixed costs",
     )
-    OutlinedTextField(
+    AppTextField(
       value = profile.monthlyDeliveries.toString(),
       onValueChange = {
         viewModel.updateProfile { current ->
           current.copy(monthlyDeliveries = it.toIntOrNull() ?: 0)
         }
       },
-      modifier = Modifier.fillMaxWidth(),
-      label = { Text("Monthly deliveries") },
+      label = "Monthly deliveries",
     )
   }
 }

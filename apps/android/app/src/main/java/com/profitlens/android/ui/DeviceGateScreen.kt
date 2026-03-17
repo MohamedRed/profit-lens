@@ -2,14 +2,13 @@ package com.profitlens.android.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.profitlens.android.core.data.model.ActiveDeviceSnapshot
+import com.profitlens.android.core.ui.AppListRow
+import com.profitlens.android.core.ui.PrimaryButton
 import com.profitlens.android.core.ui.ScrollColumn
+import com.profitlens.android.core.ui.SecondaryButton
 import com.profitlens.android.core.ui.SectionCard
 import com.profitlens.android.core.ui.StatusBanner
 import java.text.DateFormat
@@ -33,23 +32,16 @@ fun DeviceGateScreen(
         ) {
           activeDevices.forEach { device ->
             val lastSeenLabel = device.lastSeen?.let { DateFormat.getDateTimeInstance().format(it) } ?: "recently"
-            SectionCard(
+            AppListRow(
               title = if (device.deviceId == currentDeviceId) "This Android device" else (device.platform.ifBlank { "Active device" }),
-              subtitle = buildString {
-                append("Last seen ")
-                append(lastSeenLabel)
-              },
-            ) {
-              if (device.deviceId != currentDeviceId) {
-                Button(onClick = { onReplace(device.deviceId) }, modifier = Modifier.fillMaxWidth()) {
-                  Text("Replace with this Android app")
-                }
-              }
+              subtitle = "Last seen $lastSeenLabel",
+              supporting = if (device.deviceId == currentDeviceId) "Current device" else null,
+            )
+            if (device.deviceId != currentDeviceId) {
+              SecondaryButton(label = "Replace with this Android app", onClick = { onReplace(device.deviceId) })
             }
           }
-          Button(onClick = onSignOut, modifier = Modifier.fillMaxWidth()) {
-            Text("Sign out")
-          }
+          SecondaryButton(label = "Sign out", onClick = onSignOut)
         }
       }
 
@@ -62,12 +54,8 @@ fun DeviceGateScreen(
             StatusBanner(message = message, tone = "error")
           }
           Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Button(onClick = onRetry, modifier = Modifier.fillMaxWidth()) {
-              Text("Try again")
-            }
-            Button(onClick = onSignOut, modifier = Modifier.fillMaxWidth()) {
-              Text("Sign out")
-            }
+            PrimaryButton(label = "Try again", onClick = onRetry)
+            SecondaryButton(label = "Sign out", onClick = onSignOut)
           }
         }
       }

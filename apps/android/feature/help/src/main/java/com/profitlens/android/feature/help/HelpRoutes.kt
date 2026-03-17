@@ -6,20 +6,20 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.profitlens.android.core.ui.AppListRow
+import com.profitlens.android.core.ui.AppTextField
+import com.profitlens.android.core.ui.PrimaryButton
 import com.profitlens.android.core.ui.ScrollColumn
+import com.profitlens.android.core.ui.SecondaryButton
 import com.profitlens.android.core.ui.SectionCard
 import com.profitlens.android.core.ui.StatusBanner
 import java.text.DateFormat
@@ -89,30 +89,25 @@ private fun HelpScreen(
   }
   ScrollColumn(padding = padding) {
     SectionCard(title = "Help", subtitle = "Send screenshots or voice notes when you need support.") {
-      OutlinedTextField(
+      AppTextField(
         value = state.description,
         onValueChange = onDescriptionChanged,
-        modifier = Modifier.fillMaxWidth(),
         minLines = 5,
-        label = { Text("Describe the issue") },
+        label = "Describe the issue",
       )
       Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Button(onClick = { imagePicker.launch("image/*") }, modifier = Modifier.fillMaxWidth()) {
-          Text("Attach image")
-        }
-        Button(onClick = { audioPicker.launch("audio/*") }, modifier = Modifier.fillMaxWidth()) {
-          Text("Attach audio")
-        }
+        SecondaryButton(label = "Attach image", onClick = { imagePicker.launch("image/*") })
+        SecondaryButton(label = "Attach audio", onClick = { audioPicker.launch("audio/*") })
         if (state.attachments.isNotEmpty()) {
           state.attachments.forEach { attachment ->
-            Button(onClick = { onRemoveAttachment(attachment.id) }, modifier = Modifier.fillMaxWidth()) {
-              Text("Remove ${attachment.filename}")
-            }
+            AppListRow(
+              title = attachment.filename,
+              subtitle = attachment.type.replaceFirstChar { it.uppercase() },
+            )
+            SecondaryButton(label = "Remove ${attachment.filename}", onClick = { onRemoveAttachment(attachment.id) })
           }
         }
-        Button(onClick = onSubmit, enabled = !state.submitting, modifier = Modifier.fillMaxWidth()) {
-          Text(if (state.submitting) "Sending…" else "Send ticket")
-        }
+        PrimaryButton(label = if (state.submitting) "Sending…" else "Send ticket", onClick = onSubmit, enabled = !state.submitting)
       }
     }
     SectionCard(title = "Previous tickets", subtitle = "Track updates from the Profit Lens support workflow.") {
@@ -120,9 +115,12 @@ private fun HelpScreen(
         Text("No support tickets yet.")
       } else {
         state.tickets.forEach { ticket ->
-          Button(onClick = { onTicketSelected(ticket.id) }, modifier = Modifier.fillMaxWidth()) {
-            Text("${ticket.title ?: "Support ticket"} · ${ticket.delivererStatus}")
-          }
+          AppListRow(
+            title = ticket.title ?: "Support ticket",
+            subtitle = ticket.delivererStatus,
+            supporting = ticket.delivererStatusMessage,
+            onClick = { onTicketSelected(ticket.id) },
+          )
         }
       }
     }

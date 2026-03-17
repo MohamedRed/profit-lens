@@ -1,15 +1,18 @@
 package com.profitlens.android.ui
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.profitlens.android.feature.billing.billingGraph
@@ -61,22 +64,38 @@ fun MainShell(
 
   com.profitlens.android.designsystem.ProfitLensTheme {
     androidx.compose.material3.Scaffold(
+      containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background,
       bottomBar = {
-        NavigationBar {
-          mainTabs.forEach { tab ->
-            NavigationBarItem(
-              selected = destination?.hierarchy?.any { it.route == tab.route } == true,
-              onClick = {
-                onMainTabChanged(tab.route)
-                navController.navigate(tab.route) {
-                  popUpTo(navController.graph.id) { saveState = true }
-                  launchSingleTop = true
-                  restoreState = true
-                }
-              },
-              icon = {},
-              label = { Text(tab.label) },
-            )
+        Surface(
+          color = androidx.compose.material3.MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
+          border = BorderStroke(1.dp, androidx.compose.material3.MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)),
+        ) {
+          NavigationBar(
+            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
+            tonalElevation = 0.dp,
+            modifier = androidx.compose.ui.Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+          ) {
+            mainTabs.forEach { tab ->
+              NavigationBarItem(
+                selected = destination?.hierarchy?.any { it.route == tab.route } == true,
+                onClick = {
+                  onMainTabChanged(tab.route)
+                  navController.navigate(tab.route) {
+                    popUpTo(navController.graph.id) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                  }
+                },
+                icon = {},
+                label = { Text(tab.label) },
+                colors = NavigationBarItemDefaults.colors(
+                  selectedIconColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                  selectedTextColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                  indicatorColor = androidx.compose.material3.MaterialTheme.colorScheme.primaryContainer,
+                  unselectedTextColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
+              )
+            }
           }
         }
       },

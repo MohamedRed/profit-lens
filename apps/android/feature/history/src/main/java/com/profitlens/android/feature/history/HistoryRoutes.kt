@@ -4,10 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,8 +17,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.profitlens.android.core.ui.AppListRow
 import com.profitlens.android.core.ui.ScrollColumn
 import com.profitlens.android.core.ui.SectionCard
+import com.profitlens.android.core.ui.SelectionOption
+import com.profitlens.android.core.ui.SelectionPills
 import java.text.DateFormat
 import kotlin.math.absoluteValue
 
@@ -61,10 +62,14 @@ private fun HistoryScreen(
 ) {
   ScrollColumn(padding = padding) {
     SectionCard(title = "History", subtitle = "Review saved offers and daily profitability trends.") {
-      Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-        Button(onClick = { onModeChanged("list") }, modifier = Modifier.weight(1f)) { Text("List") }
-        Button(onClick = { onModeChanged("chart") }, modifier = Modifier.weight(1f)) { Text("Chart") }
-      }
+      SelectionPills(
+        options = listOf(
+          SelectionOption(id = "list", label = "List"),
+          SelectionOption(id = "chart", label = "Chart"),
+        ),
+        selectedId = state.selectedMode,
+        onSelected = onModeChanged,
+      )
     }
     if (state.selectedMode == "chart") {
       SectionCard(title = "Profit by day", subtitle = "Last 90 days of saved offer performance.") {
@@ -93,14 +98,12 @@ private fun HistoryScreen(
           Text("No saved offers yet.")
         } else {
           state.offers.forEach { offer ->
-            Button(onClick = { onOfferSelected(offer.id) }, modifier = Modifier.fillMaxWidth()) {
-              Text(
-                "€${"%.2f".format(offer.netProfitEuro)} net · " +
-                  (offer.pickupAddress ?: "Unknown pickup") +
-                  " → " +
-                  (offer.dropoffAddress ?: "Unknown dropoff"),
-              )
-            }
+            AppListRow(
+              title = "€${"%.2f".format(offer.netProfitEuro)} net",
+              subtitle = (offer.pickupAddress ?: "Unknown pickup") + " → " + (offer.dropoffAddress ?: "Unknown dropoff"),
+              supporting = "€${"%.2f".format(offer.payoutEuro)} payout · ${"%.1f".format(offer.distanceKm)} km",
+              onClick = { onOfferSelected(offer.id) },
+            )
           }
         }
       }

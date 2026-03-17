@@ -4,13 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -18,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.profitlens.android.core.ui.AppListRow
 import com.profitlens.android.core.ui.ScrollColumn
 import com.profitlens.android.core.ui.SectionCard
 import com.profitlens.android.core.ui.StatusBanner
@@ -34,8 +30,12 @@ fun OverlayMonitorScreen(
       title = "Overlay monitor",
       subtitle = "Show a live profitability badge on supported courier offer screens.",
     ) {
-      Text(text = state.user?.email ?: "")
-      Card {
+      Text(text = state.user?.email ?: "", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+      androidx.compose.material3.Surface(
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surface,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)),
+      ) {
         Row(
           modifier = Modifier
             .fillMaxWidth()
@@ -60,16 +60,11 @@ fun OverlayMonitorScreen(
         Text("No live offer sessions yet.")
       } else {
         state.sessions.forEach { session ->
-          Card {
-            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-              val reasonCode = session.reasonCode
-              Text(text = session.provider.replace('_', ' '))
-              Text(text = "${session.status} ${session.netProfitEuro?.let { "(${String.format("%.2f", it)} EUR)" } ?: ""}")
-              if (!reasonCode.isNullOrBlank()) {
-                Text(text = reasonCode)
-              }
-            }
-          }
+          AppListRow(
+            title = session.provider.replace('_', ' '),
+            subtitle = "${session.status} ${session.netProfitEuro?.let { "(${String.format("%.2f", it)} EUR)" } ?: ""}",
+            supporting = session.reasonCode,
+          )
         }
       }
     }
