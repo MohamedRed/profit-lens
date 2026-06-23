@@ -20,6 +20,8 @@ jobs:
       ANDROID_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}
       ANDROID_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
       ANDROID_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_STORE_PASSWORD }}
+      APPETIZE_API_TOKEN: ${{ secrets.APPETIZE_API_TOKEN }}
+      APPETIZE_PUBLIC_KEY: ${{ secrets.APPETIZE_PUBLIC_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -69,3 +71,41 @@ jobs:
         run: |
           gh release view android-latest >/dev/null 2>&1 || gh release create android-latest --title "Android latest" --notes "Latest direct-download APK for Profit Lens Android."
           gh release upload android-latest artifacts/profit-lens-android-release.apk --clobber
+
+      - name: Upload release APK to Appetize
+        id: appetize
+        if: ${{ env.APPETIZE_API_TOKEN != '' }}
+        uses: appetizeio/github-action-appetize@v1.0.5
+        with:
+          apiToken: ${{ env.APPETIZE_API_TOKEN }}
+          publicKey: ${{ env.APPETIZE_PUBLIC_KEY }}
+          platform: android
+          appFile: artifacts/profit-lens-android-release.apk
+          fileType: apk
+          note: "Profit Lens Android release APK from ${{ github.sha }}"
+          timeout: "120"
+
+      - name: Publish Appetize preview link
+        if: ${{ steps.appetize.outputs.publicKey != '' }}
+        run: |
+          URL="https://appetize.io/app/${{ steps.appetize.outputs.publicKey }}"
+          mkdir -p "$RUNNER_TEMP/appetize-preview"
+          printf '%s\n' "$URL" > "$RUNNER_TEMP/appetize-preview/url.txt"
+          echo "### Android Appetize preview" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "$URL" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload Appetize preview link artifact
+        if: ${{ steps.appetize.outputs.publicKey != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: profit-lens-android-appetize-preview
+          path: ${{ runner.temp }}/appetize-preview/url.txt
+          if-no-files-found: error
+
+      - name: Missing Appetize token note
+        if: ${{ env.APPETIZE_API_TOKEN == '' }}
+        run: |
+          echo "### Android APK built" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Set APPETIZE_API_TOKEN to publish an Appetize preview." >> "$GITHUB_STEP_SUMMARY"
