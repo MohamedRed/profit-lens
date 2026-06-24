@@ -28,7 +28,7 @@ import com.profitlens.android.core.ui.SecondaryButton
 import com.profitlens.android.core.ui.StatusBanner
 
 @Composable
-internal fun OnboardingScreen(
+fun OnboardingScreen(
   state: OnboardingState,
   onStepSelected: (Int) -> Unit,
   onNext: () -> Unit,

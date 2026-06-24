@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -25,6 +26,7 @@ fun PrimaryButton(
     enabled = enabled,
     modifier = modifier
       .fillMaxWidth()
+      .testTag("button:$label")
       .defaultMinSize(minHeight = 48.dp),
     shape = MaterialTheme.shapes.large,
     colors = ButtonDefaults.buttonColors(
@@ -50,6 +52,7 @@ fun SecondaryButton(
     enabled = enabled,
     modifier = modifier
       .fillMaxWidth()
+      .testTag("button:$label")
       .defaultMinSize(minHeight = 48.dp),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.7f)),
@@ -74,7 +77,9 @@ fun QuietButton(
   TextButton(
     onClick = onClick,
     enabled = enabled,
-    modifier = modifier.fillMaxWidth(),
+    modifier = modifier
+      .fillMaxWidth()
+      .testTag("button:$label"),
     shape = MaterialTheme.shapes.large,
     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary),
   ) {

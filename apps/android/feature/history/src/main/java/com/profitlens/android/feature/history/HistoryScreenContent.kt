@@ -24,7 +24,7 @@ import com.profitlens.android.core.ui.SelectionPills
 import kotlin.math.absoluteValue
 
 @Composable
-internal fun HistoryScreen(
+fun HistoryScreen(
   state: HistoryUiState,
   onModeChanged: (String) -> Unit,
   onOfferSelected: (String) -> Unit,
@@ -49,7 +49,7 @@ internal fun HistoryScreen(
 }
 
 @Composable
-internal fun HistoryDetailScreen(
+fun HistoryDetailScreen(
   state: HistoryUiState,
   padding: PaddingValues,
 ) {

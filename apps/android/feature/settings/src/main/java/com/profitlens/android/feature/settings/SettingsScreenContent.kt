@@ -22,7 +22,7 @@ import com.profitlens.android.core.ui.StatusBanner
 import java.text.DateFormat
 
 @Composable
-internal fun SettingsHomeScreen(
+fun SettingsHomeScreen(
   state: SettingsUiState,
   onProfile: () -> Unit,
   onVehicles: () -> Unit,
@@ -61,7 +61,7 @@ internal fun SettingsHomeScreen(
 }
 
 @Composable
-internal fun ProfileSettingsScreen(
+fun ProfileSettingsScreen(
   state: SettingsUiState,
   onMinProfitChanged: (String) -> Unit,
   onMonthlyCostsChanged: (String) -> Unit,
@@ -85,7 +85,7 @@ internal fun ProfileSettingsScreen(
 }
 
 @Composable
-internal fun VehiclesSettingsScreen(
+fun VehiclesSettingsScreen(
   state: SettingsUiState,
   onAddVehicle: () -> Unit,
   onEditVehicle: (String) -> Unit,
@@ -117,7 +117,7 @@ internal fun VehiclesSettingsScreen(
 }
 
 @Composable
-internal fun VehicleEditorScreen(
+fun VehicleEditorScreen(
   state: SettingsUiState,
   onDraftChanged: ((VehicleDraft) -> VehicleDraft) -> Unit,
   onSave: () -> Unit,
@@ -133,7 +133,7 @@ internal fun VehicleEditorScreen(
 }
 
 @Composable
-internal fun DevicesSettingsScreen(
+fun DevicesSettingsScreen(
   state: SettingsUiState,
   onRevokeDevice: (String) -> Unit,
   padding: PaddingValues,

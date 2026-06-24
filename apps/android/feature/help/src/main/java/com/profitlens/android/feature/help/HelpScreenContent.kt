@@ -24,7 +24,7 @@ import com.profitlens.android.core.ui.StatusBanner
 import java.text.DateFormat
 
 @Composable
-internal fun HelpHomeScreen(
+fun HelpHomeScreen(
   state: HelpUiState,
   onDescriptionChanged: (String) -> Unit,
   onSubmit: () -> Unit,
@@ -80,7 +80,7 @@ internal fun HelpHomeScreen(
 }
 
 @Composable
-internal fun HelpTicketsScreen(
+fun HelpTicketsScreen(
   state: HelpUiState,
   onTicketSelected: (String) -> Unit,
   padding: PaddingValues,
@@ -114,7 +114,7 @@ internal fun HelpTicketsScreen(
 }
 
 @Composable
-internal fun HelpTicketDetailScreen(
+fun HelpTicketDetailScreen(
   state: HelpUiState,
   padding: PaddingValues,
 ) {

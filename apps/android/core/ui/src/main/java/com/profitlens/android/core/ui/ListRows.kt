@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -27,6 +28,7 @@ fun AppListRow(
   Surface(
     modifier = modifier
       .fillMaxWidth()
+      .testTag("list-row:$title")
       .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
     shape = MaterialTheme.shapes.large,
     color = MaterialTheme.colorScheme.surface,

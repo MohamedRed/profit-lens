@@ -17,7 +17,7 @@ import com.profitlens.android.core.ui.SelectionPills
 import com.profitlens.android.core.ui.StatusBanner
 
 @Composable
-internal fun OfferScreen(
+fun OfferScreen(
   state: OfferUiState,
   onDraftChanged: ((OfferDraft) -> OfferDraft) -> Unit,
   onVehicleSelected: (String) -> Unit,

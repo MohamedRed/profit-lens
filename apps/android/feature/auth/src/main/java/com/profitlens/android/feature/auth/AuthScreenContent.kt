@@ -23,7 +23,7 @@ import com.profitlens.android.core.ui.SecondaryButton
 import com.profitlens.android.core.ui.StatusBanner
 
 @Composable
-internal fun LoginScreen(
+fun LoginScreen(
   state: AuthScreenState,
   onEmailChanged: (String) -> Unit,
   onPasswordChanged: (String) -> Unit,
@@ -45,7 +45,7 @@ internal fun LoginScreen(
 }
 
 @Composable
-internal fun RegisterScreen(
+fun RegisterScreen(
   state: AuthScreenState,
   onEmailChanged: (String) -> Unit,
   onPasswordChanged: (String) -> Unit,

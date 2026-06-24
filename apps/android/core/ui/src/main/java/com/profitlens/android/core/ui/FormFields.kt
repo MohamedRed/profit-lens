@@ -7,6 +7,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun AppTextField(
@@ -21,7 +22,9 @@ fun AppTextField(
   OutlinedTextField(
     value = value,
     onValueChange = onValueChange,
-    modifier = modifier.fillMaxWidth(),
+    modifier = modifier
+      .fillMaxWidth()
+      .testTag("field:$label"),
     singleLine = singleLine,
     readOnly = readOnly,
     minLines = minLines,

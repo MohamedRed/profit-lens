@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -64,7 +65,9 @@ fun SelectionPills(
             contentAlignment = Alignment.Center,
           ) {
             Surface(
-              modifier = Modifier.fillMaxWidth(),
+              modifier = Modifier
+                .fillMaxWidth()
+                .testTag("selection:${option.label}"),
               shape = RoundedCornerShape(14.dp),
               color = androidx.compose.ui.graphics.Color.Transparent,
               onClick = { onSelected(option.id) },
